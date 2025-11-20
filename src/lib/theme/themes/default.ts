@@ -5,6 +5,9 @@ export const defaultTheme: Theme = {
 	A: {
 		default: ''
 	},
+	Button: {
+		default: ''
+	},
 	Container: {
 		default: 'px-4 max-w-7xl mx-auto flex w-full'
 	},
