@@ -7,5 +7,8 @@ export const defaultTheme: Theme = {
 	},
 	Header: {
 		default: ''
+	},
+	Logo: {
+		default: 'w-6'
 	}
 };
