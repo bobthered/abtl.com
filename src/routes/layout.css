@@ -1,3 +1,44 @@
 @import 'tailwindcss';
+
+@import 'tailwindcss';
+
+@theme {
+	--color-primary-50: #fef6f7;
+	--color-primary-100: #fde8eb;
+	--color-primary-200: #fad1d7;
+	--color-primary-300: #f6acb7;
+	--color-primary-400: #ee596f;
+	--color-primary-500: #d41633;
+	--color-primary-600: #981024;
+	--color-primary-700: #6f0c1a;
+	--color-primary-800: #41070f;
+	--color-primary-900: #200308;
+	--color-primary-950: #120204;
+
+	--color-secondary-50: #f5faff;
+	--color-secondary-100: #e5f4ff;
+	--color-secondary-200: #cce8ff;
+	--color-secondary-300: #a3d6ff;
+	--color-secondary-400: #47acff;
+	--color-secondary-500: #0081eb;
+	--color-secondary-600: #005da8;
+	--color-secondary-700: #00437a;
+	--color-secondary-800: #002747;
+	--color-secondary-900: #001424;
+	--color-secondary-950: #000b14;
+
+	--color-gray-50: #fafafa;
+	--color-gray-100: #f2f2f2;
+	--color-gray-200: #e6e6e6;
+	--color-gray-300: #d1d1d1;
+	--color-gray-400: #a3a3a3;
+	--color-gray-500: #757575;
+	--color-gray-600: #545454;
+	--color-gray-700: #3d3d3d;
+	--color-gray-800: #242424;
+	--color-gray-900: #121212;
+	--color-gray-950: #0a0a0a;
+}
+
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
