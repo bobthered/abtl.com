@@ -16,5 +16,8 @@ export const defaultTheme: Theme = {
 	},
 	Main: {
 		default: ''
+	},
+	Nav: {
+		default: ''
 	}
 };
