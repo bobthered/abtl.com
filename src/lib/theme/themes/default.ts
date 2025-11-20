@@ -11,6 +11,9 @@ export const defaultTheme: Theme = {
 	Container: {
 		default: 'px-4 max-w-7xl mx-auto flex w-full'
 	},
+	Div: {
+		default: ''
+	},
 	Header: {
 		default: ''
 	},
