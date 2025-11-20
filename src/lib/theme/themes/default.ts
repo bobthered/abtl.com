@@ -13,5 +13,8 @@ export const defaultTheme: Theme = {
 	},
 	Logo: {
 		default: 'w-6'
+	},
+	Main: {
+		default: ''
 	}
 };
