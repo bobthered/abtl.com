@@ -40,6 +40,9 @@ export const defaultTheme: Theme = {
 	Sheet: {
 		default: 'fixed'
 	},
+	Span: {
+		default: ''
+	},
 		default: ''
 	}
 };
