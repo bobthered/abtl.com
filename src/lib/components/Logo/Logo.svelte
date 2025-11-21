@@ -7,6 +7,8 @@
 	type Props = HTMLAttributes<SVGElement> & {
 		children?: Snippet;
 		class?: string;
+		clientHeight?: number;
+		clientWidth?: number;
 		element?: SVGElement | null;
 		isVisible?: boolean;
 		primaryClass?: string;
@@ -17,11 +19,12 @@
 	let {
 		children,
 		class: className,
+		clientHeight = $bindable(0),
+		clientWidth = $bindable(0),
 		element = $bindable(null),
 		isVisible = $bindable(true),
 		primaryClass = 'fill-primary-600 dark:fill-white',
 		secondaryClass = 'fill-secondary-700 dark:fill-gray-400',
-		style,
 		transition: customTransition = (_) => {},
 		variants = [],
 		...restProps
@@ -31,6 +34,8 @@
 {#if isVisible}
 	<svg
 		{...restProps}
+		bind:clientHeight
+		bind:clientWidth
 		bind:this={element}
 		class={twMerge(
 			$theme.Logo.default,

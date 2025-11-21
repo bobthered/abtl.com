@@ -7,17 +7,24 @@
 	type Props = HTMLButtonAttributes & {
 		children?: Snippet;
 		class?: string;
+		clientHeight?: number;
+		clientWidth?: number;
 		element?: HTMLButtonElement | null;
 		isVisible?: boolean;
+		offsetHeight?: number;
+		offsetWidth?: number;
 		transition?: (node: Element, options?: Record<string, any>) => any;
 		variants?: string[];
 	};
 	let {
 		children,
 		class: className,
+		clientHeight = $bindable(0),
+		clientWidth = $bindable(0),
 		element = $bindable(null),
 		isVisible = $bindable(true),
-		style,
+		offsetHeight = $bindable(0),
+		offsetWidth = $bindable(0),
 		transition: customTransition = (_) => {},
 		variants = [],
 		...restProps
@@ -27,6 +34,10 @@
 {#if isVisible}
 	<button
 		{...restProps}
+		bind:clientHeight
+		bind:clientWidth
+		bind:offsetHeight
+		bind:offsetWidth
 		bind:this={element}
 		class={twMerge(
 			$theme.Button.default,

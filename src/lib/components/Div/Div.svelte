@@ -7,17 +7,24 @@
 	type Props = HTMLAttributes<HTMLDivElement> & {
 		children?: Snippet;
 		class?: string;
+		clientHeight?: number;
+		clientWidth?: number;
 		element?: HTMLDivElement | null;
 		isVisible?: boolean;
+		offsetHeight?: number;
+		offsetWidth?: number;
 		transition?: (node: Element, options?: Record<string, any>) => any;
 		variants?: string[];
 	};
 	let {
 		children,
 		class: className,
+		clientHeight = $bindable(0),
+		clientWidth = $bindable(0),
 		element = $bindable(null),
 		isVisible = $bindable(true),
-		style,
+		offsetHeight = $bindable(0),
+		offsetWidth = $bindable(0),
 		transition: customTransition = (_) => {},
 		variants = [],
 		...restProps
@@ -27,6 +34,10 @@
 {#if isVisible}
 	<div
 		{...restProps}
+		bind:clientHeight
+		bind:clientWidth
+		bind:offsetHeight
+		bind:offsetWidth
 		bind:this={element}
 		class={twMerge(
 			$theme.Div.default,

@@ -25,7 +25,7 @@ export const defaultTheme: Theme = {
 		default: ''
 	},
 	Header: {
-		default: ''
+		default: twMerge(input.ring)
 	},
 	Logo: {
 		default: 'w-6'
@@ -34,6 +34,8 @@ export const defaultTheme: Theme = {
 		default: ''
 	},
 	Nav: {
+		default: ''
+	},
 	Path: {
 		default: ''
 	},
