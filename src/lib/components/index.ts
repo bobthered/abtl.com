@@ -7,3 +7,4 @@ export { default as Header } from './Header/Header.svelte';
 export { default as Logo } from './Logo/Logo.svelte';
 export { default as Main } from './Main/Main.svelte';
 export { default as Nav } from './Nav/Nav.svelte';
+export { default as Path } from './Path/Path.svelte';

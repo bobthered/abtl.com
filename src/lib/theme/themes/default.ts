@@ -34,6 +34,9 @@ export const defaultTheme: Theme = {
 		default: ''
 	},
 	Nav: {
+	Path: {
+		default: ''
+	},
 		default: ''
 	}
 };
