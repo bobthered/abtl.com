@@ -37,6 +37,9 @@ export const defaultTheme: Theme = {
 	Path: {
 		default: ''
 	},
+	Sheet: {
+		default: 'fixed'
+	},
 		default: ''
 	}
 };

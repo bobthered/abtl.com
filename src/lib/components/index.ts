@@ -8,3 +8,4 @@ export { default as Logo } from './Logo/Logo.svelte';
 export { default as Main } from './Main/Main.svelte';
 export { default as Nav } from './Nav/Nav.svelte';
 export { default as Path } from './Path/Path.svelte';
+export { default as Sheet } from './Sheet/Sheet.svelte';
