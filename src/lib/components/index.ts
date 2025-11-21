@@ -10,3 +10,4 @@ export { default as Nav } from './Nav/Nav.svelte';
 export { default as Path } from './Path/Path.svelte';
 export { default as Sheet } from './Sheet/Sheet.svelte';
 export { default as Span } from './Span/Span.svelte';
+export { default as SVG } from './SVG/SVG.svelte';

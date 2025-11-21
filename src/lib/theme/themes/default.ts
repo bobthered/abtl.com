@@ -43,6 +43,7 @@ export const defaultTheme: Theme = {
 	Span: {
 		default: ''
 	},
+	SVG: {
 		default: ''
 	}
 };
