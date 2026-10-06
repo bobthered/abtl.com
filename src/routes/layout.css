@@ -4,3 +4,53 @@
 @source '../../node_modules/sveltewind/dist';
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme {
+	--color-gray-50: #faf9fb;
+	--color-gray-100: #f2f0f5;
+	--color-gray-200: #e4e1ea;
+	--color-gray-300: #cfc9d9;
+	--color-gray-400: #9f93b4;
+	--color-gray-500: #72628e;
+	--color-gray-600: #504563;
+	--color-gray-700: #3a3248;
+	--color-gray-800: #221d2a;
+	--color-gray-900: #110f15;
+	--color-gray-950: #0a080c;
+
+	--color-primary-50: #f8f5ff;
+	--color-primary-100: #eee5ff;
+	--color-primary-200: #deccff;
+	--color-primary-300: #c3a3ff;
+	--color-primary-400: #8e51ff;
+	--color-primary-500: #5200eb;
+	--color-primary-600: #3b00a8;
+	--color-primary-700: #2b007a;
+	--color-primary-800: #190047;
+	--color-primary-900: #0c0024;
+	--color-primary-950: #070014;
+
+	--color-secondary-50: #fff5fb;
+	--color-secondary-100: #ffe5f6;
+	--color-secondary-200: #ffcced;
+	--color-secondary-300: #ffa3df;
+	--color-secondary-400: #ff51c2;
+	--color-secondary-500: #eb0098;
+	--color-secondary-600: #a8006d;
+	--color-secondary-700: #7a0050;
+	--color-secondary-800: #47002e;
+	--color-secondary-900: #240017;
+	--color-secondary-950: #14000d;
+
+	--color-tertiary-50: #fff8f5;
+	--color-tertiary-100: #ffeee5;
+	--color-tertiary-200: #ffdecc;
+	--color-tertiary-300: #ffc3a3;
+	--color-tertiary-400: #ff8e51;
+	--color-tertiary-500: #eb5200;
+	--color-tertiary-600: #a83b00;
+	--color-tertiary-700: #7a2b00;
+	--color-tertiary-800: #471900;
+	--color-tertiary-900: #240c00;
+	--color-tertiary-950: #140700;
+}

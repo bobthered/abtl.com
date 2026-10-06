@@ -50,8 +50,11 @@ Import them from `sveltewind/components`, for example:
 
 The website initializes the `minimal` preset through `src/lib/theme.ts`.
 Tailwind scans the library through `src/routes/layout.css`, which also loads its color palettes.
-The website defaults to teal and light mode in `src/app.html`. Set the root HTML element's
-`data-color` attribute to choose a palette and `data-theme="dark"` to enable dark mode.
+Custom gray, primary, secondary, and tertiary palettes are defined with Tailwind v4 `@theme`
+tokens in `src/routes/layout.css`. Avoid setting `data-color` on the root HTML element,
+because Sveltewind's built-in palettes would override the custom primary and secondary colors.
+The root `data-theme` attribute controls dark mode; the layout restores the saved preference
+or initializes it from the system preference.
 Keep customer-specific theme data out of the shared global theme during server rendering.
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
