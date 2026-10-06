@@ -15,6 +15,7 @@
 		Svg
 	} from 'sveltewind/components';
 	import type { ComponentProps } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
 	import { initializeTheme } from '#lib/theme.js';
 	import type { LayoutProps } from './$types';
@@ -26,6 +27,7 @@
 
 	// consts
 	let isMenuVisible = $state(false);
+	let isNavigationVisible = $state(false);
 	let isReducedMotion = $state(false);
 	let isScrolled = $state(false);
 	const navigation = [
@@ -98,6 +100,17 @@
 
 	// $effects$
 	$effect(() => {
+		if (!isMenuVisible) {
+			isNavigationVisible = false;
+			return;
+		}
+		// Start the nested transition after Popover has mounted its content.
+		queueMicrotask(() => {
+			isNavigationVisible = isMenuVisible;
+		});
+	});
+
+	$effect(() => {
 		if (!isMenuVisible) return;
 		const root = document.documentElement;
 		const isAlreadyLocked = root.classList.contains('overflow-hidden');
@@ -161,6 +174,7 @@
 				id="mobile-navigation"
 				bind:isVisible={isMenuVisible}
 				trigger={mobileMenuTrigger}
+				transition={[fade, { duration: isReducedMotion ? 0 : 200 }]}
 				variants={['navigation']}
 			>
 				<Container class="flex items-center justify-between gap-6 py-6">
@@ -188,6 +202,7 @@
 					<Nav
 						aria-label="Mobile navigation"
 						class="flex flex-col"
+						isVisible={isNavigationVisible}
 						transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
 					>
 						{#each navigation as item (item.href)}
