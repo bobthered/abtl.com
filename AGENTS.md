@@ -12,8 +12,8 @@ Apply these conventions when creating or editing any `.svelte` file, including c
   4. `// helpers`
   5. `// $props()`
   6. `// $state`
-  7. `// $derived$`
-  8. `// $effects$`
+  7. `// $derived`
+  8. `// $effects`
 - Omit empty sections and their comments. Separate sections with a blank line.
 - Place imports first, followed by TypeScript type aliases and interfaces, constant declarations, helper functions, the destructured `$props()` declaration, `$state` declarations, `$derived` / `$derived.by` declarations, and `$effect` / `$effect.pre` calls.
 - Within each section, sort declarations alphabetically by their local variable, type, or function name. Sort named import specifiers by their local binding names and import declarations by their first local binding name. Sort destructured props by their local variable names.
@@ -40,12 +40,16 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 - Never use native HTML tags in Svelte component markup. Use the corresponding Sveltewind components imported from `#lib/components` instead.
 - Import components through `#lib/components`, the shared entry point at `src/lib/components/index.ts`. It re-exports all of `sveltewind/components`; direct imports from `sveltewind/components` belong only in this entry point.
 - Place future site-specific components in `src/lib/components` and export them from its `index.ts` so they are available through the same import path.
-- Use `@lucide/svelte` for UI icons whenever an icon is needed. Re-export the required named icons from `src/lib/components/index.ts` and import them through `#lib/components`.
-- Replace hand-coded SVG icon markup with the corresponding Lucide component. Keep shared icon styling in the theme where practical, hide decorative icons from assistive technology, and give icon-only controls accessible labels. Custom brand artwork and illustrations are not UI icons.
 - Sveltewind is intended to provide a component for every HTML tag. Verify the available exports and documentation rather than guessing component names.
 - If a required HTML primitive is missing, notify the user so it can be added to Sveltewind. The user maintains Sveltewind. Do not silently fall back to native HTML or create a replacement primitive in this project.
 - Before creating any project component, check Sveltewind for an existing component that meets the need, including composed components such as Calendar, Popover, and Datatable. Prefer using or composing existing Sveltewind components.
 - These markup rules concern rendered HTML elements; Svelte script/style blocks, special Svelte elements, and template directives remain available. The required SvelteKit HTML document shell in `src/app.html` is not Svelte component markup.
+
+## Icons
+
+- Use `@lucide/svelte` for UI icons whenever an icon is needed. Import icons through `#lib/icons`, the shared entry point at `src/lib/icons/index.ts`, which re-exports all of `@lucide/svelte`. Direct Lucide imports belong only in this entry point; keep icon exports out of `src/lib/components`.
+- Before creating a custom icon, check Lucide for a suitable existing icon. Place any needed site-specific icons in `src/lib/icons` and export them from its `index.ts` so they use the same import path. Use Sveltewind SVG primitives for custom icon markup.
+- Replace hand-coded SVG UI icons with the corresponding Lucide component. Keep shared icon styling in the theme where practical, hide decorative icons from assistive technology, and give icon-only controls accessible labels. Custom brand artwork and illustrations are not UI icons.
 
 ## Styling
 

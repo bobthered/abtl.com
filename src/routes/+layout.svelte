@@ -1,24 +1,13 @@
 <script lang="ts">
 	// Imports
 	import './layout.css';
-	import {
-		A,
-		Button,
-		Container,
-		Div,
-		Header,
-		Menu,
-		Nav,
-		Popover,
-		ShoppingCart,
-		Span,
-		X
-	} from '#lib/components';
+	import { A, Button, Container, Div, Header, Nav, Popover, Span } from '#lib/components';
 	import type { ComponentProps } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
 	import { initializeTheme } from '#lib/theme.js';
 	import type { LayoutProps } from './$types';
+	import { Menu, ShoppingCart, X } from '#lib/icons';
 	import { onMount } from 'svelte';
 	import { subtleReveal } from 'sveltewind/transitions';
 

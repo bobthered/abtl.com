@@ -47,6 +47,7 @@
 	"imports": {
 		"#lib": "./src/lib/index.js",
 		"#lib/components": "./src/lib/components/index.js",
+		"#lib/icons": "./src/lib/icons/index.js",
 		"#lib/*": "./src/lib/*"
 	},
 	"dependencies": {

@@ -3,7 +3,6 @@
 	import {
 		A,
 		Article,
-		ArrowRight,
 		Container,
 		Div,
 		H1,
@@ -15,6 +14,7 @@
 		Section,
 		Span
 	} from '#lib/components';
+	import { ArrowRight } from '#lib/icons';
 	import { theme } from 'sveltewind/theme';
 
 	// consts
