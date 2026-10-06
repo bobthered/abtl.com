@@ -17,6 +17,7 @@
 	import { createPageTitle } from '#lib/pageTitle.js';
 	import { fade } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
+	import faviconDark from '#lib/assets/favicon-dark.svg';
 	import { initializeTheme } from '#lib/theme.js';
 	import type { LayoutProps } from './$types';
 	import { Menu, ShoppingCart, X } from '#lib/icons';
@@ -61,6 +62,19 @@
 		);
 	};
 
+	const initializeFaviconTheme = () => {
+		const updateFaviconTheme = () => {
+			colorMode = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+		};
+		updateFaviconTheme();
+		const observer = new MutationObserver(updateFaviconTheme);
+		observer.observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ['data-theme']
+		});
+		return () => observer.disconnect();
+	};
+
 	const initializeMenuBreakpoint = () => {
 		const desktop = window.matchMedia('(min-width: 1024px)');
 		const closeDesktopMenu = () => {
@@ -82,6 +96,7 @@
 
 	initializeTheme();
 	onMount(initializeColorMode);
+	onMount(initializeFaviconTheme);
 	onMount(initializeMenuBreakpoint);
 	onMount(initializeMotionPreference);
 	onMount(() => {
@@ -97,12 +112,14 @@
 	let { children }: LayoutProps = $props();
 
 	// $state
+	let colorMode = $state<ColorMode>('light');
 	let isMenuVisible = $state(false);
 	let isNavigationVisible = $state(false);
 	let isReducedMotion = $state(false);
 	let isScrolled = $state(false);
 
 	// $derived
+	const faviconHref = $derived(colorMode === 'dark' ? faviconDark : favicon);
 	const pageTitle = $derived(createPageTitle(page.url.pathname));
 
 	// $effects$
@@ -130,7 +147,7 @@
 
 <svelte:head>
 	<title>{pageTitle}</title>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" type="image/svg+xml" sizes="any" href={faviconHref} />
 </svelte:head>
 
 <A href="#main-content" variants={['ghost', 'skip']}>Skip to content</A>
