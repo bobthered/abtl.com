@@ -1,7 +1,18 @@
 <script lang="ts">
 	// Imports
 	import './layout.css';
-	import { A, Button, Container, Div, Header, Nav, Popover, Span } from '#lib/components';
+	import {
+		A,
+		Button,
+		Container,
+		Div,
+		Footer,
+		Header,
+		Nav,
+		P,
+		Popover,
+		Span
+	} from '#lib/components';
 	import type { ComponentProps } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
@@ -208,6 +219,37 @@
 </Header>
 
 {@render children()}
+
+<Footer variants={['bordered', 'site']}>
+	<Container class="space-y-10 py-12 lg:py-16">
+		<Div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+			<Div class="space-y-4">
+				<A
+					href="/"
+					aria-label="Allen-Bailey Tag and Label home"
+					variants={['ghost', 'brand']}
+					class="w-fit items-start"
+				>
+					<Span variants={['brandName']}>Allen-Bailey</Span>
+					<Span variants={['brandDetail']}>Tag & Label</Span>
+				</A>
+				<P variants={['footer']}>Stock and custom tags and labels.</P>
+			</Div>
+			<Nav aria-label="Footer navigation" class="grid grid-cols-2 gap-x-6">
+				{#each navigation as item (item.href)}
+					<A href={item.href} variants={['ghost', 'navigation']} class="justify-start"
+						>{item.label}</A
+					>
+				{/each}
+			</Nav>
+			<Div class="space-y-4">
+				<P variants={['eyebrow']}>Let's talk about your project</P>
+				<A href="mailto:sales@abtl.com" variants={['ghost', 'accent']}>sales@abtl.com</A>
+			</Div>
+		</Div>
+		<P variants={['footer']}>© {new Date().getFullYear()} Allen-Bailey Tag & Label.</P>
+	</Container>
+</Footer>
 
 {#snippet mobileMenuTrigger(props: ComponentProps<typeof Button>)}
 	<Button

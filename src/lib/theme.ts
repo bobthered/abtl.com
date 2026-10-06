@@ -34,6 +34,7 @@ export function initializeTheme() {
 	theme.set.variant('article', 'product', 'space-y-5 rounded-2xl bg-white dark:bg-gray-950');
 	theme.set.variant('button', 'cta', 'max-w-full gap-6 rounded-full px-8 py-4 whitespace-normal');
 	theme.set.variant('container', 'section', 'space-y-4 py-12 lg:py-16');
+	theme.set.variant('footer', 'site', 'bg-gray-50 pt-0 dark:border-gray-800 dark:bg-gray-950');
 	theme.set.variant(
 		'h1',
 		'hero',
@@ -62,6 +63,7 @@ export function initializeTheme() {
 	theme.set.variant('p', 'body', 'text-base leading-relaxed');
 	theme.set.variant('p', 'description', 'my-6 max-w-xl text-lg leading-relaxed');
 	theme.set.variant('p', 'eyebrow', 'mb-4 text-xs font-bold tracking-widest uppercase');
+	theme.set.variant('p', 'footer', 'text-sm leading-relaxed text-gray-600 dark:text-gray-300');
 	theme.set.variant('p', 'lead', 'mt-8 max-w-xl text-xl leading-relaxed lg:text-2xl');
 	// Important insets override Popover's anchor positioning for the viewport-sized menu.
 	theme.set.variant(
