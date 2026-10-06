@@ -27,6 +27,7 @@
 	// consts
 	let isMenuVisible = $state(false);
 	let isReducedMotion = $state(false);
+	let isScrolled = $state(false);
 	const navigation = [
 		{ href: '/#products', label: 'Products' },
 		{ href: '/#industries', label: 'Industries' },
@@ -83,9 +84,28 @@
 	onMount(initializeColorMode);
 	onMount(initializeMenuBreakpoint);
 	onMount(initializeMotionPreference);
+	onMount(() => {
+		const updateScroll = () => {
+			isScrolled = window.scrollY > 0;
+		};
+		updateScroll();
+		window.addEventListener('scroll', updateScroll, { passive: true });
+		return () => window.removeEventListener('scroll', updateScroll);
+	});
 
 	// $props()
 	let { children }: LayoutProps = $props();
+
+	// $effects$
+	$effect(() => {
+		if (!isMenuVisible) return;
+		const root = document.documentElement;
+		const isAlreadyLocked = root.classList.contains('overflow-hidden');
+		root.classList.add('overflow-hidden');
+		return () => {
+			if (!isAlreadyLocked) root.classList.remove('overflow-hidden');
+		};
+	});
 </script>
 
 <svelte:head>
@@ -94,7 +114,9 @@
 
 <A href="#main-content" variants={['ghost', 'skip']}>Skip to content</A>
 <Header variants={['site']}>
-	<Container class="relative flex items-center justify-between gap-6 py-6 lg:py-10">
+	<Container
+		class={`relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none ${isScrolled ? 'lg:py-6' : 'lg:py-10'}`}
+	>
 		<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}
 			><Span variants={['brandName']}>Allen-Bailey</Span><Span variants={['brandDetail']}
 				>Tag & Label</Span
@@ -136,30 +158,57 @@
 		</Div>
 		<Div class="lg:hidden">
 			<Popover
+				id="mobile-navigation"
 				bind:isVisible={isMenuVisible}
 				trigger={mobileMenuTrigger}
-				transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
 				variants={['navigation']}
 			>
-				<Nav aria-label="Mobile navigation" class="flex flex-col">
-					{#each navigation as item (item.href)}
-						<A
-							href={item.href}
-							onclick={() => {
-								isMenuVisible = false;
-							}}
-							variants={['ghost', 'navigation']}>{item.label}</A
-						>
-					{/each}
+				<Container class="flex items-center justify-between gap-6 py-6">
 					<A
-						href="mailto:sales@abtl.com"
+						href="/"
 						onclick={() => {
 							isMenuVisible = false;
 						}}
-						variants={['ghost', 'accent']}
-						class="py-4">Request a Quote</A
+						aria-label="Allen-Bailey Tag and Label home"
+						variants={['ghost', 'brand']}
 					>
-				</Nav>
+						<Span variants={['brandName']}>Allen-Bailey</Span><Span variants={['brandDetail']}
+							>Tag & Label</Span
+						>
+					</A>
+					{@render mobileMenuTrigger({
+						onclick: () => {
+							isMenuVisible = false;
+						},
+						'aria-controls': 'mobile-navigation',
+						'aria-expanded': true
+					})}
+				</Container>
+				<Container>
+					<Nav
+						aria-label="Mobile navigation"
+						class="flex flex-col"
+						transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
+					>
+						{#each navigation as item (item.href)}
+							<A
+								href={item.href}
+								onclick={() => {
+									isMenuVisible = false;
+								}}
+								variants={['ghost', 'navigation']}>{item.label}</A
+							>
+						{/each}
+						<A
+							href="mailto:sales@abtl.com"
+							onclick={() => {
+								isMenuVisible = false;
+							}}
+							variants={['ghost', 'accent']}
+							class="py-4">Request a Quote</A
+						>
+					</Nav>
+				</Container>
 			</Popover>
 		</Div>
 	</Container>
@@ -168,10 +217,14 @@
 {@render children()}
 
 {#snippet mobileMenuTrigger(props: ComponentProps<typeof Button>)}
-	<Button {...props} aria-label="Open navigation menu" variants={['ghost', 'icon']}>
+	<Button
+		{...props}
+		aria-label={isMenuVisible ? 'Close navigation menu' : 'Open navigation menu'}
+		variants={['ghost', 'icon']}
+	>
 		<Svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="size-6">
 			<Path
-				d="M4 6h16M4 12h16M4 18h16"
+				d={isMenuVisible ? 'M6 6l12 12M6 18L18 6' : 'M4 6h16M4 12h16M4 18h16'}
 				stroke="currentColor"
 				stroke-width="1.6"
 				stroke-linecap="round"

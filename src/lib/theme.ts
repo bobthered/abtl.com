@@ -3,7 +3,7 @@ import { classic } from 'sveltewind/themes';
 
 /** Initialize shared styles only; keep customer-specific data out of the global theme. */
 export function initializeTheme() {
-	theme.set.theme(structuredClone(classic)); 
+	theme.set.theme(structuredClone(classic));
 	theme.set.base('container', 'mx-auto max-w-7xl px-6 sm:px-8 lg:px-16');
 	theme.update.base(
 		'button',
@@ -63,7 +63,12 @@ export function initializeTheme() {
 	theme.set.variant('p', 'description', 'my-6 max-w-xl text-lg leading-relaxed');
 	theme.set.variant('p', 'eyebrow', 'mb-4 text-xs font-bold tracking-widest uppercase');
 	theme.set.variant('p', 'lead', 'mt-8 max-w-xl text-xl leading-relaxed lg:text-2xl');
-	theme.set.variant('popover', 'navigation', 'w-80 rounded-2xl px-6 py-4 lg:hidden');
+	// Important insets override Popover's anchor positioning for the viewport-sized menu.
+	theme.set.variant(
+		'popover',
+		'navigation',
+		'inset-0! m-0! h-dvh max-h-none w-full max-w-none rounded-none p-0 shadow-none inset-ring-0 data-anchored:[position-anchor:auto] data-anchored:[position-area:none] lg:hidden'
+	);
 	theme.set.variant(
 		'section',
 		'contrast',
