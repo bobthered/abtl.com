@@ -22,6 +22,14 @@ export const defaultSettings: TagSettings = {
 	tagCount: 9
 };
 
+export const settingLimits = {
+	blurScale: { min: 0, max: 40 },
+	closestDistance: { min: -3000, max: 5000 },
+	maxDistance: { min: 0, max: 16000 },
+	parallaxSpeed: { min: 0, max: 30 },
+	tagCount: { min: 0, max: 360 }
+};
+
 export const depths = {
 	far: { closeness: 0, travel: 70 },
 	middle: { closeness: 0.5, travel: 180 },
@@ -118,18 +126,40 @@ export const normalizeSettings = (value: Partial<TagSettings>): TagSettings => {
 		typeof input === 'number' && Number.isFinite(input)
 			? Math.min(max, Math.max(min, input))
 			: fallback;
-	const maxDistance = clamp(value.maxDistance, defaultSettings.maxDistance, 0, 1600);
+	const maxDistance = clamp(
+		value.maxDistance,
+		defaultSettings.maxDistance,
+		settingLimits.maxDistance.min,
+		settingLimits.maxDistance.max
+	);
 	return {
-		blurScale: clamp(value.blurScale, defaultSettings.blurScale, 0, 4),
+		blurScale: clamp(
+			value.blurScale,
+			defaultSettings.blurScale,
+			settingLimits.blurScale.min,
+			settingLimits.blurScale.max
+		),
 		closestDistance: clamp(
 			value.closestDistance,
 			defaultSettings.closestDistance,
-			-300,
-			maxDistance
+			settingLimits.closestDistance.min,
+			Math.min(settingLimits.closestDistance.max, maxDistance)
 		),
 		maxDistance,
-		parallaxSpeed: clamp(value.parallaxSpeed, defaultSettings.parallaxSpeed, 0, 3),
-		tagCount: Math.round(clamp(value.tagCount, defaultSettings.tagCount, 0, 36))
+		parallaxSpeed: clamp(
+			value.parallaxSpeed,
+			defaultSettings.parallaxSpeed,
+			settingLimits.parallaxSpeed.min,
+			settingLimits.parallaxSpeed.max
+		),
+		tagCount: Math.round(
+			clamp(
+				value.tagCount,
+				defaultSettings.tagCount,
+				settingLimits.tagCount.min,
+				settingLimits.tagCount.max
+			)
+		)
 	};
 };
 
@@ -143,15 +173,17 @@ export const getTagFrames = (
 		(settings.closestDistance - settings.maxDistance) * closeness
 	);
 	const filter = `blur(${closeness * 8 * settings.blurScale}px)`;
+	// Keep the enlarged closest-distance range in front of the perspective's camera plane.
+	const perspective = Math.max(900, -settings.closestDistance * 2);
 	const [x, y, z] = tag.rotation;
 	return [
 		{
 			filter,
-			transform: `perspective(900px) translate3d(0, 0, ${distance}px) rotateX(${x}deg) rotateY(${y}deg) rotateZ(${z}deg)`
+			transform: `perspective(${perspective}px) translate3d(0, 0, ${distance}px) rotateX(${x}deg) rotateY(${y}deg) rotateZ(${z}deg)`
 		},
 		{
 			filter,
-			transform: `perspective(900px) translate3d(0, -${travel * settings.parallaxSpeed}px, ${distance}px) rotateX(${x + 8 * settings.parallaxSpeed}deg) rotateY(${y - 10 * settings.parallaxSpeed}deg) rotateZ(${z + 6 * settings.parallaxSpeed}deg)`
+			transform: `perspective(${perspective}px) translate3d(0, -${travel * settings.parallaxSpeed}px, ${distance}px) rotateX(${x + 8 * settings.parallaxSpeed}deg) rotateY(${y - 10 * settings.parallaxSpeed}deg) rotateZ(${z + 6 * settings.parallaxSpeed}deg)`
 		}
 	];
 };

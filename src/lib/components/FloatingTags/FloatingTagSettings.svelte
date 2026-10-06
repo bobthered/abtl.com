@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Imports
 	import { Button, Details, Div, Label, P, Range, Span, Summary } from '#lib/components';
-	import { defaultSettings } from './scene.js';
+	import { defaultSettings, settingLimits } from './scene.js';
 	import { SlidersHorizontal } from '#lib/icons';
 	import type { TagSettings } from './scene.js';
 	import { theme } from 'sveltewind/theme';
@@ -24,8 +24,8 @@
 			>
 			<Range
 				id="tag-max-distance"
-				min={Math.max(0, settings.closestDistance)}
-				max={1600}
+				min={Math.max(settingLimits.maxDistance.min, settings.closestDistance)}
+				max={settingLimits.maxDistance.max}
 				step={20}
 				bind:value={settings.maxDistance}
 				isLabelVisible={false}
@@ -37,8 +37,8 @@
 			>
 			<Range
 				id="tag-closest-distance"
-				min={-300}
-				max={Math.min(500, settings.maxDistance)}
+				min={settingLimits.closestDistance.min}
+				max={Math.min(settingLimits.closestDistance.max, settings.maxDistance)}
 				step={20}
 				bind:value={settings.closestDistance}
 				isLabelVisible={false}
@@ -51,8 +51,8 @@
 			>
 			<Range
 				id="tag-blur-scale"
-				min={0}
-				max={4}
+				min={settingLimits.blurScale.min}
+				max={settingLimits.blurScale.max}
 				step={0.1}
 				bind:value={settings.blurScale}
 				isLabelVisible={false}
@@ -64,8 +64,8 @@
 			>
 			<Range
 				id="tag-count"
-				min={0}
-				max={36}
+				min={settingLimits.tagCount.min}
+				max={settingLimits.tagCount.max}
 				step={1}
 				bind:value={settings.tagCount}
 				isLabelVisible={false}
@@ -77,8 +77,8 @@
 			>
 			<Range
 				id="tag-parallax-speed"
-				min={0}
-				max={3}
+				min={settingLimits.parallaxSpeed.min}
+				max={settingLimits.parallaxSpeed.max}
 				step={0.1}
 				bind:value={settings.parallaxSpeed}
 				isLabelVisible={false}
