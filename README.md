@@ -37,12 +37,12 @@ npx sv add tailwindcss
 ### Sveltewind
 
 UI components are provided by [Sveltewind](https://github.com/sveltewind/sveltewind).
-Import them from `sveltewind/components`, for example:
+Import them from `#lib/components`, which re-exports Sveltewind components and will include site-specific components, for example:
 
 ```svelte
 <script lang="ts">
 	// Imports
-	import { Button } from 'sveltewind/components';
+	import { Button } from '#lib/components';
 </script>
 
 <Button variants={['primary']}>Request a quote</Button>

@@ -15,7 +15,7 @@
 		Section,
 		Span,
 		Svg
-	} from 'sveltewind/components';
+	} from '#lib/components';
 
 	// consts
 	const industries = [
@@ -59,11 +59,8 @@
 					>
 					<A
 						href="mailto:sales@abtl.com?subject=Custom%20tag%20and%20label%20quote"
-						variants={[
-							'button.base',
-							'button.variant.outline',
-							'button.variant.cta',
-						]}>Request a Quote {@render arrow()}</A
+						variants={['button.base', 'button.variant.outline', 'button.variant.cta']}
+						>Request a Quote {@render arrow()}</A
 					>
 				</Div>
 			</Div>
@@ -104,10 +101,8 @@
 					<Article variants={['card.base', 'product']}
 						><H3 variants={['item']}>{product}</H3><A
 							href={`mailto:sales@abtl.com?subject=${encodeURIComponent(product + ' inquiry')}`}
-							variants={[
-								'button.base',
-								'button.variant.cta'
-							]}>Explore {product.toLowerCase()} {@render arrow()}</A
+							variants={['button.base', 'button.variant.cta']}
+							>Explore {product.toLowerCase()} {@render arrow()}</A
 						></Article
 					>
 				{/each}
@@ -135,12 +130,8 @@
 			><P variants={['description']}
 				>Questions about choosing a product or preparing artwork? Talk with our team about your next
 				step.</P
-			><A
-				href="mailto:sales@abtl.com"
-				variants={[
-					'button.base',
-					'button.variant.cta',
-				]}>Contact our team {@render arrow()}</A
+			><A href="mailto:sales@abtl.com" variants={['button.base', 'button.variant.cta']}
+				>Contact our team {@render arrow()}</A
 			>
 		</Container>
 	</Section>

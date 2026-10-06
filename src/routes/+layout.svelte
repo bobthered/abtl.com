@@ -13,7 +13,7 @@
 		Popover,
 		Span,
 		Svg
-	} from 'sveltewind/components';
+	} from '#lib/components';
 	import type { ComponentProps } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
