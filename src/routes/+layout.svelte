@@ -24,7 +24,6 @@
 	type ColorMode = 'dark' | 'light';
 
 	// consts
-	let colorMode = $state<ColorMode>('light');
 	const navigation = [
 		{ href: '/#products', label: 'Products' },
 		{ href: '/#industries', label: 'Industries' },
@@ -34,12 +33,11 @@
 
 	// helpers
 	function applyColorMode(mode: ColorMode) {
-		colorMode = mode;
 		document.documentElement.dataset.theme = mode;
 		try {
 			localStorage.setItem('theme', mode);
 		} catch {
-			// Theme switching still works when browser storage is unavailable.
+			// The theme still applies when browser storage is unavailable.
 		}
 	}
 
@@ -57,10 +55,6 @@
 					? 'dark'
 					: 'light'
 		);
-	}
-
-	function toggleColorMode() {
-		applyColorMode(colorMode === 'dark' ? 'light' : 'dark');
 	}
 
 	initializeTheme();
@@ -129,16 +123,6 @@
 				></Button
 			>
 		</Div>
-		<Button
-			type="button"
-			onclick={toggleColorMode}
-			aria-label={colorMode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-			aria-pressed={colorMode === 'dark'}
-			class="shrink-0 rounded-full border border-gray-200 bg-transparent px-3 py-2 text-sm text-[#101014] shadow-none hover:bg-gray-100 dark:border-gray-700 dark:text-gray-50 dark:hover:bg-gray-900"
-			><Span class="max-[800px]:hidden">{colorMode === 'dark' ? 'Light mode' : 'Dark mode'}</Span
-			><Span class="hidden max-[800px]:inline">{colorMode === 'dark' ? 'Light' : 'Dark'}</Span
-			></Button
-		>
 		<Details class="hidden rounded-none border-0 bg-transparent p-0 max-[800px]:block">
 			<Summary
 				class="cursor-pointer list-none bg-transparent p-2 [&::-webkit-details-marker]:hidden"
