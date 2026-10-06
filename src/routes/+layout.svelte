@@ -14,12 +14,14 @@
 		Popover
 	} from '#lib/components';
 	import type { ComponentProps } from 'svelte';
+	import { createPageTitle } from '#lib/pageTitle.js';
 	import { fade } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
 	import { initializeTheme } from '#lib/theme.js';
 	import type { LayoutProps } from './$types';
 	import { Menu, ShoppingCart, X } from '#lib/icons';
 	import { onMount } from 'svelte';
+	import { page } from '$app/state';
 	import { subtleReveal } from 'sveltewind/transitions';
 
 	// Types
@@ -100,6 +102,9 @@
 	let isReducedMotion = $state(false);
 	let isScrolled = $state(false);
 
+	// $derived
+	const pageTitle = $derived(createPageTitle(page.url.pathname));
+
 	// $effects$
 	$effect(() => {
 		if (!isMenuVisible) {
@@ -124,6 +129,7 @@
 </script>
 
 <svelte:head>
+	<title>{pageTitle}</title>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
