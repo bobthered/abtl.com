@@ -8,7 +8,17 @@ export const initializeTheme = () => {
 	for (const heading of ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']) {
 		theme.update.base(heading, 'font-light leading-tight tracking-tight text-balance');
 	}
+	theme.set.variant(
+		'p',
+		'heroMetric',
+		'mb-8 flex items-baseline gap-2 whitespace-nowrap text-sm font-medium text-gray-600 dark:text-gray-300'
+	);
 	theme.update.base('card', 'rounded-lg p-8 shadow-sm');
+	theme.set.base(
+		'tagRain',
+		'pointer-events-none relative mt-12 h-64 w-full overflow-hidden motion-reduce:hidden lg:absolute lg:inset-y-0 lg:right-0 lg:mt-0 lg:h-full lg:w-2/5'
+	);
+	theme.set.variant('canvas', 'tagRain', 'block h-full w-full opacity-80 dark:opacity-60');
 	theme.update.base('dialog', 'rounded-lg p-8 shadow-xl');
 	theme.update.base('input', 'rounded-sm px-4 py-3 text-base leading-5');
 	theme.update.base('popover', 'rounded-lg p-6');
@@ -23,14 +33,6 @@ export const initializeTheme = () => {
 		'container',
 		'hero',
 		'pt-20 pb-16 sm:pt-24 sm:pb-20 lg:min-h-160 lg:pt-28 lg:pb-24'
-	);
-	theme.set.base(
-		'heroGlow',
-		'pointer-events-none absolute -top-24 -right-48 size-160 rounded-full bg-primary-200/35 blur-3xl dark:bg-primary-500/10'
-	);
-	theme.set.base(
-		'heroRibbon',
-		'pointer-events-none absolute -top-40 -right-160 h-240 w-240 opacity-65 sm:-right-128 lg:-right-40 lg:w-280 lg:opacity-90 dark:opacity-60'
 	);
 	theme.set.base(
 		'heroBrand',
@@ -162,6 +164,11 @@ export const initializeTheme = () => {
 		'img',
 		'hero',
 		'block h-auto w-full rounded-lg mix-blend-multiply dark:mix-blend-normal'
+	);
+	theme.set.variant(
+		'span',
+		'productionTotal',
+		'font-semibold text-abtl-blue-700 tabular-nums dark:text-primary-300'
 	);
 	theme.set.variant('p', 'body', 'text-base leading-relaxed');
 	theme.set.variant('p', 'description', 'my-6 max-w-xl text-lg leading-relaxed');

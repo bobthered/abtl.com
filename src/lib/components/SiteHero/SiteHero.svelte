@@ -4,23 +4,19 @@
 		A,
 		Button,
 		Container,
-		Defs,
 		Div,
-		G,
 		H1,
-		LinearGradient,
 		P,
 		Path,
 		Section,
 		Span,
-		Stop,
-		Svg
+		Svg,
+		TagRain
 	} from '#lib/components';
 	import { ArrowRight, Pause, Play } from '#lib/icons';
-	import { estimateProduction, productionMetric } from '#lib/productionMetric.js';
+	import { estimateAnnualProduction } from '#lib/productionMetric.js';
 	import { onMount } from 'svelte';
 	import { redPath } from '../Logo/paths';
-	import { ribbonBand } from './ribbon';
 	import { theme } from 'sveltewind/theme';
 
 	// consts
@@ -30,6 +26,7 @@
 	// helpers
 	const initializeMotion = () => {
 		if (!element) return;
+		timestamp = Date.now();
 		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const updatePreference = () => {
 			isReducedMotion = preference.matches;
@@ -40,7 +37,6 @@
 		const observer = new IntersectionObserver(([entry]) => {
 			isInView = entry.isIntersecting;
 		});
-		const surface = element.querySelector('[data-ribbon]');
 		const track = element.querySelector('[data-brand-track]');
 		const resizeObserver = new ResizeObserver(() => {
 			brandAnimation?.cancel();
@@ -53,15 +49,6 @@
 					{ duration: 40000, iterations: Infinity, easing: 'linear' }
 				);
 		});
-		if (surface)
-			ribbonAnimation = surface.animate(
-				[
-					{ transform: 'translate(0, 0)' },
-					{ transform: 'translate(-14px, 18px)', offset: 0.5 },
-					{ transform: 'translate(0, 0)' }
-				],
-				{ duration: 24000, iterations: Infinity, easing: 'ease-in-out' }
-			);
 		if (track) resizeObserver.observe(track);
 		observer.observe(element);
 		updatePreference();
@@ -74,13 +61,9 @@
 			preference.removeEventListener('change', updatePreference);
 			document.removeEventListener('visibilitychange', updateVisibility);
 			brandAnimation?.cancel();
-			ribbonAnimation?.cancel();
 		};
 	};
 	onMount(initializeMotion);
-
-	// $props()
-	const uid = $props.id();
 
 	// $state
 	let brandAnimation = $state.raw<Animation | null>(null);
@@ -89,20 +72,23 @@
 	let isInView = $state(true);
 	let isPaused = $state(false);
 	let isReducedMotion = $state(true);
-	let ribbonAnimation = $state.raw<Animation | null>(null);
 	let timestamp = $state<number | null>(null);
 
 	// $derived
-	const estimatedTotal = $derived(
-		productionMetric
-			? estimateProduction(productionMetric, timestamp ?? Date.parse(productionMetric.asOf))
-			: null
-	);
+	const estimatedTotal = $derived(timestamp === null ? null : estimateAnnualProduction(timestamp));
 	const isMotionActive = $derived(!isPaused && !isReducedMotion && isDocumentVisible && isInView);
 
 	// $effects
 	$effect(() => {
-		for (const animation of [brandAnimation, ribbonAnimation]) {
+		if (!isMotionActive) return;
+		timestamp = Date.now();
+		const timer = window.setInterval(() => {
+			timestamp = Date.now();
+		}, 250);
+		return () => window.clearInterval(timer);
+	});
+	$effect(() => {
+		for (const animation of [brandAnimation]) {
 			if (!animation) continue;
 			if (isMotionActive) animation.play();
 			else {
@@ -111,82 +97,44 @@
 			}
 		}
 	});
-	$effect(() => {
-		if (!productionMetric) return;
-		timestamp = Date.now();
-		if (!isMotionActive) return;
-		const timer = window.setInterval(() => {
-			timestamp = Date.now();
-		}, 250);
-		return () => window.clearInterval(timer);
-	});
 </script>
 
 <Section bind:element variants={['hero']} aria-labelledby="hero-heading">
-	<Div class={theme.resolve('heroGlow')} aria-hidden="true"></Div>
-	<Div class={theme.resolve('heroRibbon')} aria-hidden="true" inert>
-		<Svg
-			viewBox="0 0 1000 900"
-			class="h-full w-full overflow-visible"
-			preserveAspectRatio="xMidYMid slice"
-		>
-			<Defs>
-				<LinearGradient id={`${uid}-paper`} x1="0" y1="0" x2="0.8" y2="1">
-					<Stop offset="0%" stop-color="var(--color-tag-salmon)" />
-					<Stop offset="20%" stop-color="var(--color-tag-orange)" />
-					<Stop offset="40%" stop-color="var(--color-abtl-red-400)" />
-					<Stop offset="55%" stop-color="var(--color-tag-lilac)" />
-					<Stop offset="72%" stop-color="var(--color-abtl-blue-500)" />
-					<Stop offset="83%" stop-color="var(--color-tag-blue-light)" />
-					<Stop offset="100%" stop-color="var(--color-tag-buff)" />
-				</LinearGradient>
-				<LinearGradient id={`${uid}-shade`} x1="0" y1="0" x2="1" y2="0.4">
-					<Stop offset="0%" stop-color="white" stop-opacity="0.55" />
-					<Stop offset="35%" stop-color="white" stop-opacity="0" />
-					<Stop offset="100%" stop-color="var(--color-abtl-blue-950)" stop-opacity="0.2" />
-				</LinearGradient>
-			</Defs>
-			<G data-ribbon>
-				<Path d={ribbonBand(-1, 1)} fill={`url(#${uid}-paper)`} />
-				<Path d={ribbonBand(-1, 1)} fill={`url(#${uid}-shade)`} />
-				<Path d={ribbonBand(-0.99, -0.975)} class="fill-white/60" />
-				<Path d={ribbonBand(0.8, 0.99)} class="fill-white/10" />
-			</G>
-		</Svg>
-	</Div>
 	<Container variants={['hero']}>
-		<Div class="max-w-3xl">
-			<P variants={['heroDetail']}>
-				<Span class="size-2 shrink-0 rounded-full bg-abtl-red-500" aria-hidden="true"></Span>
-				{#if estimatedTotal !== null}
-					Tags created <Span class="font-semibold text-gray-950 tabular-nums dark:text-gray-50"
-						>{formatter.format(estimatedTotal)}</Span
-					><Span class="text-xs">Estimated</Span>
-				{:else}
-					Small format. Big possibilities.
-				{/if}
-			</P>
-			<H1 id="hero-heading" variants={['hero']}
-				><Span class="block">Small details.</Span><Span class="block">Big impact.</Span></H1
-			>
-			<P variants={['heroLead']}
-				>Tags and labels that carry your brand, identify what matters, and keep your business
-				moving.</P
-			>
-			<Div class="mt-8 flex flex-wrap items-center gap-4 sm:mt-10 sm:gap-6">
-				<A href="#products" variants={['button.base', 'button.variant.heroPrimary']}
-					>Explore Products <ArrowRight aria-hidden="true" class="size-5" /></A
+		<Div class="max-w-3xl lg:w-3/5">
+			<Div>
+				<P
+					variants={['heroMetric']}
+					title="Estimated at a steady pace toward 90 million tags by the end of 2026."
 				>
-				<A
-					href="mailto:sales@abtl.com?subject=Custom%20tag%20and%20label%20quote"
-					variants={['button.base', 'button.variant.heroSecondary']}
-					>Request a Quote <ArrowRight aria-hidden="true" class="size-5" /></A
-				>
+					Customer tags this year:
+					<Span variants={['productionTotal']} data-production-counter aria-live="off">
+						{estimatedTotal === null ? 'Calculating...' : formatter.format(estimatedTotal)}
+					</Span>
+				</P>
+				<H1 id="hero-heading" variants={['hero']}>
+					<Span class="block">Small tags.</Span>
+					<Span class="block">Big impact.</Span>
+				</H1>
+				<P variants={['heroLead']}>
+					Every tag has a job to do. We produced over 90 million in the last year, helping
+					businesses identify, organize, and keep things moving. What can we make for yours?
+				</P>
+				<Div class="mt-8 flex flex-wrap items-center gap-4 sm:mt-10 sm:gap-6">
+					<A
+						href="mailto:sales@abtl.com?subject=Tag%20project%20quote"
+						variants={['button.base', 'button.variant.heroPrimary']}
+					>
+						Get a quote <ArrowRight aria-hidden="true" class="size-4" />
+					</A>
+					<A href="#products" variants={['button.base', 'button.variant.heroSecondary']}>
+						Find your tags <ArrowRight aria-hidden="true" class="size-4" />
+					</A>
+				</Div>
+				<P variants={['heroFootnote']}>Stock tags. Custom tags. A place for every detail.</P>
 			</Div>
-			<P variants={['heroFootnote']}
-				>Stock tags. Custom tags. Labels. Made for your next big thing.</P
-			>
 		</Div>
+		<TagRain isActive={isMotionActive} total={estimatedTotal} />
 	</Container>
 	<Container>
 		<Div class={theme.resolve('heroBrand')}>
