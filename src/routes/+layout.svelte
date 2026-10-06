@@ -18,8 +18,13 @@
 	import favicon from '#lib/assets/favicon.svg';
 	import { initializeTheme } from '#lib/theme.js';
 	import type { LayoutProps } from './$types';
+	import { onMount } from 'svelte';
+
+	// Types
+	type ColorMode = 'dark' | 'light';
 
 	// consts
+	let colorMode = $state<ColorMode>('light');
 	const navigation = [
 		{ href: '/#products', label: 'Products' },
 		{ href: '/#industries', label: 'Industries' },
@@ -28,7 +33,38 @@
 	];
 
 	// helpers
+	function applyColorMode(mode: ColorMode) {
+		colorMode = mode;
+		document.documentElement.dataset.theme = mode;
+		try {
+			localStorage.setItem('theme', mode);
+		} catch {
+			// Theme switching still works when browser storage is unavailable.
+		}
+	}
+
+	function initializeColorMode() {
+		let savedMode: string | null = null;
+		try {
+			savedMode = localStorage.getItem('theme');
+		} catch {
+			// Fall back to the system preference when browser storage is unavailable.
+		}
+		applyColorMode(
+			savedMode === 'dark' || savedMode === 'light'
+				? savedMode
+				: window.matchMedia('(prefers-color-scheme: dark)').matches
+					? 'dark'
+					: 'light'
+		);
+	}
+
+	function toggleColorMode() {
+		applyColorMode(colorMode === 'dark' ? 'light' : 'dark');
+	}
+
 	initializeTheme();
+	onMount(initializeColorMode);
 
 	// $props()
 	let { children }: LayoutProps = $props();
@@ -40,7 +76,7 @@
 
 <A
 	href="#main-content"
-	class="fixed top-3 left-3 z-30 -translate-y-[160%] bg-white px-5 py-3 text-[#5300ff] no-underline focus:translate-y-0"
+	class="fixed top-3 left-3 z-30 -translate-y-[160%] bg-white px-5 py-3 text-[#5300ff] no-underline focus:translate-y-0 dark:bg-gray-950 dark:text-violet-300"
 	>Skip to content</A
 >
 <Header class="border-b-0">
@@ -50,7 +86,7 @@
 		<A
 			href="/"
 			aria-label="Allen-Bailey Tag and Label home"
-			class="flex shrink-0 flex-col items-center gap-1 text-[#101014] no-underline"
+			class="flex shrink-0 flex-col items-center gap-1 text-[#101014] no-underline dark:text-gray-50"
 			><Span class="text-[30px] leading-none font-[750] tracking-[-1.6px] max-[1100px]:text-[25px]"
 				>Allen-Bailey</Span
 			><Span class="text-[10px] font-bold tracking-[4px] uppercase">Tag & Label</Span></A
@@ -61,14 +97,14 @@
 		>
 			{#each navigation as item (item.href)}<A
 					href={item.href}
-					class="py-3 text-[15px] font-medium text-[#17182b] no-underline hover:text-[#5300ff]"
+					class="py-3 text-[15px] font-medium text-[#17182b] no-underline hover:text-[#5300ff] dark:text-gray-50 dark:hover:text-violet-200"
 					>{item.label}</A
 				>{/each}
 		</Nav>
 		<Div class="flex items-center gap-8 max-[1100px]:gap-5 max-[800px]:hidden">
 			<A
 				href="mailto:sales@abtl.com?subject=Tag%20and%20label%20quote"
-				class="text-[15px] font-medium whitespace-nowrap text-[#5300ff] no-underline"
+				class="text-[15px] font-medium whitespace-nowrap text-[#5300ff] no-underline max-[1100px]:hidden dark:text-violet-300"
 				>Request a Quote</A
 			>
 			<Button
@@ -76,7 +112,7 @@
 				disabled
 				aria-label="Shopping cart — online store coming soon"
 				title="Online store coming soon"
-				class="cursor-not-allowed rounded-none border-0 border-l border-[#d7d7df] bg-transparent p-0 pl-[30px] text-[#101014] opacity-100 shadow-none disabled:opacity-100 max-[1100px]:pl-5"
+				class="cursor-not-allowed rounded-none border-0 border-l border-[#d7d7df] bg-transparent p-0 pl-[30px] text-[#101014] opacity-100 shadow-none disabled:opacity-100 max-[1100px]:pl-5 dark:border-gray-800 dark:text-gray-50"
 				><Svg viewBox="0 0 32 32" fill="none" aria-hidden="true" class="size-8"
 					><Path
 						d="M3 5h4l4 18h15l4-13H8"
@@ -93,6 +129,16 @@
 				></Button
 			>
 		</Div>
+		<Button
+			type="button"
+			onclick={toggleColorMode}
+			aria-label={colorMode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+			aria-pressed={colorMode === 'dark'}
+			class="shrink-0 rounded-full border border-gray-200 bg-transparent px-3 py-2 text-sm text-[#101014] shadow-none hover:bg-gray-100 dark:border-gray-700 dark:text-gray-50 dark:hover:bg-gray-900"
+			><Span class="max-[800px]:hidden">{colorMode === 'dark' ? 'Light mode' : 'Dark mode'}</Span
+			><Span class="hidden max-[800px]:inline">{colorMode === 'dark' ? 'Light' : 'Dark'}</Span
+			></Button
+		>
 		<Details class="hidden rounded-none border-0 bg-transparent p-0 max-[800px]:block">
 			<Summary
 				class="cursor-pointer list-none bg-transparent p-2 [&::-webkit-details-marker]:hidden"
@@ -108,14 +154,14 @@
 			>
 			<Nav
 				aria-label="Mobile navigation"
-				class="absolute inset-x-0 top-[calc(100%-8px)] z-10 flex flex-col rounded-2xl border border-[#e0e0e8] bg-white px-6 py-4 shadow-[0_12px_32px_#16132612] [&>a:last-child]:py-4"
+				class="absolute inset-x-0 top-[calc(100%-8px)] z-10 flex flex-col rounded-2xl border border-[#e0e0e8] bg-white px-6 py-4 shadow-[0_12px_32px_#16132612] dark:border-gray-800 dark:bg-gray-950 [&>a:last-child]:py-4"
 				>{#each navigation as item (item.href)}<A
 						href={item.href}
-						class="py-3 text-[15px] font-medium text-[#17182b] no-underline hover:text-[#5300ff]"
+						class="py-3 text-[15px] font-medium text-[#17182b] no-underline hover:text-[#5300ff] dark:text-gray-50 dark:hover:text-violet-200"
 						>{item.label}</A
 					>{/each}<A
 					href="mailto:sales@abtl.com"
-					class="text-[15px] font-medium whitespace-nowrap text-[#5300ff] no-underline"
+					class="text-[15px] font-medium whitespace-nowrap text-[#5300ff] no-underline dark:text-violet-300"
 					>Request a Quote</A
 				></Nav
 			>
