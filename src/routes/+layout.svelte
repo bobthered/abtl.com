@@ -4,15 +4,15 @@
 	import {
 		A,
 		Button,
-		Circle,
 		Container,
 		Div,
 		Header,
+		Menu,
 		Nav,
-		Path,
 		Popover,
+		ShoppingCart,
 		Span,
-		Svg
+		X
 	} from '#lib/components';
 	import type { ComponentProps } from 'svelte';
 	import { fade } from 'svelte/transition';
@@ -155,20 +155,7 @@
 				title="Online store coming soon"
 				variants={['ghost', 'icon']}
 				class="cursor-not-allowed border-l border-gray-200 pl-6 dark:border-gray-800"
-				><Svg viewBox="0 0 32 32" fill="none" aria-hidden="true" class="size-8"
-					><Path
-						d="M3 5h4l4 18h15l4-13H8"
-						stroke="currentColor"
-						stroke-width="1.8"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					/><Circle cx="13" cy="28" r="1.5" fill="currentColor" /><Circle
-						cx="25"
-						cy="28"
-						r="1.5"
-						fill="currentColor"
-					/></Svg
-				></Button
+				><ShoppingCart aria-hidden="true" strokeWidth={1.8} class="size-8" /></Button
 			>
 		</Div>
 		<Div class="lg:hidden">
@@ -239,13 +226,10 @@
 		aria-label={isMenuVisible ? 'Close navigation menu' : 'Open navigation menu'}
 		variants={['ghost', 'icon']}
 	>
-		<Svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="size-6">
-			<Path
-				d={isMenuVisible ? 'M6 6l12 12M6 18L18 6' : 'M4 6h16M4 12h16M4 18h16'}
-				stroke="currentColor"
-				stroke-width="1.6"
-				stroke-linecap="round"
-			/>
-		</Svg>
+		{#if isMenuVisible}
+			<X aria-hidden="true" strokeWidth={1.6} class="size-6" />
+		{:else}
+			<Menu aria-hidden="true" strokeWidth={1.6} class="size-6" />
+		{/if}
 	</Button>
 {/snippet}

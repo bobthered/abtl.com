@@ -3,6 +3,7 @@
 	import {
 		A,
 		Article,
+		ArrowRight,
 		Container,
 		Div,
 		H1,
@@ -11,11 +12,10 @@
 		Img,
 		Main,
 		P,
-		Path,
 		Section,
-		Span,
-		Svg
+		Span
 	} from '#lib/components';
+	import { theme } from 'sveltewind/theme';
 
 	// consts
 	const industries = [
@@ -36,9 +36,7 @@
 </script>
 
 {#snippet arrow()}
-	<Svg aria-hidden="true" viewBox="0 0 24 24" fill="none" variants={['arrow']}>
-		<Path d="M4 12h15m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.6" />
-	</Svg>
+	<ArrowRight aria-hidden="true" strokeWidth={1.6} class={theme.resolve('svg', ['arrow'])} />
 {/snippet}
 
 <Main id="main-content" tabindex={-1}>
