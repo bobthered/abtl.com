@@ -34,7 +34,11 @@ export function initializeTheme() {
 	theme.set.variant('article', 'product', 'space-y-5 rounded-2xl bg-white dark:bg-gray-950');
 	theme.set.variant('button', 'cta', 'max-w-full gap-6 rounded-full px-8 py-4 whitespace-normal');
 	theme.set.variant('container', 'section', 'space-y-4 py-12 lg:py-16');
-	theme.set.variant('footer', 'site', 'bg-gray-50 pt-0 dark:border-gray-800 dark:bg-gray-950');
+	theme.set.variant(
+		'footer',
+		'site',
+		'border-0 bg-primary-500 pt-0 text-white dark:bg-primary-500 [&_a]:text-white [&_a:hover]:text-white [&_p]:text-white dark:[&_a]:text-white dark:[&_a:hover]:text-white dark:[&_p]:text-white'
+	);
 	theme.set.variant(
 		'h1',
 		'hero',
