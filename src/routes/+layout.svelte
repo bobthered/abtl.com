@@ -62,7 +62,7 @@
 	}
 
 	function initializeMenuBreakpoint() {
-		const desktop = window.matchMedia('(min-width: 801px)');
+		const desktop = window.matchMedia('(min-width: 1024px)');
 		const closeDesktopMenu = () => {
 			if (desktop.matches) menuVisible = false;
 		};
@@ -93,45 +93,32 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<A
-	href="#main-content"
-	class="fixed top-3 left-3 z-30 -translate-y-[160%] bg-white px-5 py-3 text-[#5300ff] no-underline focus:translate-y-0 dark:bg-gray-950 dark:text-violet-300"
-	>Skip to content</A
->
-<Header class="border-b-0">
-	<Container
-		class="relative flex items-center justify-between gap-7 border-b-0 py-11 max-[1100px]:gap-5 max-[1100px]:py-[30px] max-[800px]:py-[26px]"
-	>
-		<A
-			href="/"
-			aria-label="Allen-Bailey Tag and Label home"
-			class="flex shrink-0 flex-col items-center gap-1 text-[#101014] no-underline dark:text-gray-50"
-			><Span class="text-[30px] leading-none font-[750] tracking-[-1.6px] max-[1100px]:text-[25px]"
-				>Allen-Bailey</Span
-			><Span class="text-[10px] font-bold tracking-[4px] uppercase">Tag & Label</Span></A
+<A href="#main-content" variants={['ghost', 'skip']}>Skip to content</A>
+<Header variants={['site']}>
+	<Container class="relative flex items-center justify-between gap-6 py-6 lg:py-10">
+		<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}
+			><Span variants={['brandName']}>Allen-Bailey</Span><Span variants={['brandDetail']}
+				>Tag & Label</Span
+			></A
 		>
-		<Nav
-			aria-label="Main navigation"
-			class="flex items-center gap-[clamp(20px,3.2vw,48px)] max-[1100px]:gap-5 max-[800px]:hidden"
-		>
-			{#each navigation as item (item.href)}<A
-					href={item.href}
-					class="py-3 text-[15px] font-medium text-[#17182b] no-underline hover:text-[#5300ff] dark:text-gray-50 dark:hover:text-violet-200"
+		<Nav aria-label="Main navigation" class="hidden items-center gap-6 lg:flex xl:gap-12">
+			{#each navigation as item (item.href)}<A href={item.href} variants={['ghost', 'navigation']}
 					>{item.label}</A
 				>{/each}
 		</Nav>
-		<Div class="flex items-center gap-8 max-[1100px]:gap-5 max-[800px]:hidden">
+		<Div class="hidden items-center gap-8 lg:flex">
 			<A
 				href="mailto:sales@abtl.com?subject=Tag%20and%20label%20quote"
-				class="text-[15px] font-medium whitespace-nowrap text-[#5300ff] no-underline max-[1100px]:hidden dark:text-violet-300"
-				>Request a Quote</A
+				variants={['ghost', 'accent']}
+				class="hidden xl:inline-flex">Request a Quote</A
 			>
 			<Button
 				type="button"
 				disabled
 				aria-label="Shopping cart — online store coming soon"
 				title="Online store coming soon"
-				class="cursor-not-allowed rounded-none border-0 border-l border-[#d7d7df] bg-transparent p-0 pl-[30px] text-[#101014] opacity-100 shadow-none disabled:opacity-100 max-[1100px]:pl-5 dark:border-gray-800 dark:text-gray-50"
+				variants={['ghost', 'icon']}
+				class="cursor-not-allowed border-l border-gray-200 pl-6 dark:border-gray-800"
 				><Svg viewBox="0 0 32 32" fill="none" aria-hidden="true" class="size-8"
 					><Path
 						d="M3 5h4l4 18h15l4-13H8"
@@ -148,12 +135,12 @@
 				></Button
 			>
 		</Div>
-		<Div class="hidden max-[800px]:block">
+		<Div class="lg:hidden">
 			<Popover
 				bind:isVisible={menuVisible}
 				trigger={mobileMenuTrigger}
 				transition={[subtleReveal, { duration: reducedMotion ? 0 : 200 }]}
-				class="w-[min(320px,calc(100vw-40px))] rounded-2xl border border-[#e0e0e8] bg-white px-6 py-4 shadow-[0_12px_32px_#16132612] min-[801px]:hidden dark:border-gray-800 dark:bg-gray-950"
+				variants={['navigation']}
 			>
 				<Nav aria-label="Mobile navigation" class="flex flex-col">
 					{#each navigation as item (item.href)}
@@ -162,8 +149,7 @@
 							onclick={() => {
 								menuVisible = false;
 							}}
-							class="py-3 text-[15px] font-medium text-[#17182b] no-underline hover:text-[#5300ff] dark:text-gray-50 dark:hover:text-violet-200"
-							>{item.label}</A
+							variants={['ghost', 'navigation']}>{item.label}</A
 						>
 					{/each}
 					<A
@@ -171,8 +157,8 @@
 						onclick={() => {
 							menuVisible = false;
 						}}
-						class="py-4 text-[15px] font-medium whitespace-nowrap text-[#5300ff] no-underline dark:text-violet-300"
-						>Request a Quote</A
+						variants={['ghost', 'accent']}
+						class="py-4">Request a Quote</A
 					>
 				</Nav>
 			</Popover>
@@ -183,11 +169,7 @@
 {@render children()}
 
 {#snippet mobileMenuTrigger(props: ComponentProps<typeof Button>)}
-	<Button
-		{...props}
-		aria-label="Open navigation menu"
-		class="border-0 bg-transparent p-2 text-[#101014] shadow-none hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-900 dark:hover:text-gray-50"
-	>
+	<Button {...props} aria-label="Open navigation menu" variants={['ghost', 'icon']}>
 		<Svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="size-6">
 			<Path
 				d="M4 6h16M4 12h16M4 18h16"

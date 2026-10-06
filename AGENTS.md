@@ -33,7 +33,10 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 
 - Use Tailwind CSS v4 utilities for all project styling, directly on Sveltewind components and the HTML document shell where needed.
 - Inside sections that need constrained content widths, use Sveltewind's `Container` component. Keep section backgrounds full width and place the width-constrained content inside `Container`; use it for shared header content too. Configure shared container widths through the Sveltewind theme rather than repeating width utilities on `Section`, `Header`, or `Div`.
-- Use responsive, state, arbitrary-value, and arbitrary-selector utilities when needed. Respect reduced-motion preferences with Tailwind variants.
+- Prefer standard Tailwind spacing, sizing, typography, color tokens, and named responsive breakpoints. Use arbitrary values only when no suitable standard utility exists and the requirement justifies it.
+- Use Sveltewind's default styles and built-in variants first (for example, Button `ghost` for a transparent button). Reuse component styles through references such as `variants={['button.base', 'button.variant.ghost']}` on `A`.
+- Add shared custom variants in `src/lib/theme.ts` for recurring component styles. Keep page-level classes focused on layout and small, necessary overrides rather than restating component styling.
+- Respect reduced-motion preferences with Tailwind variants.
 - Do not create custom CSS classes, selector rules, inline styles, or component `<style>` blocks. Do not use `@apply` to recreate custom CSS classes.
 - Keep `src/routes/layout.css` limited to Tailwind/Sveltewind imports and Tailwind configuration directives such as `@source`, `@theme`, and `@custom-variant`.
 

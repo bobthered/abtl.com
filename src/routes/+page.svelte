@@ -36,12 +36,7 @@
 </script>
 
 {#snippet arrow()}
-	<Svg
-		aria-hidden="true"
-		viewBox="0 0 24 24"
-		fill="none"
-		class="size-6 shrink-0 transition-transform duration-[180ms] group-hover:translate-x-1 motion-reduce:transform-none motion-reduce:transition-none"
-	>
+	<Svg aria-hidden="true" viewBox="0 0 24 24" fill="none" variants={['arrow']}>
 		<Path d="M4 12h15m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.6" />
 	</Svg>
 {/snippet}
@@ -49,151 +44,108 @@
 <Main id="main-content" tabindex={-1}>
 	<Section aria-labelledby="hero-heading">
 		<Container
-			class="grid min-h-[740px] grid-cols-[1.15fr_1fr] items-center gap-0 pt-[72px] pb-28 max-[1100px]:min-h-[620px] max-[800px]:min-h-0 max-[800px]:grid-cols-1 max-[800px]:gap-6 max-[800px]:pt-[58px] max-[800px]:pb-12"
+			class="grid items-center gap-6 pt-14 pb-12 lg:min-h-160 lg:grid-cols-2 lg:gap-0 lg:pt-18 lg:pb-28"
 		>
 			<Div class="relative z-1">
-				<P
-					class="mt-0 mb-7 text-xs leading-normal font-bold tracking-[2.8px] text-[#62697c] uppercase max-[800px]:mb-[22px] max-[800px]:text-[10px] max-[800px]:tracking-[2px] dark:text-gray-50"
-					>Allen-Bailey Tag & Label</P
-				>
-				<H1
-					id="hero-heading"
-					class="m-0 text-[clamp(42px,5.1vw,74px)] leading-[1.09] font-[750] tracking-[-3.7px] text-[#08080a] max-[1100px]:tracking-[-2.5px] max-[800px]:text-[clamp(36px,7.4vw,58px)] max-[800px]:tracking-[-2px] max-[380px]:text-[32px] max-[380px]:tracking-[-1.5px] min-[1600px]:text-[74px] dark:text-gray-50"
-					><Span class="block whitespace-nowrap">Small details.</Span><Span
-						class="block whitespace-nowrap">Lasting impressions.</Span
+				<P variants={['eyebrow']}>Allen-Bailey Tag & Label</P>
+				<H1 id="hero-heading" variants={['hero']}
+					><Span class="block">Small details.</Span><Span class="block">Lasting impressions.</Span
 					></H1
 				>
-				<P
-					class="mt-[30px] mb-0 max-w-[580px] text-[clamp(20px,1.9vw,27px)] leading-[1.4] tracking-[-0.6px] text-[#62697c] max-[800px]:mt-6 max-[800px]:max-w-[450px] max-[800px]:text-[21px] dark:text-gray-50"
-					>Stock and custom tags and labels for the way your business works.</P
-				>
-				<Div
-					class="mt-10 flex items-center gap-[38px] max-[1100px]:gap-6 max-[800px]:mt-[30px] max-[800px]:flex-wrap max-[800px]:gap-[22px]"
-				>
-					<A
-						href="#products"
-						class="inline-flex items-center justify-center gap-[22px] rounded-full bg-[#5300ff] px-[30px] py-[18px] text-[17px] leading-[1.4] font-medium whitespace-nowrap text-white no-underline transition-[background-color,transform] duration-[180ms] hover:-translate-y-0.5 hover:bg-[#4000d4] motion-reduce:transition-none motion-reduce:hover:translate-y-0 max-[1100px]:gap-3.5 max-[1100px]:px-6 max-[1100px]:py-4 max-[1100px]:text-[15px]"
+				<P variants={['lead']}>Stock and custom tags and labels for the way your business works.</P>
+				<Div class="mt-8 flex flex-wrap items-center gap-6 lg:mt-10 lg:gap-8">
+					<A href="#products" variants={['button.base', 'button.variant.cta']}
 						>Explore Products {@render arrow()}</A
 					>
 					<A
 						href="mailto:sales@abtl.com?subject=Custom%20tag%20and%20label%20quote"
-						class="group inline-flex items-center justify-center gap-[22px] text-[17px] leading-[1.4] font-medium text-[#5300ff] no-underline transition-[background-color,transform] duration-[180ms] motion-reduce:transition-none max-[1100px]:gap-3.5 max-[1100px]:text-[15px] dark:text-violet-300"
-						>Request a Quote {@render arrow()}</A
+						variants={[
+							'button.base',
+							'button.variant.ghost',
+							'button.variant.cta',
+							'button.variant.link'
+						]}>Request a Quote {@render arrow()}</A
 					>
 				</Div>
 			</Div>
-			<Div class="-mr-[8%] -ml-[10%] max-[800px]:mx-auto max-[800px]:max-w-[540px]"
+			<Div class="mx-auto max-w-xl lg:-mr-12 lg:-ml-8"
 				><Img
 					src="/images/tag-label-hero.webp"
 					alt="An ivory Allen-Bailey hang tag with natural twine beside a roll of barcode labels"
 					width="1536"
 					height="1024"
 					fetchpriority="high"
-					class="block h-auto w-full [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent),linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)] [mask-composite:intersect] mix-blend-multiply dark:rounded-3xl dark:[mask-image:none] dark:mix-blend-normal"
+					variants={['hero']}
 				/></Div
 			>
 		</Container>
 	</Section>
-	<Section
-		id="industries"
-		class="rounded-t-[36px] bg-white max-[800px]:rounded-t-3xl dark:bg-gray-950"
-		aria-labelledby="industries-heading"
-	>
-		<Container class="pt-16 pb-20 max-[800px]:pt-12 max-[800px]:pb-14 [&>p:first-child]:mb-3.5">
-			<P
-				class="mt-0 mb-7 text-xs leading-normal font-bold tracking-[2.8px] text-[#62697c] uppercase max-[800px]:mb-[22px] max-[800px]:text-[10px] max-[800px]:tracking-[2px] dark:text-gray-50"
-				>Industries</P
-			>
-			<H2
-				id="industries-heading"
-				class="m-0 text-[clamp(32px,3.3vw,48px)] leading-[1.15] font-bold tracking-[-1.9px] text-[#0a0a0c] dark:text-gray-50"
-				>Made for the way you work.</H2
-			>
-			<Div
-				class="mt-12 grid grid-cols-4 gap-8 max-[800px]:grid-cols-2 max-[800px]:gap-x-6 max-[380px]:grid-cols-1"
-			>
+	<Section id="industries" variants={['surface']} aria-labelledby="industries-heading">
+		<Container variants={['section']}>
+			<P variants={['eyebrow']}>Industries</P>
+			<H2 id="industries-heading" variants={['section']}>Made for the way you work.</H2>
+			<Div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
 				{#each industries as industry (industry.name)}
-					<Article class="border-t border-[#dddfe7] pt-6 dark:border-gray-800"
-						><Span class="text-xs tracking-[1px] text-[#5300ff] dark:text-violet-300"
-							>{industry.number}</Span
-						><H3
-							class="mt-6 mb-3 text-2xl font-semibold tracking-[-0.7px] text-[#121219] dark:text-gray-50"
+					<Article variants={['industry']}
+						><Span variants={['index']}>{industry.number}</Span><H3 variants={['item']}
 							>{industry.name}</H3
-						><P class="m-0 text-[17px] leading-[1.65] text-[#62697c] dark:text-gray-50"
-							>{industry.description}</P
-						></Article
+						><P variants={['body']}>{industry.description}</P></Article
 					>
 				{/each}
 			</Div>
 		</Container>
 	</Section>
 	<Section id="products" aria-labelledby="products-heading">
-		<Container class="pt-16 pb-20 max-[800px]:pt-12 max-[800px]:pb-14 [&>p:first-child]:mb-3.5">
-			<P
-				class="mt-0 mb-7 text-xs leading-normal font-bold tracking-[2.8px] text-[#62697c] uppercase max-[800px]:mb-[22px] max-[800px]:text-[10px] max-[800px]:tracking-[2px] dark:text-gray-50"
-				>Products</P
-			><H2
-				id="products-heading"
-				class="m-0 text-[clamp(32px,3.3vw,48px)] leading-[1.15] font-bold tracking-[-1.9px] text-[#0a0a0c] dark:text-gray-50"
+		<Container variants={['section']}>
+			<P variants={['eyebrow']}>Products</P><H2 id="products-heading" variants={['section']}
 				>Find your next essential.</H2
 			>
-			<Div class="mt-10 grid grid-cols-3 gap-7 max-[800px]:grid-cols-1 max-[800px]:gap-4">
+			<Div class="mt-10 grid gap-6 lg:grid-cols-3">
 				{#each products as product (product)}
-					<Article
-						class="rounded-2xl border border-[#e0e0e8] bg-white p-7 dark:border-gray-800 dark:bg-gray-950 [&>a]:mt-5 [&>a]:justify-between [&>a]:text-[15px] [&>h3]:mt-0"
-						><H3
-							class="mt-6 mb-3 text-2xl font-semibold tracking-[-0.7px] text-[#121219] dark:text-gray-50"
-							>{product}</H3
-						><A
+					<Article variants={['card.base', 'product']}
+						><H3 variants={['item']}>{product}</H3><A
 							href={`mailto:sales@abtl.com?subject=${encodeURIComponent(product + ' inquiry')}`}
-							class="group inline-flex items-center justify-center gap-[22px] text-[17px] leading-[1.4] font-medium text-[#5300ff] no-underline transition-[background-color,transform] duration-[180ms] motion-reduce:transition-none max-[1100px]:gap-3.5 max-[1100px]:text-[15px] dark:text-violet-300"
-							>Explore {product.toLowerCase()} {@render arrow()}</A
+							variants={[
+								'button.base',
+								'button.variant.ghost',
+								'button.variant.cta',
+								'button.variant.link'
+							]}>Explore {product.toLowerCase()} {@render arrow()}</A
 						></Article
 					>
 				{/each}
 			</Div>
 		</Container>
 	</Section>
-	<Section
-		id="capabilities"
-		class="bg-[#141321] dark:bg-gray-950 [&>div>h2]:text-white [&>div>p:first-child]:text-[#b8aedc] dark:[&>div>p:first-child]:text-gray-50 [&>div>p:nth-of-type(2)]:text-[#c2c0d0] dark:[&>div>p:nth-of-type(2)]:text-gray-50"
-		aria-labelledby="capabilities-heading"
-	>
-		<Container class="pt-16 pb-20 max-[800px]:pt-12 max-[800px]:pb-14 [&>p:first-child]:mb-3.5"
-			><P
-				class="mt-0 mb-7 text-xs leading-normal font-bold tracking-[2.8px] text-[#62697c] uppercase max-[800px]:mb-[22px] max-[800px]:text-[10px] max-[800px]:tracking-[2px] dark:text-gray-50"
-				>Capabilities</P
-			><H2
+	<Section id="capabilities" variants={['contrast']} aria-labelledby="capabilities-heading">
+		<Container variants={['section']}
+			><P variants={['eyebrow']}>Capabilities</P><H2
 				id="capabilities-heading"
-				class="m-0 text-[clamp(32px,3.3vw,48px)] leading-[1.15] font-bold tracking-[-1.9px] text-[#0a0a0c] dark:text-gray-50"
-				>Your details. Our craft.</H2
-			><P
-				class="mt-6 mb-8 max-w-[610px] text-[17px] leading-[1.65] text-[#62697c] dark:text-gray-50"
+				variants={['section']}>Your details. Our craft.</H2
+			><P variants={['description']}
 				>Tell us what your tag or label needs to do. Let's explore the options for your project.</P
 			><A
 				href="mailto:sales@abtl.com?subject=Custom%20project%20inquiry"
-				class="inline-flex items-center justify-center gap-[22px] rounded-full bg-[#5300ff] px-[30px] py-[18px] text-[17px] leading-[1.4] font-medium whitespace-nowrap text-white no-underline transition-[background-color,transform] duration-[180ms] hover:-translate-y-0.5 hover:bg-[#4000d4] motion-reduce:transition-none motion-reduce:hover:translate-y-0 max-[1100px]:gap-3.5 max-[1100px]:px-6 max-[1100px]:py-4 max-[1100px]:text-[15px]"
+				variants={['button.base', 'button.variant.cta']}
 				>Let's talk about your project {@render arrow()}</A
 			></Container
 		>
 	</Section>
 	<Section id="resources" aria-labelledby="resources-heading">
-		<Container class="pt-16 pb-20 max-[800px]:pt-12 max-[800px]:pb-14 [&>p:first-child]:mb-3.5">
-			<P
-				class="mt-0 mb-7 text-xs leading-normal font-bold tracking-[2.8px] text-[#62697c] uppercase max-[800px]:mb-[22px] max-[800px]:text-[10px] max-[800px]:tracking-[2px] dark:text-gray-50"
-				>Resources</P
-			><H2
-				id="resources-heading"
-				class="m-0 text-[clamp(32px,3.3vw,48px)] leading-[1.15] font-bold tracking-[-1.9px] text-[#0a0a0c] dark:text-gray-50"
+		<Container variants={['section']}>
+			<P variants={['eyebrow']}>Resources</P><H2 id="resources-heading" variants={['section']}
 				>A little guidance goes a long way.</H2
-			><P
-				class="mt-6 mb-8 max-w-[610px] text-[17px] leading-[1.65] text-[#62697c] dark:text-gray-50"
+			><P variants={['description']}
 				>Questions about choosing a product or preparing artwork? Talk with our team about your next
 				step.</P
 			><A
 				href="mailto:sales@abtl.com"
-				class="group inline-flex items-center justify-center gap-[22px] text-[17px] leading-[1.4] font-medium text-[#5300ff] no-underline transition-[background-color,transform] duration-[180ms] motion-reduce:transition-none max-[1100px]:gap-3.5 max-[1100px]:text-[15px] dark:text-violet-300"
-				>Contact our team {@render arrow()}</A
+				variants={[
+					'button.base',
+					'button.variant.ghost',
+					'button.variant.cta',
+					'button.variant.link'
+				]}>Contact our team {@render arrow()}</A
 			>
 		</Container>
 	</Section>
