@@ -49,6 +49,7 @@
 		"#lib/*": "./src/lib/*"
 	},
 	"dependencies": {
+		"@lucide/svelte": "^1.52.0",
 		"sveltewind": "^4.15.0"
 	}
 }
