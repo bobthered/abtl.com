@@ -8,10 +8,10 @@
 		Div,
 		Footer,
 		Header,
+		Logo,
 		Nav,
 		P,
-		Popover,
-		Span
+		Popover
 	} from '#lib/components';
 	import type { ComponentProps } from 'svelte';
 	import { fade } from 'svelte/transition';
@@ -133,9 +133,7 @@
 		class={`relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none ${isScrolled ? 'lg:py-6' : 'lg:py-10'}`}
 	>
 		<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}
-			><Span variants={['brandName']}>Allen-Bailey</Span><Span variants={['brandDetail']}
-				>Tag & Label</Span
-			></A
+			><Logo aria-hidden="true" variants={['onSurface', 'site']} /></A
 		>
 		<Nav aria-label="Main navigation" class="hidden items-center gap-6 lg:flex xl:gap-12">
 			{#each navigation as item (item.href)}<A href={item.href} variants={['ghost', 'navigation']}
@@ -175,9 +173,7 @@
 						aria-label="Allen-Bailey Tag and Label home"
 						variants={['ghost', 'brand']}
 					>
-						<Span variants={['brandName']}>Allen-Bailey</Span><Span variants={['brandDetail']}
-							>Tag & Label</Span
-						>
+						<Logo aria-hidden="true" variants={['onSurface', 'site']} />
 					</A>
 					{@render mobileMenuTrigger({
 						onclick: () => {
@@ -230,8 +226,7 @@
 					variants={['ghost', 'brand']}
 					class="w-fit items-start"
 				>
-					<Span variants={['brandName']}>Allen-Bailey</Span>
-					<Span variants={['brandDetail']}>Tag & Label</Span>
+					<Logo aria-hidden="true" blueColor="currentColor" redColor="currentColor" variants={['site']} />
 				</A>
 				<P variants={['footer']}>Stock and custom tags and labels.</P>
 			</Div>

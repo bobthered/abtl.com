@@ -6,6 +6,8 @@ export function initializeTheme() {
 	theme.set.theme(structuredClone(classic));
 	theme.set.base('container', 'mx-auto max-w-7xl px-6 sm:px-8 lg:px-16');
 	theme.set.base('logo', 'inline-block h-auto w-32');
+	theme.set.variant('logo', 'onSurface', 'dark:[&_path]:fill-white');
+	theme.set.variant('logo', 'site', 'w-20 sm:w-24');
 	theme.update.base(
 		'button',
 		'inline-flex items-center justify-center gap-3 font-medium motion-reduce:transition-none text-white dark:text-white'
