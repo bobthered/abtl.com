@@ -153,7 +153,7 @@
 <A href="#main-content" variants={['ghost', 'skip']}>Skip to content</A>
 <Header variants={['site']}>
 	<Container
-		class={`relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none ${isScrolled ? 'lg:py-6' : 'lg:py-10'}`}
+		class={`relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none ${isScrolled ? 'lg:py-4' : 'lg:py-10'}`}
 	>
 		<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}
 			><Logo aria-hidden="true" variants={['onSurface', 'site']} /></A
