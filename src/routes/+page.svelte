@@ -9,7 +9,6 @@
 		H2,
 		H3,
 		Img,
-		Logo,
 		Main,
 		P,
 		Section,
@@ -46,7 +45,6 @@
 			class="grid items-center gap-6 pt-14 pb-12 lg:min-h-160 lg:grid-cols-2 lg:gap-0 lg:pt-18 lg:pb-28"
 		>
 			<Div class="relative z-1">
-				<Logo variants={['onSurface']} class="mb-6" />
 				<H1 id="hero-heading" variants={['hero']}
 					><Span class="block">Small details.</Span><Span class="block">Lasting impressions.</Span
 					></H1

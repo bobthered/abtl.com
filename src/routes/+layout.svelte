@@ -226,7 +226,12 @@
 					variants={['ghost', 'brand']}
 					class="w-fit items-start"
 				>
-					<Logo aria-hidden="true" blueColor="currentColor" redColor="currentColor" variants={['site']} />
+					<Logo
+						aria-hidden="true"
+						blueColor="currentColor"
+						redColor="currentColor"
+						variants={['site']}
+					/>
 				</A>
 				<P variants={['footer']}>Stock and custom tags and labels.</P>
 			</Div>
