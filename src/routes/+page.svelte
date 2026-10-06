@@ -61,9 +61,8 @@
 						href="mailto:sales@abtl.com?subject=Custom%20tag%20and%20label%20quote"
 						variants={[
 							'button.base',
-							'button.variant.ghost',
+							'button.variant.outline',
 							'button.variant.cta',
-							'button.variant.link'
 						]}>Request a Quote {@render arrow()}</A
 					>
 				</Div>
@@ -107,9 +106,7 @@
 							href={`mailto:sales@abtl.com?subject=${encodeURIComponent(product + ' inquiry')}`}
 							variants={[
 								'button.base',
-								'button.variant.ghost',
-								'button.variant.cta',
-								'button.variant.link'
+								'button.variant.cta'
 							]}>Explore {product.toLowerCase()} {@render arrow()}</A
 						></Article
 					>
@@ -142,9 +139,7 @@
 				href="mailto:sales@abtl.com"
 				variants={[
 					'button.base',
-					'button.variant.ghost',
 					'button.variant.cta',
-					'button.variant.link'
 				]}>Contact our team {@render arrow()}</A
 			>
 		</Container>

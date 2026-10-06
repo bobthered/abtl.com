@@ -3,11 +3,11 @@ import { classic } from 'sveltewind/themes';
 
 /** Initialize shared styles only; keep customer-specific data out of the global theme. */
 export function initializeTheme() {
-	theme.set.theme(structuredClone(classic));
+	theme.set.theme(structuredClone(classic)); 
 	theme.set.base('container', 'mx-auto max-w-7xl px-6 sm:px-8 lg:px-16');
 	theme.update.base(
 		'button',
-		'inline-flex items-center justify-center gap-3 font-medium motion-reduce:transition-none'
+		'inline-flex items-center justify-center gap-3 font-medium motion-reduce:transition-none text-white dark:text-white'
 	);
 	theme.update.base('p', 'dark:text-gray-50');
 	theme.set.variant(
@@ -32,16 +32,7 @@ export function initializeTheme() {
 	);
 	theme.set.variant('article', 'industry', 'border-t border-gray-200 pt-6 dark:border-gray-800');
 	theme.set.variant('article', 'product', 'space-y-5 rounded-2xl bg-white dark:bg-gray-950');
-	theme.set.variant(
-		'button',
-		'cta',
-		'max-w-full gap-6 rounded-full px-8 py-4 whitespace-normal text-gray-50 hover:text-gray-50 focus:text-gray-50 dark:text-gray-50 dark:hover:text-gray-50 dark:focus:text-gray-50'
-	);
-	theme.set.variant(
-		'button',
-		'link',
-		'group justify-start px-0 py-0 text-primary-600 hover:text-primary-700 focus:text-primary-700 dark:text-primary-300 dark:hover:text-primary-200 dark:focus:text-primary-200'
-	);
+	theme.set.variant('button', 'cta', 'max-w-full gap-6 rounded-full px-8 py-4 whitespace-normal');
 	theme.set.variant('container', 'section', 'space-y-4 py-12 lg:py-16');
 	theme.set.variant(
 		'h1',
@@ -61,7 +52,7 @@ export function initializeTheme() {
 	theme.set.variant(
 		'header',
 		'site',
-		'static border-0 bg-transparent backdrop-blur-none dark:bg-transparent'
+		'sticky top-0 z-20 border-0 border-b border-gray-200 bg-gray-50 backdrop-blur-none dark:border-gray-800 dark:bg-gray-950'
 	);
 	theme.set.variant(
 		'img',
