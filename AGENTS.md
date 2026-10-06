@@ -29,6 +29,13 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 - Before creating any project component, check Sveltewind for an existing component that meets the need, including composed components such as Calendar, Popover, and Datatable. Prefer using or composing existing Sveltewind components.
 - These markup rules concern rendered HTML elements; Svelte script/style blocks, special Svelte elements, and template directives remain available. The required SvelteKit HTML document shell in `src/app.html` is not Svelte component markup.
 
+## Styling
+
+- Use Tailwind CSS v4 utilities for all project styling, directly on Sveltewind components and the HTML document shell where needed.
+- Use responsive, state, arbitrary-value, and arbitrary-selector utilities when needed. Respect reduced-motion preferences with Tailwind variants.
+- Do not create custom CSS classes, selector rules, inline styles, or component `<style>` blocks. Do not use `@apply` to recreate custom CSS classes.
+- Keep `src/routes/layout.css` limited to Tailwind/Sveltewind imports and Tailwind configuration directives such as `@source`, `@theme`, and `@custom-variant`.
+
 ## Completion and commit messages
 
 - After completing each user request, include a suggested Git commit message in the final response.
