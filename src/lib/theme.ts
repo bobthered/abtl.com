@@ -5,9 +5,35 @@ import { classic } from 'sveltewind/themes';
 export function initializeTheme() {
 	theme.set.theme(structuredClone(classic));
 	theme.set.base('container', 'relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-16');
+	theme.set.base('tagMachine', 'w-full min-w-0 py-6 lg:-mr-8 lg:w-auto');
+	theme.set.variant('svg', 'machine', 'block h-auto w-full overflow-visible');
+	theme.set.variant('path', 'machineAccent', 'fill-abtl-red-600 stroke-abtl-red-700 stroke-1');
+	theme.set.variant('path', 'machineBelt', 'fill-abtl-red-400');
+	theme.set.variant(
+		'path',
+		'machineFront',
+		'fill-gray-200 stroke-gray-300 stroke-1 dark:fill-gray-700 dark:stroke-gray-600'
+	);
+	theme.set.variant('path', 'machineInk', 'fill-abtl-blue-700');
+	theme.set.variant('path', 'machinePaper', 'fill-tag-manila stroke-tag-brown stroke-1');
+	theme.set.variant('path', 'machinePatch', 'fill-tag-buff stroke-tag-brown stroke-1');
+	theme.set.variant('path', 'machineRoll', 'fill-tag-buff stroke-tag-brown stroke-1');
+	theme.set.variant('path', 'machineRollFace', 'fill-tag-manila stroke-tag-brown stroke-1');
+	theme.set.variant('path', 'machineShadow', 'fill-gray-200/50 dark:fill-gray-800/50');
+	theme.set.variant(
+		'path',
+		'machineSide',
+		'fill-gray-300 stroke-gray-400 stroke-1 dark:fill-gray-800 dark:stroke-gray-600'
+	);
+	theme.set.variant('path', 'machineSpindle', 'fill-white');
+	theme.set.variant(
+		'path',
+		'machineTop',
+		'fill-white stroke-gray-300 stroke-1 dark:fill-gray-600 dark:stroke-gray-500'
+	);
 	theme.set.base(
 		'floatingTags',
-		'pointer-events-none fixed inset-0 z-0 overflow-hidden opacity-35 dark:opacity-25'
+		'pointer-events-none fixed inset-0 z-0 overflow-hidden opacity-35 dark:opacity-12.5'
 	);
 	theme.set.base('floatingTag', 'absolute pointer-events-none');
 	theme.set.variant('floatingTag', 'far', 'w-10 sm:w-14');

@@ -65,6 +65,8 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 ## Completion and commit messages
 
 - After completing each user request, include a suggested Git commit message in the final response.
+- Before suggesting a commit message, review Git status, staged and unstaged diffs, and relevant untracked files. The message must encompass all current uncommitted work, including changes from earlier requests and user edits, rather than only the latest request.
+- Use a concise subject that describes the overall change. When multiple changes need explanation, add a commit message body summarizing them so all uncommitted work is represented.
 - Every suggested commit message must start with exactly one of `fix: `, `feat: `, or `refactor: `, followed by a concise description of the completed changes.
 - Providing a commit message does not authorize creating a Git commit.
 

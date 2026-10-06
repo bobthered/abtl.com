@@ -8,11 +8,11 @@
 		H1,
 		H2,
 		H3,
-		Img,
 		Main,
 		P,
 		Section,
-		Span
+		Span,
+		TagMachine
 	} from '#lib/components';
 	import { ArrowRight } from '#lib/icons';
 	import { theme } from 'sveltewind/theme';
@@ -61,16 +61,7 @@
 					>
 				</Div>
 			</Div>
-			<Div class="mx-auto max-w-xl lg:-mr-12 lg:-ml-8"
-				><Img
-					src="/images/tag-label-hero.webp"
-					alt="An ivory Allen-Bailey hang tag with natural twine beside a roll of barcode labels"
-					width="1536"
-					height="1024"
-					fetchpriority="high"
-					variants={['hero']}
-				/></Div
-			>
+			<TagMachine />
 		</Container>
 	</Section>
 	<Section id="industries" variants={['surface']} aria-labelledby="industries-heading">
