@@ -72,7 +72,7 @@ export function initializeTheme() {
 	theme.set.variant(
 		'section',
 		'contrast',
-		'bg-gray-900 dark:bg-gray-950 [&_h2]:text-gray-50 [&_p]:text-gray-50'
+		'bg-gray-900 dark:bg-gray-50 [&_h2]:text-gray-50 [&_p]:text-gray-50 dark:[&_h2]:text-gray-950 dark:[&_p]:text-gray-950'
 	);
 	theme.set.variant('section', 'surface', 'rounded-t-3xl bg-white dark:bg-gray-950');
 	theme.set.variant('span', 'brandDetail', 'text-xs font-bold tracking-widest uppercase');
