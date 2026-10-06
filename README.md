@@ -15,7 +15,7 @@ To recreate this project with the same configuration:
 
 ```sh
 # recreate this project
-npx sv@1.1.0 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" playwright="demo:no" tailwindcss="plugins:none" enhanced-img sveltekit-adapter="adapter:vercel" storybook experimental="features:async,remoteFunctions" --install npm .
+npx sv@1.1.0 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" playwright="demo:no" tailwindcss="plugins:none" enhanced-img sveltekit-adapter="adapter:vercel" experimental="features:async,remoteFunctions" --install npm .
 ```
 
 ## Adding features
@@ -33,6 +33,26 @@ npx sv add tailwindcss
 ```
 
 ## Developing
+
+### Sveltewind
+
+UI components are provided by [Sveltewind](https://github.com/sveltewind/sveltewind).
+Import them from `sveltewind/components`, for example:
+
+```svelte
+<script lang="ts">
+	// Imports
+	import { Button } from 'sveltewind/components';
+</script>
+
+<Button variants={['primary']}>Request a quote</Button>
+```
+
+The website initializes the `minimal` preset through `src/lib/theme.ts`.
+Tailwind scans the library through `src/routes/layout.css`, which also loads its color palettes.
+The website defaults to teal and light mode in `src/app.html`. Set the root HTML element's
+`data-color` attribute to choose a palette and `data-theme="dark"` to enable dark mode.
+Keep customer-specific theme data out of the shared global theme during server rendering.
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 

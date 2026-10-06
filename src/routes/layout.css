@@ -1,1 +1,6 @@
 @import 'tailwindcss';
+@import 'sveltewind/themes/palettes.css';
+
+@source '../../node_modules/sveltewind/dist';
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));

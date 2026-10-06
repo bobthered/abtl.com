@@ -2,7 +2,7 @@
 
 ## Svelte script formatting
 
-Apply these conventions when creating or editing any `.svelte` file, including component, route, layout, and Storybook files. Apply them to both instance and module scripts where applicable.
+Apply these conventions when creating or editing any `.svelte` file, including component, route, and layout files. Apply them to both instance and module scripts where applicable.
 
 - Use TypeScript for new script blocks: `<script lang="ts">`.
 - Organize script contents in the following order, with these comments immediately before each non-empty section:
