@@ -5,14 +5,13 @@
 		Article,
 		Container,
 		Div,
-		H1,
 		H2,
 		H3,
+		HeroCarousel,
 		Main,
 		P,
 		Section,
-		Span,
-		TagMachine
+		Span
 	} from '#lib/components';
 	import { ArrowRight } from '#lib/icons';
 	import { theme } from 'sveltewind/theme';
@@ -40,30 +39,7 @@
 {/snippet}
 
 <Main id="main-content" tabindex={-1}>
-	<Section aria-labelledby="hero-heading">
-		<Container
-			class="grid items-center gap-6 pt-14 pb-12 lg:min-h-160 lg:grid-cols-2 lg:gap-0 lg:pt-18 lg:pb-28"
-		>
-			<Div class="relative z-1">
-				<H1 id="hero-heading" variants={['hero']}
-					><Span class="block">Small details.</Span><Span class="block">Lasting impressions.</Span
-					></H1
-				>
-				<P variants={['lead']}>Stock and custom tags and labels for the way your business works.</P>
-				<Div class="mt-8 flex flex-wrap items-center gap-6 lg:mt-10 lg:gap-8">
-					<A href="#products" variants={['button.base', 'button.variant.cta']}
-						>Explore Products {@render arrow()}</A
-					>
-					<A
-						href="mailto:sales@abtl.com?subject=Custom%20tag%20and%20label%20quote"
-						variants={['button.base', 'button.variant.outline', 'button.variant.cta']}
-						>Request a Quote {@render arrow()}</A
-					>
-				</Div>
-			</Div>
-			<TagMachine />
-		</Container>
-	</Section>
+	<Section aria-label="Company highlights"><HeroCarousel /></Section>
 	<Section id="industries" variants={['surface']} aria-labelledby="industries-heading">
 		<Container variants={['section']}>
 			<P variants={['eyebrow']}>Industries</P>

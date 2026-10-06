@@ -1,10 +1,43 @@
-import { theme } from 'sveltewind/theme';
+import { Theme, theme } from 'sveltewind/theme';
 import { classic } from 'sveltewind/themes';
+
+// Carousel parts use a local theme so future carousels retain Sveltewind defaults.
+export const heroCarouselTheme = new Theme({
+	...structuredClone(classic),
+	carousel: { base: 'relative flex min-w-0 flex-col' },
+	carouselControls: { base: 'order-2 mx-auto mt-4 mb-2 flex flex-wrap justify-center gap-3' },
+	carouselIndicators: { base: 'order-3 mb-10 flex justify-center gap-3' },
+	carouselSlide: { base: 'min-w-0 snap-start' },
+	carouselTrack: {
+		base: 'relative grid snap-x snap-mandatory auto-cols-[100%] grid-flow-col gap-0 overflow-x-auto overscroll-x-contain focus-visible:outline-2 focus-visible:outline-primary-500'
+	}
+});
 
 /** Initialize shared styles only; keep customer-specific data out of the global theme. */
 export function initializeTheme() {
 	theme.set.theme(structuredClone(classic));
 	theme.set.base('container', 'relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-16');
+	theme.set.variant(
+		'container',
+		'heroSlide',
+		'grid h-full content-center items-center gap-8 pt-12 pb-6 lg:min-h-160 lg:grid-cols-2 lg:gap-10 lg:pt-16 lg:pb-12'
+	);
+	theme.set.variant(
+		'h2',
+		'hero',
+		'text-4xl leading-tight tracking-tighter text-gray-950 sm:text-5xl xl:text-6xl dark:text-gray-50'
+	);
+	theme.set.base(
+		'heroIndustry',
+		'rounded-2xl border border-gray-200 bg-white p-5 sm:p-8 dark:border-gray-700 dark:bg-gray-800'
+	);
+	theme.set.variant('p', 'artworkCaption', 'text-center text-sm text-gray-500 dark:text-gray-400');
+	theme.set.variant(
+		'p',
+		'industryTitle',
+		'mt-6 text-lg font-semibold text-gray-950 dark:text-gray-50'
+	);
+	theme.set.variant('p', 'industryUse', 'mt-2 text-sm text-gray-500 dark:text-gray-400');
 	theme.set.base('tagMachine', 'w-full min-w-0 py-6 lg:-mr-8 lg:w-auto');
 	theme.set.variant('svg', 'machine', 'block h-auto w-full overflow-visible');
 	theme.set.variant('path', 'machineAccent', 'fill-abtl-red-600 stroke-abtl-red-700 stroke-1');

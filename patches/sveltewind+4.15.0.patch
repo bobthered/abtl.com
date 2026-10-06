@@ -1,0 +1,161 @@
+diff --git a/node_modules/sveltewind/dist/components/Carousel/Carousel.svelte b/node_modules/sveltewind/dist/components/Carousel/Carousel.svelte
+index 4419efd..9987702 100644
+--- a/node_modules/sveltewind/dist/components/Carousel/Carousel.svelte
++++ b/node_modules/sveltewind/dist/components/Carousel/Carousel.svelte
+@@ -9,11 +9,15 @@
+ 	// Types
+ 
+ 	type Props = HTMLAttributes<HTMLDivElement> & {
++		autoplayInterval?: number;
+ 		children?: Snippet;
+ 		class?: string;
+ 		element?: HTMLDivElement | null;
+ 		inTransition?: TransitionProps;
+ 		index?: number;
++		isAutoplay?: boolean;
++		isLooping?: boolean;
++		isPaused?: boolean;
+ 		isVisible?: boolean;
+ 		label?: string;
+ 		onIndexChange?: ((index: number) => void) | undefined;
+@@ -32,11 +36,15 @@
+ 
+ 	// $props
+ 	let {
++		autoplayInterval = 7000,
+ 		children,
+ 		class: className = '',
+ 		element = $bindable(null),
+ 		inTransition,
+ 		index = $bindable(0),
++		isAutoplay = false,
++		isLooping = false,
++		isPaused = $bindable(false),
+ 		isVisible = $bindable(true),
+ 		label = 'Carousel',
+ 		onIndexChange,
+@@ -53,6 +61,11 @@
+ 	// $state
+ 	let canScrollBack = $state(false);
+ 	let canScrollForward = $state(false);
++	let isDocumentVisible = $state(true);
++	let isFocused = $state(false);
++	let isHovered = $state(false);
++	let isInView = $state(false);
++	let isReducedMotion = $state(true);
+ 	let track = $state<HTMLDivElement | null>(null);
+ 	let visibleCount = $state(1);
+ 
+@@ -64,7 +77,9 @@
+ 	// Helpers
+ 	const move = (next: number) => {
+ 		if (!track || !slides.length) return;
+-		const node = track.children[Math.max(0, Math.min(slides.length - 1, next))] as
++		const last = Math.max(0, slides.length - visibleCount);
++		const target = isLooping ? ((next % (last + 1)) + last + 1) % (last + 1) : Math.max(0, Math.min(last, next));
++		const node = track.children[target] as
+ 			| HTMLElement
+ 			| undefined;
+ 		if (!node) return;
+@@ -90,6 +105,33 @@
+ 		}
+ 	};
+ 
++	// Autoplay is opt-in and suspends for user interaction, visibility, and motion preferences.
++	$effect(() => {
++		if (!element || !isVisible) return;
++		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
++		const updatePreference = () => { isReducedMotion = preference.matches; };
++		const updateVisibility = () => { isDocumentVisible = !document.hidden; };
++		const observer = new IntersectionObserver(([entry]) => { isInView = entry.isIntersecting; });
++		observer.observe(element);
++		updatePreference();
++		updateVisibility();
++		preference.addEventListener('change', updatePreference);
++		document.addEventListener('visibilitychange', updateVisibility);
++		return () => {
++			observer.disconnect();
++			preference.removeEventListener('change', updatePreference);
++			document.removeEventListener('visibilitychange', updateVisibility);
++		};
++	});
++	$effect(() => {
++		const current = index;
++		const last = Math.max(0, slides.length - visibleCount);
++		if (!track || !isVisible || !isAutoplay || isPaused || isFocused || isHovered || !isInView || !isDocumentVisible || isReducedMotion || !last || (!isLooping && current >= last)) return;
++		const delay = Number.isFinite(autoplayInterval) ? Math.max(1000, autoplayInterval) : 7000;
++		const timer = window.setTimeout(() => move(current + 1), delay);
++		return () => window.clearTimeout(timer);
++	});
++
+ 	// $effect
+ 	$effect(() => {
+ 		if (track && index !== observedIndex) {
+@@ -117,18 +159,23 @@
+ 	{outTransition}
+ 	{theme}
+ 	{transition}
++	onpointerenter={(event) => { isHovered = event.pointerType !== 'touch'; restProps.onpointerenter?.(event); }}
++	onpointerleave={(event) => { isHovered = false; restProps.onpointerleave?.(event); }}
++	onfocusin={(event) => { isFocused = true; restProps.onfocusin?.(event); }}
++	onfocusout={(event) => { isFocused = !!element?.contains(event.relatedTarget as Node | null); restProps.onfocusout?.(event); }}
+ 	role="region"
+ 	aria-roledescription="carousel"
+ 	aria-label={restProps['aria-label'] ?? label}
+ >
+-	<Div {theme} class={theme.resolve('carouselControls')}
+-		><Button
++	<Div {theme} class={theme.resolve('carouselControls')}>
++		{#if isAutoplay}<Button {theme} type="button" variants={['ghost']} disabled={isReducedMotion} aria-label={isPaused || isReducedMotion ? 'Play carousel' : 'Pause carousel'} aria-pressed={isPaused} onclick={() => { isPaused = !isPaused; }}>{isPaused || isReducedMotion ? 'Play' : 'Pause'}</Button>{/if}
++		<Button
+ 			{theme}
+ 			type="button"
+ 			variants={['outline']}
+ 			aria-label="Previous slide"
+ 			aria-controls={`${uid}-track`}
+-			disabled={!canScrollBack}
++			disabled={(!isLooping && !canScrollBack) || slides.length <= visibleCount}
+ 			onclick={() => move(index - 1)}>Previous</Button
+ 		><Button
+ 			{theme}
+@@ -136,7 +183,7 @@
+ 			variants={['outline']}
+ 			aria-label="Next slide"
+ 			aria-controls={`${uid}-track`}
+-			disabled={!canScrollForward}
++			disabled={(!isLooping && !canScrollForward) || slides.length <= visibleCount}
+ 			onclick={() => move(index + 1)}>Next</Button
+ 		></Div
+ 	>
+@@ -146,6 +193,7 @@
+ 		bind:element={track}
+ 		tabindex={0}
+ 		aria-label="Scrollable slides"
++		aria-live={isAutoplay && !isPaused && !isReducedMotion ? 'off' : 'polite'}
+ 		class={theme.resolve('carouselTrack')}
+ 		style={`--carousel-columns: ${columns}; --carousel-tablet-columns: ${Math.min(2, columns)};`}
+ 		onscroll={updateScroll}
+@@ -168,6 +216,8 @@
+ 	>
+ 		{#each slides as slide, i (slide.id)}<Div
+ 				{theme}
++				inert={i < index || i >= index + visibleCount}
++				aria-hidden={i < index || i >= index + visibleCount ? 'true' : undefined}
+ 				role="group"
+ 				aria-roledescription="slide"
+ 				aria-label={`${i + 1} of ${slides.length}${slide.label ? ': ' + slide.label : ''}`}
+diff --git a/node_modules/sveltewind/dist/components/Carousel/Carousel.svelte.d.ts b/node_modules/sveltewind/dist/components/Carousel/Carousel.svelte.d.ts
+index 3dd70bd..48d7941 100644
+--- a/node_modules/sveltewind/dist/components/Carousel/Carousel.svelte.d.ts
++++ b/node_modules/sveltewind/dist/components/Carousel/Carousel.svelte.d.ts
+@@ -4,6 +4,10 @@ import { type Snippet } from 'svelte';
+ import type { HTMLAttributes } from 'svelte/elements';
+ import type { CarouselSlide } from '../composed.js';
+ type Props = HTMLAttributes<HTMLDivElement> & {
++    autoplayInterval?: number;
++    isAutoplay?: boolean;
++    isLooping?: boolean;
++    isPaused?: boolean;
+     children?: Snippet;
+     class?: string;
+     element?: HTMLDivElement | null;
