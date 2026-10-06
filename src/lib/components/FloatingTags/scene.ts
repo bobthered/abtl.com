@@ -6,11 +6,26 @@ export type TagPlacement = {
 	id: string;
 	rotation: [number, number, number];
 };
+export type TagSettings = {
+	blurScale: number;
+	closestDistance: number;
+	maxDistance: number;
+	parallaxSpeed: number;
+	tagCount: number;
+};
+
+export const defaultSettings: TagSettings = {
+	blurScale: 1,
+	closestDistance: -80,
+	maxDistance: 240,
+	parallaxSpeed: 1,
+	tagCount: 9
+};
 
 export const depths = {
-	far: { distance: -240, travel: 70 },
-	middle: { distance: -80, travel: 180 },
-	near: { distance: 80, travel: 360 }
+	far: { closeness: 0, travel: 70 },
+	middle: { closeness: 0.5, travel: 180 },
+	near: { closeness: 1, travel: 360 }
 };
 
 export const tags: TagPlacement[] = [
@@ -79,15 +94,64 @@ export const tags: TagPlacement[] = [
 	}
 ];
 
-export const getTagFrames = (tag: TagPlacement): Keyframe[] => {
-	const { distance, travel } = depths[tag.depth];
+export const createTags = (count: number): TagPlacement[] =>
+	Array.from({ length: count }, (_, index) => {
+		const seed = tags[index % tags.length];
+		if (index < tags.length) return seed;
+		const positions = [
+			'top-1/4 left-1/4',
+			'top-1/2 right-1/4',
+			'bottom-12 left-1/3',
+			'top-40 right-12',
+			'bottom-1/4 left-12'
+		];
+		return {
+			...seed,
+			className: positions[(index - tags.length) % positions.length],
+			id: `${seed.id}-${index}`,
+			rotation: [seed.rotation[0], -seed.rotation[1], seed.rotation[2] + index * 7]
+		};
+	});
+
+export const normalizeSettings = (value: Partial<TagSettings>): TagSettings => {
+	const clamp = (input: unknown, fallback: number, min: number, max: number) =>
+		typeof input === 'number' && Number.isFinite(input)
+			? Math.min(max, Math.max(min, input))
+			: fallback;
+	const maxDistance = clamp(value.maxDistance, defaultSettings.maxDistance, 0, 1600);
+	return {
+		blurScale: clamp(value.blurScale, defaultSettings.blurScale, 0, 4),
+		closestDistance: clamp(
+			value.closestDistance,
+			defaultSettings.closestDistance,
+			-300,
+			maxDistance
+		),
+		maxDistance,
+		parallaxSpeed: clamp(value.parallaxSpeed, defaultSettings.parallaxSpeed, 0, 3),
+		tagCount: Math.round(clamp(value.tagCount, defaultSettings.tagCount, 0, 36))
+	};
+};
+
+export const getTagFrames = (
+	tag: TagPlacement,
+	settings: TagSettings = defaultSettings
+): Keyframe[] => {
+	const { closeness, travel } = depths[tag.depth];
+	const distance = -(
+		settings.maxDistance +
+		(settings.closestDistance - settings.maxDistance) * closeness
+	);
+	const filter = `blur(${closeness * 8 * settings.blurScale}px)`;
 	const [x, y, z] = tag.rotation;
 	return [
 		{
+			filter,
 			transform: `perspective(900px) translate3d(0, 0, ${distance}px) rotateX(${x}deg) rotateY(${y}deg) rotateZ(${z}deg)`
 		},
 		{
-			transform: `perspective(900px) translate3d(0, -${travel}px, ${distance}px) rotateX(${x + 8}deg) rotateY(${y - 10}deg) rotateZ(${z + 6}deg)`
+			filter,
+			transform: `perspective(900px) translate3d(0, -${travel * settings.parallaxSpeed}px, ${distance}px) rotateX(${x + 8 * settings.parallaxSpeed}deg) rotateY(${y - 10 * settings.parallaxSpeed}deg) rotateZ(${z + 6 * settings.parallaxSpeed}deg)`
 		}
 	];
 };

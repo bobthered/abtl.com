@@ -10,9 +10,13 @@ export function initializeTheme() {
 		'pointer-events-none fixed inset-0 z-0 overflow-hidden opacity-35 dark:opacity-25'
 	);
 	theme.set.base('floatingTag', 'absolute pointer-events-none');
-	theme.set.variant('floatingTag', 'far', 'w-10 blur-none sm:w-14');
-	theme.set.variant('floatingTag', 'middle', 'w-16 blur-xs sm:w-24');
-	theme.set.variant('floatingTag', 'near', 'w-28 blur-sm sm:w-40');
+	theme.set.variant('floatingTag', 'far', 'w-10 sm:w-14');
+	theme.set.variant('floatingTag', 'middle', 'w-16 sm:w-24');
+	theme.set.variant('floatingTag', 'near', 'w-28 sm:w-40');
+	theme.set.base(
+		'tagSettings',
+		'fixed inset-x-4 bottom-4 z-30 max-h-3/4 overflow-auto rounded-2xl border border-gray-200 bg-white p-5 text-sm text-gray-950 shadow-xl sm:inset-x-auto sm:right-4 sm:w-80 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50'
+	);
 	theme.set.base('tag', 'block aspect-1/2 h-auto w-full');
 	theme.set.variant('path', 'tagPatch', 'fill-tag-buff stroke-tag-brown stroke-1');
 	theme.set.base('logo', 'inline-block h-auto w-32');

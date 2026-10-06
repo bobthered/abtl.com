@@ -1,16 +1,23 @@
 <script lang="ts">
 	// Imports
-	import { Div, Path, Svg } from '#lib/components';
-	import { getTagFrames, tags } from './scene.js';
+	import { createTags, defaultSettings, getTagFrames, normalizeSettings } from './scene.js';
+	import { Div, FloatingTagSettings, Path, Svg } from '#lib/components';
 	import { onMount } from 'svelte';
+	import type { TagPlacement, TagSettings } from './scene.js';
 	import { theme } from 'sveltewind/theme';
 
+	// consts
+	const isDevelopment = import.meta.env.DEV;
+
 	// helpers
-	const initializeParallax = () => {
+	const initializeParallax = (currentTags: TagPlacement[], currentSettings: TagSettings) => {
 		if (!element) return;
-		const animations = tags.map((tag) => {
+		const animations = currentTags.map((tag) => {
 			const node = element!.querySelector<HTMLElement>(`[data-floating-tag="${tag.id}"]`)!;
-			const animation = node.animate(getTagFrames(tag), { duration: 1000, fill: 'both' });
+			const animation = node.animate(getTagFrames(tag, currentSettings), {
+				duration: 1000,
+				fill: 'both'
+			});
 			animation.pause();
 			animation.currentTime = 0;
 			return animation;
@@ -47,21 +54,47 @@
 		};
 	};
 
-	onMount(initializeParallax);
+	onMount(() => {
+		if (!isDevelopment) return;
+		try {
+			const saved = JSON.parse(localStorage.getItem('floating-tag-settings') ?? 'null');
+			if (saved && typeof saved === 'object') settings = normalizeSettings(saved);
+		} catch {
+			// Keep defaults if storage is unavailable or settings are invalid.
+		}
+		isSettingsReady = true;
+	});
 
 	// $state
 	let element = $state<HTMLDivElement | null>(null);
+	let isSettingsReady = $state(false);
+	let settings = $state({ ...defaultSettings });
+
+	// $derived
+	const sceneSettings = $derived(normalizeSettings(settings));
+	const visibleTags = $derived(createTags(sceneSettings.tagCount));
+
+	// $effects
+	$effect(() => initializeParallax(visibleTags, sceneSettings));
+	$effect(() => {
+		if (!isDevelopment || !isSettingsReady) return;
+		try {
+			localStorage.setItem('floating-tag-settings', JSON.stringify(sceneSettings));
+		} catch {
+			// Controls still work when browser storage is unavailable.
+		}
+	});
 </script>
 
 <Div bind:element aria-hidden="true" inert class={theme.resolve('floatingTags')}>
-	{#each tags as tag (tag.id)}
+	{#each visibleTags as tag (tag.id)}
 		<Div
 			data-floating-tag={tag.id}
 			class={theme.resolve('floatingTag', [tag.depth], `${tag.className} ${tag.color}`)}
 		>
 			<Svg viewBox="0 0 100 200" aria-hidden="true" focusable="false" class={theme.resolve('tag')}>
 				<Path
-					d="M12 0H88L100 12V188L88 200H12L0 188V12Z M55 28a5 5 0 1 1-10 0a5 5 0 1 1 10 0Z"
+					d="M12 0H88L100 12V200H0V12Z M55 28a5 5 0 1 1-10 0a5 5 0 1 1 10 0Z"
 					fill="currentColor"
 					fill-rule="evenodd"
 				/>
@@ -74,3 +107,7 @@
 		</Div>
 	{/each}
 </Div>
+
+{#if isDevelopment}
+	<FloatingTagSettings bind:settings />
+{/if}
