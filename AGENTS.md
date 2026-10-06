@@ -23,6 +23,12 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 - Keep other declarations not explicitly covered by these sections in a suitable location based on their dependencies. Do not change `let` to `const` or alter reactive behavior to satisfy formatting.
 - Follow the project's formatter for indentation and spacing.
 
+## Functions
+
+- Use arrow functions for helpers, callbacks, and other function values. Declare named helpers with `const` and keep them in the `// helpers` section in Svelte scripts.
+- Use a standard function only when required by behavior or syntax, such as dynamic `this`, `arguments`, constructor usage, generators, overload declarations, or necessary declaration hoisting. Add a brief comment explaining any non-obvious exception.
+- Preserve initialization order and runtime behavior when converting functions; arrow functions assigned to `const` are not available before their declaration.
+
 ## Boolean naming
 
 - Start every boolean variable name with `is` using camelCase, for example `isMenuVisible` instead of `menuVisible`.

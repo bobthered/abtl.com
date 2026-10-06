@@ -34,16 +34,16 @@
 	];
 
 	// helpers
-	function applyColorMode(mode: ColorMode) {
+	const applyColorMode = (mode: ColorMode) => {
 		document.documentElement.dataset.theme = mode;
 		try {
 			localStorage.setItem('theme', mode);
 		} catch {
 			// The theme still applies when browser storage is unavailable.
 		}
-	}
+	};
 
-	function initializeColorMode() {
+	const initializeColorMode = () => {
 		let savedMode: string | null = null;
 		try {
 			savedMode = localStorage.getItem('theme');
@@ -57,18 +57,18 @@
 					? 'dark'
 					: 'light'
 		);
-	}
+	};
 
-	function initializeMenuBreakpoint() {
+	const initializeMenuBreakpoint = () => {
 		const desktop = window.matchMedia('(min-width: 1024px)');
 		const closeDesktopMenu = () => {
 			if (desktop.matches) isMenuVisible = false;
 		};
 		desktop.addEventListener('change', closeDesktopMenu);
 		return () => desktop.removeEventListener('change', closeDesktopMenu);
-	}
+	};
 
-	function initializeMotionPreference() {
+	const initializeMotionPreference = () => {
 		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const updatePreference = () => {
 			isReducedMotion = preference.matches;
@@ -76,7 +76,7 @@
 		updatePreference();
 		preference.addEventListener('change', updatePreference);
 		return () => preference.removeEventListener('change', updatePreference);
-	}
+	};
 
 	initializeTheme();
 	onMount(initializeColorMode);
