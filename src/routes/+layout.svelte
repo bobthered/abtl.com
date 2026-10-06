@@ -6,30 +6,34 @@
 		Button,
 		Circle,
 		Container,
-		Details,
 		Div,
 		Header,
 		Nav,
 		Path,
+		Popover,
 		Span,
-		Summary,
 		Svg
 	} from 'sveltewind/components';
+	import type { ComponentProps } from 'svelte';
 	import favicon from '#lib/assets/favicon.svg';
 	import { initializeTheme } from '#lib/theme.js';
 	import type { LayoutProps } from './$types';
 	import { onMount } from 'svelte';
+	import { subtleReveal } from 'sveltewind/transitions';
 
 	// Types
 	type ColorMode = 'dark' | 'light';
 
 	// consts
+	let menuVisible = $state(false);
 	const navigation = [
 		{ href: '/#products', label: 'Products' },
 		{ href: '/#industries', label: 'Industries' },
 		{ href: '/#capabilities', label: 'Capabilities' },
 		{ href: '/#resources', label: 'Resources' }
 	];
+
+	let reducedMotion = $state(false);
 
 	// helpers
 	function applyColorMode(mode: ColorMode) {
@@ -57,8 +61,29 @@
 		);
 	}
 
+	function initializeMenuBreakpoint() {
+		const desktop = window.matchMedia('(min-width: 801px)');
+		const closeDesktopMenu = () => {
+			if (desktop.matches) menuVisible = false;
+		};
+		desktop.addEventListener('change', closeDesktopMenu);
+		return () => desktop.removeEventListener('change', closeDesktopMenu);
+	}
+
+	function initializeMotionPreference() {
+		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const updatePreference = () => {
+			reducedMotion = preference.matches;
+		};
+		updatePreference();
+		preference.addEventListener('change', updatePreference);
+		return () => preference.removeEventListener('change', updatePreference);
+	}
+
 	initializeTheme();
 	onMount(initializeColorMode);
+	onMount(initializeMenuBreakpoint);
+	onMount(initializeMotionPreference);
 
 	// $props()
 	let { children }: LayoutProps = $props();
@@ -123,34 +148,53 @@
 				></Button
 			>
 		</Div>
-		<Details class="hidden rounded-none border-0 bg-transparent p-0 max-[800px]:block">
-			<Summary
-				class="cursor-pointer list-none bg-transparent p-2 [&::-webkit-details-marker]:hidden"
-				aria-label="Open navigation menu"
-				><Svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="size-6"
-					><Path
-						d="M4 6h16M4 12h16M4 18h16"
-						stroke="currentColor"
-						stroke-width="1.6"
-						stroke-linecap="round"
-					/></Svg
-				></Summary
+		<Div class="hidden max-[800px]:block">
+			<Popover
+				bind:isVisible={menuVisible}
+				trigger={mobileMenuTrigger}
+				transition={[subtleReveal, { duration: reducedMotion ? 0 : 200 }]}
+				class="w-[min(320px,calc(100vw-40px))] rounded-2xl border border-[#e0e0e8] bg-white px-6 py-4 shadow-[0_12px_32px_#16132612] min-[801px]:hidden dark:border-gray-800 dark:bg-gray-950"
 			>
-			<Nav
-				aria-label="Mobile navigation"
-				class="absolute inset-x-0 top-[calc(100%-8px)] z-10 flex flex-col rounded-2xl border border-[#e0e0e8] bg-white px-6 py-4 shadow-[0_12px_32px_#16132612] dark:border-gray-800 dark:bg-gray-950 [&>a:last-child]:py-4"
-				>{#each navigation as item (item.href)}<A
-						href={item.href}
-						class="py-3 text-[15px] font-medium text-[#17182b] no-underline hover:text-[#5300ff] dark:text-gray-50 dark:hover:text-violet-200"
-						>{item.label}</A
-					>{/each}<A
-					href="mailto:sales@abtl.com"
-					class="text-[15px] font-medium whitespace-nowrap text-[#5300ff] no-underline dark:text-violet-300"
-					>Request a Quote</A
-				></Nav
-			>
-		</Details>
+				<Nav aria-label="Mobile navigation" class="flex flex-col">
+					{#each navigation as item (item.href)}
+						<A
+							href={item.href}
+							onclick={() => {
+								menuVisible = false;
+							}}
+							class="py-3 text-[15px] font-medium text-[#17182b] no-underline hover:text-[#5300ff] dark:text-gray-50 dark:hover:text-violet-200"
+							>{item.label}</A
+						>
+					{/each}
+					<A
+						href="mailto:sales@abtl.com"
+						onclick={() => {
+							menuVisible = false;
+						}}
+						class="py-4 text-[15px] font-medium whitespace-nowrap text-[#5300ff] no-underline dark:text-violet-300"
+						>Request a Quote</A
+					>
+				</Nav>
+			</Popover>
+		</Div>
 	</Container>
 </Header>
 
 {@render children()}
+
+{#snippet mobileMenuTrigger(props: ComponentProps<typeof Button>)}
+	<Button
+		{...props}
+		aria-label="Open navigation menu"
+		class="border-0 bg-transparent p-2 text-[#101014] shadow-none hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-900 dark:hover:text-gray-50"
+	>
+		<Svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="size-6">
+			<Path
+				d="M4 6h16M4 12h16M4 18h16"
+				stroke="currentColor"
+				stroke-width="1.6"
+				stroke-linecap="round"
+			/>
+		</Svg>
+	</Button>
+{/snippet}
