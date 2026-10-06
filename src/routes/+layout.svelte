@@ -6,6 +6,7 @@
 		Button,
 		Container,
 		Div,
+		FloatingTags,
 		Footer,
 		Header,
 		Logo,
@@ -151,6 +152,7 @@
 </svelte:head>
 
 <A href="#main-content" variants={['ghost', 'skip']}>Skip to content</A>
+<FloatingTags />
 <Header variants={['site']}>
 	<Container
 		class={`relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none ${isScrolled ? 'lg:py-6' : 'lg:py-10'}`}

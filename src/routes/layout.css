@@ -6,6 +6,27 @@
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 @theme {
+	--color-tag-blue-dark: #6789c6;
+	--color-tag-blue-light: #a7cbe2;
+	--color-tag-brown: #cf8d52;
+	--color-tag-buff: #ebd896;
+	--color-tag-gray: #bcbec0;
+	--color-tag-green-dark: #2bb34a;
+	--color-tag-green-light: #83c77c;
+	--color-tag-ivory: #f5e3a1;
+	--color-tag-lilac: #d3a6cd;
+	--color-tag-manila: #ffe1b1;
+	--color-tag-orange: #f47c41;
+	--color-tag-pink: #f6a0a6;
+	--color-tag-red: #ed1d2f;
+	--color-tag-salmon: #fbc09e;
+	--color-tag-yellow: #ffde3b;
+	--color-tag-fluorescent-green: #0be50b;
+	--color-tag-fluorescent-orange: #ff8000;
+	--color-tag-fluorescent-pink: #ec008c;
+	--color-tag-fluorescent-red: #ed1d24;
+	--color-tag-fluorescent-yellow: #f2ea01;
+
 	--color-abtl-blue-50: #f8f8fc;
 	--color-abtl-blue-100: #edeef7;
 	--color-abtl-blue-200: #dcdeef;

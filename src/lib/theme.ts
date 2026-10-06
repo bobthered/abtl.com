@@ -4,7 +4,17 @@ import { classic } from 'sveltewind/themes';
 /** Initialize shared styles only; keep customer-specific data out of the global theme. */
 export function initializeTheme() {
 	theme.set.theme(structuredClone(classic));
-	theme.set.base('container', 'mx-auto max-w-7xl px-6 sm:px-8 lg:px-16');
+	theme.set.base('container', 'relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-16');
+	theme.set.base(
+		'floatingTags',
+		'pointer-events-none fixed inset-0 z-0 overflow-hidden opacity-35 dark:opacity-25'
+	);
+	theme.set.base('floatingTag', 'absolute pointer-events-none');
+	theme.set.variant('floatingTag', 'far', 'w-10 blur-none sm:w-14');
+	theme.set.variant('floatingTag', 'middle', 'w-16 blur-xs sm:w-24');
+	theme.set.variant('floatingTag', 'near', 'w-28 blur-sm sm:w-40');
+	theme.set.base('tag', 'block aspect-1/2 h-auto w-full');
+	theme.set.variant('path', 'tagPatch', 'fill-tag-buff stroke-tag-brown stroke-1');
 	theme.set.base('logo', 'inline-block h-auto w-32');
 	theme.set.variant('logo', 'onSurface', 'dark:[&_path]:fill-white');
 	theme.set.variant('logo', 'site', 'w-20 sm:w-24');
@@ -40,7 +50,7 @@ export function initializeTheme() {
 	theme.set.variant(
 		'footer',
 		'site',
-		'border-0 bg-primary-500 pt-0 text-white dark:bg-primary-500 [&_a]:text-white [&_a:hover]:text-white [&_p]:text-white dark:[&_a]:text-white dark:[&_a:hover]:text-white dark:[&_p]:text-white'
+		'relative z-10 border-0 bg-primary-500 pt-0 text-white dark:bg-primary-500 [&_a]:text-white [&_a:hover]:text-white [&_p]:text-white dark:[&_a]:text-white dark:[&_a:hover]:text-white dark:[&_p]:text-white'
 	);
 	theme.set.variant(
 		'h1',
