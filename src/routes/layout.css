@@ -6,6 +6,9 @@
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 @theme {
+	--color-brand-blue: #282d5b;
+	--color-brand-red: #8a181d;
+
 	--color-gray-50: #faf9fb;
 	--color-gray-100: #f2f0f5;
 	--color-gray-200: #e4e1ea;
