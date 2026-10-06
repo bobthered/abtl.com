@@ -7,10 +7,10 @@
 		Div,
 		H2,
 		H3,
-		HeroCarousel,
 		Main,
 		P,
 		Section,
+		SiteHero,
 		Span
 	} from '#lib/components';
 	import { ArrowRight } from '#lib/icons';
@@ -39,7 +39,7 @@
 {/snippet}
 
 <Main id="main-content" tabindex={-1}>
-	<Section aria-label="Company highlights"><HeroCarousel /></Section>
+	<SiteHero />
 	<Section id="industries" variants={['surface']} aria-labelledby="industries-heading">
 		<Container variants={['section']}>
 			<P variants={['eyebrow']}>Industries</P>

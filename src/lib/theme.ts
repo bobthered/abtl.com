@@ -1,43 +1,57 @@
-import { Theme, theme } from 'sveltewind/theme';
+import { theme } from 'sveltewind/theme';
 import { classic } from 'sveltewind/themes';
-
-// Carousel parts use a local theme so future carousels retain Sveltewind defaults.
-export const heroCarouselTheme = new Theme({
-	...structuredClone(classic),
-	carousel: { base: 'relative flex min-w-0 flex-col' },
-	carouselControls: { base: 'order-2 mx-auto mt-4 mb-2 flex flex-wrap justify-center gap-3' },
-	carouselIndicators: { base: 'order-3 mb-10 flex justify-center gap-3' },
-	carouselSlide: { base: 'min-w-0 snap-start' },
-	carouselTrack: {
-		base: 'relative grid snap-x snap-mandatory auto-cols-[100%] grid-flow-col gap-0 overflow-x-auto overscroll-x-contain focus-visible:outline-2 focus-visible:outline-primary-500'
-	}
-});
 
 /** Initialize shared styles only; keep customer-specific data out of the global theme. */
 export function initializeTheme() {
 	theme.set.theme(structuredClone(classic));
 	theme.set.base('container', 'relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-16');
 	theme.set.variant(
-		'container',
-		'heroSlide',
-		'grid h-full content-center items-center gap-8 pt-12 pb-6 lg:min-h-160 lg:grid-cols-2 lg:gap-10 lg:pt-16 lg:pb-12'
+		'section',
+		'hero',
+		'relative isolate overflow-hidden bg-gray-50 dark:bg-gray-950'
 	);
 	theme.set.variant(
-		'h2',
+		'container',
 		'hero',
-		'text-4xl leading-tight tracking-tighter text-gray-950 sm:text-5xl xl:text-6xl dark:text-gray-50'
+		'pt-20 pb-16 sm:pt-24 sm:pb-20 lg:min-h-160 lg:pt-28 lg:pb-24'
 	);
 	theme.set.base(
-		'heroIndustry',
-		'rounded-2xl border border-gray-200 bg-white p-5 sm:p-8 dark:border-gray-700 dark:bg-gray-800'
+		'heroGlow',
+		'pointer-events-none absolute -top-24 -right-48 size-160 rounded-full bg-primary-200/35 blur-3xl dark:bg-primary-500/10'
 	);
-	theme.set.variant('p', 'artworkCaption', 'text-center text-sm text-gray-500 dark:text-gray-400');
+	theme.set.base(
+		'heroRibbon',
+		'pointer-events-none absolute -top-40 -right-160 h-240 w-240 opacity-65 sm:-right-128 lg:-right-40 lg:w-280 lg:opacity-90 dark:opacity-60'
+	);
+	theme.set.base(
+		'heroBrand',
+		'relative flex items-center gap-6 border-t border-gray-200/80 py-8 dark:border-gray-800'
+	);
 	theme.set.variant(
 		'p',
-		'industryTitle',
-		'mt-6 text-lg font-semibold text-gray-950 dark:text-gray-50'
+		'heroDetail',
+		'mb-8 flex flex-wrap items-center gap-3 text-sm font-medium tracking-wide text-gray-600 dark:text-gray-300'
 	);
-	theme.set.variant('p', 'industryUse', 'mt-2 text-sm text-gray-500 dark:text-gray-400');
+	theme.set.variant(
+		'p',
+		'heroLead',
+		'mt-8 max-w-xl text-lg leading-relaxed text-gray-600 sm:text-xl dark:text-gray-300'
+	);
+	theme.set.variant(
+		'p',
+		'heroFootnote',
+		'mt-6 text-xs leading-relaxed text-gray-500 sm:text-sm dark:text-gray-400'
+	);
+	theme.set.variant(
+		'button',
+		'heroPrimary',
+		'gap-3 rounded-full bg-abtl-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-abtl-blue-600 dark:bg-primary-400 dark:text-gray-950 dark:hover:bg-primary-300'
+	);
+	theme.set.variant(
+		'button',
+		'heroSecondary',
+		'gap-3 rounded-full border border-gray-300 bg-white/70 px-6 py-3 text-sm font-semibold text-gray-950 hover:bg-white dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-50 dark:hover:bg-gray-800'
+	);
 	theme.set.base('tagMachine', 'w-full min-w-0 py-6 lg:-mr-8 lg:w-auto');
 	theme.set.variant('svg', 'machine', 'block h-auto w-full overflow-visible');
 	theme.set.variant('path', 'machineAccent', 'fill-abtl-red-600 stroke-abtl-red-700 stroke-1');
@@ -118,7 +132,7 @@ export function initializeTheme() {
 	theme.set.variant(
 		'h1',
 		'hero',
-		'text-4xl leading-tight tracking-tighter text-gray-950 sm:text-5xl xl:text-6xl 2xl:text-7xl dark:text-gray-50'
+		'text-6xl font-semibold leading-none tracking-tighter text-gray-950 sm:text-7xl lg:text-8xl dark:text-gray-50'
 	);
 	theme.set.variant(
 		'h2',
