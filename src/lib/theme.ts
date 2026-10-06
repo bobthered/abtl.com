@@ -60,7 +60,7 @@ export function initializeTheme() {
 	theme.set.variant(
 		'header',
 		'site',
-		'sticky top-0 z-20 border-0 border-b border-gray-200 bg-gray-50 backdrop-blur-none dark:border-gray-800 dark:bg-gray-950'
+		'sticky top-0 z-20 border-0 border-b border-gray-200 bg-white backdrop-blur-none dark:border-gray-800 dark:bg-gray-950'
 	);
 	theme.set.variant(
 		'img',
@@ -76,14 +76,14 @@ export function initializeTheme() {
 	theme.set.variant(
 		'popover',
 		'navigation',
-		'inset-0! m-0! h-dvh max-h-none w-full max-w-none rounded-none p-0 shadow-none inset-ring-0 data-anchored:[position-anchor:auto] data-anchored:[position-area:none] lg:hidden'
+		'inset-0! m-0! h-dvh max-h-none w-full max-w-none rounded-none bg-white p-0 shadow-none inset-ring-0 dark:bg-gray-950 data-anchored:[position-anchor:auto] data-anchored:[position-area:none] lg:hidden'
 	);
 	theme.set.variant(
 		'section',
 		'contrast',
 		'bg-gray-900 dark:bg-gray-50 [&_h2]:text-gray-50 [&_p]:text-gray-50 dark:[&_h2]:text-gray-950 dark:[&_p]:text-gray-950'
 	);
-	theme.set.variant('section', 'surface', 'rounded-t-3xl bg-white dark:bg-gray-950');
+	theme.set.variant('section', 'surface', 'bg-white dark:bg-gray-950');
 	theme.set.variant('span', 'brandDetail', 'text-xs font-bold tracking-widest uppercase');
 	theme.set.variant(
 		'span',
