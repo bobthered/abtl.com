@@ -13,13 +13,13 @@
 
 	// $props()
 	let {
-		blueColor = 'var(--color-brand-blue, #282D5B)',
+		blueColor = 'var(--color-abtl-blue-700, #282D5B)',
 		class: className = '',
 		element = $bindable(null),
 		inTransition,
 		isVisible = $bindable(true),
 		outTransition,
-		redColor = 'var(--color-brand-red, #8A181D)',
+		redColor = 'var(--color-abtl-red-600, #8A181D)',
 		theme = globalTheme,
 		transition = [noopTransition, {}],
 		variants = [],
