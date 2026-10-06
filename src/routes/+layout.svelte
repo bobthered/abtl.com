@@ -25,15 +25,14 @@
 	type ColorMode = 'dark' | 'light';
 
 	// consts
-	let menuVisible = $state(false);
+	let isMenuVisible = $state(false);
+	let isReducedMotion = $state(false);
 	const navigation = [
 		{ href: '/#products', label: 'Products' },
 		{ href: '/#industries', label: 'Industries' },
 		{ href: '/#capabilities', label: 'Capabilities' },
 		{ href: '/#resources', label: 'Resources' }
 	];
-
-	let reducedMotion = $state(false);
 
 	// helpers
 	function applyColorMode(mode: ColorMode) {
@@ -64,7 +63,7 @@
 	function initializeMenuBreakpoint() {
 		const desktop = window.matchMedia('(min-width: 1024px)');
 		const closeDesktopMenu = () => {
-			if (desktop.matches) menuVisible = false;
+			if (desktop.matches) isMenuVisible = false;
 		};
 		desktop.addEventListener('change', closeDesktopMenu);
 		return () => desktop.removeEventListener('change', closeDesktopMenu);
@@ -73,7 +72,7 @@
 	function initializeMotionPreference() {
 		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const updatePreference = () => {
-			reducedMotion = preference.matches;
+			isReducedMotion = preference.matches;
 		};
 		updatePreference();
 		preference.addEventListener('change', updatePreference);
@@ -137,9 +136,9 @@
 		</Div>
 		<Div class="lg:hidden">
 			<Popover
-				bind:isVisible={menuVisible}
+				bind:isVisible={isMenuVisible}
 				trigger={mobileMenuTrigger}
-				transition={[subtleReveal, { duration: reducedMotion ? 0 : 200 }]}
+				transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
 				variants={['navigation']}
 			>
 				<Nav aria-label="Mobile navigation" class="flex flex-col">
@@ -147,7 +146,7 @@
 						<A
 							href={item.href}
 							onclick={() => {
-								menuVisible = false;
+								isMenuVisible = false;
 							}}
 							variants={['ghost', 'navigation']}>{item.label}</A
 						>
@@ -155,7 +154,7 @@
 					<A
 						href="mailto:sales@abtl.com"
 						onclick={() => {
-							menuVisible = false;
+							isMenuVisible = false;
 						}}
 						variants={['ghost', 'accent']}
 						class="py-4">Request a Quote</A

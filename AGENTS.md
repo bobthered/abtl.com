@@ -21,6 +21,12 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 - Keep `$state` and other declarations not explicitly covered by these sections in a suitable location based on their dependencies. Do not change `let` to `const` or alter reactive behavior to satisfy formatting.
 - Follow the project's formatter for indentation and spacing.
 
+## Boolean naming
+
+- Start every boolean variable name with `is` using camelCase, for example `isMenuVisible` instead of `menuVisible`.
+- Apply this convention to local variables, parameters, props, and reactive state or derived values, whether explicitly typed or inferred.
+- Preserve names required by external APIs; use an `is`-prefixed local alias when binding their boolean values to project variables.
+
 ## Sveltewind components
 
 - Never use native HTML tags in Svelte component markup. Use the corresponding Sveltewind components from `sveltewind/components` instead.
