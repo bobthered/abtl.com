@@ -26,10 +26,6 @@
 	type ColorMode = 'dark' | 'light';
 
 	// consts
-	let isMenuVisible = $state(false);
-	let isNavigationVisible = $state(false);
-	let isReducedMotion = $state(false);
-	let isScrolled = $state(false);
 	const navigation = [
 		{ href: '/#products', label: 'Products' },
 		{ href: '/#industries', label: 'Industries' },
@@ -97,6 +93,12 @@
 
 	// $props()
 	let { children }: LayoutProps = $props();
+
+	// $state
+	let isMenuVisible = $state(false);
+	let isNavigationVisible = $state(false);
+	let isReducedMotion = $state(false);
+	let isScrolled = $state(false);
 
 	// $effects$
 	$effect(() => {

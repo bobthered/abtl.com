@@ -11,14 +11,16 @@ Apply these conventions when creating or editing any `.svelte` file, including c
   3. `// consts`
   4. `// helpers`
   5. `// $props()`
-  6. `// $derived$`
-  7. `// $effects$`
+  6. `// $state`
+  7. `// $derived$`
+  8. `// $effects$`
 - Omit empty sections and their comments. Separate sections with a blank line.
-- Place imports first, followed by TypeScript type aliases and interfaces, constant declarations, helper functions, the destructured `$props()` declaration, `$derived` / `$derived.by` declarations, and `$effect` / `$effect.pre` calls.
+- Place imports first, followed by TypeScript type aliases and interfaces, constant declarations, helper functions, the destructured `$props()` declaration, `$state` declarations, `$derived` / `$derived.by` declarations, and `$effect` / `$effect.pre` calls.
 - Within each section, sort declarations alphabetically by their local variable, type, or function name. Sort named import specifiers by their local binding names and import declarations by their first local binding name. Sort destructured props by their local variable names.
 - Preserve order when required by dependencies, initialization, side effects, or other runtime behavior. Correctness takes precedence over alphabetical sorting and section ordering. Add a brief comment when a necessary exception is not obvious.
 - Keep side-effect-only imports in their required execution order. Effects without declared variable names should remain in a logical order that preserves behavior; do not invent variable names solely to sort them.
-- Keep `$state` and other declarations not explicitly covered by these sections in a suitable location based on their dependencies. Do not change `let` to `const` or alter reactive behavior to satisfy formatting.
+- Put every component-level variable initialized with `$state` or `$state.raw` in the `// $state` section, sorted alphabetically by variable name. Never group these declarations under `// consts`, even if declared with `const`.
+- Keep other declarations not explicitly covered by these sections in a suitable location based on their dependencies. Do not change `let` to `const` or alter reactive behavior to satisfy formatting.
 - Follow the project's formatter for indentation and spacing.
 
 ## Boolean naming
