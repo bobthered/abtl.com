@@ -1,5 +1,7 @@
 import {
+	chooseTagColor,
 	createTagGeometry,
+	createPatchGeometry,
 	createTagShape,
 	createTagWorld,
 	getTagSpawnBoundary,
@@ -8,16 +10,41 @@ import {
 	tagDimensionsInches,
 	tagThickness,
 	tagVisualThickness,
+	tagWorldUnitsPerInch,
 	tagsPerSecond
 } from './physics';
 import { expect, it } from 'vitest';
-import { defaultRainSettings, getVisualThickness } from './settings';
-import { OrthographicCamera, Quaternion, Vector3 } from 'three';
+import { defaultRainSettings, getVisualPatchThickness, getVisualThickness } from './settings';
+import { Mesh, MeshBasicMaterial, OrthographicCamera, Quaternion, Raycaster, Vector3 } from 'three';
+import { createPatchShape, tagHole } from './profile';
+
+it('extrudes the supplied patch with an open hole and the shared thickness scale', () => {
+	const thickness = getVisualPatchThickness(defaultRainSettings);
+	const geometry = createPatchGeometry(thickness);
+	const material = new MeshBasicMaterial();
+	try {
+		geometry.computeBoundingBox();
+		const bounds = geometry.boundingBox!;
+		expect(bounds.max.z - bounds.min.z).toBeCloseTo((0.0008 / 2.625) * 50, 7);
+		expect(bounds.min.z).toBeCloseTo(-thickness / 2, 7);
+		expect(bounds.max.x - bounds.min.x).toBeCloseTo(47.1376 / 236.749, 7);
+		expect(bounds.max.y - bounds.min.y).toBeCloseTo((56.1531380204 / 473.751) * 2, 7);
+		expect(bounds.max.y + tagHole.center.y).toBeCloseTo(1, 3);
+		expect(createPatchShape().holes).toHaveLength(1);
+		const mesh = new Mesh(geometry, material);
+		const ray = new Raycaster(new Vector3(0, 0, 1), new Vector3(0, 0, -1));
+		expect(ray.intersectObject(mesh)).toHaveLength(0);
+		ray.ray.origin.y = 0.12;
+		expect(ray.intersectObject(mesh).length).toBeGreaterThan(0);
+	} finally {
+		geometry.dispose();
+		material.dispose();
+	}
+});
 
 it.each([0.25, 1, 3])('spawns the entire tag above the tilted camera at zoom %s', async (zoom) => {
 	const settings = {
 		...defaultRainSettings,
-		sizeScale: 2,
 		thicknessInches: 0.05,
 		thicknessScale: 200
 	};
@@ -38,7 +65,10 @@ it.each([0.25, 1, 3])('spawns the entire tag above the tilted camera at zoom %s'
 			const orientation = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
 			for (const x of [-0.5, 0.5])
 				for (const y of [-1, 1])
-					for (const z of [-getVisualThickness(settings) / 2, getVisualThickness(settings) / 2]) {
+					for (const z of [-1, 1].map(
+						(direction) =>
+							direction * (getVisualThickness(settings) / 2 + getVisualPatchThickness(settings))
+					)) {
 						const corner = new Vector3(x, y, z)
 							.multiplyScalar(tag.width)
 							.applyQuaternion(orientation)
@@ -54,6 +84,20 @@ it.each([0.25, 1, 3])('spawns the entire tag above the tilted camera at zoom %s'
 
 it('uses the annual production pace for emission', () => {
 	expect(tagsPerSecond).toBeCloseTo(2.853881, 5);
+});
+
+it('keeps every tag at 2.625 by 5.25 inches regardless of randomized motion', async () => {
+	let sample = 0.05;
+	const simulation = await createTagWorld(20, 10.5, () => sample);
+	try {
+		for (sample of [0.05, 0.5, 0.95]) simulation.spawn();
+		for (const tag of simulation.tags) {
+			expect(tag.width / tagWorldUnitsPerInch).toBeCloseTo(2.625, 10);
+			expect((tag.width * 2) / tagWorldUnitsPerInch).toBeCloseTo(5.25, 10);
+		}
+	} finally {
+		simulation.destroy();
+	}
 });
 
 it('anchors emission on the right while preserving the pile on resize', async () => {
@@ -81,8 +125,12 @@ it('applies gravity and bounce controls and clears tags without losing the scene
 	simulation.configure({ ...defaultRainSettings, gravity: 0, bounce: 0.5 });
 	expect(simulation.world.gravity.y).toBeCloseTo(0);
 	expect(simulation.tags[0].body.collider(0).restitution()).toBeCloseTo(0.5);
+	expect(simulation.tags[0].body.numColliders()).toBe(3);
+	expect(simulation.tags[0].body.collider(1).restitution()).toBeCloseTo(0.5);
+	expect(simulation.tags[0].body.collider(2).restitution()).toBeCloseTo(0.5);
 	simulation.clear();
 	expect(simulation.tags).toHaveLength(0);
+	expect(simulation.activeTags.size).toBe(0);
 	expect(simulation.world.bodies.len()).toBe(5);
 	simulation.spawn();
 	expect(simulation.tags).toHaveLength(1);
@@ -111,7 +159,23 @@ it('keeps the 1:2 outline, clipped top corners, and punched hole', () => {
 		Math.max(...points.map((point) => point.y)) - Math.min(...points.map((point) => point.y))
 	).toBe(2);
 	expect(shape.holes).toHaveLength(1);
-	expect(points.some((point) => point.x === 0.275 && point.y === 1)).toBe(true);
+	expect(
+		points.some(
+			(point) => Math.abs(point.x - (208.566 / 236.749 - 0.5)) < 0.000001 && point.y === 1
+		)
+	).toBe(true);
+	expect(
+		points.some(
+			(point) => point.x === 0.5 && Math.abs(point.y - (1 - (36.6593 / 473.751) * 2)) < 0.000001
+		)
+	).toBe(true);
+	const hole = shape.holes[0].getPoints(24);
+	expect(Math.min(...hole.map((point) => point.x))).toBeCloseTo(106.471 / 236.749 - 0.5, 7);
+	expect(Math.max(...hole.map((point) => point.x))).toBeCloseTo(129.019 / 236.749 - 0.5, 7);
+	expect(Math.min(...hole.map((point) => point.y))).toBeCloseTo(1 - (46.8706 / 473.751) * 2, 7);
+	expect(Math.max(...hole.map((point) => point.y))).toBeCloseTo(1 - (24.311 / 473.751) * 2, 7);
+	expect(tagHole.center.x).toBeCloseTo(117.745 / 236.749 - 0.5, 7);
+	expect(tagHole.center.y).toBeCloseTo(1 - (35.5908 / 473.751) * 2, 7);
 });
 
 it('tumbles in three dimensions and settles flat on the floor', async () => {
@@ -126,7 +190,8 @@ it('tumbles in three dimensions and settles flat on the floor', async () => {
 	);
 	expect(rotation).not.toEqual(initialRotation);
 	expect(body.translation().y).toBeGreaterThanOrEqual(0);
-	expect(body.translation().y).toBeLessThan(0.12);
+	// The reinforced head can lift the resting paper slightly above the floor.
+	expect(body.translation().y).toBeLessThan(0.2);
 	expect(Math.abs(normal.y)).toBeGreaterThan(0.85);
 	expect(Math.abs(body.linvel().y)).toBeLessThan(0.1);
 	simulation.destroy();
@@ -152,14 +217,37 @@ it('preserves every tag beyond the old limit and freezes settled paper in the pi
 	for (let index = 0; index < 120; index++) simulation.step();
 	expect(settled.body.translation()).toEqual(position);
 	expect(simulation.tags).toContain(settled);
-	expect(new Set(simulation.tags.map((tag) => tag.color)).size).toBe(tagColors.length);
+	expect(simulation.activeTags.has(settled)).toBe(false);
+	expect(simulation.activeTags.size).toBeLessThan(simulation.tags.length);
 	expect(simulation.world.bodies.len()).toBe(simulation.tags.length + 5);
 	expect(simulation.tags.every((tag) => Math.abs(tag.body.translation().z) < 2.5)).toBe(true);
 	simulation.destroy();
 }, 20_000);
 
-it('includes all 20 supplied tag colors, including every fluorescent shade', () => {
-	expect(tagColors).toHaveLength(20);
-	expect(new Set(tagColors).size).toBe(20);
+it('includes white stock and all 20 supplied tag colors, including every fluorescent shade', () => {
+	expect(tagColors).toHaveLength(21);
+	expect(new Set(tagColors).size).toBe(21);
+	expect(tagColors).toContain('tag-white');
 	expect(tagColors.filter((color) => color.startsWith('tag-fluorescent-'))).toHaveLength(5);
+});
+
+it('allocates 75% of stock selections to white and splits 25% evenly across other colors', () => {
+	const counts = Array.from({ length: tagColors.length }, () => 0);
+	const sampleCount = 8000;
+	for (let index = 0; index < sampleCount; index++)
+		counts[chooseTagColor(() => (index + 0.5) / sampleCount)]++;
+	for (const [index, color] of tagColors.entries())
+		expect(counts[index]).toBe(color === 'tag-white' ? 6000 : 100);
+	expect(chooseTagColor(() => 0)).toBe(0);
+	expect(chooseTagColor(() => 1 - Number.EPSILON)).toBe(tagColors.length - 1);
+});
+
+it('uses weighted stock selection when spawning tags', async () => {
+	const simulation = await createTagWorld(20, 10.5, () => 0.5);
+	try {
+		simulation.spawn();
+		expect(tagColors[simulation.tags[0].color]).toBe('tag-white');
+	} finally {
+		simulation.destroy();
+	}
 });

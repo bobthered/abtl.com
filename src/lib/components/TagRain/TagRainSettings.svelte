@@ -54,7 +54,7 @@
 			</Div>
 		{/each}
 		<P class="text-xs text-gray-500 dark:text-gray-400">
-			Thickness and size changes restart the pile. Settings are saved only in this browser during
+			Thickness changes restart the pile. Settings are saved only in this browser during
 			development. The production counter stays unchanged.
 		</P>
 		<Div class="flex flex-wrap gap-2">

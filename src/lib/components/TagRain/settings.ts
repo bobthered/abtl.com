@@ -1,6 +1,7 @@
 import { productionProjection } from '#lib/productionMetric.js';
 
 export const tagDimensionsInches = { height: 5.25, thickness: 0.0013, width: 2.625 };
+export const patchThicknessInches = 0.0008;
 export const tagsPerSecond =
 	productionProjection.target /
 	((productionProjection.endsAt - productionProjection.startsAt) / 1000);
@@ -42,7 +43,6 @@ export const settingControls = [
 		decimals: 0,
 		unit: 'x'
 	},
-	{ key: 'sizeScale', label: 'Tag size', min: 0.25, max: 2, step: 0.05, decimals: 2, unit: 'x' },
 	{ key: 'flutter', label: 'Flutter', min: 0, max: 5, step: 0.1, decimals: 1, unit: 'x' },
 	{ key: 'airDrag', label: 'Air resistance', min: 0, max: 5, step: 0.1, decimals: 1, unit: 'x' },
 	{ key: 'bounce', label: 'Bounce', min: 0, max: 1, step: 0.01, decimals: 2, unit: '' }
@@ -54,7 +54,6 @@ export const defaultRainSettings: TagRainSettings = {
 	cameraZoom: 3,
 	flutter: 1,
 	gravity: 3.2,
-	sizeScale: 1,
 	tagsPerSecond,
 	thicknessInches: tagDimensionsInches.thickness,
 	thicknessScale: 50
@@ -70,3 +69,5 @@ export const normalizeRainSettings = (input: Partial<TagRainSettings>): TagRainS
 };
 export const getVisualThickness = (settings: TagRainSettings) =>
 	(settings.thicknessInches / tagDimensionsInches.width) * settings.thicknessScale;
+export const getVisualPatchThickness = (settings: TagRainSettings) =>
+	(patchThicknessInches / tagDimensionsInches.width) * settings.thicknessScale;

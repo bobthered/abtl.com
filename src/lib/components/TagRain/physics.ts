@@ -1,6 +1,18 @@
 import RAPIER from '@dimforge/rapier3d-compat';
 import {
+	artworkCounts,
+	chooseTagArtwork,
+	createArtworkAtlas,
+	createArtworkGeometry,
+	createArtworkMaterial,
+	tagArtworkPairs
+} from './artwork';
+import type { ArtworkPair } from './artwork';
+import { createPatchShape, createTagShape, patchOutline, tagHole, tagOutline } from './profile';
+export { createTagShape } from './profile';
+import {
 	defaultRainSettings,
+	getVisualPatchThickness,
 	getVisualThickness,
 	normalizeRainSettings,
 	tagDimensionsInches
@@ -9,6 +21,7 @@ import type { TagRainSettings } from './settings';
 export { tagDimensionsInches, tagsPerSecond } from './settings';
 import {
 	AmbientLight,
+	BufferAttribute,
 	Color,
 	DirectionalLight,
 	DoubleSide,
@@ -16,26 +29,26 @@ import {
 	Euler,
 	ExtrudeGeometry,
 	InstancedMesh,
+	InstancedBufferAttribute,
 	Matrix4,
 	Mesh,
 	MeshStandardMaterial,
 	Object3D,
 	OrthographicCamera,
-	Path,
 	PCFShadowMap,
 	PlaneGeometry,
 	Quaternion,
-	RingGeometry,
 	Scene,
 	ShadowMaterial,
-	Shape,
 	Vector3,
 	WebGLRenderer
 } from 'three';
 
 export type RainTag = {
+	backArtwork: number;
 	body: RAPIER.RigidBody;
 	color: number;
+	frontArtwork: number;
 	phase: number;
 	restingSteps: number;
 	width: number;
@@ -63,35 +76,52 @@ export const tagColors = [
 	'tag-pink',
 	'tag-red',
 	'tag-salmon',
+	'tag-white',
 	'tag-yellow'
 ];
+// Percent shares: white stock dominates, while the remaining stocks share 25% equally.
+export const tagColorWeights = tagColors.map((color) =>
+	color === 'tag-white' ? 75 : 25 / (tagColors.length - 1)
+);
+const totalColorWeight = tagColorWeights.reduce((total, weight) => total + weight, 0);
+export const chooseTagColor = (random = Math.random) => {
+	let sample = random() * totalColorWeight;
+	for (let index = 0; index < tagColorWeights.length; index++) {
+		sample -= tagColorWeights[index];
+		if (sample < 0) return index;
+	}
+	return tagColors.length - 1;
+};
 export const tagThickness = tagDimensionsInches.thickness / tagDimensionsInches.width;
+// A single scene scale represents the same physical stock size on every tag.
+export const tagWorldUnitsPerInch = 0.6 / tagDimensionsInches.width;
 // True-scale stock is subpixel in this hero. Exaggerate only depth so its edge remains visible.
 export const tagVisualThicknessScale = 50;
 export const tagVisualThickness = tagThickness * tagVisualThicknessScale;
 let initialization: Promise<void> | null = null;
 const initializePhysics = () => (initialization ??= RAPIER.init());
 
-export const createTagShape = () => {
-	const shape = new Shape();
-	shape.moveTo(-0.5, -1);
-	shape.lineTo(0.5, -1);
-	shape.lineTo(0.5, 0.775);
-	shape.lineTo(0.275, 1);
-	shape.lineTo(-0.275, 1);
-	shape.lineTo(-0.5, 0.775);
-	shape.closePath();
-	const hole = new Path();
-	hole.absarc(0, 0.63, 0.075, 0, Math.PI * 2, true);
-	shape.holes.push(hole);
-	return shape;
+const uploadInstances = (attribute: BufferAttribute, first: number, count: number) => {
+	if (!count) return;
+	attribute.addUpdateRange(first * attribute.itemSize, count * attribute.itemSize);
+	attribute.needsUpdate = true;
 };
 
 export const createTagGeometry = (thickness = tagVisualThickness) => {
 	const geometry = new ExtrudeGeometry(createTagShape(), {
 		depth: thickness,
 		bevelEnabled: false,
-		curveSegments: 12
+		curveSegments: 6
+	});
+	geometry.translate(0, 0, -thickness / 2);
+	return geometry;
+};
+
+export const createPatchGeometry = (thickness = getVisualPatchThickness(defaultRainSettings)) => {
+	const geometry = new ExtrudeGeometry(createPatchShape(), {
+		depth: thickness,
+		bevelEnabled: false,
+		curveSegments: 6
 	});
 	geometry.translate(0, 0, -thickness / 2);
 	return geometry;
@@ -113,7 +143,8 @@ export const createTagWorld = async (
 	width: number,
 	height: number,
 	random = Math.random,
-	initialSettings = defaultRainSettings
+	initialSettings = defaultRainSettings,
+	initialArtworkPairs: ArtworkPair[] = tagArtworkPairs
 ) => {
 	await initializePhysics();
 	let settings = normalizeRainSettings(initialSettings);
@@ -121,6 +152,7 @@ export const createTagWorld = async (
 	world.timestep = 1 / 60;
 	world.integrationParameters.numSolverIterations = 8;
 	const tags: RainTag[] = [];
+	const activeTags = new Set<RainTag>();
 	const depth = Math.min(2.2, height * 0.2);
 	const normal = new Vector3();
 	const orientation = new Quaternion();
@@ -167,9 +199,10 @@ export const createTagWorld = async (
 	};
 	const spawn = () => {
 		if (tags.length >= maxTagBodies) return;
-		const size = (0.48 + random() * 0.22) * settings.sizeScale;
+		const size = tagDimensionsInches.width * tagWorldUnitsPerInch;
 		const thickness = getVisualThickness(settings);
-		const radius = size * Math.hypot(0.5, 1, thickness / 2);
+		const patchThickness = getVisualPatchThickness(settings);
+		const radius = size * Math.hypot(0.5, 1, thickness / 2 + patchThickness);
 		const rotation = new Quaternion().setFromEuler(
 			new Euler((random() - 0.5) * Math.PI, (random() - 0.5) * Math.PI, (random() - 0.5) * Math.PI)
 		);
@@ -194,34 +227,51 @@ export const createTagWorld = async (
 		// A thin convex hull matches the clipped outline; its small hole is visual only.
 		const vertices: number[] = [];
 		for (const z of [-thickness / 2, thickness / 2]) {
-			for (const [x, y] of [
-				[-0.5, -1],
-				[0.5, -1],
-				[0.5, 0.775],
-				[0.275, 1],
-				[-0.275, 1],
-				[-0.5, 0.775]
-			])
-				vertices.push(x * size, y * size, z * size);
+			for (const { x, y } of tagOutline) vertices.push(x * size, y * size, z * size);
 		}
 		const collider = RAPIER.ColliderDesc.convexHull(new Float32Array(vertices))!;
 		world.createCollider(
 			collider.setMass(0.04).setFriction(0.65).setRestitution(settings.bounce),
 			body
 		);
-		tags.push({
+		// Raised patches on both faces participate in stacking, with the same depth as the rendering.
+		for (const direction of [-1, 1]) {
+			const patchVertices: number[] = [];
+			for (const z of [-patchThickness / 2, patchThickness / 2])
+				for (const { x, y } of patchOutline) patchVertices.push(x * size, y * size, z * size);
+			const patchCollider = RAPIER.ColliderDesc.convexHull(new Float32Array(patchVertices))!;
+			world.createCollider(
+				patchCollider
+					.setTranslation(
+						tagHole.center.x * size,
+						tagHole.center.y * size,
+						direction * (thickness / 2 + patchThickness / 2) * size
+					)
+					.setMass(0.004)
+					.setFriction(0.65)
+					.setRestitution(settings.bounce),
+				body
+			);
+		}
+		const tag: RainTag = {
+			...chooseTagArtwork(random, initialArtworkPairs),
 			body,
-			color: Math.floor(random() * tagColors.length),
+			color: chooseTagColor(random),
 			phase: random() * Math.PI * 2,
 			restingSteps: 0,
 			width: size
-		});
+		};
+		tags.push(tag);
+		activeTags.add(tag);
 	};
 	const step = () => {
 		elapsed += 1 / 60;
-		for (const tag of tags) {
+		for (const tag of activeTags) {
 			const { body, phase } = tag;
-			if (body.isFixed()) continue;
+			if (body.isFixed()) {
+				activeTags.delete(tag);
+				continue;
+			}
 			const velocity = body.linvel();
 			const spin = body.angvel();
 			const isResting =
@@ -231,6 +281,7 @@ export const createTagWorld = async (
 			// Keep resting paper visible and collidable without repeatedly solving the whole pile.
 			if (tag.restingSteps >= 120 || body.isSleeping()) {
 				body.setBodyType(RAPIER.RigidBodyType.Fixed, true);
+				activeTags.delete(tag);
 				continue;
 			}
 			const rotation = body.rotation();
@@ -277,20 +328,24 @@ export const createTagWorld = async (
 	const clear = () => {
 		for (const tag of tags) world.removeRigidBody(tag.body);
 		tags.length = 0;
+		activeTags.clear();
 	};
 	const configure = (next: TagRainSettings) => {
 		settings = normalizeRainSettings(next);
 		world.gravity = { x: 0, y: -settings.gravity, z: 0 };
 		for (const tag of tags) {
-			tag.body.collider(0).setRestitution(settings.bounce);
+			for (let index = 0; index < tag.body.numColliders(); index++)
+				tag.body.collider(index).setRestitution(settings.bounce);
 			if (tag.body.isDynamic()) tag.body.wakeUp();
 		}
 	};
 	const destroy = () => {
 		tags.length = 0;
+		activeTags.clear();
 		world.free();
 	};
 	return {
+		activeTags,
 		clear,
 		configure,
 		depth,
@@ -307,20 +362,20 @@ export const createTagWorld = async (
 
 export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	await initializePhysics();
+	const artworkAtlas = await createArtworkAtlas();
 	const renderer = new WebGLRenderer({
 		canvas,
 		alpha: true,
 		antialias: true,
-		powerPreference: 'low-power'
+		powerPreference: 'high-performance'
 	});
-	renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
 	renderer.shadowMap.enabled = true;
 	renderer.shadowMap.type = PCFShadowMap;
 	const scene = new Scene();
 	const camera = new OrthographicCamera(-3, 3, 5, -5, 0.1, 80);
 	let settings = { ...defaultRainSettings };
 	let geometry = createTagGeometry();
-	const ring = new RingGeometry(0.075, 0.17, 24);
+	let patchGeometry = createPatchGeometry();
 	const palette = tagColors.map(() => new Color());
 	const paperMaterial = new MeshStandardMaterial({
 		roughness: 0.9,
@@ -334,7 +389,11 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		metalness: 0,
 		side: DoubleSide
 	});
-	const patchMaterial = new MeshStandardMaterial({ roughness: 1, side: DoubleSide });
+	const patchMaterial = new MeshStandardMaterial({
+		color: 0xae621a,
+		roughness: 1,
+		side: DoubleSide
+	});
 	const floorGeometry = new PlaneGeometry(1, 4.8);
 	const floorMaterial = new ShadowMaterial({ opacity: 0.12 });
 	const floor = new Mesh(floorGeometry, floorMaterial);
@@ -353,18 +412,47 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	light.shadow.normalBias = 0.025;
 	scene.add(light);
 	const paper = new InstancedMesh(geometry, [paperMaterial, edgeMaterial], maxTagBodies);
-	const patches = new InstancedMesh(ring, patchMaterial, maxTagBodies * 2);
+	const patches = new InstancedMesh(patchGeometry, patchMaterial, maxTagBodies * 2);
 	paper.count = patches.count = 0;
 	paper.castShadow = paper.receiveShadow = true;
+	// The paper casts the tag silhouette; tiny reinforcement shadows add a costly extra pass.
+	patches.receiveShadow = true;
 	// Bounds change as the pile grows. Avoid stale instance bounds clipping newly spawned tags.
 	paper.frustumCulled = patches.frustumCulled = false;
 	paper.instanceMatrix.setUsage(DynamicDrawUsage);
 	patches.instanceMatrix.setUsage(DynamicDrawUsage);
 	scene.add(paper, patches);
+	const backArtworkGeometry = createArtworkGeometry();
+	const frontArtworkGeometry = createArtworkGeometry();
+	const backArtworkIndices = new InstancedBufferAttribute(new Float32Array(maxTagBodies), 1);
+	const frontArtworkIndices = new InstancedBufferAttribute(new Float32Array(maxTagBodies), 1);
+	backArtworkIndices.setUsage(DynamicDrawUsage);
+	frontArtworkIndices.setUsage(DynamicDrawUsage);
+	backArtworkGeometry.setAttribute('artworkIndex', backArtworkIndices);
+	frontArtworkGeometry.setAttribute('artworkIndex', frontArtworkIndices);
+	const backArtworkMaterial = createArtworkMaterial(artworkAtlas, true);
+	const frontArtworkMaterial = createArtworkMaterial(artworkAtlas);
+	const backInk = new InstancedMesh(backArtworkGeometry, backArtworkMaterial, maxTagBodies);
+	const frontInk = new InstancedMesh(frontArtworkGeometry, frontArtworkMaterial, maxTagBodies);
+	const inks = [backInk, frontInk];
+	for (const ink of inks) {
+		ink.count = 0;
+		ink.frustumCulled = false;
+		ink.receiveShadow = true;
+		ink.instanceMatrix.setUsage(DynamicDrawUsage);
+	}
+	scene.add(backInk, frontInk);
+	const artworkOffsets = [-1, 1].map((direction) =>
+		new Matrix4().makeTranslation(0, 0, direction * (getVisualThickness(settings) / 2 + 0.0002))
+	);
 	const transform = new Object3D();
 	const patchTransform = new Matrix4();
 	const patchOffsets = [-1, 1].map((direction) =>
-		new Matrix4().makeTranslation(0, 0.63, direction * (getVisualThickness(settings) / 2 + 0.001))
+		new Matrix4().makeTranslation(
+			tagHole.center.x,
+			tagHole.center.y,
+			direction * (getVisualThickness(settings) / 2 + getVisualPatchThickness(settings) / 2)
+		)
 	);
 	const renderedFixed = new Set<number>();
 	let paletteVersion = 0;
@@ -385,16 +473,28 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 			color.set(styles.getPropertyValue(`--color-${tagColors[index]}`).trim())
 		);
 		paletteVersion++;
-		patchMaterial.color.set(styles.getPropertyValue('--color-tag-buff').trim());
 	};
 	const draw = () => {
 		if (isDestroyed) return;
 		const tags = world?.tags ?? [];
 		const isPaletteChanged = renderedPaletteVersion !== paletteVersion;
+		const firstNew = paper.count;
+		const newCount = Math.max(0, tags.length - firstNew);
+		let firstMoved = tags.length;
+		let lastMoved = -1;
 		for (let index = 0; index < tags.length; index++) {
 			const tag = tags[index];
+			if (index >= paper.count) {
+				frontArtworkIndices.setX(index, tag.frontArtwork + 1);
+				backArtworkIndices.setX(
+					index,
+					tag.backArtwork < 0 ? 0 : artworkCounts.fronts + tag.backArtwork + 1
+				);
+			}
 			if (isPaletteChanged || index >= paper.count) paper.setColorAt(index, palette[tag.color]);
 			if (renderedFixed.has(index)) continue;
+			firstMoved = Math.min(firstMoved, index);
+			lastMoved = index;
 			const position = tag.body.translation();
 			const rotation = tag.body.rotation();
 			transform.position.set(position.x, position.y, position.z);
@@ -402,20 +502,39 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 			transform.scale.setScalar(tag.width);
 			transform.updateMatrix();
 			paper.setMatrixAt(index, transform.matrix);
-			patchOffsets.forEach((offset, side) => {
-				patchTransform.multiplyMatrices(transform.matrix, offset);
+			for (let side = 0; side < 2; side++) {
+				patchTransform.multiplyMatrices(transform.matrix, patchOffsets[side]);
 				patches.setMatrixAt(index * 2 + side, patchTransform);
-			});
+				patchTransform.multiplyMatrices(transform.matrix, artworkOffsets[side]);
+				inks[side].setMatrixAt(index, patchTransform);
+			}
 			if (tag.body.isFixed()) renderedFixed.add(index);
 		}
 		paper.count = tags.length;
+		backInk.count = artworkCounts.backs ? tags.length : 0;
+		frontInk.count = artworkCounts.fronts ? tags.length : 0;
 		patches.count = tags.length * 2;
-		paper.instanceMatrix.needsUpdate = patches.instanceMatrix.needsUpdate = true;
-		if (paper.instanceColor) paper.instanceColor.needsUpdate = true;
+		const movedCount = Math.max(0, lastMoved - firstMoved + 1);
+		uploadInstances(paper.instanceMatrix, firstMoved, movedCount);
+		uploadInstances(patches.instanceMatrix, firstMoved * 2, movedCount * 2);
+		for (const ink of inks)
+			if (ink.count) uploadInstances(ink.instanceMatrix, firstMoved, movedCount);
+		if (backInk.count) uploadInstances(backArtworkIndices, firstNew, newCount);
+		if (frontInk.count) uploadInstances(frontArtworkIndices, firstNew, newCount);
+		if (paper.instanceColor) {
+			if (firstNew === 0 && newCount) paper.instanceColor.setUsage(DynamicDrawUsage);
+			uploadInstances(
+				paper.instanceColor,
+				isPaletteChanged ? 0 : firstNew,
+				isPaletteChanged ? tags.length : newCount
+			);
+		}
 		renderedPaletteVersion = paletteVersion;
 		renderer.render(scene, camera);
 		canvas.dataset.tagCount = String(world?.tags.length ?? 0);
 		canvas.dataset.renderer = 'webgl-3d';
+		canvas.dataset.backDesigns = String(artworkCounts.backs);
+		canvas.dataset.frontDesigns = String(artworkCounts.fronts);
 	};
 	const dropZone = canvas.closest('[data-tag-hero]')?.querySelector('[data-tag-drop-zone]');
 	const updateCamera = () => {
@@ -462,6 +581,10 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		height = nextHeight;
 		const version = ++resizeVersion;
 		if (!width || !height) return;
+		// Bound fill-rate cost on large/high-DPI displays while retaining sharper small canvases.
+		renderer.setPixelRatio(
+			Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(1_500_000 / (width * height)))
+		);
 		renderer.setSize(width, height, false);
 		const viewHeight = 10.5;
 		const viewWidth = (viewHeight * width) / height;
@@ -495,18 +618,23 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		const delta = lastTime ? Math.min((time - lastTime) / 1000, 0.05) : 0;
 		lastTime = time;
 		accumulator += delta;
+		let isWorldChanged = false;
 		if (world) {
 			emissionAccumulator += delta * settings.tagsPerSecond;
 			while (emissionAccumulator >= 1) {
+				isWorldChanged ||= world.tags.length < maxTagBodies;
 				world.spawn();
 				emissionAccumulator--;
 			}
 		}
 		while (accumulator >= 1 / 60) {
-			world?.step();
+			if (world?.activeTags.size) {
+				world.step();
+				isWorldChanged = true;
+			}
 			accumulator -= 1 / 60;
 		}
-		draw();
+		if (isWorldChanged) draw();
 		frame = requestAnimationFrame(tick);
 	};
 	const update = (nextIsActive: boolean) => {
@@ -524,7 +652,7 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	const clear = () => {
 		world?.clear();
 		renderedFixed.clear();
-		paper.count = patches.count = 0;
+		paper.count = patches.count = backInk.count = frontInk.count = 0;
 		emissionAccumulator = 0;
 		draw();
 	};
@@ -533,7 +661,7 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		const isZoomChanged = normalized.cameraZoom !== settings.cameraZoom;
 		const isShapeChanged =
 			getVisualThickness(normalized) !== getVisualThickness(settings) ||
-			normalized.sizeScale !== settings.sizeScale;
+			getVisualPatchThickness(normalized) !== getVisualPatchThickness(settings);
 		settings = normalized;
 		world?.configure(settings);
 		if (isShapeChanged) {
@@ -541,11 +669,22 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 			geometry.dispose();
 			geometry = createTagGeometry(getVisualThickness(settings));
 			paper.geometry = geometry;
-			patchOffsets.forEach((offset, side) =>
+			patchGeometry.dispose();
+			patchGeometry = createPatchGeometry(getVisualPatchThickness(settings));
+			patches.geometry = patchGeometry;
+			artworkOffsets.forEach((offset, side) =>
 				offset.makeTranslation(
 					0,
-					0.63,
-					(side === 0 ? -1 : 1) * (getVisualThickness(settings) / 2 + 0.001)
+					0,
+					(side === 0 ? -1 : 1) * (getVisualThickness(settings) / 2 + 0.0002)
+				)
+			);
+			patchOffsets.forEach((offset, side) =>
+				offset.makeTranslation(
+					tagHole.center.x,
+					tagHole.center.y,
+					(side === 0 ? -1 : 1) *
+						(getVisualThickness(settings) / 2 + getVisualPatchThickness(settings) / 2)
 				)
 			);
 			clear();
@@ -581,7 +720,14 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 			themeObserver.disconnect();
 			world?.destroy();
 			geometry.dispose();
-			ring.dispose();
+			patchGeometry.dispose();
+			backArtworkGeometry.dispose();
+			frontArtworkGeometry.dispose();
+			backArtworkMaterial.dispose();
+			frontArtworkMaterial.dispose();
+			backInk.dispose();
+			frontInk.dispose();
+			artworkAtlas.texture.dispose();
 			floorGeometry.dispose();
 			floorMaterial.dispose();
 			paper.dispose();

@@ -6,6 +6,11 @@
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
+/* Keep this canvas stock color available even without a matching utility in markup. */
+@theme static {
+	--color-tag-white: #ffffff;
+}
+
 @theme {
 	--font-sans: 'Inter Variable', 'SF Pro Display', system-ui, sans-serif;
 	--color-tag-blue-dark: #6789c6;
