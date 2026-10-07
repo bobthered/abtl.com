@@ -17,6 +17,25 @@ it('uses the annual production pace for emission', () => {
 	expect(tagsPerSecond).toBeCloseTo(2.853881, 5);
 });
 
+it('anchors emission on the right while preserving the pile on resize', async () => {
+	const simulation = await createTagWorld(20, 10.5, () => 0.65);
+	simulation.setDropZone(6, 4);
+	simulation.spawn();
+	const tag = simulation.tags[0];
+	const position = tag.body.translation();
+	expect(position.x).toBeGreaterThan(4);
+	expect(position.x).toBeLessThan(8);
+	simulation.setWidth(10);
+	expect(tag.body.translation().x).toBeCloseTo(position.x / 2);
+	expect(simulation.tags).toContain(tag);
+	expect(simulation.world.bodies.len()).toBe(6);
+	simulation.setDropZone(3, 2);
+	simulation.spawn();
+	expect(simulation.tags[1].body.translation().x).toBeGreaterThan(2);
+	expect(simulation.tags[1].body.translation().x).toBeLessThan(4);
+	simulation.destroy();
+});
+
 it('applies gravity and bounce controls and clears tags without losing the scene boundaries', async () => {
 	const simulation = await createTagWorld(6, 7);
 	simulation.spawn();

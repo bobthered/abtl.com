@@ -34,10 +34,13 @@
 		const updateVisibility = () => {
 			isDocumentVisible = !document.hidden;
 		};
-		const observer = new IntersectionObserver(([entry]) => {
-			isInView = entry.isIntersecting;
+		const observer = new IntersectionObserver((entries) => {
+			for (const entry of entries) {
+				if (entry.target === element) isInView = entry.isIntersecting;
+				if (entry.target === brandElement) isMarqueeInView = entry.isIntersecting;
+			}
 		});
-		const track = element.querySelector('[data-brand-track]');
+		const track = brandElement?.querySelector('[data-brand-track]');
 		const resizeObserver = new ResizeObserver(() => {
 			brandAnimation?.cancel();
 			if (track)
@@ -51,6 +54,7 @@
 		});
 		if (track) resizeObserver.observe(track);
 		observer.observe(element);
+		if (brandElement) observer.observe(brandElement);
 		updatePreference();
 		updateVisibility();
 		preference.addEventListener('change', updatePreference);
@@ -67,15 +71,20 @@
 
 	// $state
 	let brandAnimation = $state.raw<Animation | null>(null);
+	let brandElement = $state<HTMLElement | null>(null);
 	let element = $state<HTMLElement | null>(null);
 	let isDocumentVisible = $state(true);
 	let isInView = $state(true);
+	let isMarqueeInView = $state(true);
 	let isPaused = $state(false);
 	let isReducedMotion = $state(true);
 	let timestamp = $state<number | null>(null);
 
 	// $derived
 	const estimatedTotal = $derived(timestamp === null ? null : estimateAnnualProduction(timestamp));
+	const isBrandMotionActive = $derived(
+		!isPaused && !isReducedMotion && isDocumentVisible && isMarqueeInView
+	);
 	const isMotionActive = $derived(!isPaused && !isReducedMotion && isDocumentVisible && isInView);
 
 	// $effects
@@ -90,7 +99,7 @@
 	$effect(() => {
 		for (const animation of [brandAnimation]) {
 			if (!animation) continue;
-			if (isMotionActive) animation.play();
+			if (isBrandMotionActive) animation.play();
 			else {
 				animation.pause();
 				if (isReducedMotion) animation.currentTime = 0;
@@ -99,9 +108,21 @@
 	});
 </script>
 
-<Section bind:element variants={['hero']} aria-labelledby="hero-heading">
+<Section bind:element variants={['hero']} aria-labelledby="hero-heading" data-tag-hero>
+	<TagRain isActive={isMotionActive} />
+	<Div class={theme.resolve('heroBlur')} aria-hidden="true" inert data-hero-blur>
+		<Div variants={['heroBlurSoft']} />
+		<Div variants={['heroBlurMedium']} />
+		<Div variants={['heroBlurStrong']} />
+	</Div>
 	<Container variants={['hero']}>
-		<Div class="max-w-3xl lg:w-3/5">
+		<Div
+			data-tag-drop-zone
+			aria-hidden="true"
+			inert
+			class="absolute inset-y-0 right-6 w-2/5 sm:right-8 lg:right-16 lg:w-1/3"
+		/>
+		<Div variants={['heroCopy']} data-hero-copy>
 			<Div>
 				<P
 					variants={['heroMetric']}
@@ -134,8 +155,15 @@
 				<P variants={['heroFootnote']}>Stock tags. Custom tags. A place for every detail.</P>
 			</Div>
 		</Div>
-		<TagRain isActive={isMotionActive} />
 	</Container>
+</Section>
+
+<Section
+	bind:element={brandElement}
+	variants={['heroMarquee']}
+	data-hero-marquee
+	aria-label="Allen-Bailey brand"
+>
 	<Container>
 		<Div class={theme.resolve('heroBrand')}>
 			<Div

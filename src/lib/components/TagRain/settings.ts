@@ -14,6 +14,15 @@ export const settingControls = [
 		decimals: 2,
 		unit: ''
 	},
+	{
+		key: 'cameraZoom',
+		label: 'Camera zoom',
+		min: 0.25,
+		max: 3,
+		step: 0.05,
+		decimals: 2,
+		unit: 'x'
+	},
 	{ key: 'gravity', label: 'Gravity', min: 0, max: 30, step: 0.1, decimals: 1, unit: '' },
 	{
 		key: 'thicknessInches',
@@ -42,6 +51,7 @@ export type TagRainSettings = Record<(typeof settingControls)[number]['key'], nu
 export const defaultRainSettings: TagRainSettings = {
 	airDrag: 1,
 	bounce: 0.02,
+	cameraZoom: 1,
 	flutter: 1,
 	gravity: 3.2,
 	sizeScale: 1,

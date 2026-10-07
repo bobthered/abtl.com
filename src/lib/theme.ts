@@ -16,8 +16,34 @@ export const initializeTheme = () => {
 	theme.update.base('card', 'rounded-lg p-8 shadow-sm');
 	theme.set.base(
 		'tagRain',
-		'pointer-events-none relative mt-12 h-64 w-full overflow-hidden motion-reduce:hidden lg:absolute lg:inset-y-0 lg:right-0 lg:mt-0 lg:h-full lg:w-2/5'
+		'pointer-events-none absolute inset-0 z-0 hidden h-full w-full lg:block motion-reduce:hidden'
 	);
+	theme.set.variant(
+		'div',
+		'heroCopy',
+		'relative flex w-full max-w-3xl flex-col justify-center py-20 sm:py-24 lg:w-3/5 lg:py-28'
+	);
+	theme.set.base(
+		'heroBlur',
+		'pointer-events-none absolute inset-0 z-10 hidden bg-linear-to-r from-gray-50/80 via-gray-50/30 to-transparent lg:block dark:from-gray-950/80 dark:via-gray-950/30'
+	);
+	// Layer masked blur strengths to taper smoothly from the copy toward the clear drop area.
+	theme.set.variant(
+		'div',
+		'heroBlurSoft',
+		'absolute inset-0 backdrop-blur-sm mask-r-from-40% mask-r-to-100%'
+	);
+	theme.set.variant(
+		'div',
+		'heroBlurMedium',
+		'absolute inset-0 backdrop-blur-md mask-r-from-20% mask-r-to-80%'
+	);
+	theme.set.variant(
+		'div',
+		'heroBlurStrong',
+		'absolute inset-0 backdrop-blur-xl mask-r-from-0% mask-r-to-60%'
+	);
+	theme.set.variant('section', 'heroMarquee', 'relative bg-gray-50 dark:bg-gray-950');
 	theme.set.variant('canvas', 'tagRain', 'block h-full w-full opacity-80 dark:opacity-60');
 	theme.update.base('dialog', 'rounded-lg p-8 shadow-xl');
 	theme.update.base('input', 'rounded-sm px-4 py-3 text-base leading-5');
@@ -29,11 +55,7 @@ export const initializeTheme = () => {
 		'hero',
 		'relative isolate overflow-hidden bg-gray-50 dark:bg-gray-950'
 	);
-	theme.set.variant(
-		'container',
-		'hero',
-		'pt-20 pb-16 sm:pt-24 sm:pb-20 lg:min-h-160 lg:pt-28 lg:pb-24'
-	);
+	theme.set.variant('container', 'hero', 'flex min-h-160 items-stretch lg:min-h-180');
 	theme.set.base(
 		'heroBrand',
 		'relative flex items-center gap-6 border-t border-gray-200/80 py-8 dark:border-gray-800'

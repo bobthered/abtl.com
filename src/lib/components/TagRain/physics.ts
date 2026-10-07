@@ -112,19 +112,43 @@ export const createTagWorld = async (
 	const depth = Math.min(2.2, height * 0.2);
 	const normal = new Vector3();
 	const orientation = new Quaternion();
+	let boundaryWidth = width;
+	let dropCenter = 0;
+	let dropWidth = width;
 	let elapsed = 0;
 	const fixed = (x: number, y: number, z: number, halfX: number, halfY: number, halfZ: number) => {
 		const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(x, y, z));
 		world.createCollider(RAPIER.ColliderDesc.cuboid(halfX, halfY, halfZ).setFriction(0.8), body);
+		return body;
 	};
-	fixed(0, -0.12, 0, width / 2 + 1, 0.12, depth + 1);
+	const floor = fixed(0, -0.12, 0, width / 2 + 1, 0.12, depth + 1);
 	// Guide airborne tags, but leave room at ground level to spread flat instead of leaning on walls.
 	const wallCenter = (height + 2) / 2;
 	const wallHalfHeight = (height - 2) / 2;
-	fixed(-width / 2 - 0.15, wallCenter, 0, 0.15, wallHalfHeight, depth);
-	fixed(width / 2 + 0.15, wallCenter, 0, 0.15, wallHalfHeight, depth);
-	fixed(0, wallCenter, -depth, width, wallHalfHeight, 0.15);
-	fixed(0, wallCenter, depth, width, wallHalfHeight, 0.15);
+	const leftWall = fixed(-width / 2 - 0.15, wallCenter, 0, 0.15, wallHalfHeight, depth);
+	const rightWall = fixed(width / 2 + 0.15, wallCenter, 0, 0.15, wallHalfHeight, depth);
+	const backWall = fixed(0, wallCenter, -depth, width, wallHalfHeight, 0.15);
+	const frontWall = fixed(0, wallCenter, depth, width, wallHalfHeight, 0.15);
+	const setDropZone = (center: number, span: number) => {
+		dropCenter = Math.min(boundaryWidth / 2, Math.max(-boundaryWidth / 2, center));
+		dropWidth = Math.max(0.1, Math.min(boundaryWidth, span));
+	};
+	const setWidth = (nextWidth: number) => {
+		if (nextWidth === boundaryWidth) return;
+		const ratio = nextWidth / boundaryWidth;
+		// Preserve the accumulated pile's relative placement when the hero changes width.
+		for (const tag of tags) {
+			const position = tag.body.translation();
+			tag.body.setTranslation({ ...position, x: position.x * ratio }, true);
+		}
+		boundaryWidth = nextWidth;
+		floor.collider(0).setHalfExtents({ x: nextWidth / 2 + 1, y: 0.12, z: depth + 1 });
+		leftWall.setTranslation({ x: -nextWidth / 2 - 0.15, y: wallCenter, z: 0 }, true);
+		rightWall.setTranslation({ x: nextWidth / 2 + 0.15, y: wallCenter, z: 0 }, true);
+		for (const wall of [backWall, frontWall])
+			wall.collider(0).setHalfExtents({ x: nextWidth, y: wallHalfHeight, z: 0.15 });
+		setDropZone(dropCenter * ratio, dropWidth * ratio);
+	};
 	const spawn = () => {
 		if (tags.length >= maxTagBodies) return;
 		const size = (0.48 + random() * 0.22) * settings.sizeScale;
@@ -135,7 +159,7 @@ export const createTagWorld = async (
 		const body = world.createRigidBody(
 			RAPIER.RigidBodyDesc.dynamic()
 				.setTranslation(
-					(random() - 0.5) * Math.max(0.1, width - size * 2),
+					dropCenter + (random() - 0.5) * Math.max(0.1, dropWidth - size * 2),
 					height + size,
 					(random() - 0.5) * depth * 1.2
 				)
@@ -249,7 +273,7 @@ export const createTagWorld = async (
 		tags.length = 0;
 		world.free();
 	};
-	return { clear, configure, destroy, spawn, step, tags, world };
+	return { clear, configure, destroy, setDropZone, setWidth, spawn, step, tags, world };
 };
 
 export const createTagRain = async (canvas: HTMLCanvasElement) => {
@@ -282,7 +306,7 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		side: DoubleSide
 	});
 	const patchMaterial = new MeshStandardMaterial({ roughness: 1, side: DoubleSide });
-	const floorGeometry = new PlaneGeometry(30, 4.8);
+	const floorGeometry = new PlaneGeometry(1, 4.8);
 	const floorMaterial = new ShadowMaterial({ opacity: 0.12 });
 	const floor = new Mesh(floorGeometry, floorMaterial);
 	floor.rotation.x = -Math.PI / 2;
@@ -316,8 +340,6 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	const renderedFixed = new Set<number>();
 	let paletteVersion = 0;
 	let renderedPaletteVersion = -1;
-	let worldHeight = 0;
-	let worldWidth = 0;
 	let accumulator = 0;
 	let frame: number | null = null;
 	let height = 0;
@@ -366,41 +388,73 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		canvas.dataset.tagCount = String(world?.tags.length ?? 0);
 		canvas.dataset.renderer = 'webgl-3d';
 	};
+	const dropZone = canvas.closest('[data-tag-hero]')?.querySelector('[data-tag-drop-zone]');
+	const updateCamera = () => {
+		const viewport = canvas.getBoundingClientRect();
+		const zone = dropZone?.getBoundingClientRect();
+		const viewWidth = camera.right - camera.left;
+		const anchor =
+			zone && viewport.width
+				? ((zone.left + zone.width / 2 - viewport.left) / viewport.width - 0.5) * viewWidth
+				: 0;
+		// Zoom around the pile's ground anchor, keeping the emitter aligned with the container.
+		const centerX = anchor * (1 - 1 / settings.cameraZoom);
+		const centerY = ((camera.top - camera.bottom) * 0.42) / settings.cameraZoom;
+		camera.zoom = settings.cameraZoom;
+		camera.position.set(centerX, centerY + 8, 12);
+		camera.lookAt(centerX, centerY, 0);
+		camera.updateProjectionMatrix();
+		canvas.dataset.cameraZoom = String(settings.cameraZoom);
+	};
+	const updateDropZone = () => {
+		if (!world || !dropZone) return;
+		const viewport = canvas.getBoundingClientRect();
+		if (!viewport.width) return;
+		const zone = dropZone.getBoundingClientRect();
+		const viewWidth = (camera.right - camera.left) / camera.zoom;
+		const center =
+			camera.position.x +
+			((zone.left + zone.width / 2 - viewport.left) / viewport.width - 0.5) * viewWidth;
+		world.setDropZone(center, (zone.width / viewport.width) * viewWidth);
+		canvas.dataset.dropCenter = String(zone.left + zone.width / 2 - viewport.left);
+		canvas.dataset.dropWidth = String(zone.width);
+	};
 	const resize = async () => {
 		const rect = canvas.getBoundingClientRect();
 		const nextWidth = Math.round(rect.width);
 		const nextHeight = Math.round(rect.height);
-		if (width === nextWidth && height === nextHeight) return;
+		if (width === nextWidth && height === nextHeight) {
+			updateCamera();
+			updateDropZone();
+			return;
+		}
 		width = nextWidth;
 		height = nextHeight;
 		const version = ++resizeVersion;
 		if (!width || !height) return;
 		renderer.setSize(width, height, false);
-		const viewHeight = world
-			? Math.max(worldHeight, (worldWidth * height) / width)
-			: height < 400
-				? 5.6
-				: 10.5;
+		const viewHeight = 10.5;
 		const viewWidth = (viewHeight * width) / height;
 		camera.left = -viewWidth / 2;
 		camera.right = viewWidth / 2;
 		camera.top = viewHeight / 2;
 		camera.bottom = -viewHeight / 2;
-		camera.position.set(2, viewHeight * 0.42 + 8, 12);
-		camera.lookAt(0, viewHeight * 0.42, 0);
-		camera.updateProjectionMatrix();
+		updateCamera();
+		floor.scale.x = viewWidth + 2;
 		if (world) {
+			world.setWidth(viewWidth);
+			renderedFixed.clear();
+			updateDropZone();
 			draw();
 			return;
 		}
-		const nextWorld = await createTagWorld(viewWidth * 0.85, viewHeight, Math.random, settings);
+		const nextWorld = await createTagWorld(viewWidth, viewHeight, Math.random, settings);
 		if (isDestroyed || version !== resizeVersion) {
 			nextWorld.destroy();
 			return;
 		}
 		world = nextWorld;
-		worldHeight = viewHeight;
-		worldWidth = viewWidth;
+		updateDropZone();
 		emissionAccumulator = 0;
 		readPalette();
 		draw();
@@ -446,6 +500,7 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	};
 	const configure = (next: TagRainSettings) => {
 		const normalized = normalizeRainSettings(next);
+		const isZoomChanged = normalized.cameraZoom !== settings.cameraZoom;
 		const isShapeChanged =
 			getVisualThickness(normalized) !== getVisualThickness(settings) ||
 			normalized.sizeScale !== settings.sizeScale;
@@ -465,6 +520,11 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 			);
 			clear();
 		}
+		if (isZoomChanged) {
+			updateCamera();
+			updateDropZone();
+			draw();
+		}
 	};
 	const observer = new ResizeObserver(() => {
 		void resize();
@@ -474,6 +534,7 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		draw();
 	});
 	observer.observe(canvas);
+	if (dropZone) observer.observe(dropZone);
 	themeObserver.observe(document.documentElement, {
 		attributes: true,
 		attributeFilter: ['data-theme']

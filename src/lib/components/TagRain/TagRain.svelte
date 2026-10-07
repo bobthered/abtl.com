@@ -19,8 +19,15 @@
 				// Keep defaults when storage is unavailable or invalid.
 			}
 		}
+		const viewport = window.matchMedia('(min-width: 64rem)');
+		const updateViewport = () => {
+			isDesktop = viewport.matches;
+		};
+		updateViewport();
+		viewport.addEventListener('change', updateViewport);
 		isMounted = true;
 		return () => {
+			viewport.removeEventListener('change', updateViewport);
 			isMounted = false;
 			surface?.destroy();
 		};
@@ -48,6 +55,7 @@
 
 	// $state
 	let canvas = $state<HTMLCanvasElement | null>(null);
+	let isDesktop = $state(false);
 	let isInitializing = $state(false);
 	let isMounted = $state(false);
 	let isPaused = $state(false);
@@ -56,7 +64,7 @@
 
 	// $effects
 	$effect(() => {
-		if (isMounted && isActive && canvas && !surface)
+		if (isMounted && isActive && isDesktop && canvas && !surface)
 			untrack(() => {
 				void initializeSurface();
 			});
@@ -65,7 +73,7 @@
 		surface?.configure(normalizeRainSettings(settings));
 	});
 	$effect(() => {
-		surface?.update(isActive && !isPaused);
+		surface?.update(isActive && isDesktop && !isPaused);
 	});
 	$effect(() => {
 		if (!isDevelopment || !isMounted) return;
