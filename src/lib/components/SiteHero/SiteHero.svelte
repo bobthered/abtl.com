@@ -134,8 +134,8 @@
 					</Span>
 				</P>
 				<H1 id="hero-heading" variants={['hero']}>
-					<Span class="block">Small tags.</Span>
-					<Span class="block">Big impact.</Span>
+					<Span class="block">Built for</Span>
+					<Span class="block">Endless possibilities.</Span>
 				</H1>
 				<P variants={['heroLead']}>
 					Every tag has a job to do. We produced over 90 million in the last year, helping
