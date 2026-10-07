@@ -134,7 +134,7 @@
 				<P variants={['heroFootnote']}>Stock tags. Custom tags. A place for every detail.</P>
 			</Div>
 		</Div>
-		<TagRain isActive={isMotionActive} total={estimatedTotal} />
+		<TagRain isActive={isMotionActive} />
 	</Container>
 	<Container>
 		<Div class={theme.resolve('heroBrand')}>

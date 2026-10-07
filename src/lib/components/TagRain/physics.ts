@@ -1,14 +1,25 @@
 import RAPIER from '@dimforge/rapier3d-compat';
-import { productionProjection } from '#lib/productionMetric.js';
+import {
+	defaultRainSettings,
+	getVisualThickness,
+	normalizeRainSettings,
+	tagDimensionsInches
+} from './settings';
+import type { TagRainSettings } from './settings';
+export { tagDimensionsInches, tagsPerSecond } from './settings';
 import {
 	AmbientLight,
+	Color,
 	DirectionalLight,
 	DoubleSide,
+	DynamicDrawUsage,
 	Euler,
 	ExtrudeGeometry,
-	Group,
+	InstancedMesh,
+	Matrix4,
 	Mesh,
 	MeshStandardMaterial,
+	Object3D,
 	OrthographicCamera,
 	Path,
 	PCFShadowMap,
@@ -26,23 +37,38 @@ export type RainTag = {
 	body: RAPIER.RigidBody;
 	color: number;
 	phase: number;
+	restingSteps: number;
 	width: number;
 };
 
-export const maxTagBodies = 80;
+// Roughly an hour of continuous production; reaching capacity preserves the entire pile.
+export const maxTagBodies = 10_000;
 export const tagColors = [
-	'tag-manila',
+	'tag-blue-dark',
 	'tag-blue-light',
-	'tag-salmon',
+	'tag-brown',
 	'tag-buff',
-	'tag-lilac',
+	'tag-fluorescent-green',
+	'tag-fluorescent-orange',
+	'tag-fluorescent-pink',
+	'tag-fluorescent-red',
+	'tag-fluorescent-yellow',
+	'tag-gray',
+	'tag-green-dark',
 	'tag-green-light',
-	'abtl-blue-400'
+	'tag-ivory',
+	'tag-lilac',
+	'tag-manila',
+	'tag-orange',
+	'tag-pink',
+	'tag-red',
+	'tag-salmon',
+	'tag-yellow'
 ];
-export const tagsPerSecond =
-	productionProjection.target /
-	((productionProjection.endsAt - productionProjection.startsAt) / 1000);
-const thickness = 0.025;
+export const tagThickness = tagDimensionsInches.thickness / tagDimensionsInches.width;
+// True-scale stock is subpixel in this hero. Exaggerate only depth so its edge remains visible.
+export const tagVisualThicknessScale = 50;
+export const tagVisualThickness = tagThickness * tagVisualThicknessScale;
 let initialization: Promise<void> | null = null;
 const initializePhysics = () => (initialization ??= RAPIER.init());
 
@@ -61,9 +87,25 @@ export const createTagShape = () => {
 	return shape;
 };
 
-export const createTagWorld = async (width: number, height: number, random = Math.random) => {
+export const createTagGeometry = (thickness = tagVisualThickness) => {
+	const geometry = new ExtrudeGeometry(createTagShape(), {
+		depth: thickness,
+		bevelEnabled: false,
+		curveSegments: 12
+	});
+	geometry.translate(0, 0, -thickness / 2);
+	return geometry;
+};
+
+export const createTagWorld = async (
+	width: number,
+	height: number,
+	random = Math.random,
+	initialSettings = defaultRainSettings
+) => {
 	await initializePhysics();
-	const world = new RAPIER.World({ x: 0, y: -3.2, z: 0 });
+	let settings = normalizeRainSettings(initialSettings);
+	const world = new RAPIER.World({ x: 0, y: -settings.gravity, z: 0 });
 	world.timestep = 1 / 60;
 	world.integrationParameters.numSolverIterations = 8;
 	const tags: RainTag[] = [];
@@ -84,7 +126,9 @@ export const createTagWorld = async (width: number, height: number, random = Mat
 	fixed(0, wallCenter, -depth, width, wallHalfHeight, 0.15);
 	fixed(0, wallCenter, depth, width, wallHalfHeight, 0.15);
 	const spawn = () => {
-		const size = 0.48 + random() * 0.22;
+		if (tags.length >= maxTagBodies) return;
+		const size = (0.48 + random() * 0.22) * settings.sizeScale;
+		const thickness = getVisualThickness(settings);
 		const rotation = new Quaternion().setFromEuler(
 			new Euler((random() - 0.5) * Math.PI, (random() - 0.5) * Math.PI, (random() - 0.5) * Math.PI)
 		);
@@ -120,27 +164,37 @@ export const createTagWorld = async (width: number, height: number, random = Mat
 				vertices.push(x * size, y * size, z * size);
 		}
 		const collider = RAPIER.ColliderDesc.convexHull(new Float32Array(vertices))!;
-		world.createCollider(collider.setMass(0.04).setFriction(0.65).setRestitution(0.02), body);
+		world.createCollider(
+			collider.setMass(0.04).setFriction(0.65).setRestitution(settings.bounce),
+			body
+		);
 		tags.push({
 			body,
 			color: Math.floor(random() * tagColors.length),
 			phase: random() * Math.PI * 2,
+			restingSteps: 0,
 			width: size
 		});
-		if (tags.length > maxTagBodies) {
-			const index = tags.findIndex((tag) => tag.body.translation().y < 0.8);
-			const [retired] = tags.splice(index < 0 ? 0 : index, 1);
-			world.removeRigidBody(retired.body);
-		}
 	};
 	const step = () => {
 		elapsed += 1 / 60;
 		for (const tag of tags) {
 			const { body, phase } = tag;
+			if (body.isFixed()) continue;
+			const velocity = body.linvel();
+			const spin = body.angvel();
+			const isResting =
+				Math.hypot(velocity.x, velocity.y, velocity.z) < 0.06 &&
+				Math.hypot(spin.x, spin.y, spin.z) < 0.12;
+			tag.restingSteps = isResting ? tag.restingSteps + 1 : 0;
+			// Keep resting paper visible and collidable without repeatedly solving the whole pile.
+			if (tag.restingSteps >= 120 || body.isSleeping()) {
+				body.setBodyType(RAPIER.RigidBodyType.Fixed, true);
+				continue;
+			}
 			const rotation = body.rotation();
 			orientation.set(rotation.x, rotation.y, rotation.z, rotation.w);
 			normal.set(0, 0, 1).applyQuaternion(orientation);
-			if (body.isSleeping() && Math.abs(normal.y) > 0.95) continue;
 			body.resetForces(false);
 			body.resetTorques(false);
 			if (body.translation().y < 0.9) {
@@ -157,34 +211,45 @@ export const createTagWorld = async (width: number, height: number, random = Mat
 				}
 				continue;
 			}
-			const velocity = body.linvel();
 			const mass = body.mass();
 			// Broadside paper catches more air than an edge-on tag, producing varied descent speeds.
-			const drag = 0.35 + Math.abs(normal.y) * 1.65;
+			const drag = (0.35 + Math.abs(normal.y) * 1.65) * settings.airDrag;
 			body.addForce(
 				{
-					x: mass * (Math.sin(elapsed * 1.5 + phase) * 0.55 - velocity.x * 0.5),
+					x: mass * (Math.sin(elapsed * 1.5 + phase) * 0.55 * settings.flutter - velocity.x * 0.5),
 					y: -mass * velocity.y * Math.abs(velocity.y) * drag,
-					z: mass * (Math.cos(elapsed * 1.1 + phase) * 0.3 - velocity.z * 0.7)
+					z: mass * (Math.cos(elapsed * 1.1 + phase) * 0.3 * settings.flutter - velocity.z * 0.7)
 				},
 				false
 			);
 			body.addTorque(
 				{
-					x: mass * Math.sin(elapsed * 2 + phase) * 0.025,
-					y: mass * Math.cos(elapsed + phase) * 0.012,
-					z: mass * Math.sin(elapsed * 1.7 + phase) * 0.018
+					x: mass * Math.sin(elapsed * 2 + phase) * 0.025 * settings.flutter,
+					y: mass * Math.cos(elapsed + phase) * 0.012 * settings.flutter,
+					z: mass * Math.sin(elapsed * 1.7 + phase) * 0.018 * settings.flutter
 				},
 				false
 			);
 		}
 		world.step();
 	};
+	const clear = () => {
+		for (const tag of tags) world.removeRigidBody(tag.body);
+		tags.length = 0;
+	};
+	const configure = (next: TagRainSettings) => {
+		settings = normalizeRainSettings(next);
+		world.gravity = { x: 0, y: -settings.gravity, z: 0 };
+		for (const tag of tags) {
+			tag.body.collider(0).setRestitution(settings.bounce);
+			if (tag.body.isDynamic()) tag.body.wakeUp();
+		}
+	};
 	const destroy = () => {
 		tags.length = 0;
 		world.free();
 	};
-	return { destroy, spawn, step, tags, world };
+	return { clear, configure, destroy, spawn, step, tags, world };
 };
 
 export const createTagRain = async (canvas: HTMLCanvasElement) => {
@@ -200,16 +265,22 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	renderer.shadowMap.type = PCFShadowMap;
 	const scene = new Scene();
 	const camera = new OrthographicCamera(-3, 3, 5, -5, 0.1, 80);
-	const geometry = new ExtrudeGeometry(createTagShape(), {
-		depth: thickness,
-		bevelEnabled: false,
-		curveSegments: 12
-	});
-	geometry.translate(0, 0, -thickness / 2);
+	let settings = { ...defaultRainSettings };
+	let geometry = createTagGeometry();
 	const ring = new RingGeometry(0.075, 0.17, 24);
-	const materials = tagColors.map(
-		() => new MeshStandardMaterial({ roughness: 0.9, metalness: 0, side: DoubleSide })
-	);
+	const palette = tagColors.map(() => new Color());
+	const paperMaterial = new MeshStandardMaterial({
+		roughness: 0.9,
+		metalness: 0,
+		side: DoubleSide
+	});
+	// ExtrudeGeometry assigns group 0 to the faces and group 1 to the cut edges (including the hole).
+	const edgeMaterial = new MeshStandardMaterial({
+		color: 0x888888,
+		roughness: 1,
+		metalness: 0,
+		side: DoubleSide
+	});
 	const patchMaterial = new MeshStandardMaterial({ roughness: 1, side: DoubleSide });
 	const floorGeometry = new PlaneGeometry(30, 4.8);
 	const floorMaterial = new ShadowMaterial({ opacity: 0.12 });
@@ -217,7 +288,7 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	floor.rotation.x = -Math.PI / 2;
 	floor.position.y = -0.002;
 	floor.receiveShadow = true;
-	scene.add(floor, new AmbientLight(0xffffff, 1.7));
+	scene.add(floor, new AmbientLight(0xffffff, 1.05));
 	const light = new DirectionalLight(0xffffff, 2);
 	light.position.set(-3, 12, 7);
 	light.castShadow = true;
@@ -228,58 +299,69 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	light.shadow.camera.bottom = -8;
 	light.shadow.normalBias = 0.025;
 	scene.add(light);
-	const meshes = new Map<number, Group>();
+	const paper = new InstancedMesh(geometry, [paperMaterial, edgeMaterial], maxTagBodies);
+	const patches = new InstancedMesh(ring, patchMaterial, maxTagBodies * 2);
+	paper.count = patches.count = 0;
+	paper.castShadow = paper.receiveShadow = true;
+	// Bounds change as the pile grows. Avoid stale instance bounds clipping newly spawned tags.
+	paper.frustumCulled = patches.frustumCulled = false;
+	paper.instanceMatrix.setUsage(DynamicDrawUsage);
+	patches.instanceMatrix.setUsage(DynamicDrawUsage);
+	scene.add(paper, patches);
+	const transform = new Object3D();
+	const patchTransform = new Matrix4();
+	const patchOffsets = [-1, 1].map((direction) =>
+		new Matrix4().makeTranslation(0, 0.63, direction * (getVisualThickness(settings) / 2 + 0.001))
+	);
+	const renderedFixed = new Set<number>();
+	let paletteVersion = 0;
+	let renderedPaletteVersion = -1;
+	let worldHeight = 0;
+	let worldWidth = 0;
 	let accumulator = 0;
 	let frame: number | null = null;
 	let height = 0;
 	let isActive = false;
 	let isDestroyed = false;
 	let lastTime = 0;
-	let lastTotal: number | null = null;
-	let nextSpawn = 0;
-	let pending = 0;
+	let emissionAccumulator = 0;
 	let resizeVersion = 0;
-	let simulationTime = 0;
 	let width = 0;
 	let world: Awaited<ReturnType<typeof createTagWorld>> | null = null;
 	const readPalette = () => {
 		const styles = getComputedStyle(canvas);
-		materials.forEach((material, index) =>
-			material.color.set(styles.getPropertyValue(`--color-${tagColors[index]}`).trim())
+		palette.forEach((color, index) =>
+			color.set(styles.getPropertyValue(`--color-${tagColors[index]}`).trim())
 		);
+		paletteVersion++;
 		patchMaterial.color.set(styles.getPropertyValue('--color-tag-buff').trim());
 	};
 	const draw = () => {
 		if (isDestroyed) return;
-		const handles = new Set<number>();
-		for (const tag of world?.tags ?? []) {
-			handles.add(tag.body.handle);
-			let group = meshes.get(tag.body.handle);
-			if (!group) {
-				group = new Group();
-				const paper = new Mesh(geometry, materials[tag.color]);
-				paper.castShadow = true;
-				paper.receiveShadow = true;
-				group.add(paper);
-				for (const direction of [-1, 1]) {
-					const patch = new Mesh(ring, patchMaterial);
-					patch.position.set(0, 0.63, direction * (thickness / 2 + 0.001));
-					group.add(patch);
-				}
-				group.scale.setScalar(tag.width);
-				meshes.set(tag.body.handle, group);
-				scene.add(group);
-			}
+		const tags = world?.tags ?? [];
+		const isPaletteChanged = renderedPaletteVersion !== paletteVersion;
+		for (let index = 0; index < tags.length; index++) {
+			const tag = tags[index];
+			if (isPaletteChanged || index >= paper.count) paper.setColorAt(index, palette[tag.color]);
+			if (renderedFixed.has(index)) continue;
 			const position = tag.body.translation();
 			const rotation = tag.body.rotation();
-			group.position.set(position.x, position.y, position.z);
-			group.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+			transform.position.set(position.x, position.y, position.z);
+			transform.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+			transform.scale.setScalar(tag.width);
+			transform.updateMatrix();
+			paper.setMatrixAt(index, transform.matrix);
+			patchOffsets.forEach((offset, side) => {
+				patchTransform.multiplyMatrices(transform.matrix, offset);
+				patches.setMatrixAt(index * 2 + side, patchTransform);
+			});
+			if (tag.body.isFixed()) renderedFixed.add(index);
 		}
-		for (const [handle, mesh] of meshes)
-			if (!handles.has(handle)) {
-				scene.remove(mesh);
-				meshes.delete(handle);
-			}
+		paper.count = tags.length;
+		patches.count = tags.length * 2;
+		paper.instanceMatrix.needsUpdate = patches.instanceMatrix.needsUpdate = true;
+		if (paper.instanceColor) paper.instanceColor.needsUpdate = true;
+		renderedPaletteVersion = paletteVersion;
 		renderer.render(scene, camera);
 		canvas.dataset.tagCount = String(world?.tags.length ?? 0);
 		canvas.dataset.renderer = 'webgl-3d';
@@ -292,13 +374,13 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		width = nextWidth;
 		height = nextHeight;
 		const version = ++resizeVersion;
-		world?.destroy();
-		world = null;
-		for (const mesh of meshes.values()) scene.remove(mesh);
-		meshes.clear();
 		if (!width || !height) return;
 		renderer.setSize(width, height, false);
-		const viewHeight = height < 400 ? 5.6 : 10.5;
+		const viewHeight = world
+			? Math.max(worldHeight, (worldWidth * height) / width)
+			: height < 400
+				? 5.6
+				: 10.5;
 		const viewWidth = (viewHeight * width) / height;
 		camera.left = -viewWidth / 2;
 		camera.right = viewWidth / 2;
@@ -307,13 +389,19 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		camera.position.set(2, viewHeight * 0.42 + 8, 12);
 		camera.lookAt(0, viewHeight * 0.42, 0);
 		camera.updateProjectionMatrix();
-		const nextWorld = await createTagWorld(viewWidth * 0.85, viewHeight);
+		if (world) {
+			draw();
+			return;
+		}
+		const nextWorld = await createTagWorld(viewWidth * 0.85, viewHeight, Math.random, settings);
 		if (isDestroyed || version !== resizeVersion) {
 			nextWorld.destroy();
 			return;
 		}
 		world = nextWorld;
-		pending = 0;
+		worldHeight = viewHeight;
+		worldWidth = viewWidth;
+		emissionAccumulator = 0;
 		readPalette();
 		draw();
 	};
@@ -322,12 +410,13 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		if (!isActive || isDestroyed) return;
 		const delta = lastTime ? Math.min((time - lastTime) / 1000, 0.05) : 0;
 		lastTime = time;
-		simulationTime += delta;
 		accumulator += delta;
-		if (pending > 0 && simulationTime >= nextSpawn && world) {
-			world.spawn();
-			pending--;
-			nextSpawn = Math.max(nextSpawn + 1 / tagsPerSecond, simulationTime);
+		if (world) {
+			emissionAccumulator += delta * settings.tagsPerSecond;
+			while (emissionAccumulator >= 1) {
+				world.spawn();
+				emissionAccumulator--;
+			}
 		}
 		while (accumulator >= 1 / 60) {
 			world?.step();
@@ -336,20 +425,45 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		draw();
 		frame = requestAnimationFrame(tick);
 	};
-	const update = (nextIsActive: boolean, total: number | null) => {
-		if (nextIsActive && isActive && total !== null && lastTotal !== null)
-			pending = Math.min(4, pending + Math.max(0, total - lastTotal));
-		lastTotal = total;
+	const update = (nextIsActive: boolean) => {
 		if (isActive === nextIsActive) return;
 		isActive = nextIsActive;
 		lastTime = 0;
-		nextSpawn = simulationTime;
 		accumulator = 0;
-		pending = 0;
+		emissionAccumulator = 0;
 		if (isActive) frame = requestAnimationFrame(tick);
 		else if (frame !== null) {
 			cancelAnimationFrame(frame);
 			frame = null;
+		}
+	};
+	const clear = () => {
+		world?.clear();
+		renderedFixed.clear();
+		paper.count = patches.count = 0;
+		emissionAccumulator = 0;
+		draw();
+	};
+	const configure = (next: TagRainSettings) => {
+		const normalized = normalizeRainSettings(next);
+		const isShapeChanged =
+			getVisualThickness(normalized) !== getVisualThickness(settings) ||
+			normalized.sizeScale !== settings.sizeScale;
+		settings = normalized;
+		world?.configure(settings);
+		if (isShapeChanged) {
+			// Rebuild geometry and colliders together so changes never leave mismatched pile contacts.
+			geometry.dispose();
+			geometry = createTagGeometry(getVisualThickness(settings));
+			paper.geometry = geometry;
+			patchOffsets.forEach((offset, side) =>
+				offset.makeTranslation(
+					0,
+					0.63,
+					(side === 0 ? -1 : 1) * (getVisualThickness(settings) / 2 + 0.001)
+				)
+			);
+			clear();
 		}
 	};
 	const observer = new ResizeObserver(() => {
@@ -366,6 +480,8 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	});
 	await resize();
 	return {
+		clear,
+		configure,
 		update,
 		destroy: () => {
 			isDestroyed = true;
@@ -377,12 +493,15 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 			ring.dispose();
 			floorGeometry.dispose();
 			floorMaterial.dispose();
-			materials.forEach((material) => material.dispose());
+			paper.dispose();
+			patches.dispose();
+			paperMaterial.dispose();
+			edgeMaterial.dispose();
 			patchMaterial.dispose();
 			light.shadow.map?.dispose();
 			renderer.dispose();
 			renderer.forceContextLoss();
-			meshes.clear();
+			renderedFixed.clear();
 			scene.clear();
 		}
 	};

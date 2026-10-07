@@ -5,6 +5,10 @@ import { playwright } from '@vitest/browser-playwright';
 import adapter from '@sveltejs/adapter-vercel';
 import { sveltekit } from '@sveltejs/kit/vite';
 export default defineConfig({
+	optimizeDeps: {
+		// Pre-bundle the lazy-loaded animation dependencies before the browser requests them.
+		include: ['@dimforge/rapier3d-compat', 'sveltewind/attachments', 'three']
+	},
 	ssr: {
 		// Sveltewind imports Lucide's Svelte source, which must be compiled for SSR.
 		noExternal: ['@lucide/svelte']

@@ -5,3 +5,4 @@ export { default as SiteHero } from './SiteHero/SiteHero.svelte';
 export { default as Logo } from './Logo/Logo.svelte';
 export { default as TagMachine } from './TagMachine/TagMachine.svelte';
 export { default as TagRain } from './TagRain/TagRain.svelte';
+export { default as TagRainSettings } from './TagRain/TagRainSettings.svelte';
