@@ -110,11 +110,6 @@
 
 <Section bind:element variants={['hero']} aria-labelledby="hero-heading" data-tag-hero>
 	<TagRain isActive={isMotionActive} />
-	<Div class={theme.resolve('heroBlur')} aria-hidden="true" inert data-hero-blur>
-		<Div variants={['heroBlurSoft']} />
-		<Div variants={['heroBlurMedium']} />
-		<Div variants={['heroBlurStrong']} />
-	</Div>
 	<Container variants={['hero']}>
 		<Div
 			data-tag-drop-zone
@@ -128,18 +123,22 @@
 					variants={['heroMetric']}
 					title="Estimated at a steady pace toward 90 million tags by the end of 2026."
 				>
-					Customer tags this year:
-					<Span variants={['productionTotal']} data-production-counter aria-live="off">
-						{estimatedTotal === null ? 'Calculating...' : formatter.format(estimatedTotal)}
+					<Span variants={['heroText']}>
+						Customer tags this year:
+						<Span variants={['productionTotal']} data-production-counter aria-live="off">
+							{estimatedTotal === null ? 'Calculating...' : formatter.format(estimatedTotal)}
+						</Span>
 					</Span>
 				</P>
 				<H1 id="hero-heading" variants={['hero']}>
-					<Span class="block">Built for</Span>
-					<Span class="block">Endless possibilities.</Span>
+					<Span class="block"><Span variants={['heroText']}>Built for</Span></Span>
+					<Span class="block"><Span variants={['heroText']}>Endless possibilities.</Span></Span>
 				</H1>
 				<P variants={['heroLead']}>
-					Every tag has a job to do. We produced over 90 million in the last year, helping
-					businesses identify, organize, and keep things moving. What can we make for yours?
+					<Span variants={['heroText']}>
+						Every tag has a job to do. We produced over 90 million in the last year, helping
+						businesses identify, organize, and keep things moving. What can we make for yours?
+					</Span>
 				</P>
 				<Div class="mt-8 flex flex-wrap items-center gap-4 sm:mt-10 sm:gap-6">
 					<A
@@ -152,7 +151,9 @@
 						Find your tags <ArrowRight aria-hidden="true" class="size-4" />
 					</A>
 				</Div>
-				<P variants={['heroFootnote']}>Stock tags. Custom tags. A place for every detail.</P>
+				<P variants={['heroFootnote']}>
+					<Span variants={['heroText']}>Stock tags. Custom tags. A place for every detail.</Span>
+				</P>
 			</Div>
 		</Div>
 	</Container>

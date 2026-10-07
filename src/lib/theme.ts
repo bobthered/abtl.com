@@ -20,28 +20,24 @@ export const initializeTheme = () => {
 	);
 	theme.set.variant(
 		'div',
+		'siteFrame',
+		'[--site-header-height:calc(var(--spacing)*24+1px)] sm:[--site-header-height:calc(var(--spacing)*26+1px)] lg:[--site-header-height:calc(var(--spacing)*34+1px)]'
+	);
+	theme.set.variant(
+		'div',
+		'siteFrameScrolled',
+		'lg:[--site-header-height:calc(var(--spacing)*22+1px)]'
+	);
+	theme.set.variant(
+		'div',
 		'heroCopy',
 		'relative flex w-full max-w-3xl flex-col justify-center py-20 sm:py-24 lg:w-3/5 lg:py-28'
 	);
-	theme.set.base(
-		'heroBlur',
-		'pointer-events-none absolute inset-0 z-10 hidden bg-linear-to-r from-gray-50/80 via-gray-50/30 to-transparent lg:block dark:from-gray-950/80 dark:via-gray-950/30'
-	);
-	// Layer masked blur strengths to taper smoothly from the copy toward the clear drop area.
+	// Clone the opaque backing on every wrapped line instead of covering the whole copy area.
 	theme.set.variant(
-		'div',
-		'heroBlurSoft',
-		'absolute inset-0 backdrop-blur-sm mask-r-from-40% mask-r-to-100%'
-	);
-	theme.set.variant(
-		'div',
-		'heroBlurMedium',
-		'absolute inset-0 backdrop-blur-md mask-r-from-20% mask-r-to-80%'
-	);
-	theme.set.variant(
-		'div',
-		'heroBlurStrong',
-		'absolute inset-0 backdrop-blur-xl mask-r-from-0% mask-r-to-60%'
+		'span',
+		'heroText',
+		'relative -left-3 box-decoration-clone rounded-lg bg-gray-50 px-3 py-1 dark:bg-gray-950'
 	);
 	theme.set.variant('section', 'heroMarquee', 'relative bg-gray-50 dark:bg-gray-950');
 	theme.set.variant('canvas', 'tagRain', 'block h-full w-full opacity-80 dark:opacity-60');
@@ -55,7 +51,13 @@ export const initializeTheme = () => {
 		'hero',
 		'relative isolate overflow-hidden bg-gray-50 dark:bg-gray-950'
 	);
-	theme.set.variant('container', 'hero', 'flex min-h-160 items-stretch lg:min-h-180');
+	// Keep an 80px (5rem) preview below the fold, unless the minimum or content needs more room.
+	theme.set.variant(
+		'container',
+		'hero',
+		'flex min-h-[max(40rem,calc(100svh-var(--site-header-height)-5rem))] items-stretch lg:min-h-[max(45rem,calc(100svh-var(--site-header-height)-5rem))]'
+	);
+	theme.set.variant('container', 'siteHeader', 'min-h-[calc(var(--site-header-height)-1px)]');
 	theme.set.base(
 		'heroBrand',
 		'relative flex items-center gap-6 border-t border-gray-200/80 py-8 dark:border-gray-800'

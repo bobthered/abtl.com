@@ -97,6 +97,18 @@ export const createTagGeometry = (thickness = tagVisualThickness) => {
 	return geometry;
 };
 
+export const getTagSpawnBoundary = (camera: OrthographicCamera, depth: number) => {
+	camera.updateMatrixWorld();
+	const top = new Vector3(0, 1, 0).unproject(camera);
+	const direction = camera.getWorldDirection(new Vector3());
+	const slope = direction.y / direction.z;
+	// The tilted camera sees higher at the back of the scene. Account for the entire depth.
+	return {
+		clearanceScale: Math.hypot(1, slope),
+		height: top.y - top.z * slope + Math.abs(depth * slope) + 0.5
+	};
+};
+
 export const createTagWorld = async (
 	width: number,
 	height: number,
@@ -116,6 +128,7 @@ export const createTagWorld = async (
 	let dropCenter = 0;
 	let dropWidth = width;
 	let elapsed = 0;
+	let spawnBoundary = { clearanceScale: 1, height };
 	const fixed = (x: number, y: number, z: number, halfX: number, halfY: number, halfZ: number) => {
 		const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(x, y, z));
 		world.createCollider(RAPIER.ColliderDesc.cuboid(halfX, halfY, halfZ).setFriction(0.8), body);
@@ -132,6 +145,9 @@ export const createTagWorld = async (
 	const setDropZone = (center: number, span: number) => {
 		dropCenter = Math.min(boundaryWidth / 2, Math.max(-boundaryWidth / 2, center));
 		dropWidth = Math.max(0.1, Math.min(boundaryWidth, span));
+	};
+	const setSpawnBoundary = (boundary: ReturnType<typeof getTagSpawnBoundary>) => {
+		spawnBoundary = boundary;
 	};
 	const setWidth = (nextWidth: number) => {
 		if (nextWidth === boundaryWidth) return;
@@ -153,6 +169,7 @@ export const createTagWorld = async (
 		if (tags.length >= maxTagBodies) return;
 		const size = (0.48 + random() * 0.22) * settings.sizeScale;
 		const thickness = getVisualThickness(settings);
+		const radius = size * Math.hypot(0.5, 1, thickness / 2);
 		const rotation = new Quaternion().setFromEuler(
 			new Euler((random() - 0.5) * Math.PI, (random() - 0.5) * Math.PI, (random() - 0.5) * Math.PI)
 		);
@@ -160,7 +177,7 @@ export const createTagWorld = async (
 			RAPIER.RigidBodyDesc.dynamic()
 				.setTranslation(
 					dropCenter + (random() - 0.5) * Math.max(0.1, dropWidth - size * 2),
-					height + size,
+					spawnBoundary.height + radius * spawnBoundary.clearanceScale,
 					(random() - 0.5) * depth * 1.2
 				)
 				.setRotation(rotation)
@@ -273,7 +290,19 @@ export const createTagWorld = async (
 		tags.length = 0;
 		world.free();
 	};
-	return { clear, configure, destroy, setDropZone, setWidth, spawn, step, tags, world };
+	return {
+		clear,
+		configure,
+		depth,
+		destroy,
+		setDropZone,
+		setSpawnBoundary,
+		setWidth,
+		spawn,
+		step,
+		tags,
+		world
+	};
 };
 
 export const createTagRain = async (canvas: HTMLCanvasElement) => {
@@ -407,6 +436,7 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		canvas.dataset.cameraZoom = String(settings.cameraZoom);
 	};
 	const updateDropZone = () => {
+		if (world) world.setSpawnBoundary(getTagSpawnBoundary(camera, world.depth));
 		if (!world || !dropZone) return;
 		const viewport = canvas.getBoundingClientRect();
 		if (!viewport.width) return;

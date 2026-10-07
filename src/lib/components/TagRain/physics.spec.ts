@@ -2,6 +2,7 @@ import {
 	createTagGeometry,
 	createTagShape,
 	createTagWorld,
+	getTagSpawnBoundary,
 	maxTagBodies,
 	tagColors,
 	tagDimensionsInches,
@@ -10,8 +11,46 @@ import {
 	tagsPerSecond
 } from './physics';
 import { expect, it } from 'vitest';
-import { defaultRainSettings } from './settings';
-import { Quaternion, Vector3 } from 'three';
+import { defaultRainSettings, getVisualThickness } from './settings';
+import { OrthographicCamera, Quaternion, Vector3 } from 'three';
+
+it.each([0.25, 1, 3])('spawns the entire tag above the tilted camera at zoom %s', async (zoom) => {
+	const settings = {
+		...defaultRainSettings,
+		sizeScale: 2,
+		thicknessInches: 0.05,
+		thicknessScale: 200
+	};
+	const camera = new OrthographicCamera(-8, 8, 5.25, -5.25, 0.1, 80);
+	camera.zoom = zoom;
+	const centerY = (10.5 * 0.42) / zoom;
+	camera.position.set(0, centerY + 8, 12);
+	camera.lookAt(0, centerY, 0);
+	camera.updateProjectionMatrix();
+	for (const sample of [0.05, 0.5, 0.95]) {
+		const simulation = await createTagWorld(16, 10.5, () => sample, settings);
+		try {
+			simulation.setSpawnBoundary(getTagSpawnBoundary(camera, simulation.depth));
+			simulation.spawn();
+			const tag = simulation.tags[0];
+			const position = tag.body.translation();
+			const rotation = tag.body.rotation();
+			const orientation = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+			for (const x of [-0.5, 0.5])
+				for (const y of [-1, 1])
+					for (const z of [-getVisualThickness(settings) / 2, getVisualThickness(settings) / 2]) {
+						const corner = new Vector3(x, y, z)
+							.multiplyScalar(tag.width)
+							.applyQuaternion(orientation)
+							.add(new Vector3(position.x, position.y, position.z))
+							.project(camera);
+						expect(corner.y).toBeGreaterThan(1);
+					}
+		} finally {
+			simulation.destroy();
+		}
+	}
+});
 
 it('uses the annual production pace for emission', () => {
 	expect(tagsPerSecond).toBeCloseTo(2.853881, 5);

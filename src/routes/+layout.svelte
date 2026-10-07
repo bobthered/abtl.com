@@ -151,128 +151,131 @@
 </svelte:head>
 
 <A href="#main-content" variants={['ghost', 'skip']}>Skip to content</A>
-<Header variants={['site']}>
-	<Container
-		class={`relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none ${isScrolled ? 'lg:py-4' : 'lg:py-10'}`}
-	>
-		<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}
-			><Logo aria-hidden="true" variants={['onSurface', 'site']} /></A
+<Div variants={isScrolled ? ['siteFrame', 'siteFrameScrolled'] : ['siteFrame']}>
+	<Header variants={['site']}>
+		<Container
+			variants={['siteHeader']}
+			class={`relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none ${isScrolled ? 'lg:py-4' : 'lg:py-10'}`}
 		>
-		<Nav aria-label="Main navigation" class="hidden items-center gap-6 lg:flex xl:gap-12">
-			{#each navigation as item (item.href)}<A href={item.href} variants={['ghost', 'navigation']}
-					>{item.label}</A
-				>{/each}
-		</Nav>
-		<Div class="hidden items-center gap-8 lg:flex">
-			<A
-				href="mailto:sales@abtl.com?subject=Tag%20and%20label%20quote"
-				variants={['ghost', 'accent']}
-				class="hidden xl:inline-flex">Request a Quote</A
+			<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}
+				><Logo aria-hidden="true" variants={['onSurface', 'site']} /></A
 			>
-			<Button
-				type="button"
-				disabled
-				aria-label="Shopping cart — online store coming soon"
-				title="Online store coming soon"
-				variants={['ghost', 'icon']}
-				class="cursor-not-allowed border-l border-gray-200 pl-6 dark:border-gray-800"
-				><ShoppingCart aria-hidden="true" strokeWidth={1.8} class="size-8" /></Button
-			>
-		</Div>
-		<Div class="lg:hidden">
-			<Popover
-				id="mobile-navigation"
-				bind:isVisible={isMenuVisible}
-				trigger={mobileMenuTrigger}
-				transition={[fade, { duration: isReducedMotion ? 0 : 200 }]}
-				variants={['navigation']}
-			>
-				<Container class="flex items-center justify-between gap-6 py-6">
-					<A
-						href="/"
-						onclick={() => {
-							isMenuVisible = false;
-						}}
-						aria-label="Allen-Bailey Tag and Label home"
-						variants={['ghost', 'brand']}
-					>
-						<Logo aria-hidden="true" variants={['onSurface', 'site']} />
-					</A>
-					{@render mobileMenuTrigger({
-						onclick: () => {
-							isMenuVisible = false;
-						},
-						'aria-controls': 'mobile-navigation',
-						'aria-expanded': true
-					})}
-				</Container>
-				<Container>
-					<Nav
-						aria-label="Mobile navigation"
-						class="flex flex-col"
-						isVisible={isNavigationVisible}
-						transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
-					>
-						{#each navigation as item (item.href)}
-							<A
-								href={item.href}
-								onclick={() => {
-									isMenuVisible = false;
-								}}
-								variants={['ghost', 'navigation']}>{item.label}</A
-							>
-						{/each}
+			<Nav aria-label="Main navigation" class="hidden items-center gap-6 lg:flex xl:gap-12">
+				{#each navigation as item (item.href)}<A href={item.href} variants={['ghost', 'navigation']}
+						>{item.label}</A
+					>{/each}
+			</Nav>
+			<Div class="hidden items-center gap-8 lg:flex">
+				<A
+					href="mailto:sales@abtl.com?subject=Tag%20and%20label%20quote"
+					variants={['ghost', 'accent']}
+					class="hidden xl:inline-flex">Request a Quote</A
+				>
+				<Button
+					type="button"
+					disabled
+					aria-label="Shopping cart — online store coming soon"
+					title="Online store coming soon"
+					variants={['ghost', 'icon']}
+					class="cursor-not-allowed border-l border-gray-200 pl-6 dark:border-gray-800"
+					><ShoppingCart aria-hidden="true" strokeWidth={1.8} class="size-8" /></Button
+				>
+			</Div>
+			<Div class="lg:hidden">
+				<Popover
+					id="mobile-navigation"
+					bind:isVisible={isMenuVisible}
+					trigger={mobileMenuTrigger}
+					transition={[fade, { duration: isReducedMotion ? 0 : 200 }]}
+					variants={['navigation']}
+				>
+					<Container class="flex items-center justify-between gap-6 py-6">
 						<A
-							href="mailto:sales@abtl.com"
+							href="/"
 							onclick={() => {
 								isMenuVisible = false;
 							}}
-							variants={['ghost', 'accent']}
-							class="py-4">Request a Quote</A
+							aria-label="Allen-Bailey Tag and Label home"
+							variants={['ghost', 'brand']}
 						>
-					</Nav>
-				</Container>
-			</Popover>
-		</Div>
-	</Container>
-</Header>
-
-{@render children()}
-
-<Footer variants={['bordered', 'site']}>
-	<Container class="space-y-10 py-12 lg:py-16">
-		<Div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-			<Div class="space-y-4">
-				<A
-					href="/"
-					aria-label="Allen-Bailey Tag and Label home"
-					variants={['ghost', 'brand']}
-					class="w-fit items-start"
-				>
-					<Logo
-						aria-hidden="true"
-						blueColor="currentColor"
-						redColor="currentColor"
-						variants={['site']}
-					/>
-				</A>
-				<P variants={['footer']}>Stock and custom tags and labels.</P>
+							<Logo aria-hidden="true" variants={['onSurface', 'site']} />
+						</A>
+						{@render mobileMenuTrigger({
+							onclick: () => {
+								isMenuVisible = false;
+							},
+							'aria-controls': 'mobile-navigation',
+							'aria-expanded': true
+						})}
+					</Container>
+					<Container>
+						<Nav
+							aria-label="Mobile navigation"
+							class="flex flex-col"
+							isVisible={isNavigationVisible}
+							transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
+						>
+							{#each navigation as item (item.href)}
+								<A
+									href={item.href}
+									onclick={() => {
+										isMenuVisible = false;
+									}}
+									variants={['ghost', 'navigation']}>{item.label}</A
+								>
+							{/each}
+							<A
+								href="mailto:sales@abtl.com"
+								onclick={() => {
+									isMenuVisible = false;
+								}}
+								variants={['ghost', 'accent']}
+								class="py-4">Request a Quote</A
+							>
+						</Nav>
+					</Container>
+				</Popover>
 			</Div>
-			<Nav aria-label="Footer navigation" class="grid grid-cols-2 gap-x-6">
-				{#each navigation as item (item.href)}
-					<A href={item.href} variants={['ghost', 'navigation']} class="justify-start"
-						>{item.label}</A
+		</Container>
+	</Header>
+
+	{@render children()}
+
+	<Footer variants={['bordered', 'site']}>
+		<Container class="space-y-10 py-12 lg:py-16">
+			<Div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+				<Div class="space-y-4">
+					<A
+						href="/"
+						aria-label="Allen-Bailey Tag and Label home"
+						variants={['ghost', 'brand']}
+						class="w-fit items-start"
 					>
-				{/each}
-			</Nav>
-			<Div class="space-y-4">
-				<P variants={['eyebrow']}>Let's talk about your project</P>
-				<A href="mailto:sales@abtl.com" variants={['ghost', 'accent']}>sales@abtl.com</A>
+						<Logo
+							aria-hidden="true"
+							blueColor="currentColor"
+							redColor="currentColor"
+							variants={['site']}
+						/>
+					</A>
+					<P variants={['footer']}>Stock and custom tags and labels.</P>
+				</Div>
+				<Nav aria-label="Footer navigation" class="grid grid-cols-2 gap-x-6">
+					{#each navigation as item (item.href)}
+						<A href={item.href} variants={['ghost', 'navigation']} class="justify-start"
+							>{item.label}</A
+						>
+					{/each}
+				</Nav>
+				<Div class="space-y-4">
+					<P variants={['eyebrow']}>Let's talk about your project</P>
+					<A href="mailto:sales@abtl.com" variants={['ghost', 'accent']}>sales@abtl.com</A>
+				</Div>
 			</Div>
-		</Div>
-		<P variants={['footer']}>© {new Date().getFullYear()} Allen-Bailey Tag & Label.</P>
-	</Container>
-</Footer>
+			<P variants={['footer']}>© {new Date().getFullYear()} Allen-Bailey Tag & Label.</P>
+		</Container>
+	</Footer>
+</Div>
 
 {#snippet mobileMenuTrigger(props: ComponentProps<typeof Button>)}
 	<Button
