@@ -6,7 +6,7 @@ it('clamps unsafe saved settings and restores invalid values to defaults', () =>
 	expect(settings.gravity).toBe(0);
 	expect(settings.tagsPerSecond).toBe(100);
 	expect(settings.flutter).toBe(defaultRainSettings.flutter);
-	expect(settings.cameraZoom).toBe(1);
+	expect(settings.cameraZoom).toBe(3);
 	expect(normalizeRainSettings({ cameraZoom: 0 }).cameraZoom).toBe(0.25);
 	expect(normalizeRainSettings({ cameraZoom: 20 }).cameraZoom).toBe(3);
 });

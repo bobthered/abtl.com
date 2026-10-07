@@ -51,7 +51,7 @@ export type TagRainSettings = Record<(typeof settingControls)[number]['key'], nu
 export const defaultRainSettings: TagRainSettings = {
 	airDrag: 1,
 	bounce: 0.02,
-	cameraZoom: 1,
+	cameraZoom: 3,
 	flutter: 1,
 	gravity: 3.2,
 	sizeScale: 1,
