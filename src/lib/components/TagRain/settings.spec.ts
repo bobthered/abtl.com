@@ -14,6 +14,29 @@ it('clamps unsafe saved settings and restores invalid values to defaults', () =>
 	expect(settings.cameraZoom).toBe(3);
 	expect(normalizeRainSettings({ cameraZoom: 0 }).cameraZoom).toBe(0.25);
 	expect(normalizeRainSettings({ cameraZoom: 20 }).cameraZoom).toBe(3);
+	expect(normalizeRainSettings({}).cleanupIntervalSeconds).toBe(120);
+	expect(normalizeRainSettings({ cleanupIntervalSeconds: -1 }).cleanupIntervalSeconds).toBe(0);
+	expect(normalizeRainSettings({ cleanupIntervalSeconds: 10000 }).cleanupIntervalSeconds).toBe(
+		7200
+	);
+});
+
+it('migrates minute preferences and adopts the 120-second default', () => {
+	expect(normalizeRainSettings({ gustIntervalSeconds: 45 }).cleanupIntervalSeconds).toBe(45);
+	expect(
+		normalizeRainSettings({ gustIntervalSeconds: 45, cleanupIntervalSeconds: 20 })
+			.cleanupIntervalSeconds
+	).toBe(20);
+	expect(normalizeRainSettings({ gustIntervalMinutes: 1 }).cleanupIntervalSeconds).toBe(120);
+	expect(normalizeRainSettings({ gustIntervalMinutes: 0.1 }).cleanupIntervalSeconds).toBe(6);
+	expect(normalizeRainSettings({ gustIntervalMinutes: 0 }).cleanupIntervalSeconds).toBe(0);
+	expect(
+		normalizeRainSettings({ gustIntervalMinutes: 2, cleanupIntervalSeconds: 30 })
+			.cleanupIntervalSeconds
+	).toBe(30);
+	expect(normalizeRainSettings({ gustIntervalMinutes: 1 })).not.toHaveProperty(
+		'gustIntervalMinutes'
+	);
 });
 
 it('keeps physical stock thickness separate from its illustration scale', () => {

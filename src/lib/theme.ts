@@ -16,7 +16,7 @@ export const initializeTheme = () => {
 	theme.update.base('card', 'rounded-lg p-8 shadow-sm');
 	theme.set.base(
 		'tagRain',
-		'pointer-events-none absolute inset-0 z-0 hidden h-full w-full lg:block motion-reduce:hidden'
+		'absolute inset-0 z-0 hidden h-full w-full lg:block motion-reduce:hidden'
 	);
 	theme.set.variant(
 		'div',
@@ -31,7 +31,7 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'div',
 		'heroCopy',
-		'relative flex w-full max-w-3xl flex-col justify-center py-20 sm:py-24 lg:w-3/5 lg:py-28'
+		'pointer-events-auto relative flex w-full max-w-3xl flex-col justify-center py-20 sm:py-24 lg:w-3/5 lg:py-28'
 	);
 	// Clone the opaque backing on every wrapped line instead of covering the whole copy area.
 	theme.set.variant(
@@ -42,6 +42,12 @@ export const initializeTheme = () => {
 	theme.set.variant('section', 'heroMarquee', 'relative bg-gray-50 dark:bg-gray-950');
 	theme.set.variant('canvas', 'tagRain', 'block h-full w-full opacity-80 dark:opacity-60');
 	theme.update.base('dialog', 'rounded-lg p-8 shadow-xl');
+	theme.set.variant(
+		'dialog',
+		'tagViewer',
+		'w-full max-w-2xl bg-gray-50 p-6 text-gray-950 backdrop:bg-gray-950/60 dark:bg-gray-950 dark:text-gray-50'
+	);
+	theme.set.variant('canvas', 'tagViewer', 'my-4 block h-128 max-h-[65svh] w-full sm:h-160');
 	theme.update.base('input', 'rounded-sm px-4 py-3 text-base leading-5');
 	theme.update.base('popover', 'rounded-lg p-6');
 	theme.set.variant('button', 'icon', 'flex size-11 items-center justify-center rounded-full p-0');
@@ -55,7 +61,7 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'container',
 		'hero',
-		'flex min-h-[max(40rem,calc(100svh-var(--site-header-height)-5rem))] items-stretch lg:min-h-[max(45rem,calc(100svh-var(--site-header-height)-5rem))]'
+		'pointer-events-none flex min-h-[max(40rem,calc(100svh-var(--site-header-height)-5rem))] items-stretch lg:min-h-[max(45rem,calc(100svh-var(--site-header-height)-5rem))]'
 	);
 	theme.set.variant('container', 'siteHeader', 'min-h-[calc(var(--site-header-height)-1px)]');
 	theme.set.base(

@@ -6,3 +6,4 @@ export { default as Logo } from './Logo/Logo.svelte';
 export { default as TagMachine } from './TagMachine/TagMachine.svelte';
 export { default as TagRain } from './TagRain/TagRain.svelte';
 export { default as TagRainSettings } from './TagRain/TagRainSettings.svelte';
+export { default as TagViewer } from './TagRain/TagViewer.svelte';

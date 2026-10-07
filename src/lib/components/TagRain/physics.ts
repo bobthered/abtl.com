@@ -5,7 +5,8 @@ import {
 	createArtworkAtlas,
 	createArtworkGeometry,
 	createArtworkMaterial,
-	tagArtworkPairs
+	tagArtworkPairs,
+	tagArtworkNames
 } from './artwork';
 import type { ArtworkPair } from './artwork';
 import { createPatchShape, createTagShape, patchOutline, tagHole, tagOutline } from './profile';
@@ -32,15 +33,19 @@ import {
 	InstancedBufferAttribute,
 	Matrix4,
 	Mesh,
+	MeshBasicMaterial,
 	MeshStandardMaterial,
 	Object3D,
 	OrthographicCamera,
 	PCFShadowMap,
 	PlaneGeometry,
 	Quaternion,
+	Raycaster,
 	Scene,
+	Sphere,
 	ShadowMaterial,
 	Vector3,
+	Vector2,
 	WebGLRenderer
 } from 'three';
 
@@ -52,6 +57,16 @@ export type RainTag = {
 	phase: number;
 	restingSteps: number;
 	width: number;
+};
+export type TagSelection = {
+	atlas: Awaited<ReturnType<typeof createArtworkAtlas>>;
+	backArtwork: number;
+	color: string;
+	frontArtwork: number;
+	name: string;
+	patchThickness: number;
+	rotation: { x: number; y: number; z: number; w: number };
+	thickness: number;
 };
 
 // Roughly an hour of continuous production; reaching capacity preserves the entire pile.
@@ -153,6 +168,7 @@ export const createTagWorld = async (
 	world.integrationParameters.numSolverIterations = 8;
 	const tags: RainTag[] = [];
 	const activeTags = new Set<RainTag>();
+	const releasedTags = new Set<RainTag>();
 	const depth = Math.min(2.2, height * 0.2);
 	const normal = new Vector3();
 	const orientation = new Quaternion();
@@ -160,10 +176,19 @@ export const createTagWorld = async (
 	let dropCenter = 0;
 	let dropWidth = width;
 	let elapsed = 0;
+	let cleanupElapsed = 0;
+	let cleanupExit = -3;
+	let floorOpenRemaining = 0;
+	let revision = 0;
 	let spawnBoundary = { clearanceScale: 1, height };
 	const fixed = (x: number, y: number, z: number, halfX: number, halfY: number, halfZ: number) => {
 		const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(x, y, z));
-		world.createCollider(RAPIER.ColliderDesc.cuboid(halfX, halfY, halfZ).setFriction(0.8), body);
+		world.createCollider(
+			RAPIER.ColliderDesc.cuboid(halfX, halfY, halfZ)
+				.setFriction(0.8)
+				.setCollisionGroups(0x00010001),
+			body
+		);
 		return body;
 	};
 	const floor = fixed(0, -0.12, 0, width / 2 + 1, 0.12, depth + 1);
@@ -198,7 +223,7 @@ export const createTagWorld = async (
 		setDropZone(dropCenter * ratio, dropWidth * ratio);
 	};
 	const spawn = () => {
-		if (tags.length >= maxTagBodies) return;
+		if (tags.length >= maxTagBodies || floorOpenRemaining > 0) return;
 		const size = tagDimensionsInches.width * tagWorldUnitsPerInch;
 		const thickness = getVisualThickness(settings);
 		const patchThickness = getVisualPatchThickness(settings);
@@ -220,7 +245,7 @@ export const createTagWorld = async (
 					y: (random() - 0.5) * 1.2,
 					z: (random() - 0.5) * 1.2
 				})
-				.setLinearDamping(0.35)
+				.setLinearDamping(0.035)
 				.setAngularDamping(0.5)
 				.setCcdEnabled(true)
 		);
@@ -231,7 +256,11 @@ export const createTagWorld = async (
 		}
 		const collider = RAPIER.ColliderDesc.convexHull(new Float32Array(vertices))!;
 		world.createCollider(
-			collider.setMass(0.04).setFriction(0.65).setRestitution(settings.bounce),
+			collider
+				.setMass(0.04)
+				.setFriction(0.65)
+				.setRestitution(settings.bounce)
+				.setCollisionGroups(0x00010001),
 			body
 		);
 		// Raised patches on both faces participate in stacking, with the same depth as the rendering.
@@ -249,7 +278,8 @@ export const createTagWorld = async (
 					)
 					.setMass(0.004)
 					.setFriction(0.65)
-					.setRestitution(settings.bounce),
+					.setRestitution(settings.bounce)
+					.setCollisionGroups(0x00010001),
 				body
 			);
 		}
@@ -264,10 +294,51 @@ export const createTagWorld = async (
 		tags.push(tag);
 		activeTags.add(tag);
 	};
+	const releaseFloor = () => {
+		cleanupElapsed = 0;
+		if (!tags.length) return;
+		floorOpenRemaining = 3;
+		floor.collider(0).setEnabled(false);
+		for (const tag of tags) {
+			tag.body.setBodyType(RAPIER.RigidBodyType.Dynamic, true);
+			tag.body.setLinearDamping(0.035);
+			tag.body.setAngularDamping(0.5);
+			tag.body.resetForces(false);
+			tag.body.resetTorques(false);
+			// Released paper keeps falling even after the floor returns, without catching on guide walls.
+			for (let index = 0; index < tag.body.numColliders(); index++)
+				tag.body.collider(index).setCollisionGroups(0x00020002);
+			tag.restingSteps = 0;
+			releasedTags.add(tag);
+			activeTags.add(tag);
+		}
+		revision++;
+	};
 	const step = () => {
 		elapsed += 1 / 60;
+		cleanupElapsed += 1 / 60;
+		let isFloorChanged = false;
+		if (floorOpenRemaining > 0) {
+			floorOpenRemaining = Math.max(0, floorOpenRemaining - 1 / 60);
+			if (floorOpenRemaining === 0) {
+				floor.collider(0).setEnabled(true);
+				isFloorChanged = true;
+			}
+		}
+		if (
+			settings.cleanupIntervalSeconds > 0 &&
+			cleanupElapsed >= settings.cleanupIntervalSeconds &&
+			!releasedTags.size &&
+			floorOpenRemaining === 0
+		)
+			releaseFloor();
+		const isChanged = activeTags.size > 0 || isFloorChanged;
 		for (const tag of activeTags) {
 			const { body, phase } = tag;
+			if (releasedTags.has(tag)) {
+				// Gravity alone drops the pile; do not freeze it or apply ground-settling damping.
+				continue;
+			}
 			if (body.isFixed()) {
 				activeTags.delete(tag);
 				continue;
@@ -305,7 +376,8 @@ export const createTagWorld = async (
 			}
 			const mass = body.mass();
 			// Broadside paper catches more air than an edge-on tag, producing varied descent speeds.
-			const drag = (0.35 + Math.abs(normal.y) * 1.65) * settings.airDrag;
+			// Let gravity accelerate paper through the visible fall before broadside drag slows it.
+			const drag = (0.035 + Math.abs(normal.y) * 0.165) * settings.airDrag;
 			body.addForce(
 				{
 					x: mass * (Math.sin(elapsed * 1.5 + phase) * 0.55 * settings.flutter - velocity.x * 0.5),
@@ -323,14 +395,31 @@ export const createTagWorld = async (
 				false
 			);
 		}
-		world.step();
+		if (isChanged) world.step();
+		// Delete only once the entire tag is below the camera's bottom edge.
+		for (let index = tags.length - 1; index >= 0 && releasedTags.size; index--) {
+			const tag = tags[index];
+			if (!releasedTags.has(tag) || tag.body.translation().y >= cleanupExit) continue;
+			activeTags.delete(tag);
+			releasedTags.delete(tag);
+			world.removeRigidBody(tag.body);
+			tags.splice(index, 1);
+			revision++;
+		}
+		return isChanged;
 	};
 	const clear = () => {
 		for (const tag of tags) world.removeRigidBody(tag.body);
 		tags.length = 0;
 		activeTags.clear();
+		releasedTags.clear();
+		floorOpenRemaining = 0;
+		floor.collider(0).setEnabled(true);
+		cleanupElapsed = 0;
+		revision++;
 	};
 	const configure = (next: TagRainSettings) => {
+		if (next.cleanupIntervalSeconds !== settings.cleanupIntervalSeconds) cleanupElapsed = 0;
 		settings = normalizeRainSettings(next);
 		world.gravity = { x: 0, y: -settings.gravity, z: 0 };
 		for (const tag of tags) {
@@ -342,6 +431,7 @@ export const createTagWorld = async (
 	const destroy = () => {
 		tags.length = 0;
 		activeTags.clear();
+		releasedTags.clear();
 		world.free();
 	};
 	return {
@@ -350,6 +440,11 @@ export const createTagWorld = async (
 		configure,
 		depth,
 		destroy,
+		getRevision: () => revision,
+		isFloorOpen: () => floorOpenRemaining > 0,
+		setCleanupExit: (next: number) => {
+			cleanupExit = next;
+		},
 		setDropZone,
 		setSpawnBoundary,
 		setWidth,
@@ -360,7 +455,10 @@ export const createTagWorld = async (
 	};
 };
 
-export const createTagRain = async (canvas: HTMLCanvasElement) => {
+export const createTagRain = async (
+	canvas: HTMLCanvasElement,
+	onselect?: (selection: TagSelection) => void
+) => {
 	await initializePhysics();
 	const artworkAtlas = await createArtworkAtlas();
 	const renderer = new WebGLRenderer({
@@ -419,9 +517,38 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	patches.receiveShadow = true;
 	// Bounds change as the pile grows. Avoid stale instance bounds clipping newly spawned tags.
 	paper.frustumCulled = patches.frustumCulled = false;
+	// Picking must not use a cached aggregate bound from an earlier, smaller pile.
+	paper.boundingSphere = new Sphere(new Vector3(), 1000);
 	paper.instanceMatrix.setUsage(DynamicDrawUsage);
 	patches.instanceMatrix.setUsage(DynamicDrawUsage);
 	scene.add(paper, patches);
+	const hoverMaterial = new MeshBasicMaterial({
+		color: 0x7f87c7,
+		depthWrite: false,
+		opacity: 0.3,
+		side: DoubleSide,
+		transparent: true
+	});
+	const hoverHalo = new Mesh(geometry, hoverMaterial);
+	hoverHalo.matrixAutoUpdate = false;
+	hoverHalo.visible = false;
+	scene.add(hoverHalo);
+	const haloScale = new Matrix4().makeScale(1.08, 1.08, 1.08);
+	const hitResults: ReturnType<Raycaster['intersectObject']> = [];
+	const pointer = new Vector2();
+	const raycaster = new Raycaster();
+	let hoveredIndex: number | null = null;
+	let hoverFrame: number | null = null;
+	let isPointerInside = false;
+	let isPointerDirty = false;
+	let lastPickTime = 0;
+	const pickTag = () => {
+		if (!isPointerInside || !paper.count) return null;
+		raycaster.setFromCamera(pointer, camera);
+		hitResults.length = 0;
+		raycaster.intersectObject(paper, false, hitResults);
+		return hitResults[0]?.instanceId ?? null;
+	};
 	const backArtworkGeometry = createArtworkGeometry();
 	const frontArtworkGeometry = createArtworkGeometry();
 	const backArtworkIndices = new InstancedBufferAttribute(new Float32Array(maxTagBodies), 1);
@@ -457,6 +584,7 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	const renderedFixed = new Set<number>();
 	let paletteVersion = 0;
 	let renderedPaletteVersion = -1;
+	let renderedRevision = -1;
 	let accumulator = 0;
 	let frame: number | null = null;
 	let height = 0;
@@ -469,6 +597,7 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	let world: Awaited<ReturnType<typeof createTagWorld>> | null = null;
 	const readPalette = () => {
 		const styles = getComputedStyle(canvas);
+		hoverMaterial.color.set(styles.getPropertyValue('--color-primary-400').trim());
 		palette.forEach((color, index) =>
 			color.set(styles.getPropertyValue(`--color-${tagColors[index]}`).trim())
 		);
@@ -477,6 +606,15 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	const draw = () => {
 		if (isDestroyed) return;
 		const tags = world?.tags ?? [];
+		const revision = world?.getRevision() ?? 0;
+		if (revision !== renderedRevision) {
+			// Waking or removing tags invalidates settled-instance caches and compacted indices.
+			renderedFixed.clear();
+			paper.count = patches.count = backInk.count = frontInk.count = 0;
+			hoveredIndex = null;
+			isPointerDirty = true;
+			renderedRevision = revision;
+		}
 		const isPaletteChanged = renderedPaletteVersion !== paletteVersion;
 		const firstNew = paper.count;
 		const newCount = Math.max(0, tags.length - firstNew);
@@ -530,12 +668,97 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 			);
 		}
 		renderedPaletteVersion = paletteVersion;
+		// Limit raycasting to 30Hz while still tracking tags moving under a stationary pointer.
+		if (isPointerDirty || performance.now() - lastPickTime >= 1000 / 30) {
+			hoveredIndex = pickTag();
+			lastPickTime = performance.now();
+			isPointerDirty = false;
+			canvas.classList.toggle('cursor-pointer', hoveredIndex !== null);
+			if (hoveredIndex === null) delete canvas.dataset.hoveredTag;
+			else canvas.dataset.hoveredTag = String(hoveredIndex);
+		}
+		hoverHalo.visible = hoveredIndex !== null;
+		if (hoveredIndex !== null) {
+			paper.getMatrixAt(hoveredIndex, hoverHalo.matrix);
+			hoverHalo.matrix.multiply(haloScale);
+		}
+		floor.visible = !(world?.isFloorOpen() ?? false);
 		renderer.render(scene, camera);
 		canvas.dataset.tagCount = String(world?.tags.length ?? 0);
+		canvas.dataset.isFloorOpen = String(world?.isFloorOpen() ?? false);
 		canvas.dataset.renderer = 'webgl-3d';
 		canvas.dataset.backDesigns = String(artworkCounts.backs);
 		canvas.dataset.frontDesigns = String(artworkCounts.fronts);
 	};
+	const inspectTag = (index: number | null = hoveredIndex) => {
+		if (!world?.tags.length || !onselect) return;
+		if (index === null) {
+			// Keyboard entry chooses a visible tag nearest the center of the canvas.
+			let nearest = Infinity;
+			const projected = new Vector3();
+			for (let candidate = 0; candidate < world.tags.length; candidate++) {
+				const position = world.tags[candidate].body.translation();
+				projected.set(position.x, position.y, position.z).project(camera);
+				if (Math.abs(projected.x) > 1 || Math.abs(projected.y) > 1) continue;
+				const distance = projected.x ** 2 + projected.y ** 2;
+				if (distance < nearest) {
+					nearest = distance;
+					index = candidate;
+				}
+			}
+		}
+		if (index === null) return;
+		const tag = world.tags[index];
+		if (!tag) return;
+		const name =
+			tagArtworkNames.fronts[tag.frontArtwork] ?? tagArtworkNames.backs[tag.backArtwork] ?? 'Tag';
+		canvas.focus({ preventScroll: true });
+		onselect({
+			atlas: artworkAtlas,
+			backArtwork: tag.backArtwork,
+			color: palette[tag.color].getStyle(),
+			frontArtwork: tag.frontArtwork,
+			name: name.replace(/\.svg$/, '').replaceAll('-', ' '),
+			patchThickness: getVisualPatchThickness(settings),
+			rotation: tag.body.rotation(),
+			thickness: getVisualThickness(settings)
+		});
+	};
+	const queuePointerDraw = () => {
+		isPointerDirty = true;
+		if (isActive || hoverFrame !== null) return;
+		hoverFrame = requestAnimationFrame(() => {
+			hoverFrame = null;
+			draw();
+		});
+	};
+	const onpointermove = (event: PointerEvent) => {
+		const rect = canvas.getBoundingClientRect();
+		pointer.set(
+			((event.clientX - rect.left) / rect.width) * 2 - 1,
+			1 - ((event.clientY - rect.top) / rect.height) * 2
+		);
+		isPointerInside = true;
+		queuePointerDraw();
+	};
+	const onpointerleave = () => {
+		isPointerInside = false;
+		queuePointerDraw();
+	};
+	const onclick = (event: MouseEvent) => {
+		onpointermove(event as PointerEvent);
+		const index = pickTag();
+		if (index !== null) inspectTag(index);
+	};
+	const onkeydown = (event: KeyboardEvent) => {
+		if (event.key !== 'Enter' && event.key !== ' ') return;
+		event.preventDefault();
+		inspectTag();
+	};
+	canvas.addEventListener('pointermove', onpointermove);
+	canvas.addEventListener('pointerleave', onpointerleave);
+	canvas.addEventListener('click', onclick);
+	canvas.addEventListener('keydown', onkeydown);
 	const dropZone = canvas.closest('[data-tag-hero]')?.querySelector('[data-tag-drop-zone]');
 	const updateCamera = () => {
 		const viewport = canvas.getBoundingClientRect();
@@ -555,7 +778,14 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		canvas.dataset.cameraZoom = String(settings.cameraZoom);
 	};
 	const updateDropZone = () => {
-		if (world) world.setSpawnBoundary(getTagSpawnBoundary(camera, world.depth));
+		if (world) {
+			world.setSpawnBoundary(getTagSpawnBoundary(camera, world.depth));
+			const bottom = new Vector3(0, -1, 0).unproject(camera);
+			const direction = camera.getWorldDirection(new Vector3());
+			const slope = direction.y / direction.z;
+			// Include scene depth and the entire rotated tag, so deletion is never visible.
+			world.setCleanupExit(bottom.y - bottom.z * slope - Math.abs(world.depth * slope) - 2);
+		}
 		if (!world || !dropZone) return;
 		const viewport = canvas.getBoundingClientRect();
 		if (!viewport.width) return;
@@ -619,22 +849,21 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		lastTime = time;
 		accumulator += delta;
 		let isWorldChanged = false;
-		if (world) {
+		if (world && !world.isFloorOpen()) {
 			emissionAccumulator += delta * settings.tagsPerSecond;
 			while (emissionAccumulator >= 1) {
 				isWorldChanged ||= world.tags.length < maxTagBodies;
 				world.spawn();
 				emissionAccumulator--;
 			}
-		}
+		} else emissionAccumulator = 0;
 		while (accumulator >= 1 / 60) {
-			if (world?.activeTags.size) {
-				world.step();
-				isWorldChanged = true;
-			}
+			// Advance the cleanup clock even when every tag has settled; idle worlds skip Rapier solving.
+			const isStepChanged = world?.step() ?? false;
+			isWorldChanged ||= isStepChanged;
 			accumulator -= 1 / 60;
 		}
-		if (isWorldChanged) draw();
+		if (isWorldChanged || isPointerDirty) draw();
 		frame = requestAnimationFrame(tick);
 	};
 	const update = (nextIsActive: boolean) => {
@@ -653,6 +882,8 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 		world?.clear();
 		renderedFixed.clear();
 		paper.count = patches.count = backInk.count = frontInk.count = 0;
+		hoveredIndex = null;
+		isPointerDirty = true;
 		emissionAccumulator = 0;
 		draw();
 	};
@@ -669,6 +900,7 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 			geometry.dispose();
 			geometry = createTagGeometry(getVisualThickness(settings));
 			paper.geometry = geometry;
+			hoverHalo.geometry = geometry;
 			patchGeometry.dispose();
 			patchGeometry = createPatchGeometry(getVisualPatchThickness(settings));
 			patches.geometry = patchGeometry;
@@ -712,10 +944,17 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 	return {
 		clear,
 		configure,
+		inspectTag,
 		update,
 		destroy: () => {
 			isDestroyed = true;
 			if (frame !== null) cancelAnimationFrame(frame);
+			if (hoverFrame !== null) cancelAnimationFrame(hoverFrame);
+			canvas.removeEventListener('pointermove', onpointermove);
+			canvas.removeEventListener('pointerleave', onpointerleave);
+			canvas.removeEventListener('click', onclick);
+			canvas.removeEventListener('keydown', onkeydown);
+			canvas.classList.remove('cursor-pointer');
 			observer.disconnect();
 			themeObserver.disconnect();
 			world?.destroy();
@@ -735,6 +974,7 @@ export const createTagRain = async (canvas: HTMLCanvasElement) => {
 			paperMaterial.dispose();
 			edgeMaterial.dispose();
 			patchMaterial.dispose();
+			hoverMaterial.dispose();
 			light.shadow.map?.dispose();
 			renderer.dispose();
 			renderer.forceContextLoss();

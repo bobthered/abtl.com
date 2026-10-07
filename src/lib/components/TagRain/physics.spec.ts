@@ -251,3 +251,82 @@ it('uses weighted stock selection when spawning tags', async () => {
 		simulation.destroy();
 	}
 });
+
+it('visibly accelerates even broadside paper under gravity during the fall', async () => {
+	const simulation = await createTagWorld(20, 30, () => 0.5);
+	try {
+		simulation.spawn();
+		const { body } = simulation.tags[0];
+		body.setTranslation({ x: 0, y: 20, z: 0 }, true);
+		body.setRotation(new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2), true);
+		body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+		const speeds: number[] = [];
+		for (let sample = 0; sample < 3; sample++) {
+			for (let step = 0; step < 30; step++) simulation.step();
+			speeds.push(-body.linvel().y);
+		}
+		expect(speeds[1] - speeds[0]).toBeGreaterThan(0.5);
+		expect(speeds[2] - speeds[1]).toBeGreaterThan(0.3);
+		expect(body.translation().y).toBeLessThan(18);
+	} finally {
+		simulation.destroy();
+	}
+});
+
+it('releases the floor after 120 seconds and removes tags only below the viewport', async () => {
+	const simulation = await createTagWorld(6, 7, () => 0.5);
+	try {
+		simulation.spawn();
+		const tag = simulation.tags[0];
+		for (let index = 0; index < 7199; index++) simulation.step();
+		expect(simulation.isFloorOpen()).toBe(false);
+		expect(tag.body.isFixed()).toBe(true);
+		expect(simulation.activeTags.size).toBe(0);
+		// Release airborne paper too, without an artificial sideways impulse.
+		tag.body.setTranslation({ x: 0, y: 5, z: 0 }, true);
+		for (let index = 0; index < 2; index++) simulation.step();
+		expect(simulation.isFloorOpen()).toBe(true);
+		expect(tag.body.isDynamic()).toBe(true);
+		expect(tag.body.linvel().y).toBeLessThan(0);
+		expect(Math.abs(tag.body.linvel().x)).toBeLessThan(0.01);
+		const startY = tag.body.translation().y;
+		for (let index = 0; index < 30; index++) simulation.step();
+		expect(tag.body.translation().y).toBeLessThan(startY - 0.3);
+		expect(simulation.tags).toContain(tag);
+		for (let index = 0; index < 300; index++) simulation.step();
+		expect(simulation.tags).toHaveLength(0);
+		expect(simulation.activeTags.size).toBe(0);
+		expect(simulation.world.bodies.len()).toBe(5);
+		expect(simulation.world.colliders.len()).toBe(5);
+		expect(simulation.isFloorOpen()).toBe(false);
+		simulation.spawn();
+		expect(simulation.tags).toHaveLength(1);
+	} finally {
+		simulation.destroy();
+	}
+});
+
+it('supports shorter release intervals, disabling releases, and clearing while the floor is open', async () => {
+	const simulation = await createTagWorld(6, 7, () => 0.5, {
+		...defaultRainSettings,
+		cleanupIntervalSeconds: 0
+	});
+	try {
+		simulation.spawn();
+		for (let index = 0; index < 3700; index++) simulation.step();
+		expect(simulation.tags).toHaveLength(1);
+		expect(simulation.isFloorOpen()).toBe(false);
+		simulation.configure({ ...defaultRainSettings, cleanupIntervalSeconds: 6 });
+		for (let index = 0; index < 361; index++) simulation.step();
+		expect(simulation.isFloorOpen()).toBe(true);
+		simulation.spawn();
+		expect(simulation.tags).toHaveLength(1);
+		simulation.clear();
+		expect(simulation.isFloorOpen()).toBe(false);
+		expect(simulation.world.bodies.len()).toBe(5);
+		simulation.spawn();
+		expect(simulation.tags[0].body.collider(0).collisionGroups()).toBe(0x00010001);
+	} finally {
+		simulation.destroy();
+	}
+});

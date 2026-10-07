@@ -36,6 +36,10 @@ export const tagArtwork = {
 	backs: artworkFiles.backs.map(({ url }) => url),
 	fronts: artworkFiles.fronts.map(({ url }) => url)
 };
+export const tagArtworkNames = {
+	backs: artworkFiles.backs.map(({ name }) => name),
+	fronts: artworkFiles.fronts.map(({ name }) => name)
+};
 export const artworkCounts = {
 	backs: tagArtwork.backs.length,
 	fronts: tagArtwork.fronts.length

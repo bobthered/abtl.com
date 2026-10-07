@@ -26,6 +26,15 @@ export const settingControls = [
 	},
 	{ key: 'gravity', label: 'Gravity', min: 0, max: 30, step: 0.1, decimals: 1, unit: '' },
 	{
+		key: 'cleanupIntervalSeconds',
+		label: 'Floor release interval',
+		min: 0,
+		max: 7200,
+		step: 1,
+		decimals: 0,
+		unit: ' sec'
+	},
+	{
 		key: 'thicknessInches',
 		label: 'Stock thickness',
 		min: 0.0001,
@@ -54,12 +63,27 @@ export const defaultRainSettings: TagRainSettings = {
 	cameraZoom: 3,
 	flutter: 1,
 	gravity: 3.2,
+	cleanupIntervalSeconds: 120,
 	tagsPerSecond,
 	thicknessInches: tagDimensionsInches.thickness,
 	thicknessScale: 50
 };
-export const normalizeRainSettings = (input: Partial<TagRainSettings>): TagRainSettings => {
+export const normalizeRainSettings = (
+	input: Partial<TagRainSettings> & { gustIntervalMinutes?: number; gustIntervalSeconds?: number }
+): TagRainSettings => {
 	const result = { ...defaultRainSettings };
+	// Preserve saved gust timing when migrating to floor releases.
+	if (input.cleanupIntervalSeconds === undefined && Number.isFinite(input.gustIntervalSeconds))
+		result.cleanupIntervalSeconds = Math.min(7200, Math.max(0, input.gustIntervalSeconds!));
+	const legacyInterval = input.gustIntervalMinutes;
+	if (
+		input.cleanupIntervalSeconds === undefined &&
+		input.gustIntervalSeconds === undefined &&
+		typeof legacyInterval === 'number' &&
+		Number.isFinite(legacyInterval) &&
+		legacyInterval !== 1
+	)
+		result.cleanupIntervalSeconds = Math.min(7200, Math.max(0, legacyInterval * 60));
 	for (const control of settingControls) {
 		const value = input[control.key];
 		if (typeof value === 'number' && Number.isFinite(value))

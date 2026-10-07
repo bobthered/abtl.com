@@ -1,7 +1,8 @@
 <script lang="ts">
 	// Imports
-	import { Canvas, Div, TagRainSettings } from '#lib/components';
+	import { Canvas, Div, Span, TagRainSettings, TagViewer } from '#lib/components';
 	import type { createTagRain } from './physics';
+	import type { TagSelection } from './physics';
 	import { defaultRainSettings, normalizeRainSettings } from './settings';
 	import { onMount, untrack } from 'svelte';
 	import { theme } from 'sveltewind/theme';
@@ -39,7 +40,9 @@
 		try {
 			const { createTagRain } = await import('./physics');
 			if (!isMounted) return;
-			const nextSurface = await createTagRain(target);
+			const nextSurface = await createTagRain(target, (nextSelection) => {
+				selection = nextSelection;
+			});
 			if (!isMounted || target !== canvas) nextSurface.destroy();
 			else surface = nextSurface;
 		} catch (error) {
@@ -59,6 +62,7 @@
 	let isInitializing = $state(false);
 	let isMounted = $state(false);
 	let isPaused = $state(false);
+	let selection = $state.raw<TagSelection | null>(null);
 	let settings = $state({ ...defaultRainSettings });
 	let surface = $state.raw<Awaited<ReturnType<typeof createTagRain>> | null>(null);
 
@@ -73,7 +77,10 @@
 		surface?.configure(normalizeRainSettings(settings));
 	});
 	$effect(() => {
-		surface?.update(isActive && isDesktop && !isPaused);
+		surface?.update(isActive && isDesktop && !isPaused && selection === null);
+	});
+	$effect(() => {
+		if (!isDesktop) selection = null;
 	});
 	$effect(() => {
 		if (!isDevelopment || !isMounted) return;
@@ -86,9 +93,29 @@
 	});
 </script>
 
-<Div class={theme.resolve('tagRain')} aria-hidden="true" inert>
-	<Canvas bind:element={canvas} variants={['tagRain']} data-tag-rain />
+<Div class={theme.resolve('tagRain')}>
+	<Canvas
+		bind:element={canvas}
+		variants={['tagRain']}
+		role="button"
+		tabindex={0}
+		aria-label="Explore tags. Click a tag or press Enter to inspect one."
+		data-tag-rain
+	/>
+	<Span
+		class="pointer-events-none absolute right-8 bottom-6 rounded-lg bg-gray-50/90 px-3 py-2 text-xs text-gray-600 dark:bg-gray-950/90 dark:text-gray-300"
+		>Hover a tag, then click to explore</Span
+	>
 </Div>
+
+{#if selection}
+	<TagViewer
+		{selection}
+		onclose={() => {
+			selection = null;
+		}}
+	/>
+{/if}
 
 {#if isDevelopment}
 	<TagRainSettings bind:isPaused bind:settings onclear={() => surface?.clear()} />
