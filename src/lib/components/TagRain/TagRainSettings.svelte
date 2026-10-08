@@ -55,8 +55,9 @@
 		{/each}
 		<P class="text-xs text-gray-500 dark:text-gray-400">
 			Thickness changes restart the pile. Settings are saved only in this browser during
-			development. Floor release intervals are seconds of active animation time; set to 0 to
-			disable. The production counter stays unchanged.
+			development. The floor release interval counts seconds with the floor present; set to 0 to
+			disable. The removal period controls how long it stays absent. Tags keep dropping throughout.
+			The production counter stays unchanged.
 		</P>
 		<Div class="flex flex-wrap gap-2">
 			<Button

@@ -154,11 +154,14 @@ it('keeps released and newly emitted paper collidable while bypassing the restor
 	const simulation = await createTagWorld(6, 7, () => 0.5, {
 		...defaultRainSettings,
 		cleanupIntervalSeconds: 1,
+		floorRemovalSeconds: 1,
 		gravity: 0
 	});
 	try {
 		simulation.spawn();
-		for (let index = 0; index < 242; index++) simulation.step();
+		for (let index = 0; index < 61; index++) simulation.step();
+		simulation.tags[0].body.setTranslation({ x: 0, y: -0.1, z: 0 }, true);
+		for (let index = 0; index < 61; index++) simulation.step();
 		expect(simulation.isFloorOpen()).toBe(false);
 		simulation.spawn();
 		const released = simulation.tags[0].body.collider(0).collisionGroups();
@@ -292,7 +295,10 @@ it('preserves every tag beyond the old limit and lets sleeping paper wake under 
 		seed = (seed * 1664525 + 1013904223) >>> 0;
 		return seed / 4294967296;
 	};
-	const simulation = await createTagWorld(6, 7, random);
+	const simulation = await createTagWorld(6, 7, random, {
+		...defaultRainSettings,
+		cleanupIntervalSeconds: 0
+	});
 	for (let index = 0; index < 120; index++) {
 		simulation.spawn();
 		for (let step = 0; step < 21; step++) simulation.step();
@@ -425,12 +431,12 @@ it('visibly accelerates even broadside paper under gravity during the fall', asy
 	}
 });
 
-it('releases the floor after 120 seconds and removes tags only below the viewport', async () => {
+it('releases the floor after 30 seconds and restores it after five seconds', async () => {
 	const simulation = await createTagWorld(6, 7, () => 0.5);
 	try {
 		simulation.spawn();
 		const tag = simulation.tags[0];
-		for (let index = 0; index < 7199; index++) simulation.step();
+		for (let index = 0; index < 1799; index++) simulation.step();
 		expect(simulation.isFloorOpen()).toBe(false);
 		expect(tag.body.isSleeping()).toBe(true);
 		expect(simulation.activeTags.size).toBe(0);
@@ -472,12 +478,105 @@ it('supports shorter release intervals, disabling releases, and clearing while t
 		for (let index = 0; index < 361; index++) simulation.step();
 		expect(simulation.isFloorOpen()).toBe(true);
 		simulation.spawn();
-		expect(simulation.tags).toHaveLength(1);
+		expect(simulation.tags).toHaveLength(2);
 		simulation.clear();
 		expect(simulation.isFloorOpen()).toBe(false);
 		expect(simulation.world.bodies.len()).toBe(5);
 		simulation.spawn();
 		expect(simulation.tags[0].body.collider(0).collisionGroups()).toBe(0x00010003);
+	} finally {
+		simulation.destroy();
+	}
+});
+
+it('keeps emitting through the removal period and catches airborne tags when the floor returns', async () => {
+	const simulation = await createTagWorld(6, 7, () => 0.5, {
+		...defaultRainSettings,
+		cleanupIntervalSeconds: 1,
+		floorRemovalSeconds: 1
+	});
+	try {
+		simulation.spawn();
+		const departing = simulation.tags[0];
+		departing.body.setTranslation({ x: 0, y: 0.03, z: 0 }, true);
+		departing.body.setRotation(
+			new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2),
+			true
+		);
+		for (let index = 0; index < 61; index++) simulation.step();
+		expect(simulation.isFloorOpen()).toBe(true);
+		simulation.configure({
+			...defaultRainSettings,
+			cleanupIntervalSeconds: 0,
+			floorRemovalSeconds: 1
+		});
+		for (let index = 0; index < 30; index++) simulation.step();
+		simulation.spawn();
+		const arriving = simulation.tags[1];
+		arriving.body.setTranslation({ x: 0, y: 2, z: 0 }, true);
+		arriving.body.setLinvel({ x: 0, y: 0, z: 0 }, true);
+		for (let index = 0; index < 30; index++) simulation.step();
+		expect(simulation.isFloorOpen()).toBe(false);
+		expect(arriving.body.translation().y).toBeGreaterThan(0);
+		for (let index = 0; index < 900; index++) simulation.step();
+		expect(simulation.tags).not.toContain(departing);
+		expect(simulation.tags).toContain(arriving);
+		expect(arriving.body.translation().y).toBeGreaterThan(0);
+		expect(arriving.body.translation().y).toBeLessThan(0.2);
+		expect(arriving.body.isSleeping()).toBe(true);
+	} finally {
+		simulation.destroy();
+	}
+});
+
+it('uses the configured removal duration even with no pile and accepts continuous emissions', async () => {
+	const simulation = await createTagWorld(6, 7, () => 0.5, {
+		...defaultRainSettings,
+		cleanupIntervalSeconds: 1,
+		floorRemovalSeconds: 2,
+		gravity: 0
+	});
+	try {
+		while (!simulation.isFloorOpen()) simulation.step();
+		expect(simulation.isFloorOpen()).toBe(true);
+		for (let index = 0; index < 119; index++) {
+			if (index % 6 === 0) simulation.spawn();
+			simulation.step();
+		}
+		expect(simulation.tags).toHaveLength(20);
+		expect(simulation.isFloorOpen()).toBe(true);
+		simulation.step();
+		expect(simulation.isFloorOpen()).toBe(false);
+		for (let index = 0; index < 59; index++) simulation.step();
+		expect(simulation.isFloorOpen()).toBe(false);
+	} finally {
+		simulation.destroy();
+	}
+});
+
+it('absorbs a paper landing without a visible rebound', async () => {
+	const simulation = await createTagWorld(6, 7, () => 0.5, {
+		...defaultRainSettings,
+		cleanupIntervalSeconds: 0
+	});
+	try {
+		simulation.spawn();
+		const body = simulation.tags[0].body;
+		body.setTranslation({ x: 0, y: 0.4, z: 0 }, true);
+		body.setRotation(new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2), true);
+		body.setLinvel({ x: 0, y: -3, z: 0 }, true);
+		body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+		let isLanded = false;
+		let highestRebound = 0;
+		for (let index = 0; index < 600; index++) {
+			simulation.step();
+			const height = body.translation().y;
+			isLanded ||= height < 0.08;
+			if (isLanded) highestRebound = Math.max(highestRebound, height);
+		}
+		expect(isLanded).toBe(true);
+		expect(highestRebound).toBeLessThan(0.1);
+		expect(body.isSleeping()).toBe(true);
 	} finally {
 		simulation.destroy();
 	}

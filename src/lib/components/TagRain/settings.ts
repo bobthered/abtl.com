@@ -35,6 +35,15 @@ export const settingControls = [
 		unit: ' sec'
 	},
 	{
+		key: 'floorRemovalSeconds',
+		label: 'Floor removal period',
+		min: 0.1,
+		max: 60,
+		step: 0.1,
+		decimals: 1,
+		unit: ' sec'
+	},
+	{
 		key: 'thicknessInches',
 		label: 'Stock thickness',
 		min: 0.0001,
@@ -59,11 +68,12 @@ export const settingControls = [
 export type TagRainSettings = Record<(typeof settingControls)[number]['key'], number>;
 export const defaultRainSettings: TagRainSettings = {
 	airDrag: 1,
-	bounce: 0.02,
+	bounce: 0,
 	cameraZoom: 3,
 	flutter: 1,
+	floorRemovalSeconds: 5,
 	gravity: 3.2,
-	cleanupIntervalSeconds: 120,
+	cleanupIntervalSeconds: 30,
 	tagsPerSecond,
 	thicknessInches: tagDimensionsInches.thickness,
 	thicknessScale: 50

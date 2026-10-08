@@ -230,7 +230,7 @@ export const createTagWorld = async (
 		setDropZone(dropCenter * ratio, dropWidth * ratio);
 	};
 	const spawn = () => {
-		if (tags.length >= maxTagBodies || floorOpenRemaining > 0) return;
+		if (tags.length >= maxTagBodies) return;
 		const size = tagDimensionsInches.width * tagWorldUnitsPerInch;
 		const thickness = getVisualThickness(settings);
 		const patchThickness = getVisualPatchThickness(settings);
@@ -320,8 +320,7 @@ export const createTagWorld = async (
 	};
 	const releaseFloor = () => {
 		cleanupElapsed = 0;
-		if (!tags.length) return;
-		floorOpenRemaining = 3;
+		floorOpenRemaining = settings.floorRemovalSeconds;
 		floor.collider(0).setEnabled(false);
 		for (const tag of tags) {
 			tag.body.setBodyType(RAPIER.RigidBodyType.Dynamic, true);
@@ -329,20 +328,18 @@ export const createTagWorld = async (
 			tag.body.setAngularDamping(0.5);
 			tag.body.resetForces(false);
 			tag.body.resetTorques(false);
-			// Released paper keeps falling even after the floor returns, without catching on guide walls.
-			for (let index = 0; index < tag.body.numColliders(); index++)
-				tag.body.collider(index).setCollisionGroups(0x00020003);
-			releasedTags.add(tag);
 			activeTags.add(tag);
 		}
 		revision++;
 	};
 	const step = () => {
 		elapsed += 1 / 60;
-		cleanupElapsed += 1 / 60;
+		// Count the interval while the floor is present, separately from its removal duration.
+		if (floorOpenRemaining === 0) cleanupElapsed += 1 / 60;
 		let isFloorChanged = false;
 		if (floorOpenRemaining > 0) {
 			floorOpenRemaining = Math.max(0, floorOpenRemaining - 1 / 60);
+			if (floorOpenRemaining < 1e-8) floorOpenRemaining = 0;
 			if (floorOpenRemaining === 0) {
 				floor.collider(0).setEnabled(true);
 				isFloorChanged = true;
@@ -351,13 +348,21 @@ export const createTagWorld = async (
 		if (
 			settings.cleanupIntervalSeconds > 0 &&
 			cleanupElapsed >= settings.cleanupIntervalSeconds &&
-			!releasedTags.size &&
 			floorOpenRemaining === 0
-		)
+		) {
 			releaseFloor();
+			isFloorChanged = true;
+		}
 		const isChanged = activeTags.size > 0 || isFloorChanged;
 		for (const tag of activeTags) {
 			const { body, phase } = tag;
+			// Only paper that has passed below the missing floor belongs to the departing pile.
+			// Airborne tags retain normal floor collisions and can land when it returns.
+			if ((floorOpenRemaining > 0 || isFloorChanged) && body.translation().y < 0) {
+				for (let index = 0; index < body.numColliders(); index++)
+					body.collider(index).setCollisionGroups(0x00020003);
+				releasedTags.add(tag);
+			}
 			if (releasedTags.has(tag)) {
 				// Gravity alone drops the pile; do not freeze it or apply ground-settling damping.
 				continue;
@@ -373,12 +378,18 @@ export const createTagWorld = async (
 			body.resetForces(false);
 			body.resetTorques(false);
 			if (body.translation().y < 0.9) {
-				body.setLinearDamping(1.2);
-				body.setAngularDamping(1.8);
+				if (floorOpenRemaining > 0) {
+					body.setLinearDamping(0.035);
+					body.setAngularDamping(0.5);
+					continue;
+				}
+				// Dissipate motion near contact so light paper lands quietly rather than springing away.
+				body.setLinearDamping(2.5);
+				body.setAngularDamping(4);
 				// A gentle settling torque prevents a thin sheet balancing on its edge or a wall.
 				if (Math.abs(normal.y) < 0.95) {
 					const direction = normal.y < 0 ? -1 : 1;
-					const strength = body.mass() * 0.3;
+					const strength = body.mass() * 0.08;
 					body.addTorque(
 						{ x: -normal.z * direction * strength, y: 0, z: normal.x * direction * strength },
 						false
@@ -876,7 +887,7 @@ export const createTagRain = async (
 		lastTime = time;
 		accumulator += delta;
 		let isWorldChanged = false;
-		if (world && !world.isFloorOpen()) {
+		if (world) {
 			emissionAccumulator += delta * settings.tagsPerSecond;
 			while (emissionAccumulator >= 1) {
 				isWorldChanged ||= world.tags.length < maxTagBodies;
