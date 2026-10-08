@@ -55,7 +55,6 @@ export type RainTag = {
 	color: number;
 	frontArtwork: number;
 	phase: number;
-	restingSteps: number;
 	width: number;
 };
 export type TagSelection = {
@@ -113,6 +112,8 @@ export const tagWorldUnitsPerInch = 0.6 / tagDimensionsInches.width;
 // True-scale stock is subpixel in this hero. Exaggerate only depth so its edge remains visible.
 export const tagVisualThicknessScale = 50;
 export const tagVisualThickness = tagThickness * tagVisualThicknessScale;
+// A collision-only clearance protects thin visible faces from the solver's residual compression.
+const tagContactSkin = 0.002;
 let initialization: Promise<void> | null = null;
 const initializePhysics = () => (initialization ??= RAPIER.init());
 
@@ -166,6 +167,10 @@ export const createTagWorld = async (
 	const world = new RAPIER.World({ x: 0, y: -settings.gravity, z: 0 });
 	world.timestep = 1 / 60;
 	world.integrationParameters.numSolverIterations = 8;
+	world.integrationParameters.contact_natural_frequency = 60;
+	// Thin paper needs tighter contacts and more CCD passes than Rapier's general-purpose defaults.
+	world.integrationParameters.normalizedAllowedLinearError = 0.00005;
+	world.integrationParameters.maxCcdSubsteps = 4;
 	const tags: RainTag[] = [];
 	const activeTags = new Set<RainTag>();
 	const releasedTags = new Set<RainTag>();
@@ -213,7 +218,9 @@ export const createTagWorld = async (
 		for (const tag of tags) {
 			const position = tag.body.translation();
 			tag.body.setTranslation({ ...position, x: position.x * ratio }, true);
+			activeTags.add(tag);
 		}
+		revision++;
 		boundaryWidth = nextWidth;
 		floor.collider(0).setHalfExtents({ x: nextWidth / 2 + 1, y: 0.12, z: depth + 1 });
 		leftWall.setTranslation({ x: -nextWidth / 2 - 0.15, y: wallCenter, z: 0 }, true);
@@ -227,17 +234,29 @@ export const createTagWorld = async (
 		const size = tagDimensionsInches.width * tagWorldUnitsPerInch;
 		const thickness = getVisualThickness(settings);
 		const patchThickness = getVisualPatchThickness(settings);
+		// Subpixel sheets need a minimum collision depth to avoid degenerate thin convex contacts.
+		// Rendering still uses the requested paper and patch thicknesses.
+		const collisionThickness = Math.max(thickness, 0.01 / size);
+		const collisionPatchThickness = Math.max(patchThickness, 0.001 / size);
 		const radius = size * Math.hypot(0.5, 1, thickness / 2 + patchThickness);
 		const rotation = new Quaternion().setFromEuler(
 			new Euler((random() - 0.5) * Math.PI, (random() - 0.5) * Math.PI, (random() - 0.5) * Math.PI)
 		);
+		const x = dropCenter + (random() - 0.5) * Math.max(0.1, dropWidth - size * 2);
+		const z = (random() - 0.5) * depth * 1.2;
+		let y = spawnBoundary.height + radius * spawnBoundary.clearanceScale;
+		// CCD cannot resolve tags born intersecting. Queue nearby emissions safely above one another.
+		// Only inspect moving paper; the settled pile stays far below the offscreen emission point.
+		for (const tag of activeTags) {
+			const position = tag.body.translation();
+			const clearance =
+				radius + tag.width * Math.hypot(0.5, 1, thickness / 2 + patchThickness) + 0.002;
+			if (Math.hypot(position.x - x, position.z - z) < clearance)
+				y = Math.max(y, position.y + clearance);
+		}
 		const body = world.createRigidBody(
 			RAPIER.RigidBodyDesc.dynamic()
-				.setTranslation(
-					dropCenter + (random() - 0.5) * Math.max(0.1, dropWidth - size * 2),
-					spawnBoundary.height + radius * spawnBoundary.clearanceScale,
-					(random() - 0.5) * depth * 1.2
-				)
+				.setTranslation(x, y, z)
 				.setRotation(rotation)
 				.setLinvel((random() - 0.5) * 0.6, -0.35, (random() - 0.5) * 0.4)
 				.setAngvel({
@@ -251,35 +270,41 @@ export const createTagWorld = async (
 		);
 		// A thin convex hull matches the clipped outline; its small hole is visual only.
 		const vertices: number[] = [];
-		for (const z of [-thickness / 2, thickness / 2]) {
+		for (const z of [-collisionThickness / 2, collisionThickness / 2]) {
 			for (const { x, y } of tagOutline) vertices.push(x * size, y * size, z * size);
 		}
-		const collider = RAPIER.ColliderDesc.convexHull(new Float32Array(vertices))!;
+		// A rounded collision hull provides stable face contacts without rounding the rendered stock.
+		const collider = RAPIER.ColliderDesc.roundConvexHull(new Float32Array(vertices), 0.01)!;
 		world.createCollider(
 			collider
 				.setMass(0.04)
 				.setFriction(0.65)
 				.setRestitution(settings.bounce)
-				.setCollisionGroups(0x00010001),
+				.setContactSkin(tagContactSkin)
+				.setCollisionGroups(0x00010003),
 			body
 		);
 		// Raised patches on both faces participate in stacking, with the same depth as the rendering.
 		for (const direction of [-1, 1]) {
 			const patchVertices: number[] = [];
-			for (const z of [-patchThickness / 2, patchThickness / 2])
+			for (const z of [-collisionPatchThickness / 2, collisionPatchThickness / 2])
 				for (const { x, y } of patchOutline) patchVertices.push(x * size, y * size, z * size);
-			const patchCollider = RAPIER.ColliderDesc.convexHull(new Float32Array(patchVertices))!;
+			const patchCollider = RAPIER.ColliderDesc.roundConvexHull(
+				new Float32Array(patchVertices),
+				0.002
+			)!;
 			world.createCollider(
 				patchCollider
 					.setTranslation(
 						tagHole.center.x * size,
 						tagHole.center.y * size,
-						direction * (thickness / 2 + patchThickness / 2) * size
+						direction * (collisionThickness / 2 + collisionPatchThickness / 2) * size
 					)
 					.setMass(0.004)
 					.setFriction(0.65)
 					.setRestitution(settings.bounce)
-					.setCollisionGroups(0x00010001),
+					.setContactSkin(tagContactSkin)
+					.setCollisionGroups(0x00010003),
 				body
 			);
 		}
@@ -288,7 +313,6 @@ export const createTagWorld = async (
 			body,
 			color: chooseTagColor(random),
 			phase: random() * Math.PI * 2,
-			restingSteps: 0,
 			width: size
 		};
 		tags.push(tag);
@@ -307,8 +331,7 @@ export const createTagWorld = async (
 			tag.body.resetTorques(false);
 			// Released paper keeps falling even after the floor returns, without catching on guide walls.
 			for (let index = 0; index < tag.body.numColliders(); index++)
-				tag.body.collider(index).setCollisionGroups(0x00020002);
-			tag.restingSteps = 0;
+				tag.body.collider(index).setCollisionGroups(0x00020003);
 			releasedTags.add(tag);
 			activeTags.add(tag);
 		}
@@ -339,22 +362,11 @@ export const createTagWorld = async (
 				// Gravity alone drops the pile; do not freeze it or apply ground-settling damping.
 				continue;
 			}
-			if (body.isFixed()) {
+			if (body.isSleeping()) {
 				activeTags.delete(tag);
 				continue;
 			}
 			const velocity = body.linvel();
-			const spin = body.angvel();
-			const isResting =
-				Math.hypot(velocity.x, velocity.y, velocity.z) < 0.06 &&
-				Math.hypot(spin.x, spin.y, spin.z) < 0.12;
-			tag.restingSteps = isResting ? tag.restingSteps + 1 : 0;
-			// Keep resting paper visible and collidable without repeatedly solving the whole pile.
-			if (tag.restingSteps >= 120 || body.isSleeping()) {
-				body.setBodyType(RAPIER.RigidBodyType.Fixed, true);
-				activeTags.delete(tag);
-				continue;
-			}
 			const rotation = body.rotation();
 			orientation.set(rotation.x, rotation.y, rotation.z, rotation.w);
 			normal.set(0, 0, 1).applyQuaternion(orientation);
@@ -369,7 +381,7 @@ export const createTagWorld = async (
 					const strength = body.mass() * 0.3;
 					body.addTorque(
 						{ x: -normal.z * direction * strength, y: 0, z: normal.x * direction * strength },
-						true
+						false
 					);
 				}
 				continue;
@@ -395,7 +407,18 @@ export const createTagWorld = async (
 				false
 			);
 		}
-		if (isChanged) world.step();
+		if (isChanged) {
+			world.step();
+			// Sleeping dynamic paper costs no solver work, but can wake and shift under new impacts.
+			// Rejoin woken tags before the next step so forces and rendering follow their real positions.
+			for (const tag of tags) {
+				if (tag.body.isSleeping()) activeTags.delete(tag);
+				else {
+					if (!activeTags.has(tag)) revision++;
+					activeTags.add(tag);
+				}
+			}
+		}
 		// Delete only once the entire tag is below the camera's bottom edge.
 		for (let index = tags.length - 1; index >= 0 && releasedTags.size; index--) {
 			const tag = tags[index];
@@ -425,7 +448,10 @@ export const createTagWorld = async (
 		for (const tag of tags) {
 			for (let index = 0; index < tag.body.numColliders(); index++)
 				tag.body.collider(index).setRestitution(settings.bounce);
-			if (tag.body.isDynamic()) tag.body.wakeUp();
+			if (tag.body.isDynamic()) {
+				tag.body.wakeUp();
+				activeTags.add(tag);
+			}
 		}
 	};
 	const destroy = () => {
@@ -581,7 +607,7 @@ export const createTagRain = async (
 			direction * (getVisualThickness(settings) / 2 + getVisualPatchThickness(settings) / 2)
 		)
 	);
-	const renderedFixed = new Set<number>();
+	const renderedSleeping = new Set<number>();
 	let paletteVersion = 0;
 	let renderedPaletteVersion = -1;
 	let renderedRevision = -1;
@@ -609,7 +635,7 @@ export const createTagRain = async (
 		const revision = world?.getRevision() ?? 0;
 		if (revision !== renderedRevision) {
 			// Waking or removing tags invalidates settled-instance caches and compacted indices.
-			renderedFixed.clear();
+			renderedSleeping.clear();
 			paper.count = patches.count = backInk.count = frontInk.count = 0;
 			hoveredIndex = null;
 			isPointerDirty = true;
@@ -630,7 +656,8 @@ export const createTagRain = async (
 				);
 			}
 			if (isPaletteChanged || index >= paper.count) paper.setColorAt(index, palette[tag.color]);
-			if (renderedFixed.has(index)) continue;
+			if (renderedSleeping.has(index) && tag.body.isSleeping()) continue;
+			renderedSleeping.delete(index);
 			firstMoved = Math.min(firstMoved, index);
 			lastMoved = index;
 			const position = tag.body.translation();
@@ -646,7 +673,7 @@ export const createTagRain = async (
 				patchTransform.multiplyMatrices(transform.matrix, artworkOffsets[side]);
 				inks[side].setMatrixAt(index, patchTransform);
 			}
-			if (tag.body.isFixed()) renderedFixed.add(index);
+			if (tag.body.isSleeping()) renderedSleeping.add(index);
 		}
 		paper.count = tags.length;
 		backInk.count = artworkCounts.backs ? tags.length : 0;
@@ -826,7 +853,7 @@ export const createTagRain = async (
 		floor.scale.x = viewWidth + 2;
 		if (world) {
 			world.setWidth(viewWidth);
-			renderedFixed.clear();
+			renderedSleeping.clear();
 			updateDropZone();
 			draw();
 			return;
@@ -880,7 +907,7 @@ export const createTagRain = async (
 	};
 	const clear = () => {
 		world?.clear();
-		renderedFixed.clear();
+		renderedSleeping.clear();
 		paper.count = patches.count = backInk.count = frontInk.count = 0;
 		hoveredIndex = null;
 		isPointerDirty = true;
@@ -978,7 +1005,7 @@ export const createTagRain = async (
 			light.shadow.map?.dispose();
 			renderer.dispose();
 			renderer.forceContextLoss();
-			renderedFixed.clear();
+			renderedSleeping.clear();
 			scene.clear();
 		}
 	};

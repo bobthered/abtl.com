@@ -16,7 +16,18 @@ import {
 import { expect, it } from 'vitest';
 import { defaultRainSettings, getVisualPatchThickness, getVisualThickness } from './settings';
 import { Mesh, MeshBasicMaterial, OrthographicCamera, Quaternion, Raycaster, Vector3 } from 'three';
-import { createPatchShape, tagHole } from './profile';
+import { createPatchShape, tagHole, tagOutline } from './profile';
+import RAPIER from '@dimforge/rapier3d-compat';
+
+// Measure the visible paper, independently of the collision-only safety margin.
+const createVisiblePaperShape = (settings = defaultRainSettings) => {
+	const size = tagDimensionsInches.width * tagWorldUnitsPerInch;
+	const thickness = getVisualThickness(settings);
+	const vertices = [-thickness / 2, thickness / 2].flatMap((z) =>
+		tagOutline.flatMap(({ x, y }) => [x * size, y * size, z * size])
+	);
+	return RAPIER.ColliderDesc.convexHull(new Float32Array(vertices))!.shape;
+};
 
 it('extrudes the supplied patch with an open hole and the shared thickness scale', () => {
 	const thickness = getVisualPatchThickness(defaultRainSettings);
@@ -84,6 +95,83 @@ it.each([0.25, 1, 3])('spawns the entire tag above the tilted camera at zoom %s'
 
 it('uses the annual production pace for emission', () => {
 	expect(tagsPerSecond).toBeCloseTo(2.853881, 5);
+});
+
+it('keeps burst emissions separated even when random positions repeat', async () => {
+	const simulation = await createTagWorld(6, 7, () => 0.5);
+	try {
+		for (let index = 0; index < 8; index++) simulation.spawn();
+		for (let index = 1; index < simulation.tags.length; index++) {
+			const previous = simulation.tags[index - 1].body.translation();
+			const current = simulation.tags[index].body.translation();
+			expect(current.y - previous.y).toBeGreaterThan(1.2);
+		}
+	} finally {
+		simulation.destroy();
+	}
+});
+
+it.each([1, 50])(
+	'stacks thin paper without penetrating at thickness scale %s',
+	async (thicknessScale) => {
+		const simulation = await createTagWorld(6, 7, () => 0.5, {
+			...defaultRainSettings,
+			flutter: 0,
+			thicknessScale
+		});
+		try {
+			for (let index = 0; index < 2; index++) {
+				simulation.spawn();
+				const body = simulation.tags[index].body;
+				body.setTranslation({ x: 0, y: 0.2 + index * 0.4, z: 0 }, true);
+				body.setRotation(
+					new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2),
+					true
+				);
+				body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+			}
+			for (let index = 0; index < 600; index++) simulation.step();
+			const shape = createVisiblePaperShape({ ...defaultRainSettings, thicknessScale });
+			const first = simulation.tags[0].body;
+			const second = simulation.tags[1].body;
+			const contact = shape.contactShape(
+				first.translation(),
+				first.rotation(),
+				shape,
+				second.translation(),
+				second.rotation(),
+				0.1
+			);
+			expect(contact).not.toBeNull();
+			expect(contact!.distance).toBeGreaterThanOrEqual(-0.00015);
+		} finally {
+			simulation.destroy();
+		}
+	}
+);
+
+it('keeps released and newly emitted paper collidable while bypassing the restored floor', async () => {
+	const simulation = await createTagWorld(6, 7, () => 0.5, {
+		...defaultRainSettings,
+		cleanupIntervalSeconds: 1,
+		gravity: 0
+	});
+	try {
+		simulation.spawn();
+		for (let index = 0; index < 242; index++) simulation.step();
+		expect(simulation.isFloorOpen()).toBe(false);
+		simulation.spawn();
+		const released = simulation.tags[0].body.collider(0).collisionGroups();
+		const fresh = simulation.tags[1].body.collider(0).collisionGroups();
+		const floor = simulation.world.getRigidBody(0).collider(0).collisionGroups();
+		const isCollisionAllowed = (first: number, second: number) =>
+			((first >>> 16) & second & 0xffff) !== 0 && ((second >>> 16) & first & 0xffff) !== 0;
+		expect(isCollisionAllowed(released, fresh)).toBe(true);
+		expect(isCollisionAllowed(released, floor)).toBe(false);
+		expect(isCollisionAllowed(fresh, floor)).toBe(true);
+	} finally {
+		simulation.destroy();
+	}
 });
 
 it('keeps every tag at 2.625 by 5.25 inches regardless of randomized motion', async () => {
@@ -198,7 +286,7 @@ it('tumbles in three dimensions and settles flat on the floor', async () => {
 	expect(simulation.tags).toHaveLength(0);
 });
 
-it('preserves every tag beyond the old limit and freezes settled paper in the pile', async () => {
+it('preserves every tag beyond the old limit and lets sleeping paper wake under new forces', async () => {
 	let seed = 17;
 	const random = () => {
 		seed = (seed * 1664525 + 1013904223) >>> 0;
@@ -211,16 +299,22 @@ it('preserves every tag beyond the old limit and freezes settled paper in the pi
 	}
 	expect(simulation.tags).toHaveLength(120);
 	expect(maxTagBodies).toBeGreaterThanOrEqual(10_000);
-	expect(simulation.tags.some((tag) => tag.body.isFixed())).toBe(true);
-	const settled = simulation.tags.find((tag) => tag.body.isFixed())!;
-	const position = settled.body.translation();
+	expect(simulation.tags.some((tag) => tag.body.isSleeping())).toBe(true);
 	for (let index = 0; index < 120; index++) simulation.step();
-	expect(settled.body.translation()).toEqual(position);
+	const settled = simulation.tags.find((tag) => tag.body.isSleeping())!;
+	expect(settled.body.isDynamic()).toBe(true);
 	expect(simulation.tags).toContain(settled);
 	expect(simulation.activeTags.has(settled)).toBe(false);
 	expect(simulation.activeTags.size).toBeLessThan(simulation.tags.length);
 	expect(simulation.world.bodies.len()).toBe(simulation.tags.length + 5);
 	expect(simulation.tags.every((tag) => Math.abs(tag.body.translation().z) < 2.5)).toBe(true);
+	const position = settled.body.translation();
+	const revision = simulation.getRevision();
+	settled.body.applyImpulse({ x: 0.01, y: 0.01, z: 0 }, true);
+	simulation.step();
+	expect(simulation.activeTags.has(settled)).toBe(true);
+	expect(settled.body.translation()).not.toEqual(position);
+	expect(simulation.getRevision()).toBeGreaterThan(revision);
 	simulation.destroy();
 }, 20_000);
 
@@ -230,6 +324,64 @@ it('includes white stock and all 20 supplied tag colors, including every fluores
 	expect(tagColors).toContain('tag-white');
 	expect(tagColors.filter((color) => color.startsWith('tag-fluorescent-'))).toHaveLength(5);
 });
+
+it.each([17, 91])(
+	'settles a dense pile without intersecting paper (seed %s)',
+	async (initialSeed) => {
+		let seed = initialSeed;
+		const random = () => {
+			seed = (seed * 1664525 + 1013904223) >>> 0;
+			return seed / 4294967296;
+		};
+		const simulation = await createTagWorld(6, 7, random, {
+			...defaultRainSettings,
+			cleanupIntervalSeconds: 0
+		});
+		try {
+			simulation.setDropZone(0, 2);
+			simulation.setSpawnBoundary({ height: 1.5, clearanceScale: 1 });
+			for (let index = 0; index < 60; index++) {
+				simulation.spawn();
+				for (let step = 0; step < 21; step++) simulation.step();
+			}
+			for (let step = 0; step < 2400; step++) simulation.step();
+			let minimumDistance = 0;
+			let deepestContact = '';
+			const shape = createVisiblePaperShape();
+			for (let first = 0; first < simulation.tags.length; first++)
+				for (let second = first + 1; second < simulation.tags.length; second++) {
+					const firstBody = simulation.tags[first].body;
+					const secondBody = simulation.tags[second].body;
+					const contact = shape.contactShape(
+						firstBody.translation(),
+						firstBody.rotation(),
+						shape,
+						secondBody.translation(),
+						secondBody.rotation(),
+						0
+					);
+					if (contact && contact.distance < minimumDistance) {
+						minimumDistance = contact.distance;
+						deepestContact = JSON.stringify(
+							[first, second].map((index) => ({
+								index,
+								position: simulation.tags[index].body.translation(),
+								isSleeping: simulation.tags[index].body.isSleeping(),
+								rotation: simulation.tags[index].body.rotation()
+							}))
+						);
+					}
+				}
+			expect(simulation.tags.every((tag) => tag.body.isDynamic())).toBe(true);
+			expect(simulation.tags.every((tag) => tag.body.translation().y < 1.5)).toBe(true);
+			expect(simulation.tags.some((tag) => tag.body.isSleeping())).toBe(true);
+			expect(minimumDistance, deepestContact).toBeGreaterThanOrEqual(-0.00015);
+		} finally {
+			simulation.destroy();
+		}
+	},
+	30_000
+);
 
 it('allocates 75% of stock selections to white and splits 25% evenly across other colors', () => {
 	const counts = Array.from({ length: tagColors.length }, () => 0);
@@ -280,7 +432,7 @@ it('releases the floor after 120 seconds and removes tags only below the viewpor
 		const tag = simulation.tags[0];
 		for (let index = 0; index < 7199; index++) simulation.step();
 		expect(simulation.isFloorOpen()).toBe(false);
-		expect(tag.body.isFixed()).toBe(true);
+		expect(tag.body.isSleeping()).toBe(true);
 		expect(simulation.activeTags.size).toBe(0);
 		// Release airborne paper too, without an artificial sideways impulse.
 		tag.body.setTranslation({ x: 0, y: 5, z: 0 }, true);
@@ -325,7 +477,7 @@ it('supports shorter release intervals, disabling releases, and clearing while t
 		expect(simulation.isFloorOpen()).toBe(false);
 		expect(simulation.world.bodies.len()).toBe(5);
 		simulation.spawn();
-		expect(simulation.tags[0].body.collider(0).collisionGroups()).toBe(0x00010001);
+		expect(simulation.tags[0].body.collider(0).collisionGroups()).toBe(0x00010003);
 	} finally {
 		simulation.destroy();
 	}
