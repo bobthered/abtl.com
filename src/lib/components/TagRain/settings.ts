@@ -71,7 +71,7 @@ export const defaultRainSettings: TagRainSettings = {
 	bounce: 0,
 	cameraZoom: 3,
 	flutter: 1,
-	floorRemovalSeconds: 5,
+	floorRemovalSeconds: 2,
 	gravity: 3.2,
 	cleanupIntervalSeconds: 30,
 	tagsPerSecond,

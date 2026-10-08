@@ -15,7 +15,7 @@ it('clamps unsafe saved settings and restores invalid values to defaults', () =>
 	expect(normalizeRainSettings({ cameraZoom: 0 }).cameraZoom).toBe(0.25);
 	expect(normalizeRainSettings({ cameraZoom: 20 }).cameraZoom).toBe(3);
 	expect(normalizeRainSettings({}).cleanupIntervalSeconds).toBe(30);
-	expect(normalizeRainSettings({}).floorRemovalSeconds).toBe(5);
+	expect(normalizeRainSettings({}).floorRemovalSeconds).toBe(2);
 	expect(normalizeRainSettings({ floorRemovalSeconds: -1 }).floorRemovalSeconds).toBe(0.1);
 	expect(normalizeRainSettings({ floorRemovalSeconds: 100 }).floorRemovalSeconds).toBe(60);
 	expect(normalizeRainSettings({ cleanupIntervalSeconds: -1 }).cleanupIntervalSeconds).toBe(0);

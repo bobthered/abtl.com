@@ -318,6 +318,35 @@ export const createTagWorld = async (
 		tags.push(tag);
 		activeTags.add(tag);
 	};
+	const markDeparting = (tag: RainTag) => {
+		for (let index = 0; index < tag.body.numColliders(); index++)
+			tag.body.collider(index).setCollisionGroups(0x00020003);
+		tag.body.resetForces(false);
+		tag.body.resetTorques(false);
+		tag.body.setLinearDamping(0.035);
+		tag.body.setAngularDamping(0.5);
+		tag.body.wakeUp();
+		releasedTags.add(tag);
+		activeTags.add(tag);
+	};
+	const restoreFloor = () => {
+		// Check the whole compound tag, including its patches, before restoring floor contacts.
+		// Refresh collider poses so a just-moved or rotated tag is tested at its current position.
+		world.propagateModifiedBodyPositionsToColliders();
+		const floorCollider = floor.collider(0);
+		for (const tag of tags) {
+			if (releasedTags.has(tag)) continue;
+			let isIntersecting = tag.body.translation().y < 0;
+			for (let index = 0; index < tag.body.numColliders() && !isIntersecting; index++) {
+				const contact = floorCollider.contactCollider(tag.body.collider(index), tagContactSkin);
+				isIntersecting = contact !== null && contact.distance <= tagContactSkin;
+			}
+			// Straddling paper finishes its descent; the floor catches only tags wholly above it.
+			if (isIntersecting) markDeparting(tag);
+		}
+		floorCollider.setEnabled(true);
+		revision++;
+	};
 	const releaseFloor = () => {
 		cleanupElapsed = 0;
 		floorOpenRemaining = settings.floorRemovalSeconds;
@@ -341,7 +370,7 @@ export const createTagWorld = async (
 			floorOpenRemaining = Math.max(0, floorOpenRemaining - 1 / 60);
 			if (floorOpenRemaining < 1e-8) floorOpenRemaining = 0;
 			if (floorOpenRemaining === 0) {
-				floor.collider(0).setEnabled(true);
+				restoreFloor();
 				isFloorChanged = true;
 			}
 		}
@@ -359,9 +388,7 @@ export const createTagWorld = async (
 			// Only paper that has passed below the missing floor belongs to the departing pile.
 			// Airborne tags retain normal floor collisions and can land when it returns.
 			if ((floorOpenRemaining > 0 || isFloorChanged) && body.translation().y < 0) {
-				for (let index = 0; index < body.numColliders(); index++)
-					body.collider(index).setCollisionGroups(0x00020003);
-				releasedTags.add(tag);
+				if (!releasedTags.has(tag)) markDeparting(tag);
 			}
 			if (releasedTags.has(tag)) {
 				// Gravity alone drops the pile; do not freeze it or apply ground-settling damping.
@@ -530,7 +557,8 @@ export const createTagRain = async (
 		side: DoubleSide
 	});
 	const floorGeometry = new PlaneGeometry(1, 4.8);
-	const floorMaterial = new ShadowMaterial({ opacity: 0.12 });
+	// This plane supplies shadows, not an opaque surface that slices departing tags visually.
+	const floorMaterial = new ShadowMaterial({ depthWrite: false, opacity: 0.12 });
 	const floor = new Mesh(floorGeometry, floorMaterial);
 	floor.rotation.x = -Math.PI / 2;
 	floor.position.y = -0.002;

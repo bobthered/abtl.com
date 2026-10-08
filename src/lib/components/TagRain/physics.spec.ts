@@ -431,7 +431,7 @@ it('visibly accelerates even broadside paper under gravity during the fall', asy
 	}
 });
 
-it('releases the floor after 30 seconds and restores it after five seconds', async () => {
+it('releases the floor after 30 seconds and restores it after two seconds', async () => {
 	const simulation = await createTagWorld(6, 7, () => 0.5);
 	try {
 		simulation.spawn();
@@ -440,8 +440,7 @@ it('releases the floor after 30 seconds and restores it after five seconds', asy
 		expect(simulation.isFloorOpen()).toBe(false);
 		expect(tag.body.isSleeping()).toBe(true);
 		expect(simulation.activeTags.size).toBe(0);
-		// Release airborne paper too, without an artificial sideways impulse.
-		tag.body.setTranslation({ x: 0, y: 5, z: 0 }, true);
+		// The settled pile leaves without an artificial sideways impulse.
 		for (let index = 0; index < 2; index++) simulation.step();
 		expect(simulation.isFloorOpen()).toBe(true);
 		expect(tag.body.isDynamic()).toBe(true);
@@ -577,6 +576,73 @@ it('absorbs a paper landing without a visible rebound', async () => {
 		expect(isLanded).toBe(true);
 		expect(highestRebound).toBeLessThan(0.1);
 		expect(body.isSleeping()).toBe(true);
+	} finally {
+		simulation.destroy();
+	}
+});
+
+it.each([0, Math.PI / 4])(
+	'lets a tilted tag crossing the returning floor finish falling (angle %s)',
+	async (angle) => {
+		const simulation = await createTagWorld(6, 7, () => 0.5, {
+			...defaultRainSettings,
+			cleanupIntervalSeconds: 1,
+			floorRemovalSeconds: 0.1,
+			flutter: 0,
+			gravity: 0
+		});
+		try {
+			simulation.spawn();
+			while (!simulation.isFloorOpen()) simulation.step();
+			for (let index = 0; index < 5; index++) simulation.step();
+			expect(simulation.isFloorOpen()).toBe(true);
+			const tag = simulation.tags[0];
+			// Its center is above the floor, but its lower edge crosses the floor volume.
+			tag.body.setTranslation({ x: 0, y: 0.2, z: 0 }, true);
+			tag.body.setRotation(new Quaternion().setFromAxisAngle(new Vector3(0, 0, 1), angle), true);
+			tag.body.setLinvel({ x: 0, y: 0, z: 0 }, true);
+			tag.body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+			simulation.step();
+			expect(simulation.isFloorOpen()).toBe(false);
+			expect(tag.body.translation().y).toBeCloseTo(0.2, 6);
+			for (let index = 0; index < tag.body.numColliders(); index++)
+				expect(tag.body.collider(index).collisionGroups()).toBe(0x00020003);
+			simulation.configure({ ...defaultRainSettings, cleanupIntervalSeconds: 0 });
+			for (let index = 0; index < 300; index++) simulation.step();
+			expect(simulation.tags).not.toContain(tag);
+		} finally {
+			simulation.destroy();
+		}
+	}
+);
+
+it('checks patch clearance as well as paper before restoring the floor', async () => {
+	const simulation = await createTagWorld(6, 7, () => 0.5, {
+		...defaultRainSettings,
+		cleanupIntervalSeconds: 1,
+		floorRemovalSeconds: 0.1,
+		flutter: 0,
+		gravity: 0
+	});
+	try {
+		simulation.spawn();
+		while (!simulation.isFloorOpen()) simulation.step();
+		for (let index = 0; index < 5; index++) simulation.step();
+		const body = simulation.tags[0].body;
+		body.setTranslation({ x: 0, y: 0.02, z: 0 }, true);
+		body.setRotation(new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2), true);
+		body.setLinvel({ x: 0, y: 0, z: 0 }, true);
+		body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+		simulation.world.propagateModifiedBodyPositionsToColliders();
+		const floor = simulation.world.getRigidBody(0).collider(0);
+		expect(floor.contactCollider(body.collider(0), 0.002)).toBeNull();
+		expect(
+			[1, 2].some((index) => floor.contactCollider(body.collider(index), 0.002) !== null)
+		).toBe(true);
+		simulation.step();
+		expect(simulation.isFloorOpen()).toBe(false);
+		expect(body.collider(0).collisionGroups()).toBe(0x00020003);
+		expect(body.translation().y).toBeCloseTo(0.02, 6);
 	} finally {
 		simulation.destroy();
 	}
