@@ -11,6 +11,7 @@ import {
 } from 'three';
 import type { Material } from 'three';
 import { tagOutline, tagPathBounds, tagSvgFrame } from './profile';
+import { defaultRainSettings } from './settings';
 
 // 24 particles per tag: stiff in-plane edges, compliant bending, and no global shape matching.
 export const maxActiveClothTags = 12;
@@ -32,11 +33,19 @@ export const clothTriangles = new Uint32Array(
 	)
 );
 
+export const createClothMaterial = (bendStiffness = defaultRainSettings.bendStiffness) => {
+	const material = RAPIER.SoftBodyMaterial.uniform(120, 1);
+	// Structural stiffness prevents stretching; tune bending independently to keep paper-like folds.
+	material.bendSoftness = { naturalFrequency: bendStiffness, dampingRatio: 1 };
+	return material;
+};
+
 export const createClothBody = (
 	world: RAPIER.World,
 	pose: Matrix4,
 	radius: number,
-	bounce: number
+	bounce: number,
+	bendStiffness = defaultRainSettings.bendStiffness
 ) => {
 	const positions = clothRestPositions.slice();
 	const point = new Vector3();
@@ -46,8 +55,7 @@ export const createClothBody = (
 			.applyMatrix4(pose)
 			.toArray(positions, index * 3);
 	}
-	const material = RAPIER.SoftBodyMaterial.uniform(120, 1);
-	material.bendSoftness = { naturalFrequency: 5, dampingRatio: 1 };
+	const material = createClothMaterial(bendStiffness);
 	const description = RAPIER.SoftBodyDesc.trimesh(positions, clothTriangles)!;
 	// Trimesh's default shape matching makes paper rigid; structural edges resist stretching instead.
 	const edges = new Set<string>();

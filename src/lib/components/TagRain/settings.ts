@@ -44,6 +44,15 @@ export const settingControls = [
 		unit: ' sec'
 	},
 	{
+		key: 'bendStiffness',
+		label: 'Bending stiffness',
+		min: 1,
+		max: 120,
+		step: 1,
+		decimals: 0,
+		unit: ''
+	},
+	{
 		key: 'thicknessInches',
 		label: 'Stock thickness',
 		min: 0.0001,
@@ -68,6 +77,7 @@ export const settingControls = [
 export type TagRainSettings = Record<(typeof settingControls)[number]['key'], number>;
 export const defaultRainSettings: TagRainSettings = {
 	airDrag: 1,
+	bendStiffness: 20,
 	bounce: 0,
 	cameraZoom: 3,
 	flutter: 1,
@@ -76,7 +86,7 @@ export const defaultRainSettings: TagRainSettings = {
 	cleanupIntervalSeconds: 30,
 	tagsPerSecond,
 	thicknessInches: tagDimensionsInches.thickness,
-	thicknessScale: 50
+	thicknessScale: 10
 };
 export const normalizeRainSettings = (
 	input: Partial<TagRainSettings> & { gustIntervalMinutes?: number; gustIntervalSeconds?: number }

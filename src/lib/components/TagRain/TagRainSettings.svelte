@@ -54,6 +54,7 @@
 			</Div>
 		{/each}
 		<P class="text-xs text-gray-500 dark:text-gray-400">
+			Higher bending stiffness makes moving tags resist bending. Settled tags keep their shape.
 			Thickness changes restart the pile. Settings are saved only in this browser during
 			development. The floor release interval counts seconds with the floor present; set to 0 to
 			disable. The removal period controls how long it stays absent. Tags keep dropping throughout.

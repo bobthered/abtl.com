@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
 import RAPIER from '@dimforge/rapier3d-compat';
+import { Vector3 } from 'three';
 import {
 	clothParticleCount,
 	clothRestPositions,
@@ -10,6 +11,54 @@ import {
 } from './cloth';
 import { createTagGeometry, createTagWorld } from './physics';
 import { defaultRainSettings } from './settings';
+
+it('higher bending stiffness reduces deformation and can be changed without replacing a falling tag', async () => {
+	const measureBend = async (bendStiffness: number) => {
+		const settings = {
+			...defaultRainSettings,
+			airDrag: 0,
+			bendStiffness,
+			cleanupIntervalSeconds: 0,
+			flutter: 0,
+			gravity: 0
+		};
+		const world = await createTagWorld(8, 4, () => 0.6, settings, [], true);
+		try {
+			world.spawn();
+			const tag = world.tags[0];
+			const cloth = tag.cloth!;
+			cloth.applyParticleImpulse(0, { x: 0, y: 0, z: 0.003 }, true);
+			let maximumBend = 0;
+			for (let step = 0; step < 60; step++) {
+				world.step();
+				const positions = tag.clothPositions!;
+				const a = new Vector3().fromArray(positions);
+				const b = new Vector3().fromArray(positions, 6).sub(a);
+				const c = new Vector3().fromArray(positions, 63).sub(a);
+				const normal = b.cross(c).normalize();
+				for (let particle = 0; particle < clothParticleCount; particle++)
+					maximumBend = Math.max(
+						maximumBend,
+						Math.abs(
+							new Vector3()
+								.fromArray(positions, particle * 3)
+								.sub(a)
+								.dot(normal)
+						)
+					);
+			}
+			world.configure({ ...settings, bendStiffness: 40 });
+			expect(tag.cloth).toBe(cloth);
+			expect(cloth.material().bendSoftness.naturalFrequency).toBe(40);
+			return maximumBend;
+		} finally {
+			world.destroy();
+		}
+	};
+	const flexible = await measureBend(1);
+	const stiff = await measureBend(60);
+	expect(stiff).toBeLessThan(flexible * 0.8);
+});
 
 it('rests on support above the original floor and releases the resting tag with the floor cycle', async () => {
 	const world = await createTagWorld(

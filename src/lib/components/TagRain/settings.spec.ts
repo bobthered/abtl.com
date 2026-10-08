@@ -43,9 +43,9 @@ it('migrates minute preferences and adopts the 30-second default', () => {
 });
 
 it('keeps physical stock thickness separate from its illustration scale', () => {
-	const settings = { ...defaultRainSettings, thicknessInches: 0.0026, thicknessScale: 25 };
+	const settings = { ...defaultRainSettings, thicknessInches: 0.0026, thicknessScale: 5 };
 	expect(getVisualThickness(settings)).toBeCloseTo(getVisualThickness(defaultRainSettings), 10);
-	expect(getVisualPatchThickness(defaultRainSettings)).toBeCloseTo((0.0008 / 2.625) * 50, 10);
+	expect(getVisualPatchThickness(defaultRainSettings)).toBeCloseTo((0.0008 / 2.625) * 10, 10);
 	expect(getVisualPatchThickness(settings)).toBeCloseTo(
 		getVisualPatchThickness(defaultRainSettings) / 2,
 		10

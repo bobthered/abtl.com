@@ -5,6 +5,7 @@ import {
 	clothParticleCount,
 	createClothArtworkGeometry,
 	createClothBody,
+	createClothMaterial,
 	createClothTexture,
 	maxActiveClothTags,
 	prepareClothGeometry
@@ -125,7 +126,7 @@ export const tagThickness = tagDimensionsInches.thickness / tagDimensionsInches.
 // A single scene scale represents the same physical stock size on every tag.
 export const tagWorldUnitsPerInch = 0.6 / tagDimensionsInches.width;
 // True-scale stock is subpixel in this hero. Exaggerate only depth so its edge remains visible.
-export const tagVisualThicknessScale = 50;
+export const tagVisualThicknessScale = defaultRainSettings.thicknessScale;
 export const tagVisualThickness = tagThickness * tagVisualThicknessScale;
 // A collision-only clearance protects thin visible faces from the solver's residual compression.
 const tagContactSkin = 0.002;
@@ -447,7 +448,8 @@ export const createTagWorld = async (
 				world,
 				clothPose,
 				Math.max(0.01, (thickness / 2 + patchThickness) * size),
-				settings.bounce
+				settings.bounce,
+				settings.bendStiffness
 			);
 			tag.body = tag.cloth.rootBody();
 			for (let index = 0; index < clothParticleCount; index++) {
@@ -720,10 +722,15 @@ export const createTagWorld = async (
 		revision++;
 	};
 	const configure = (next: TagRainSettings) => {
+		const isStiffnessChanged = next.bendStiffness !== settings.bendStiffness;
 		if (next.cleanupIntervalSeconds !== settings.cleanupIntervalSeconds) cleanupElapsed = 0;
 		settings = normalizeRainSettings(next);
 		world.gravity = { x: 0, y: -settings.gravity, z: 0 };
 		for (const tag of tags) {
+			if (tag.cloth && isStiffnessChanged) {
+				tag.cloth.setMaterial(createClothMaterial(settings.bendStiffness));
+				tag.cloth.wakeUp();
+			}
 			for (let index = 0; index < tag.body.numColliders(); index++)
 				tag.body.collider(index).setRestitution(settings.bounce);
 			if (tag.body.isDynamic()) {

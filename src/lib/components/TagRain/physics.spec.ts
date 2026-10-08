@@ -36,7 +36,7 @@ it('extrudes the supplied patch with an open hole and the shared thickness scale
 	try {
 		geometry.computeBoundingBox();
 		const bounds = geometry.boundingBox!;
-		expect(bounds.max.z - bounds.min.z).toBeCloseTo((0.0008 / 2.625) * 50, 7);
+		expect(bounds.max.z - bounds.min.z).toBeCloseTo((0.0008 / 2.625) * 10, 7);
 		expect(bounds.min.z).toBeCloseTo(-thickness / 2, 7);
 		expect(bounds.max.x - bounds.min.x).toBeCloseTo(47.1376 / 236.749, 7);
 		expect(bounds.max.y - bounds.min.y).toBeCloseTo((56.1531380204 / 473.751) * 2, 7);
@@ -298,6 +298,8 @@ it('preserves every tag beyond the old limit and lets sleeping paper wake under 
 	};
 	const simulation = await createTagWorld(6, 7, random, {
 		...defaultRainSettings,
+		// Keep this rigid-body regression fixture independent of the illustration defaults.
+		thicknessScale: 50,
 		cleanupIntervalSeconds: 0
 	});
 	for (let index = 0; index < 120; index++) {
@@ -340,10 +342,13 @@ it.each([17, 91])(
 			seed = (seed * 1664525 + 1013904223) >>> 0;
 			return seed / 4294967296;
 		};
-		const simulation = await createTagWorld(6, 7, random, {
+		const settings = {
 			...defaultRainSettings,
+			// Preserve the original rigid contact reference; the cloth cycle tests use current defaults.
+			thicknessScale: 50,
 			cleanupIntervalSeconds: 0
-		});
+		};
+		const simulation = await createTagWorld(6, 7, random, settings);
 		try {
 			simulation.setDropZone(0, 2);
 			simulation.setSpawnBoundary({ height: 1.5, clearanceScale: 1 });
@@ -354,7 +359,7 @@ it.each([17, 91])(
 			for (let step = 0; step < 2400; step++) simulation.step();
 			let minimumDistance = 0;
 			let deepestContact = '';
-			const shape = createVisiblePaperShape();
+			const shape = createVisiblePaperShape(settings);
 			for (let first = 0; first < simulation.tags.length; first++)
 				for (let second = first + 1; second < simulation.tags.length; second++) {
 					const firstBody = simulation.tags[first].body;
@@ -620,6 +625,8 @@ it.each([0, Math.PI / 4])(
 it('checks patch clearance as well as paper before restoring the floor', async () => {
 	const simulation = await createTagWorld(6, 7, () => 0.5, {
 		...defaultRainSettings,
+		// This fixture requires a patch taller than the paper hull's collision-only rounding.
+		thicknessScale: 50,
 		cleanupIntervalSeconds: 1,
 		floorRemovalSeconds: 0.1,
 		flutter: 0,
