@@ -37,7 +37,7 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'span',
 		'heroText',
-		'relative -left-3 box-decoration-clone rounded-lg bg-gray-50 px-3 py-1 dark:bg-gray-950'
+		'relative -left-3 box-decoration-clone rounded-lg bg-gray-50/70 px-3 py-1 dark:bg-gray-950/70 backdrop-blur'
 	);
 	theme.set.variant('section', 'heroMarquee', 'relative bg-gray-50 dark:bg-gray-950');
 	theme.set.variant('canvas', 'tagRain', 'block h-full w-full opacity-80 dark:opacity-60');

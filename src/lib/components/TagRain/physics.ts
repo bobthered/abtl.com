@@ -1,9 +1,18 @@
 import RAPIER from '@dimforge/rapier3d-compat';
+import { createTagEmissionClock } from './emission';
+import {
+	applyClothMaterial,
+	clothParticleCount,
+	createClothArtworkGeometry,
+	createClothBody,
+	createClothTexture,
+	maxActiveClothTags,
+	prepareClothGeometry
+} from './cloth';
 import {
 	artworkCounts,
 	chooseTagArtwork,
 	createArtworkAtlas,
-	createArtworkGeometry,
 	createArtworkMaterial,
 	tagArtworkPairs,
 	tagArtworkNames
@@ -34,10 +43,12 @@ import {
 	Matrix4,
 	Mesh,
 	MeshBasicMaterial,
+	MeshDepthMaterial,
 	MeshStandardMaterial,
 	Object3D,
 	OrthographicCamera,
 	PCFShadowMap,
+	RGBADepthPacking,
 	PlaneGeometry,
 	Quaternion,
 	Raycaster,
@@ -52,6 +63,10 @@ import {
 export type RainTag = {
 	backArtwork: number;
 	body: RAPIER.RigidBody;
+	cloth?: RAPIER.SoftBody;
+	clothPositions?: Float32Array;
+	clothStillSeconds?: number;
+	contactSeconds?: number;
 	color: number;
 	frontArtwork: number;
 	phase: number;
@@ -160,7 +175,8 @@ export const createTagWorld = async (
 	height: number,
 	random = Math.random,
 	initialSettings = defaultRainSettings,
-	initialArtworkPairs: ArtworkPair[] = tagArtworkPairs
+	initialArtworkPairs: ArtworkPair[] = tagArtworkPairs,
+	isClothEnabled = false
 ) => {
 	await initializePhysics();
 	let settings = normalizeRainSettings(initialSettings);
@@ -186,6 +202,79 @@ export const createTagWorld = async (
 	let floorOpenRemaining = 0;
 	let revision = 0;
 	let spawnBoundary = { clearanceScale: 1, height };
+	const clothPose = new Matrix4();
+	const clothPoint = new Vector3();
+	const clothScale = new Vector3();
+	const updateClothPositions = (tag: RainTag) => {
+		if (!tag.cloth) return;
+		const position = tag.body.translation();
+		const rotation = tag.body.rotation();
+		clothPose
+			.compose(
+				new Vector3(position.x, position.y, position.z),
+				new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w),
+				clothScale.setScalar(tag.width)
+			)
+			.invert();
+		const positions = tag.cloth.particlePositions();
+		const local = (tag.clothPositions ??= new Float32Array(clothParticleCount * 3));
+		for (let index = 0; index < clothParticleCount; index++)
+			clothPoint
+				.fromArray(positions, index * 3)
+				.applyMatrix4(clothPose)
+				.toArray(local, index * 3);
+	};
+	const freezeCloth = (tag: RainTag) => {
+		if (!tag.cloth) return;
+		const position = tag.cloth.centerOfMass();
+		const rotation = tag.body.rotation();
+		const velocities = tag.cloth.particleVelocities();
+		const velocity = new Vector3();
+		for (let index = 0; index < clothParticleCount; index++)
+			velocity.add(clothPoint.fromArray(velocities, index * 3));
+		velocity.divideScalar(clothParticleCount);
+		// Keep a deformed convex collision envelope after retiring expensive particle constraints.
+		const worldPositions = tag.cloth.particlePositions();
+		const vertices: number[] = [];
+		orientation.set(rotation.x, rotation.y, rotation.z, rotation.w).invert();
+		const local = new Float32Array(worldPositions.length);
+		for (let index = 0; index < clothParticleCount; index++) {
+			clothPoint
+				.fromArray(worldPositions, index * 3)
+				.sub(new Vector3(position.x, position.y, position.z))
+				.applyQuaternion(orientation)
+				.divideScalar(tag.width)
+				.toArray(local, index * 3);
+			const clearance = getVisualThickness(settings) / 2 + getVisualPatchThickness(settings);
+			for (const direction of [-1, 1])
+				vertices.push(
+					clothPoint.x * tag.width,
+					clothPoint.y * tag.width,
+					(clothPoint.z + direction * clearance) * tag.width
+				);
+		}
+		world.removeSoftBody(tag.cloth);
+		tag.cloth = undefined;
+		tag.clothPositions = local;
+		tag.body = world.createRigidBody(
+			RAPIER.RigidBodyDesc.dynamic()
+				.setTranslation(position.x, position.y, position.z)
+				.setRotation(rotation)
+				.setLinvel(velocity.x, velocity.y, velocity.z)
+				.setLinearDamping(2.5)
+				.setAngularDamping(4)
+				.setCcdEnabled(true)
+		);
+		world.createCollider(
+			RAPIER.ColliderDesc.roundConvexHull(new Float32Array(vertices), 0.01)!
+				.setMass(0.048)
+				.setFriction(0.65)
+				.setRestitution(settings.bounce)
+				.setContactSkin(tagContactSkin)
+				.setCollisionGroups(releasedTags.has(tag) ? 0x00020003 : 0x00010003),
+			tag.body
+		);
+	};
 	const fixed = (x: number, y: number, z: number, halfX: number, halfY: number, halfZ: number) => {
 		const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(x, y, z));
 		world.createCollider(
@@ -216,6 +305,7 @@ export const createTagWorld = async (
 		const ratio = nextWidth / boundaryWidth;
 		// Preserve the accumulated pile's relative placement when the hero changes width.
 		for (const tag of tags) {
+			if (tag.cloth) freezeCloth(tag);
 			const position = tag.body.translation();
 			tag.body.setTranslation({ ...position, x: position.x * ratio }, true);
 			activeTags.add(tag);
@@ -239,30 +329,59 @@ export const createTagWorld = async (
 		const collisionThickness = Math.max(thickness, 0.01 / size);
 		const collisionPatchThickness = Math.max(patchThickness, 0.001 / size);
 		const radius = size * Math.hypot(0.5, 1, thickness / 2 + patchThickness);
+		// A common pitch and vertical velocity keep the flight time consistent; yaw still varies.
 		const rotation = new Quaternion().setFromEuler(
-			new Euler((random() - 0.5) * Math.PI, (random() - 0.5) * Math.PI, (random() - 0.5) * Math.PI)
+			isClothEnabled
+				? new Euler(-Math.PI / 2 + 0.3, random() * Math.PI * 2, 0, 'YXZ')
+				: new Euler(
+						(random() - 0.5) * Math.PI,
+						(random() - 0.5) * Math.PI,
+						(random() - 0.5) * Math.PI
+					)
 		);
-		const x = dropCenter + (random() - 0.5) * Math.max(0.1, dropWidth - size * 2);
-		const z = (random() - 0.5) * depth * 1.2;
 		let y = spawnBoundary.height + radius * spawnBoundary.clearanceScale;
-		// CCD cannot resolve tags born intersecting. Queue nearby emissions safely above one another.
-		// Only inspect moving paper; the settled pile stays far below the offscreen emission point.
-		for (const tag of activeTags) {
-			const position = tag.body.translation();
-			const clearance =
-				radius + tag.width * Math.hypot(0.5, 1, thickness / 2 + patchThickness) + 0.002;
-			if (Math.hypot(position.x - x, position.z - z) < clearance)
-				y = Math.max(y, position.y + clearance);
+		let x = dropCenter;
+		let z = 0;
+		let bestClearance = -Infinity;
+		// Spread crowded emissions sideways/depthwise instead of changing their launch height.
+		for (let attempt = 0; attempt < (isClothEnabled ? 24 : 1); attempt++) {
+			const candidateX =
+				dropCenter +
+				(((random() + attempt * 0.61803398875) % 1) - 0.5) * Math.max(0.1, dropWidth - size * 2);
+			const candidateZ = (((random() + attempt * 0.41421356237) % 1) - 0.5) * depth * 1.2;
+			let clearance = Infinity;
+			for (const tag of activeTags) {
+				const position = tag.body.translation();
+				clearance = Math.min(
+					clearance,
+					Math.hypot(position.x - candidateX, position.y - y, position.z - candidateZ)
+				);
+			}
+			if (clearance > bestClearance) {
+				bestClearance = clearance;
+				x = candidateX;
+				z = candidateZ;
+			}
+			if (clearance > radius * 2 + 0.002) break;
 		}
+		// Preserve the collision stress-test/baseline mode's vertical queue for rigid burst drops.
+		if (!isClothEnabled)
+			for (const tag of activeTags) {
+				const position = tag.body.translation();
+				const clearance =
+					radius + tag.width * Math.hypot(0.5, 1, thickness / 2 + patchThickness) + 0.002;
+				if (Math.hypot(position.x - x, position.z - z) < clearance)
+					y = Math.max(y, position.y + clearance);
+			}
 		const body = world.createRigidBody(
 			RAPIER.RigidBodyDesc.dynamic()
 				.setTranslation(x, y, z)
 				.setRotation(rotation)
 				.setLinvel((random() - 0.5) * 0.6, -0.35, (random() - 0.5) * 0.4)
 				.setAngvel({
-					x: (random() - 0.5) * 1.8,
-					y: (random() - 0.5) * 1.2,
-					z: (random() - 0.5) * 1.2
+					x: isClothEnabled ? 0 : (random() - 0.5) * 1.8,
+					y: (random() - 0.5) * (isClothEnabled ? 0.6 : 1.2),
+					z: isClothEnabled ? 0 : (random() - 0.5) * 1.2
 				})
 				.setLinearDamping(0.035)
 				.setAngularDamping(0.5)
@@ -317,8 +436,35 @@ export const createTagWorld = async (
 		};
 		tags.push(tag);
 		activeTags.add(tag);
+		if (isClothEnabled) {
+			const clothTags = tags.filter((candidate) => candidate.cloth);
+			if (clothTags.length >= maxActiveClothTags) freezeCloth(clothTags[0]);
+			clothPose.compose(new Vector3(x, y, z), rotation, clothScale.setScalar(size));
+			const velocity = body.linvel();
+			const angular = body.angvel();
+			world.removeRigidBody(body);
+			tag.cloth = createClothBody(
+				world,
+				clothPose,
+				Math.max(0.01, (thickness / 2 + patchThickness) * size),
+				settings.bounce
+			);
+			tag.body = tag.cloth.rootBody();
+			for (let index = 0; index < clothParticleCount; index++) {
+				const point = tag.cloth.particlePosition(index);
+				const offset = new Vector3(point.x - x, point.y - y, point.z - z);
+				const spin = new Vector3(angular.x, angular.y, angular.z).cross(offset);
+				tag.cloth.setParticleVelocity(index, {
+					x: velocity.x + spin.x,
+					y: velocity.y + spin.y,
+					z: velocity.z + spin.z
+				});
+			}
+			updateClothPositions(tag);
+		}
 	};
 	const markDeparting = (tag: RainTag) => {
+		if (tag.cloth) freezeCloth(tag);
 		for (let index = 0; index < tag.body.numColliders(); index++)
 			tag.body.collider(index).setCollisionGroups(0x00020003);
 		tag.body.resetForces(false);
@@ -326,6 +472,7 @@ export const createTagWorld = async (
 		tag.body.setLinearDamping(0.035);
 		tag.body.setAngularDamping(0.5);
 		tag.body.wakeUp();
+		tag.contactSeconds = 0;
 		releasedTags.add(tag);
 		activeTags.add(tag);
 	};
@@ -337,6 +484,11 @@ export const createTagWorld = async (
 		for (const tag of tags) {
 			if (releasedTags.has(tag)) continue;
 			let isIntersecting = tag.body.translation().y < 0;
+			if (tag.cloth) {
+				const positions = tag.cloth.particlePositions();
+				for (let index = 1; index < positions.length; index += 3)
+					isIntersecting ||= positions[index] <= tag.cloth.particleRadius() + tagContactSkin;
+			}
 			for (let index = 0; index < tag.body.numColliders() && !isIntersecting; index++) {
 				const contact = floorCollider.contactCollider(tag.body.collider(index), tagContactSkin);
 				isIntersecting = contact !== null && contact.distance <= tagContactSkin;
@@ -352,14 +504,36 @@ export const createTagWorld = async (
 		floorOpenRemaining = settings.floorRemovalSeconds;
 		floor.collider(0).setEnabled(false);
 		for (const tag of tags) {
+			if (tag.cloth) freezeCloth(tag);
 			tag.body.setBodyType(RAPIER.RigidBodyType.Dynamic, true);
 			tag.body.setLinearDamping(0.035);
 			tag.body.setAngularDamping(0.5);
 			tag.body.resetForces(false);
 			tag.body.resetTorques(false);
+			tag.contactSeconds = 0;
 			activeTags.add(tag);
 		}
 		revision++;
+	};
+	const isSupported = (tag: RainTag) => {
+		if (floorOpenRemaining > 0 || releasedTags.has(tag)) return false;
+		let isContact = false;
+		for (let index = 0; index < tag.body.numColliders() && !isContact; index++) {
+			const collider = tag.body.collider(index);
+			world.contactPairsWith(collider, (other) => {
+				const parent = other.parent();
+				if (
+					!parent ||
+					parent.handle === tag.body.handle ||
+					parent.translation().y >= tag.body.translation().y
+				)
+					return;
+				world.contactPair(collider, other, (manifold) => {
+					isContact ||= manifold.numSolverContacts() > 0;
+				});
+			});
+		}
+		return isContact;
 	};
 	const step = () => {
 		elapsed += 1 / 60;
@@ -384,6 +558,56 @@ export const createTagWorld = async (
 		}
 		const isChanged = activeTags.size > 0 || isFloorChanged;
 		for (const tag of activeTags) {
+			const isOnPile = isClothEnabled && isSupported(tag);
+			tag.contactSeconds = isOnPile ? (tag.contactSeconds ?? 0) + 1 / 60 : 0;
+			// Retain the bent surface and make settled pile contacts stable. Floor release reactivates
+			// these bodies, so they still fall away normally when their support is removed.
+			if (isClothEnabled && tag.contactSeconds > 1) {
+				if (tag.cloth) freezeCloth(tag);
+				tag.body.resetForces(false);
+				tag.body.resetTorques(false);
+				tag.body.setBodyType(RAPIER.RigidBodyType.Fixed, true);
+				activeTags.delete(tag);
+				continue;
+			}
+			if (tag.cloth) {
+				const cloth = tag.cloth;
+				if (cloth.isSleeping()) {
+					freezeCloth(tag);
+					continue;
+				}
+				cloth.resetForces(false);
+				let maximumSpeed = 0;
+				for (let index = 0; index < clothParticleCount; index++) {
+					const velocity = cloth.particleVelocity(index);
+					maximumSpeed = Math.max(maximumSpeed, Math.hypot(velocity.x, velocity.y, velocity.z));
+					const mass = cloth.particleMass(index);
+					const phase = tag.phase + index * 0.35;
+					cloth.addParticleForce(
+						index,
+						{
+							x:
+								mass *
+								(isOnPile
+									? -velocity.x * 6
+									: Math.sin(elapsed * 1.5 + phase) * 0.4 * settings.flutter - velocity.x * 0.5),
+							y: isOnPile
+								? -mass * velocity.y * 6
+								: -mass * velocity.y * Math.abs(velocity.y) * 0.08 * settings.airDrag,
+							z:
+								mass *
+								(isOnPile
+									? -velocity.z * 6
+									: Math.cos(elapsed * 2 + phase) * 0.35 * settings.flutter)
+						},
+						false
+					);
+				}
+				// Retain the settled bend without paying for its particle constraints indefinitely.
+				tag.clothStillSeconds = maximumSpeed < 0.12 ? (tag.clothStillSeconds ?? 0) + 1 / 60 : 0;
+				if (tag.clothStillSeconds > 0.5) freezeCloth(tag);
+				continue;
+			}
 			const { body, phase } = tag;
 			// Only paper that has passed below the missing floor belongs to the departing pile.
 			// Airborne tags retain normal floor collisions and can land when it returns.
@@ -400,11 +624,22 @@ export const createTagWorld = async (
 			}
 			const velocity = body.linvel();
 			const rotation = body.rotation();
+			const spin = body.angvel();
+			if (
+				isOnPile &&
+				(tag.contactSeconds ?? 0) > 1 &&
+				Math.hypot(velocity.x, velocity.y, velocity.z) < 0.12 &&
+				Math.hypot(spin.x, spin.y, spin.z) < 0.3
+			) {
+				body.sleep();
+				activeTags.delete(tag);
+				continue;
+			}
 			orientation.set(rotation.x, rotation.y, rotation.z, rotation.w);
 			normal.set(0, 0, 1).applyQuaternion(orientation);
 			body.resetForces(false);
 			body.resetTorques(false);
-			if (body.translation().y < 0.9) {
+			if (isOnPile || body.translation().y < 0.9) {
 				if (floorOpenRemaining > 0) {
 					body.setLinearDamping(0.035);
 					body.setAngularDamping(0.5);
@@ -414,7 +649,7 @@ export const createTagWorld = async (
 				body.setLinearDamping(2.5);
 				body.setAngularDamping(4);
 				// A gentle settling torque prevents a thin sheet balancing on its edge or a wall.
-				if (Math.abs(normal.y) < 0.95) {
+				if (!isOnPile && Math.abs(normal.y) < 0.95) {
 					const direction = normal.y < 0 ? -1 : 1;
 					const strength = body.mass() * 0.08;
 					body.addTorque(
@@ -447,10 +682,12 @@ export const createTagWorld = async (
 		}
 		if (isChanged) {
 			world.step();
+			for (const tag of tags) if (tag.cloth) updateClothPositions(tag);
 			// Sleeping dynamic paper costs no solver work, but can wake and shift under new impacts.
 			// Rejoin woken tags before the next step so forces and rendering follow their real positions.
 			for (const tag of tags) {
-				if (tag.body.isSleeping()) activeTags.delete(tag);
+				if (tag.body.isFixed() || (tag.cloth ? tag.cloth.isSleeping() : tag.body.isSleeping()))
+					activeTags.delete(tag);
 				else {
 					if (!activeTags.has(tag)) revision++;
 					activeTags.add(tag);
@@ -470,7 +707,10 @@ export const createTagWorld = async (
 		return isChanged;
 	};
 	const clear = () => {
-		for (const tag of tags) world.removeRigidBody(tag.body);
+		for (const tag of tags) {
+			if (tag.cloth) world.removeSoftBody(tag.cloth);
+			else world.removeRigidBody(tag.body);
+		}
 		tags.length = 0;
 		activeTags.clear();
 		releasedTags.clear();
@@ -536,8 +776,24 @@ export const createTagRain = async (
 	const scene = new Scene();
 	const camera = new OrthographicCamera(-3, 3, 5, -5, 0.1, 80);
 	let settings = { ...defaultRainSettings };
-	let geometry = createTagGeometry();
-	let patchGeometry = createPatchGeometry();
+	const clothTexture = createClothTexture(maxTagBodies);
+	const prepareGeometry = (
+		source: ReturnType<typeof createTagGeometry>,
+		count: number,
+		x = 0,
+		y = 0
+	) => {
+		const geometry = prepareClothGeometry(source, count, x, y);
+		source.dispose();
+		return geometry;
+	};
+	let geometry = prepareGeometry(createTagGeometry(), maxTagBodies);
+	let patchGeometry = prepareGeometry(
+		createPatchGeometry(),
+		maxTagBodies * 2,
+		tagHole.center.x,
+		tagHole.center.y
+	);
 	const palette = tagColors.map(() => new Color());
 	const paperMaterial = new MeshStandardMaterial({
 		roughness: 0.9,
@@ -563,9 +819,9 @@ export const createTagRain = async (
 	floor.rotation.x = -Math.PI / 2;
 	floor.position.y = -0.002;
 	floor.receiveShadow = true;
-	scene.add(floor, new AmbientLight(0xffffff, 1.05));
-	const light = new DirectionalLight(0xffffff, 2);
-	light.position.set(-3, 12, 7);
+	scene.add(floor, new AmbientLight(0xffffff, 0.3));
+	const light = new DirectionalLight(0xfff3e5, 2.8);
+	light.position.set(-6, 8, 4);
 	light.castShadow = true;
 	light.shadow.mapSize.set(512, 512);
 	light.shadow.camera.left = -8;
@@ -574,10 +830,23 @@ export const createTagRain = async (
 	light.shadow.camera.bottom = -8;
 	light.shadow.normalBias = 0.025;
 	scene.add(light);
+	const rimLight = new DirectionalLight(0xe4edff, 0.5);
+	rimLight.position.set(5, 5, -6);
+	scene.add(rimLight);
+	applyClothMaterial(paperMaterial, clothTexture.texture);
+	applyClothMaterial(edgeMaterial, clothTexture.texture);
+	applyClothMaterial(patchMaterial, clothTexture.texture, {
+		x: tagHole.center.x,
+		y: tagHole.center.y,
+		z: 0
+	});
 	const paper = new InstancedMesh(geometry, [paperMaterial, edgeMaterial], maxTagBodies);
 	const patches = new InstancedMesh(patchGeometry, patchMaterial, maxTagBodies * 2);
 	paper.count = patches.count = 0;
 	paper.castShadow = paper.receiveShadow = true;
+	const depthMaterial = new MeshDepthMaterial({ depthPacking: RGBADepthPacking });
+	applyClothMaterial(depthMaterial, clothTexture.texture);
+	paper.customDepthMaterial = depthMaterial;
 	// The paper casts the tag silhouette; tiny reinforcement shadows add a costly extra pass.
 	patches.receiveShadow = true;
 	// Bounds change as the pile grows. Avoid stale instance bounds clipping newly spawned tags.
@@ -595,6 +864,50 @@ export const createTagRain = async (
 		transparent: true
 	});
 	const hoverHalo = new Mesh(geometry, hoverMaterial);
+	// CPU-deformed geometry makes both hover highlighting and raycasting match the visible cloth.
+	const pickGeometry = geometry.clone();
+	const pickMesh = new Mesh(pickGeometry, hoverMaterial);
+	const pickPosition = new Vector3();
+	const pickNormal = new Vector3();
+	const pickEdge = new Vector3();
+	const getClothPoint = (tag: RainTag, vertex: number, target: Vector3) => {
+		const indices = geometry.getAttribute('clothIndices');
+		const weights = geometry.getAttribute('clothWeights');
+		const points = tag.clothPositions!;
+		target.set(0, 0, 0);
+		for (let component = 0; component < 4; component++) {
+			const particle = indices.array[vertex * 4 + component] * 3;
+			const weight = weights.array[vertex * 4 + component];
+			target.x += points[particle] * weight;
+			target.y += points[particle + 1] * weight;
+			target.z += points[particle + 2] * weight;
+		}
+		const a = indices.getX(vertex) * 3,
+			b = indices.getY(vertex) * 3,
+			c = indices.getZ(vertex) * 3;
+		pickNormal
+			.set(points[b] - points[a], points[b + 1] - points[a + 1], points[b + 2] - points[a + 2])
+			.cross(
+				pickEdge.set(
+					points[c] - points[a],
+					points[c + 1] - points[a + 1],
+					points[c + 2] - points[a + 2]
+				)
+			)
+			.normalize();
+		target.addScaledVector(pickNormal, geometry.getAttribute('position').getZ(vertex));
+	};
+	const deformPickMesh = (tag: RainTag, matrix: Matrix4) => {
+		const positions = pickGeometry.getAttribute('position');
+		for (let vertex = 0; vertex < positions.count; vertex++) {
+			getClothPoint(tag, vertex, pickPosition);
+			positions.setXYZ(vertex, pickPosition.x, pickPosition.y, pickPosition.z);
+		}
+		positions.needsUpdate = true;
+		pickGeometry.computeBoundingSphere();
+		pickMesh.matrixAutoUpdate = false;
+		pickMesh.matrixWorld.copy(matrix);
+	};
 	hoverHalo.matrixAutoUpdate = false;
 	hoverHalo.visible = false;
 	scene.add(hoverHalo);
@@ -611,11 +924,32 @@ export const createTagRain = async (
 		if (!isPointerInside || !paper.count) return null;
 		raycaster.setFromCamera(pointer, camera);
 		hitResults.length = 0;
-		raycaster.intersectObject(paper, false, hitResults);
-		return hitResults[0]?.instanceId ?? null;
+		let nearest = Infinity;
+		let selected: number | null = null;
+		const matrix = new Matrix4();
+		for (let index = 0; index < (world?.tags.length ?? 0); index++) {
+			const tag = world!.tags[index];
+			paper.getMatrixAt(index, matrix);
+			// Reject most tags with a cheap sphere before deforming the picking mesh.
+			const center = new Vector3().setFromMatrixPosition(matrix);
+			if (!raycaster.ray.intersectsSphere(new Sphere(center, tag.width * 1.5))) continue;
+			if (tag.clothPositions) deformPickMesh(tag, matrix);
+			else {
+				pickMesh.geometry = geometry;
+				pickMesh.matrixWorld.copy(matrix);
+			}
+			if (tag.clothPositions) pickMesh.geometry = pickGeometry;
+			hitResults.length = 0;
+			raycaster.intersectObject(pickMesh, false, hitResults);
+			if (hitResults[0]?.distance < nearest) {
+				nearest = hitResults[0].distance;
+				selected = index;
+			}
+		}
+		return selected;
 	};
-	const backArtworkGeometry = createArtworkGeometry();
-	const frontArtworkGeometry = createArtworkGeometry();
+	const backArtworkGeometry = createClothArtworkGeometry(geometry, maxTagBodies);
+	const frontArtworkGeometry = createClothArtworkGeometry(geometry, maxTagBodies);
 	const backArtworkIndices = new InstancedBufferAttribute(new Float32Array(maxTagBodies), 1);
 	const frontArtworkIndices = new InstancedBufferAttribute(new Float32Array(maxTagBodies), 1);
 	backArtworkIndices.setUsage(DynamicDrawUsage);
@@ -624,6 +958,8 @@ export const createTagRain = async (
 	frontArtworkGeometry.setAttribute('artworkIndex', frontArtworkIndices);
 	const backArtworkMaterial = createArtworkMaterial(artworkAtlas, true);
 	const frontArtworkMaterial = createArtworkMaterial(artworkAtlas);
+	applyClothMaterial(backArtworkMaterial, clothTexture.texture);
+	applyClothMaterial(frontArtworkMaterial, clothTexture.texture);
 	const backInk = new InstancedMesh(backArtworkGeometry, backArtworkMaterial, maxTagBodies);
 	const frontInk = new InstancedMesh(frontArtworkGeometry, frontArtworkMaterial, maxTagBodies);
 	const inks = [backInk, frontInk];
@@ -656,7 +992,7 @@ export const createTagRain = async (
 	let isActive = false;
 	let isDestroyed = false;
 	let lastTime = 0;
-	let emissionAccumulator = 0;
+	const emissionClock = createTagEmissionClock();
 	let resizeVersion = 0;
 	let width = 0;
 	let world: Awaited<ReturnType<typeof createTagWorld>> | null = null;
@@ -688,6 +1024,10 @@ export const createTagRain = async (
 		for (let index = 0; index < tags.length; index++) {
 			const tag = tags[index];
 			if (index >= paper.count) {
+				for (const mesh of [paper, backInk, frontInk])
+					mesh.geometry.getAttribute('clothRow').setX(index, index);
+				patches.geometry.getAttribute('clothRow').setX(index * 2, index);
+				patches.geometry.getAttribute('clothRow').setX(index * 2 + 1, index);
 				frontArtworkIndices.setX(index, tag.frontArtwork + 1);
 				backArtworkIndices.setX(
 					index,
@@ -695,7 +1035,12 @@ export const createTagRain = async (
 				);
 			}
 			if (isPaletteChanged || index >= paper.count) paper.setColorAt(index, palette[tag.color]);
-			if (renderedSleeping.has(index) && tag.body.isSleeping()) continue;
+			if (
+				renderedSleeping.has(index) &&
+				!tag.cloth &&
+				(tag.body.isFixed() || tag.body.isSleeping())
+			)
+				continue;
 			renderedSleeping.delete(index);
 			firstMoved = Math.min(firstMoved, index);
 			lastMoved = index;
@@ -706,19 +1051,54 @@ export const createTagRain = async (
 			transform.scale.setScalar(tag.width);
 			transform.updateMatrix();
 			paper.setMatrixAt(index, transform.matrix);
+			const textureOffset =
+				((index % 1024) * clothTexture.texture.image.width +
+					Math.floor(index / 1024) * clothParticleCount) *
+				4;
+			for (let particle = 0; particle < clothParticleCount; particle++) {
+				const start = textureOffset + particle * 4;
+				for (let axis = 0; axis < 3; axis++)
+					clothTexture.data[start + axis] = tag.clothPositions?.[particle * 3 + axis] ?? 0;
+				clothTexture.data[start + 3] = tag.clothPositions ? 1 : 0;
+			}
+			clothTexture.texture.addUpdateRange(textureOffset, clothParticleCount * 4);
 			for (let side = 0; side < 2; side++) {
 				patchTransform.multiplyMatrices(transform.matrix, patchOffsets[side]);
 				patches.setMatrixAt(index * 2 + side, patchTransform);
 				patchTransform.multiplyMatrices(transform.matrix, artworkOffsets[side]);
 				inks[side].setMatrixAt(index, patchTransform);
+				patches.geometry
+					.getAttribute('clothDepth')
+					.setX(
+						index * 2 + side,
+						(side === 0 ? -1 : 1) *
+							(getVisualThickness(settings) / 2 + getVisualPatchThickness(settings) / 2)
+					);
+				inks[side].geometry
+					.getAttribute('clothDepth')
+					.setX(index, (side === 0 ? -1 : 1) * (getVisualThickness(settings) / 2 + 0.0002));
 			}
-			if (tag.body.isSleeping()) renderedSleeping.add(index);
+			if (!tag.cloth && (tag.body.isFixed() || tag.body.isSleeping())) renderedSleeping.add(index);
 		}
 		paper.count = tags.length;
 		backInk.count = artworkCounts.backs ? tags.length : 0;
 		frontInk.count = artworkCounts.fronts ? tags.length : 0;
 		patches.count = tags.length * 2;
 		const movedCount = Math.max(0, lastMoved - firstMoved + 1);
+		if (movedCount) clothTexture.texture.needsUpdate = true;
+		for (const mesh of [paper, patches, backInk, frontInk]) {
+			const multiplier = mesh === patches ? 2 : 1;
+			uploadInstances(
+				mesh.geometry.getAttribute('clothRow') as BufferAttribute,
+				firstNew * multiplier,
+				newCount * multiplier
+			);
+			uploadInstances(
+				mesh.geometry.getAttribute('clothDepth') as BufferAttribute,
+				firstMoved * multiplier,
+				movedCount * multiplier
+			);
+		}
 		uploadInstances(paper.instanceMatrix, firstMoved, movedCount);
 		uploadInstances(patches.instanceMatrix, firstMoved * 2, movedCount * 2);
 		for (const ink of inks)
@@ -746,6 +1126,11 @@ export const createTagRain = async (
 		hoverHalo.visible = hoveredIndex !== null;
 		if (hoveredIndex !== null) {
 			paper.getMatrixAt(hoveredIndex, hoverHalo.matrix);
+			const tag = tags[hoveredIndex];
+			if (tag.clothPositions) {
+				deformPickMesh(tag, hoverHalo.matrix);
+				hoverHalo.geometry = pickGeometry;
+			} else hoverHalo.geometry = geometry;
 			hoverHalo.matrix.multiply(haloScale);
 		}
 		floor.visible = !(world?.isFloorOpen() ?? false);
@@ -755,6 +1140,8 @@ export const createTagRain = async (
 		canvas.dataset.renderer = 'webgl-3d';
 		canvas.dataset.backDesigns = String(artworkCounts.backs);
 		canvas.dataset.frontDesigns = String(artworkCounts.fronts);
+		canvas.dataset.activeClothTags = String(tags.filter((tag) => tag.cloth).length);
+		canvas.dataset.settledTags = String(tags.filter((tag) => tag.body.isFixed()).length);
 	};
 	const inspectTag = (index: number | null = hoveredIndex) => {
 		if (!world?.tags.length || !onselect) return;
@@ -897,33 +1284,40 @@ export const createTagRain = async (
 			draw();
 			return;
 		}
-		const nextWorld = await createTagWorld(viewWidth, viewHeight, Math.random, settings);
+		const nextWorld = await createTagWorld(
+			viewWidth,
+			viewHeight,
+			Math.random,
+			settings,
+			tagArtworkPairs,
+			true
+		);
 		if (isDestroyed || version !== resizeVersion) {
 			nextWorld.destroy();
 			return;
 		}
 		world = nextWorld;
 		updateDropZone();
-		emissionAccumulator = 0;
+		emissionClock.reset();
 		readPalette();
 		draw();
 	};
 	const tick = (time: number) => {
 		frame = null;
 		if (!isActive || isDestroyed) return;
-		const delta = lastTime ? Math.min((time - lastTime) / 1000, 0.05) : 0;
+		// Preserve the configured cadence on slower frames without replaying a long tab stall.
+		const delta = lastTime ? Math.min((time - lastTime) / 1000, 0.25) : 0;
 		lastTime = time;
 		accumulator += delta;
 		let isWorldChanged = false;
-		if (world) {
-			emissionAccumulator += delta * settings.tagsPerSecond;
-			while (emissionAccumulator >= 1) {
-				isWorldChanged ||= world.tags.length < maxTagBodies;
-				world.spawn();
-				emissionAccumulator--;
-			}
-		} else emissionAccumulator = 0;
 		while (accumulator >= 1 / 60) {
+			if (world) {
+				const simulation = world;
+				emissionClock.advance(settings.tagsPerSecond, 1 / 60, () => {
+					isWorldChanged ||= simulation.tags.length < maxTagBodies;
+					simulation.spawn();
+				});
+			} else emissionClock.reset();
 			// Advance the cleanup clock even when every tag has settled; idle worlds skip Rapier solving.
 			const isStepChanged = world?.step() ?? false;
 			isWorldChanged ||= isStepChanged;
@@ -937,7 +1331,7 @@ export const createTagRain = async (
 		isActive = nextIsActive;
 		lastTime = 0;
 		accumulator = 0;
-		emissionAccumulator = 0;
+		emissionClock.reset();
 		if (isActive) frame = requestAnimationFrame(tick);
 		else if (frame !== null) {
 			cancelAnimationFrame(frame);
@@ -950,7 +1344,7 @@ export const createTagRain = async (
 		paper.count = patches.count = backInk.count = frontInk.count = 0;
 		hoveredIndex = null;
 		isPointerDirty = true;
-		emissionAccumulator = 0;
+		emissionClock.reset();
 		draw();
 	};
 	const configure = (next: TagRainSettings) => {
@@ -964,11 +1358,16 @@ export const createTagRain = async (
 		if (isShapeChanged) {
 			// Rebuild geometry and colliders together so changes never leave mismatched pile contacts.
 			geometry.dispose();
-			geometry = createTagGeometry(getVisualThickness(settings));
+			geometry = prepareGeometry(createTagGeometry(getVisualThickness(settings)), maxTagBodies);
 			paper.geometry = geometry;
 			hoverHalo.geometry = geometry;
 			patchGeometry.dispose();
-			patchGeometry = createPatchGeometry(getVisualPatchThickness(settings));
+			patchGeometry = prepareGeometry(
+				createPatchGeometry(getVisualPatchThickness(settings)),
+				maxTagBodies * 2,
+				tagHole.center.x,
+				tagHole.center.y
+			);
 			patches.geometry = patchGeometry;
 			artworkOffsets.forEach((offset, side) =>
 				offset.makeTranslation(
@@ -1025,6 +1424,9 @@ export const createTagRain = async (
 			themeObserver.disconnect();
 			world?.destroy();
 			geometry.dispose();
+			pickGeometry.dispose();
+			clothTexture.texture.dispose();
+			depthMaterial.dispose();
 			patchGeometry.dispose();
 			backArtworkGeometry.dispose();
 			frontArtworkGeometry.dispose();

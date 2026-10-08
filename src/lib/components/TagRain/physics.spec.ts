@@ -97,14 +97,15 @@ it('uses the annual production pace for emission', () => {
 	expect(tagsPerSecond).toBeCloseTo(2.853881, 5);
 });
 
-it('keeps burst emissions separated even when random positions repeat', async () => {
-	const simulation = await createTagWorld(6, 7, () => 0.5);
+it('keeps a common launch height and spreads repeated random positions sideways', async () => {
+	const simulation = await createTagWorld(6, 7, () => 0.5, defaultRainSettings, [], true);
 	try {
 		for (let index = 0; index < 8; index++) simulation.spawn();
 		for (let index = 1; index < simulation.tags.length; index++) {
 			const previous = simulation.tags[index - 1].body.translation();
 			const current = simulation.tags[index].body.translation();
-			expect(current.y - previous.y).toBeGreaterThan(1.2);
+			expect(current.y).toBe(previous.y);
+			expect(Math.hypot(current.x - previous.x, current.z - previous.z)).toBeGreaterThan(0.1);
 		}
 	} finally {
 		simulation.destroy();
