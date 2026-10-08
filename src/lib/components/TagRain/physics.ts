@@ -828,7 +828,7 @@ export const createTagRain = async (
 		roughness: 1,
 		side: DoubleSide
 	});
-	const floorGeometry = new PlaneGeometry(1, 4.8);
+	const floorGeometry = new PlaneGeometry(1, 1);
 	// This plane supplies shadows, not an opaque surface that slices departing tags visually.
 	const floorMaterial = new ShadowMaterial({ depthWrite: false, opacity: 0.12 });
 	const floor = new Mesh(floorGeometry, floorMaterial);
@@ -1244,6 +1244,16 @@ export const createTagRain = async (
 		camera.position.set(centerX, centerY + 8, 12);
 		camera.lookAt(centerX, centerY, 0);
 		camera.updateProjectionMatrix();
+		// Project the viewport onto the ground so the shadow receiver's edges stay offscreen.
+		// Size only the visual plane; the collision floor retains its existing dimensions.
+		const direction = camera.getWorldDirection(new Vector3());
+		const groundTop = new Vector3(0, 1, 0).unproject(camera);
+		const groundBottom = new Vector3(0, -1, 0).unproject(camera);
+		groundTop.addScaledVector(direction, (floor.position.y - groundTop.y) / direction.y);
+		groundBottom.addScaledVector(direction, (floor.position.y - groundBottom.y) / direction.y);
+		floor.position.x = centerX;
+		floor.position.z = (groundTop.z + groundBottom.z) / 2;
+		floor.scale.set(viewWidth / camera.zoom + 4, Math.abs(groundTop.z - groundBottom.z) + 4, 1);
 		canvas.dataset.cameraZoom = String(settings.cameraZoom);
 	};
 	const updateDropZone = () => {
@@ -1292,7 +1302,6 @@ export const createTagRain = async (
 		camera.top = viewHeight / 2;
 		camera.bottom = -viewHeight / 2;
 		updateCamera();
-		floor.scale.x = viewWidth + 2;
 		if (world) {
 			world.setWidth(viewWidth);
 			renderedSleeping.clear();
