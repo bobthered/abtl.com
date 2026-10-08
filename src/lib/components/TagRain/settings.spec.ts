@@ -42,6 +42,22 @@ it('migrates minute preferences and adopts the 30-second default', () => {
 	);
 });
 
+it('migrates saved preferences with default spread and clamps invalid spread values', () => {
+	expect(normalizeRainSettings({ tagsPerSecond: 4 })).toMatchObject({
+		dropSpreadX: 1,
+		dropSpreadY: 1,
+		tagsPerSecond: 4
+	});
+	expect(normalizeRainSettings({ dropSpreadX: -1, dropSpreadY: 100 })).toMatchObject({
+		dropSpreadX: 0,
+		dropSpreadY: 10
+	});
+	expect(normalizeRainSettings({ dropSpreadX: NaN, dropSpreadY: Infinity })).toMatchObject({
+		dropSpreadX: 1,
+		dropSpreadY: 1
+	});
+});
+
 it('keeps physical stock thickness separate from its illustration scale', () => {
 	const settings = { ...defaultRainSettings, thicknessInches: 0.0026, thicknessScale: 5 };
 	expect(getVisualThickness(settings)).toBeCloseTo(getVisualThickness(defaultRainSettings), 10);

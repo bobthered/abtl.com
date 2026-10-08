@@ -344,12 +344,21 @@ export const createTagWorld = async (
 		let x = dropCenter;
 		let z = 0;
 		let bestClearance = -Infinity;
+		// Keep live cloth inside the guides; preserve the rigid collision baseline's drop bounds.
+		const xRadius = Math.min(
+			(Math.max(0.1, dropWidth - size * 2) / 2) * settings.dropSpreadX,
+			isClothEnabled ? Math.max(0, boundaryWidth / 2 - Math.abs(dropCenter) - radius) : Infinity
+		);
+		const yRadius = Math.min(
+			depth * 0.6 * settings.dropSpreadY,
+			isClothEnabled ? Math.max(0, depth - radius) : Infinity
+		);
 		// Spread crowded emissions sideways/depthwise instead of changing their launch height.
 		for (let attempt = 0; attempt < (isClothEnabled ? 24 : 1); attempt++) {
 			const candidateX =
-				dropCenter +
-				(((random() + attempt * 0.61803398875) % 1) - 0.5) * Math.max(0.1, dropWidth - size * 2);
-			const candidateZ = (((random() + attempt * 0.41421356237) % 1) - 0.5) * depth * 1.2;
+				dropCenter + (((random() + attempt * 0.61803398875) % 1) - 0.5) * xRadius * 2;
+			// The control's Y axis is the drop plane's depth (world Z), not launch height.
+			const candidateZ = (((random() + attempt * 0.41421356237) % 1) - 0.5) * yRadius * 2;
 			let clearance = Infinity;
 			for (const tag of activeTags) {
 				const position = tag.body.translation();

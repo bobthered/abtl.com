@@ -112,6 +112,53 @@ it('keeps a common launch height and spreads repeated random positions sideways'
 	}
 });
 
+it('adjusts drop axes independently without changing launch height or the existing pile', async () => {
+	const positions: Vector3[] = [];
+	for (const [dropSpreadX, dropSpreadY] of [
+		[0, 0],
+		[0.5, 0],
+		[1, 0],
+		[0, 0.5],
+		[0, 1]
+	]) {
+		const simulation = await createTagWorld(
+			20,
+			10,
+			() => 0.75,
+			{
+				...defaultRainSettings,
+				dropSpreadX,
+				dropSpreadY
+			},
+			[],
+			true
+		);
+		try {
+			simulation.setDropZone(0, 4);
+			simulation.spawn();
+			const first = simulation.tags[0].body;
+			const position = first.translation();
+			positions.push(new Vector3(position.x, position.y, position.z));
+			simulation.configure({ ...defaultRainSettings, dropSpreadX: 0, dropSpreadY: 0 });
+			expect(first.translation()).toEqual(position);
+			simulation.spawn();
+			const next = simulation.tags[1].body.translation();
+			expect(next.x).toBeCloseTo(positions[0].x, 5);
+			expect(next.z).toBeCloseTo(positions[0].z, 5);
+		} finally {
+			simulation.destroy();
+		}
+	}
+	const [center, halfX, fullX, halfY, fullY] = positions;
+	expect(fullX.x - center.x).toBeGreaterThan(0);
+	expect(fullX.x - center.x).toBeCloseTo((halfX.x - center.x) * 2, 5);
+	expect(fullY.z - center.z).toBeGreaterThan(0);
+	expect(fullY.z - center.z).toBeCloseTo((halfY.z - center.z) * 2, 5);
+	for (const position of positions) expect(position.y).toBeCloseTo(center.y, 5);
+	expect(fullX.z).toBeCloseTo(center.z, 5);
+	expect(fullY.x).toBeCloseTo(center.x, 5);
+});
+
 it.each([1, 50])(
 	'stacks thin paper without penetrating at thickness scale %s',
 	async (thicknessScale) => {

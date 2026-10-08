@@ -16,6 +16,24 @@ export const settingControls = [
 		unit: ''
 	},
 	{
+		key: 'dropSpreadX',
+		label: 'X drop spread',
+		min: 0,
+		max: 10,
+		step: 0.1,
+		decimals: 1,
+		unit: 'x'
+	},
+	{
+		key: 'dropSpreadY',
+		label: 'Y drop spread (depth)',
+		min: 0,
+		max: 10,
+		step: 0.1,
+		decimals: 1,
+		unit: 'x'
+	},
+	{
 		key: 'cameraZoom',
 		label: 'Camera zoom',
 		min: 0.25,
@@ -80,6 +98,8 @@ export const defaultRainSettings: TagRainSettings = {
 	bendStiffness: 20,
 	bounce: 0,
 	cameraZoom: 3,
+	dropSpreadX: 1,
+	dropSpreadY: 1,
 	flutter: 1,
 	floorRemovalSeconds: 2,
 	gravity: 3.2,

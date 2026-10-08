@@ -54,11 +54,14 @@
 			</Div>
 		{/each}
 		<P class="text-xs text-gray-500 dark:text-gray-400">
-			Higher bending stiffness makes moving tags resist bending. Settled tags keep their shape.
-			Thickness changes restart the pile. Settings are saved only in this browser during
-			development. The floor release interval counts seconds with the floor present; set to 0 to
-			disable. The removal period controls how long it stays absent. Tags keep dropping throughout.
-			The production counter stays unchanged.
+			X spread widens the drop area left to right; Y spread widens it front to back while keeping
+			launch height consistent. Both default to 1x; 0 centers that axis. Spread is limited by the
+			scene boundaries. Changes affect new drops without restarting the pile. Higher bending
+			stiffness makes moving tags resist bending. Settled tags keep their shape. Thickness changes
+			restart the pile. Settings are saved only in this browser during development. The floor
+			release interval counts seconds with the floor present; set to 0 to disable. The removal
+			period controls how long it stays absent. Tags keep dropping throughout. The production
+			counter stays unchanged.
 		</P>
 		<Div class="flex flex-wrap gap-2">
 			<Button
