@@ -26,7 +26,7 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'canvas',
 		'bentoOutline',
-		'pointer-events-none absolute inset-0 block h-full w-full text-primary-400 [--bento-outline-secondary:var(--color-secondary-400)] opacity-0 transition-opacity duration-300 group-hover:opacity-60 dark:text-primary-300 dark:[--bento-outline-secondary:var(--color-secondary-300)] dark:group-hover:opacity-50 motion-reduce:transition-none'
+		'pointer-events-none absolute inset-0 block h-full w-full text-primary-400 [--bento-outline-secondary:var(--color-secondary-400)] opacity-0 transition-opacity duration-300 group-hover:opacity-60 dark:text-primary-500 dark:[--bento-outline-secondary:var(--color-secondary-500)] dark:group-hover:opacity-90 motion-reduce:transition-none'
 	);
 	theme.set.variant(
 		'span',
