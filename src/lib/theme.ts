@@ -151,7 +151,7 @@ export const initializeTheme = () => {
 		'heroText',
 		'relative -left-3 box-decoration-clone rounded-sm bg-gray-50/70 px-3 py-1 dark:bg-gray-950/70 backdrop-blur'
 	);
-	theme.set.variant('section', 'heroMarquee', 'relative bg-gray-50 dark:bg-gray-950');
+	theme.set.variant('section', 'heroMarquee', 'relative');
 	theme.set.variant('canvas', 'tagRain', 'block h-full w-full opacity-80 dark:opacity-60');
 	theme.update.base('dialog', 'rounded-sm p-8 shadow-xl');
 	theme.set.variant(
@@ -164,11 +164,7 @@ export const initializeTheme = () => {
 	theme.update.base('popover', 'rounded-sm p-6');
 	theme.set.variant('button', 'icon', 'flex size-11 items-center justify-center rounded-sm p-0');
 	theme.set.base('container', 'relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-16 xl:max-w-384');
-	theme.set.variant(
-		'section',
-		'hero',
-		'relative isolate overflow-hidden bg-gray-50 dark:bg-gray-950'
-	);
+	theme.set.variant('section', 'hero', 'relative isolate overflow-hidden');
 	// Keep an 80px (5rem) preview below the fold, unless the minimum or content needs more room.
 	theme.set.variant(
 		'container',
@@ -275,7 +271,7 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'footer',
 		'site',
-		'relative z-10 border-0 bg-primary-500 pt-0 text-white dark:bg-primary-500 [&_a]:text-white [&_a:hover]:text-white [&_p]:text-white dark:[&_a]:text-white dark:[&_a:hover]:text-white dark:[&_p]:text-white'
+		'relative z-10 border-0 bg-primary-500 pt-0 text-white dark:bg-primary-500 [&_a]:rounded-sm [&_a]:text-white [&_a:hover]:text-white [&_a:focus]:text-white [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4 [&_a:focus-visible]:outline-white [&_p]:text-white dark:[&_a]:text-white dark:[&_a:hover]:text-white dark:[&_a:focus]:text-white dark:[&_a:focus-visible]:outline-white dark:[&_p]:text-white'
 	);
 	theme.set.variant(
 		'h1',
@@ -323,7 +319,8 @@ export const initializeTheme = () => {
 		'contrast',
 		'bg-gray-900 dark:bg-gray-50 [&_h2]:text-gray-50 [&_p]:text-gray-50 dark:[&_h2]:text-gray-950 dark:[&_p]:text-gray-950'
 	);
-	theme.set.variant('section', 'surface', 'bg-white dark:bg-gray-950');
+	theme.set.variant('section', 'surface', 'bg-gray-50 dark:bg-gray-950');
+	theme.set.variant('section', 'surfaceAlternate', 'bg-white dark:bg-gray-900');
 	theme.set.variant('span', 'brandDetail', 'text-xs font-bold tracking-widest uppercase');
 	theme.set.variant(
 		'span',

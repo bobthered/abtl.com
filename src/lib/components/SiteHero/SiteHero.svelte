@@ -108,7 +108,7 @@
 	});
 </script>
 
-<Section bind:element variants={['hero']} aria-labelledby="hero-heading" data-tag-hero>
+<Section bind:element variants={['hero', 'surface']} aria-labelledby="hero-heading" data-tag-hero>
 	<TagRain isActive={isMotionActive} />
 	<Container variants={['hero']}>
 		<Div
@@ -158,7 +158,7 @@
 
 <Section
 	bind:element={brandElement}
-	variants={['heroMarquee']}
+	variants={['heroMarquee', 'surfaceAlternate']}
 	data-hero-marquee
 	aria-label="Allen-Bailey brand"
 >

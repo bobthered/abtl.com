@@ -42,7 +42,7 @@
 <Main id="main-content" tabindex={-1}>
 	<SiteHero />
 	<BentoSection />
-	<Section id="industries" variants={['surface']} aria-labelledby="industries-heading">
+	<Section id="industries" variants={['surfaceAlternate']} aria-labelledby="industries-heading">
 		<Container variants={['section']}>
 			<P variants={['eyebrow']}>Industries</P>
 			<H2 id="industries-heading" variants={['section']}>Made for the way you work.</H2>
@@ -57,7 +57,7 @@
 			</Div>
 		</Container>
 	</Section>
-	<Section id="products" aria-labelledby="products-heading">
+	<Section id="products" variants={['surface']} aria-labelledby="products-heading">
 		<Container variants={['section']}>
 			<P variants={['eyebrow']}>Products</P><H2 id="products-heading" variants={['section']}
 				>Find your next essential.</H2
@@ -89,7 +89,7 @@
 			></Container
 		>
 	</Section>
-	<Section id="resources" aria-labelledby="resources-heading">
+	<Section id="resources" variants={['surface']} aria-labelledby="resources-heading">
 		<Container variants={['section']}>
 			<P variants={['eyebrow']}>Resources</P><H2 id="resources-heading" variants={['section']}
 				>A little guidance goes a long way.</H2
