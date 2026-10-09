@@ -3,6 +3,7 @@
 	import {
 		A,
 		Button,
+		Canvas,
 		Card,
 		Container,
 		Dialog,
@@ -17,18 +18,24 @@
 	import { ArrowRight, Maximize2, X } from '#lib/icons';
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { fade, fly } from 'svelte/transition';
+	import { initializePointerOutlines } from './pointerOutline';
 	import { onMount, tick } from 'svelte';
 
 	// Types
 	type Topic = {
+		columns: 'full' | 'third' | 'wide';
 		description: string;
 		id: string;
-		isWide: boolean;
 		preview: 'fan' | 'print' | 'layers' | 'shape' | 'feed' | 'sequence';
 		title: string;
 	};
 
 	// consts
+	const columnClasses = {
+		full: 'sm:col-span-2 lg:col-span-6',
+		third: 'lg:col-span-2',
+		wide: 'sm:col-span-2 lg:col-span-4'
+	};
 	const detailSections = ['Options at a glance', 'Examples & applications', 'Planning your order'];
 	const topics: Topic[] = [
 		{
@@ -36,42 +43,42 @@
 			title: 'Color with a purpose.',
 			description: 'Explore stock tag colors.',
 			preview: 'fan',
-			isWide: true
+			columns: 'wide'
 		},
 		{
 			id: 'printing',
 			title: 'Make your mark.',
 			description: 'Explore custom printing.',
 			preview: 'print',
-			isWide: false
+			columns: 'third'
 		},
 		{
 			id: 'materials',
 			title: 'The right material for the job.',
 			description: 'Explore paper and synthetic options.',
 			preview: 'layers',
-			isWide: false
+			columns: 'third'
 		},
 		{
 			id: 'shapes',
 			title: 'A shape that fits.',
 			description: 'Explore sizes, shapes, and details.',
 			preview: 'shape',
-			isWide: true
+			columns: 'third'
 		},
 		{
 			id: 'formats',
 			title: 'Ready for your workflow.',
 			description: 'Explore single, continuous, and roll formats.',
 			preview: 'feed',
-			isWide: true
+			columns: 'third'
 		},
 		{
 			id: 'numbering',
 			title: 'Keep every number in order.',
 			description: 'Explore consecutive numbering.',
 			preview: 'sequence',
-			isWide: false
+			columns: 'full'
 		}
 	];
 
@@ -80,6 +87,7 @@
 		isDialogVisible = false;
 	};
 	const initializeMotion = () => {
+		const stopOutlines = initializePointerOutlines(sectionElement);
 		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const updatePreference = () => {
 			isReducedMotion = preference.matches;
@@ -92,6 +100,7 @@
 		preference.addEventListener('change', updatePreference);
 		window.addEventListener('resize', updateViewport);
 		return () => {
+			stopOutlines();
 			preference.removeEventListener('change', updatePreference);
 			window.removeEventListener('resize', updateViewport);
 		};
@@ -116,6 +125,7 @@
 	let isCardVisible = $state(false);
 	let isDialogVisible = $state(false);
 	let isReducedMotion = $state(true);
+	let sectionElement = $state<HTMLElement | null>(null);
 	let selectedTopic = $state<Topic | null>(null);
 	let viewportHeight = $state(800);
 
@@ -141,11 +151,11 @@
 		{:else if kind === 'print'}
 			<Skeleton variants={['bentoTag']}>
 				<Div
-					class="absolute inset-x-3 top-12 space-y-3 motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:-translate-y-1"
+					class="absolute inset-x-4 top-16 space-y-4 motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:-translate-y-1"
 				>
-					<Skeleton variants={['bento']} class="h-2 w-full bg-gray-400 dark:bg-gray-500" />
-					<Skeleton variants={['bento']} class="h-2 w-3/4 bg-gray-400 dark:bg-gray-500" />
-					<Skeleton variants={['bento']} class="h-8 w-full bg-gray-400 dark:bg-gray-500" />
+					<Skeleton variants={['bento']} class="h-3 w-full bg-gray-400 dark:bg-gray-500" />
+					<Skeleton variants={['bento']} class="h-3 w-3/4 bg-gray-400 dark:bg-gray-500" />
+					<Skeleton variants={['bento']} class="h-12 w-full bg-gray-400 dark:bg-gray-500" />
 				</Div>
 			</Skeleton>
 		{:else if kind === 'layers'}
@@ -172,7 +182,7 @@
 				class="flex flex-col gap-3 motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:-translate-y-2 motion-safe:group-focus-visible:-translate-y-2"
 			>
 				{#each ['001', '002', '003'] as number (number)}
-					<Skeleton variants={['bento']} class="flex h-12 w-40 items-center justify-between px-4">
+					<Skeleton variants={['bento']} class="flex h-16 w-56 items-center justify-between px-6">
 						<Skeleton variants={['bento']} class="h-2 w-12 bg-gray-400 dark:bg-gray-500" />
 						<Span class="font-mono text-xs text-gray-600 dark:text-gray-300">{number}</Span>
 					</Skeleton>
@@ -183,6 +193,7 @@
 {/snippet}
 
 <Section
+	bind:element={sectionElement}
 	id="possibilities"
 	variants={['surface']}
 	aria-labelledby="bento-heading"
@@ -198,14 +209,16 @@
 			{#each topics as topic (topic.id)}
 				<Button
 					variants={['neutral-tile']}
-					class={topic.isWide ? 'sm:col-span-2 lg:col-span-4' : 'lg:col-span-2'}
+					class={columnClasses[topic.columns]}
 					type="button"
 					aria-label={`Explore ${topic.title}`}
 					aria-haspopup="dialog"
 					data-bento-topic={topic.id}
 					onclick={() => openDialog(topic)}
 				>
-					<Span variants={['bentoSurface']} data-bento-surface aria-hidden="true" />
+					<Span variants={['bentoSurface']} data-bento-surface aria-hidden="true">
+						<Canvas variants={['bentoOutline']} data-bento-outline aria-hidden="true" />
+					</Span>
 					<Span
 						variants={['button.base', 'button.variant.icon', 'bentoExpand']}
 						data-bento-expand
@@ -216,9 +229,6 @@
 					</Span>
 					<Span variants={['bentoCopy']} data-bento-copy>
 						<Span class="block text-2xl font-medium tracking-tight">{topic.title}</Span>
-						<Span class="block text-sm font-normal text-gray-600 dark:text-gray-300"
-							>{topic.description}</Span
-						>
 					</Span>
 					{@render preview(topic.preview)}
 				</Button>

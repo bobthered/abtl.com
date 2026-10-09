@@ -17,10 +17,16 @@ export const initializeTheme = () => {
 			component.variants![name] = normalizeCornerRadius(component.variants![name]);
 	}
 	theme.set.theme(siteTheme);
+	// Keep the shared 4px focus gap outside the tile's additional 4px expansion.
 	theme.set.variant(
 		'button',
 		'neutral-tile',
-		'group relative isolate flex h-full min-w-0 flex-col items-stretch justify-between gap-8 overflow-visible rounded-sm bg-transparent p-6 text-left text-gray-950 shadow-none hover:bg-transparent hover:text-gray-950 focus:bg-transparent focus:text-gray-950 sm:p-8 dark:bg-transparent dark:text-gray-50 dark:hover:bg-transparent dark:hover:text-gray-50 dark:focus:bg-transparent dark:focus:text-gray-50'
+		'group relative isolate flex h-full min-w-0 flex-col items-stretch justify-between gap-6 overflow-visible rounded-sm bg-transparent p-0 text-left text-gray-950 shadow-none hover:bg-transparent hover:text-gray-950 focus:bg-transparent focus:text-gray-950 motion-safe:focus-visible:outline-offset-8 dark:bg-transparent dark:text-gray-50 dark:hover:bg-transparent dark:hover:text-gray-50 dark:focus:bg-transparent dark:focus:text-gray-50'
+	);
+	theme.set.variant(
+		'canvas',
+		'bentoOutline',
+		'pointer-events-none absolute inset-0 block h-full w-full text-primary-400 [--bento-outline-secondary:var(--color-secondary-400)] opacity-0 transition-opacity duration-300 group-hover:opacity-60 dark:text-primary-300 dark:[--bento-outline-secondary:var(--color-secondary-300)] dark:group-hover:opacity-50 motion-reduce:transition-none'
 	);
 	theme.set.variant(
 		'span',
@@ -30,17 +36,17 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'span',
 		'bentoCopy',
-		'relative block space-y-2 pr-14 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-x-1 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:-translate-x-1 motion-safe:group-focus-visible:-translate-y-1'
+		'relative block pt-4 pr-18 pl-4 sm:pt-5 sm:pr-19 sm:pl-5 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-x-1 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:-translate-x-1 motion-safe:group-focus-visible:-translate-y-1'
 	);
 	theme.set.variant(
 		'div',
 		'bentoPreview',
-		'relative flex h-52 w-full items-center justify-center overflow-hidden'
+		'relative flex h-72 w-full sm:h-80 lg:h-96 items-center justify-center overflow-visible [clip-path:inset(0_round_0_0_var(--radius-sm)_var(--radius-sm))] motion-safe:transition-[clip-path] motion-safe:duration-300 motion-safe:group-hover:[clip-path:inset(0_calc(-1*var(--spacing))_calc(-1*var(--spacing))_round_0_0_var(--radius-sm)_var(--radius-sm))] motion-safe:group-focus-visible:[clip-path:inset(0_calc(-1*var(--spacing))_calc(-1*var(--spacing))_round_0_0_var(--radius-sm)_var(--radius-sm))]'
 	);
 	theme.set.variant(
 		'span',
 		'bentoExpand',
-		'pointer-events-none absolute top-6 right-6 z-10 size-11 bg-gray-100 text-gray-700 sm:top-8 sm:right-8 dark:bg-gray-800 dark:text-gray-200 group-hover:bg-primary-500 group-hover:text-white group-focus-visible:bg-primary-500 group-focus-visible:text-white motion-safe:transition motion-safe:duration-300 motion-safe:group-hover:translate-x-1 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:translate-x-1 motion-safe:group-focus-visible:-translate-y-1'
+		'pointer-events-none absolute top-4 right-4 z-10 size-11 bg-gray-100 text-gray-700 sm:top-5 sm:right-5 dark:bg-gray-800 dark:text-gray-200 group-hover:bg-primary-500 group-hover:text-white group-focus-visible:bg-primary-500 group-focus-visible:text-white motion-safe:transition motion-safe:duration-300 motion-safe:group-hover:translate-x-1 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:translate-x-1 motion-safe:group-focus-visible:-translate-y-1'
 	);
 	theme.set.variant(
 		'span',
@@ -51,7 +57,7 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'skeleton',
 		'bentoTag',
-		'absolute h-40 w-20 animate-none rounded-sm bg-gray-200 inset-ring-1 inset-ring-gray-300 dark:bg-gray-700 dark:inset-ring-gray-600 motion-safe:transition-transform motion-safe:duration-500'
+		'absolute h-48 w-24 animate-none sm:h-56 sm:w-28 rounded-sm bg-gray-200 inset-ring-1 inset-ring-gray-300 dark:bg-gray-700 dark:inset-ring-gray-600 motion-safe:transition-transform motion-safe:duration-500'
 	);
 	theme.set.variant(
 		'skeleton',
@@ -66,7 +72,7 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'skeleton',
 		'bentoLayer',
-		'absolute h-24 w-36 animate-none rounded-sm bg-gray-200 inset-ring-1 inset-ring-gray-300 dark:bg-gray-700 dark:inset-ring-gray-600 motion-safe:transition-transform motion-safe:duration-500'
+		'absolute h-32 w-48 animate-none sm:h-40 sm:w-60 rounded-sm bg-gray-200 inset-ring-1 inset-ring-gray-300 dark:bg-gray-700 dark:inset-ring-gray-600 motion-safe:transition-transform motion-safe:duration-500'
 	);
 	theme.set.variant(
 		'skeleton',
@@ -157,7 +163,7 @@ export const initializeTheme = () => {
 	theme.update.base('input', 'rounded-sm px-4 py-3 text-base leading-5');
 	theme.update.base('popover', 'rounded-sm p-6');
 	theme.set.variant('button', 'icon', 'flex size-11 items-center justify-center rounded-sm p-0');
-	theme.set.base('container', 'relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-16');
+	theme.set.base('container', 'relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-16 xl:max-w-384');
 	theme.set.variant(
 		'section',
 		'hero',
