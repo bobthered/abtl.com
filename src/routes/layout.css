@@ -101,15 +101,16 @@
 }
 
 @theme {
-	--color-tertiary-50: #fff8f5;
-	--color-tertiary-100: #ffeee5;
-	--color-tertiary-200: #ffdecc;
-	--color-tertiary-300: #ffc3a3;
-	--color-tertiary-400: #ff8e51;
-	--color-tertiary-500: #eb5200;
-	--color-tertiary-600: #a83b00;
-	--color-tertiary-700: #7a2b00;
-	--color-tertiary-800: #471900;
-	--color-tertiary-900: #240c00;
-	--color-tertiary-950: #140700;
+	/* Preserve each secondary shade's saturation and lightness; rotate its hue another 60 degrees. */
+	--color-tertiary-50: hsl(from var(--color-secondary-50) calc(h + 60) s l);
+	--color-tertiary-100: hsl(from var(--color-secondary-100) calc(h + 60) s l);
+	--color-tertiary-200: hsl(from var(--color-secondary-200) calc(h + 60) s l);
+	--color-tertiary-300: hsl(from var(--color-secondary-300) calc(h + 60) s l);
+	--color-tertiary-400: hsl(from var(--color-secondary-400) calc(h + 60) s l);
+	--color-tertiary-500: hsl(from var(--color-secondary-500) calc(h + 60) s l);
+	--color-tertiary-600: hsl(from var(--color-secondary-600) calc(h + 60) s l);
+	--color-tertiary-700: hsl(from var(--color-secondary-700) calc(h + 60) s l);
+	--color-tertiary-800: hsl(from var(--color-secondary-800) calc(h + 60) s l);
+	--color-tertiary-900: hsl(from var(--color-secondary-900) calc(h + 60) s l);
+	--color-tertiary-950: hsl(from var(--color-secondary-950) calc(h + 60) s l);
 }
