@@ -1,0 +1,23 @@
+[
+	{ "id": "white", "file": "white-equipment", "scene": "workbench", "rotation": -6 },
+	{ "id": "manila", "file": "manila-parts", "scene": "parts", "rotation": 5 },
+	{ "id": "blue-dark", "file": "blue-dark", "scene": "packing", "rotation": -4 },
+	{ "id": "blue-light", "file": "blue-warehouse", "scene": "packing", "rotation": 7 },
+	{ "id": "brown", "file": "brown", "scene": "workbench", "rotation": 4 },
+	{ "id": "buff", "file": "buff", "scene": "workbench", "rotation": -3 },
+	{ "id": "gray", "file": "gray", "scene": "machining", "rotation": 6 },
+	{ "id": "green-dark", "file": "green-dark", "scene": "machining", "rotation": -5 },
+	{ "id": "green-light", "file": "green-light", "scene": "nursery", "rotation": 5 },
+	{ "id": "ivory", "file": "ivory", "scene": "textile", "rotation": -7 },
+	{ "id": "lilac", "file": "lilac", "scene": "textile", "rotation": 3 },
+	{ "id": "orange", "file": "orange", "scene": "service", "rotation": -6 },
+	{ "id": "pink", "file": "pink", "scene": "textile", "rotation": 7 },
+	{ "id": "red", "file": "red", "scene": "service", "rotation": 4 },
+	{ "id": "salmon", "file": "salmon", "scene": "nursery", "rotation": -4 },
+	{ "id": "yellow", "file": "yellow", "scene": "parts", "rotation": -7 },
+	{ "id": "fluorescent-green", "file": "fluorescent-green", "scene": "packing", "rotation": 3 },
+	{ "id": "fluorescent-orange", "file": "fluorescent-orange", "scene": "parts", "rotation": 6 },
+	{ "id": "fluorescent-pink", "file": "fluorescent-pink", "scene": "nursery", "rotation": -7 },
+	{ "id": "fluorescent-red", "file": "fluorescent-red", "scene": "service", "rotation": -3 },
+	{ "id": "fluorescent-yellow", "file": "yellow-workshop", "scene": "machining", "rotation": 4 }
+]

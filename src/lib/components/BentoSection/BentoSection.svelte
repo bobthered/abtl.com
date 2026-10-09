@@ -2,8 +2,8 @@
 	// Imports
 	import {
 		A,
+		BentoItem,
 		Button,
-		Canvas,
 		Card,
 		Container,
 		Dialog,
@@ -13,13 +13,17 @@
 		P,
 		Section,
 		Skeleton,
-		Span
+		Span,
+		StockColorContent,
+		StockColorMarquee,
+		StockTag,
+		StockTagExamples
 	} from '#lib/components';
-	import { ArrowRight, Maximize2, X } from '#lib/icons';
+	import { ArrowRight, X } from '#lib/icons';
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { fade, fly } from 'svelte/transition';
-	import { initializePointerOutlines } from './pointerOutline';
 	import { onMount, tick } from 'svelte';
+	import { stockColors } from './stockColors';
 
 	// Types
 	type Topic = {
@@ -40,7 +44,7 @@
 	const topics: Topic[] = [
 		{
 			id: 'colors',
-			title: 'Color with a purpose.',
+			title: 'What color will you choose?',
 			description: 'Explore stock tag colors.',
 			preview: 'fan',
 			columns: 'wide'
@@ -87,7 +91,6 @@
 		isDialogVisible = false;
 	};
 	const initializeMotion = () => {
-		const stopOutlines = initializePointerOutlines(sectionElement);
 		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const updatePreference = () => {
 			isReducedMotion = preference.matches;
@@ -100,7 +103,6 @@
 		preference.addEventListener('change', updatePreference);
 		window.addEventListener('resize', updateViewport);
 		return () => {
-			stopOutlines();
 			preference.removeEventListener('change', updatePreference);
 			window.removeEventListener('resize', updateViewport);
 		};
@@ -125,7 +127,6 @@
 	let isCardVisible = $state(false);
 	let isDialogVisible = $state(false);
 	let isReducedMotion = $state(true);
-	let sectionElement = $state<HTMLElement | null>(null);
 	let selectedTopic = $state<Topic | null>(null);
 	let viewportHeight = $state(800);
 
@@ -142,12 +143,16 @@
 	});
 </script>
 
-{#snippet preview(kind: Topic['preview'])}
-	<Div variants={['bentoPreview']} aria-hidden="true">
+{#snippet preview(kind: Topic['preview'], isDialogPreview = false)}
+	<Div variants={[isDialogPreview ? 'bentoDialogPreview' : 'bentoPreview']} aria-hidden="true">
 		{#if kind === 'fan'}
-			<Skeleton variants={['bentoTag', 'fanLeft']} />
-			<Skeleton variants={['bentoTag', 'fanRight']} />
-			<Skeleton variants={['bentoTag']} />
+			<Div variants={['stockFan']} data-stock-fan>
+				{#each stockColors as color (color.id)}
+					<Div variants={['stockFanTag']} class={color.fanClass} data-stock-color={color.id}>
+						<StockTag class={color.className} />
+					</Div>
+				{/each}
+			</Div>
 		{:else if kind === 'print'}
 			<Skeleton variants={['bentoTag']}>
 				<Div
@@ -193,45 +198,29 @@
 {/snippet}
 
 <Section
-	bind:element={sectionElement}
 	id="possibilities"
 	variants={['surface']}
-	aria-labelledby="bento-heading"
+	aria-label="Tag and label options"
 	data-bento-section
 >
 	<Container variants={['section']}>
-		<P variants={['eyebrow']}>Explore the possibilities</P>
+		<!-- <P variants={['eyebrow']}>Explore the possibilities</P>
 		<H2 id="bento-heading" variants={['section']}>Your tag. Every detail.</H2>
 		<P class="mt-4 max-w-xl text-gray-600 dark:text-gray-300"
 			>A first look at the options. Open a topic to explore its content preview.</P
-		>
+		> -->
 		<Div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
 			{#each topics as topic (topic.id)}
-				<Button
-					variants={['neutral-tile']}
+				<BentoItem
 					class={columnClasses[topic.columns]}
-					type="button"
+					title={topic.title}
 					aria-label={`Explore ${topic.title}`}
 					aria-haspopup="dialog"
 					data-bento-topic={topic.id}
 					onclick={() => openDialog(topic)}
 				>
-					<Span variants={['bentoSurface']} data-bento-surface aria-hidden="true">
-						<Canvas variants={['bentoOutline']} data-bento-outline aria-hidden="true" />
-					</Span>
-					<Span
-						variants={['button.base', 'button.variant.icon', 'bentoExpand']}
-						data-bento-expand
-						aria-hidden="true"
-					>
-						<Span variants={['bentoExpandIcon']}><Maximize2 class="size-5 overflow-visible" /></Span
-						>
-					</Span>
-					<Span variants={['bentoCopy']} data-bento-copy>
-						<Span class="block text-2xl font-medium tracking-tight">{topic.title}</Span>
-					</Span>
 					{@render preview(topic.preview)}
-				</Button>
+				</BentoItem>
 			{/each}
 		</Div>
 	</Container>
@@ -263,58 +252,96 @@
 				]}
 			>
 				<Div variants={['bentoDialogHeader']}>
-					<Span class="text-sm font-medium">{selectedTopic.title}</Span>
 					<Button
 						type="button"
-						variants={['ghost', 'icon']}
+						variants={['neutral', 'icon']}
 						aria-label="Close topic"
 						onclick={closeDialog}
 						data-bento-close><X class="size-5" aria-hidden="true" /></Button
 					>
 				</Div>
-				<Div class="py-12 sm:py-20">
-					<P variants={['eyebrow']}>Content preview</P>
+				<Div class="pt-12 sm:pt-20">
+					<P variants={['eyebrow']}
+						>{selectedTopic.id === 'colors' ? 'Stock tag colors' : 'Content preview'}</P
+					>
 					<H2 id="bento-dialog-heading" variants={['section']}>{selectedTopic.title}</H2>
 					<P
 						id="bento-dialog-description"
 						class="mt-6 max-w-xl text-lg text-gray-600 dark:text-gray-300"
-						>This is a layout preview for {selectedTopic.description
-							.toLowerCase()
-							.replace(/^explore /, '')
-							.replace(/\.$/, '')}. Product details, examples, and artwork will be added here.</P
+						>{#if selectedTopic.id === 'colors'}
+							Make the next step easy to spot. Use color to distinguish a process, organize a
+							collection, or give your tags a look of their own.
+						{:else}This is a layout preview for {selectedTopic.description
+								.toLowerCase()
+								.replace(/^explore /, '')
+								.replace(/\.$/, '')}. Product details, examples, and artwork will be added here.{/if}</P
 					>
-					<Div class="group mt-12 rounded-sm bg-gray-100 p-8 sm:p-16 dark:bg-gray-900">
-						{@render preview(selectedTopic.preview)}
-					</Div>
-					{#each detailSections as title, index (title)}
+					{#if selectedTopic.id === 'colors'}
+						<Div variants={['dialogBleed']} class="my-12">
+							<StockColorMarquee />
+						</Div>
+					{:else}
+						<Div variants={['dialogArtwork']}>
+							{@render preview(selectedTopic.preview, true)}
+						</Div>
+					{/if}
+					{#if selectedTopic.id === 'colors'}
 						<Section
-							aria-labelledby={`bento-detail-${index}`}
-							class="grid gap-8 py-16 lg:grid-cols-2 lg:gap-16"
+							variants={['dialogSection']}
+							aria-labelledby="stock-examples-heading"
+							data-color-section="examples"
 						>
-							<Div class="space-y-6">
-								<H3 id={`bento-detail-${index}`} class="text-2xl font-medium tracking-tight"
-									>{title}</H3
-								>
-								{#each [0, 1, 2] as line (line)}
-									<Div class="space-y-3" aria-hidden="true"
-										><Skeleton variants={['bento']} class="h-3 w-full" /><Skeleton
-											variants={['bento']}
-											class="h-3 w-5/6"
-										/><Skeleton variants={['bento']} class="h-3 w-2/3" /></Div
-									>
-								{/each}
+							<H3 id="stock-examples-heading" class="text-3xl sm:text-4xl"
+								>Color, out in the world.</H3
+							>
+							<P variants={['dialogBody']} class="mt-4"
+								>Illustrative examples of stock colors at work, from the parts shelf to the service
+								bench.</P
+							>
+							<Div variants={['dialogBleed']} class="mt-8">
+								<StockTagExamples />
 							</Div>
-							<Skeleton variants={['bento']} class="min-h-64 rounded-sm" />
 						</Section>
-					{/each}
-					<Div class="flex flex-wrap items-center gap-4 py-8">
-						<A
-							href={`mailto:sales@abtl.com?subject=${encodeURIComponent(selectedTopic.title)}`}
-							variants={['button.base']}
-							>Discuss your project <ArrowRight class="size-4" aria-hidden="true" /></A
+						<StockColorContent />
+					{:else}
+						{#each detailSections as title, index (title)}
+							<Section
+								aria-labelledby={`bento-detail-${index}`}
+								variants={['dialogSection']}
+								class="grid gap-8 lg:grid-cols-2 lg:gap-16"
+							>
+								<Div class="space-y-6">
+									<H3 id={`bento-detail-${index}`} class="text-2xl font-medium tracking-tight"
+										>{title}</H3
+									>
+									{#each [0, 1, 2] as line (line)}
+										<Div class="space-y-3" aria-hidden="true"
+											><Skeleton variants={['bento']} class="h-3 w-full" /><Skeleton
+												variants={['bento']}
+												class="h-3 w-5/6"
+											/><Skeleton variants={['bento']} class="h-3 w-2/3" /></Div
+										>
+									{/each}
+								</Div>
+								<Skeleton variants={['bento']} class="min-h-64 rounded-sm" />
+							</Section>
+						{/each}
+					{/if}
+					{#if selectedTopic.id !== 'colors'}
+						<Section
+							variants={['dialogSection']}
+							class="flex flex-wrap items-center gap-4"
+							aria-label="Discuss this topic"
 						>
-						<Button variants={['ghost']} onclick={closeDialog}>Back to possibilities</Button>
-					</Div>
+							<A
+								href={`mailto:sales@abtl.com?subject=${encodeURIComponent(selectedTopic.title)}`}
+								variants={['button.base']}
+								>Discuss your project
+								<ArrowRight class="size-4" aria-hidden="true" /></A
+							>
+							<Button variants={['ghost']} onclick={closeDialog}>Back to possibilities</Button>
+						</Section>
+					{/if}
 				</Div>
 			</Card>
 		</Container>

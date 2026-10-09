@@ -4,6 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
+		"images:tags": "node scripts/composite-stock-photos.mjs",
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
@@ -36,6 +37,7 @@
 		"prettier": "^3.8.3",
 		"prettier-plugin-svelte": "^4.1.0",
 		"prettier-plugin-tailwindcss": "^0.8.0",
+		"sharp": "^0.35.5",
 		"svelte": "^5.57.1",
 		"svelte-check": "^4.6.0",
 		"tailwindcss": "^4.3.0",
@@ -47,6 +49,7 @@
 	},
 	"imports": {
 		"#lib": "./src/lib/index.js",
+		"#lib/attachments": "./src/lib/attachments/index.js",
 		"#lib/components": "./src/lib/components/index.js",
 		"#lib/icons": "./src/lib/icons/index.js",
 		"#lib/*": "./src/lib/*"

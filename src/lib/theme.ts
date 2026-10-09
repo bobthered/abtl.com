@@ -17,6 +17,68 @@ export const initializeTheme = () => {
 			component.variants![name] = normalizeCornerRadius(component.variants![name]);
 	}
 	theme.set.theme(siteTheme);
+	theme.set.variant(
+		'svg',
+		'stockTag',
+		'block aspect-1/2 h-auto w-full overflow-visible drop-shadow-md drop-shadow-black/15 dark:drop-shadow-black/40'
+	);
+	theme.set.variant('path', 'stockPaper', 'fill-current stroke-gray-950/15 stroke-1');
+	theme.set.variant('path', 'stockPatch', 'fill-tag-brown stroke-gray-950/15 stroke-1');
+	theme.set.variant('div', 'stockFan', 'relative flex h-full w-full items-end justify-center');
+	theme.set.variant(
+		'div',
+		'marquee',
+		'flex w-full min-w-0 touch-pan-y select-none overflow-hidden rounded-sm py-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:focus-visible:outline-primary-300'
+	);
+	theme.set.variant('div', 'marqueeTrack', 'relative flex w-max shrink-0 will-change-transform');
+	theme.set.variant('div', 'marqueeCopy', 'relative flex shrink-0');
+	theme.set.variant(
+		'section',
+		'dialogSection',
+		'border-t border-gray-200 py-12 sm:py-16 dark:border-gray-800'
+	);
+	theme.set.variant('p', 'dialogBody', 'max-w-2xl text-gray-600 dark:text-gray-300');
+	theme.set.variant('figcaption', 'dialogCaption', 'mt-4 text-sm text-gray-600 dark:text-gray-300');
+	theme.set.variant('div', 'dialogBleed', '-mx-6 flex min-w-0 sm:-mx-8 lg:-mx-16');
+	theme.set.variant('card', 'neutral', 'bg-gray-100 dark:bg-gray-950');
+	theme.set.variant('card', 'dialogPanel', 'min-w-0 bg-gray-50 p-6 shadow-none dark:bg-gray-950');
+	theme.set.variant(
+		'div',
+		'dialogArtwork',
+		'group my-12 rounded-sm bg-gray-100 p-8 sm:p-12 dark:bg-gray-950'
+	);
+	theme.set.variant(
+		'div',
+		'stockIllustration',
+		'flex min-h-72 items-center justify-center rounded-sm p-6 sm:min-h-80'
+	);
+	theme.set.variant('details', 'stockQuestion', 'rounded-sm bg-gray-50 p-6 dark:bg-gray-950');
+	theme.set.variant(
+		'summary',
+		'stockQuestion',
+		'cursor-pointer rounded-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:focus-visible:outline-primary-300'
+	);
+	theme.set.variant('button', 'large', 'min-h-16 px-8 py-5 text-lg');
+	theme.set.variant(
+		'button',
+		'neutral',
+		'bg-gray-100 text-gray-950 hover:bg-gray-200 hover:text-gray-950 focus:bg-gray-200 focus:text-gray-950 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:hover:text-gray-50 dark:focus:bg-gray-700 dark:focus:text-gray-50'
+	);
+	theme.set.variant(
+		'button',
+		'stockSwatch',
+		'relative flex flex-col items-center gap-4 whitespace-normal rounded-sm bg-gray-50 p-6 text-center text-gray-950 inset-ring-1 inset-ring-gray-200 hover:bg-gray-100 hover:text-gray-950 focus:bg-gray-100 focus:text-gray-950 dark:bg-gray-950 dark:text-gray-50 dark:inset-ring-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50'
+	);
+	theme.set.variant(
+		'button',
+		'stockSwatchSelected',
+		'inset-ring-2 inset-ring-primary-500 dark:inset-ring-primary-400'
+	);
+	theme.set.variant(
+		'div',
+		'stockFanTag',
+		'absolute top-1/2 -mt-3 w-24 origin-bottom -translate-y-1/2 sm:w-32 lg:w-36 motion-safe:transition-all motion-safe:duration-700 motion-safe:ease-out motion-safe:group-hover:-mt-6 motion-safe:group-focus-visible:-mt-6'
+	);
 	// Keep the shared 4px focus gap outside the tile's additional 4px expansion.
 	theme.set.variant(
 		'button',
@@ -34,6 +96,18 @@ export const initializeTheme = () => {
 		'pointer-events-none absolute inset-0 -z-10 rounded-sm bg-white inset-ring-1 inset-ring-gray-200 dark:bg-gray-900 dark:inset-ring-gray-800 motion-safe:transition-[inset] motion-safe:duration-300 motion-safe:group-hover:-inset-1 motion-safe:group-focus-visible:-inset-1'
 	);
 	theme.set.variant(
+		'button',
+		'neutral-tile-muted',
+		'bg-gray-100 hover:bg-gray-100 focus:bg-gray-100 dark:bg-gray-950 dark:hover:bg-gray-950 dark:focus:bg-gray-950'
+	);
+	theme.set.variant('span', 'bentoSurfaceNeutral', 'bg-gray-100 dark:bg-gray-950');
+	theme.set.variant(
+		'dialog',
+		'imageLightbox',
+		'fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-y-auto rounded-none border-0 bg-transparent p-0 shadow-none inset-ring-0 backdrop:bg-gray-950/70 backdrop:backdrop-blur-md'
+	);
+
+	theme.set.variant(
 		'span',
 		'bentoCopy',
 		'relative block pt-4 pr-18 pl-4 sm:pt-5 sm:pr-19 sm:pl-5 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-x-1 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:-translate-x-1 motion-safe:group-focus-visible:-translate-y-1'
@@ -42,6 +116,11 @@ export const initializeTheme = () => {
 		'div',
 		'bentoPreview',
 		'relative flex h-72 w-full sm:h-80 lg:h-96 items-center justify-center overflow-visible [clip-path:inset(0_round_0_0_var(--radius-sm)_var(--radius-sm))] motion-safe:transition-[clip-path] motion-safe:duration-300 motion-safe:group-hover:[clip-path:inset(0_calc(-1*var(--spacing))_calc(-1*var(--spacing))_round_0_0_var(--radius-sm)_var(--radius-sm))] motion-safe:group-focus-visible:[clip-path:inset(0_calc(-1*var(--spacing))_calc(-1*var(--spacing))_round_0_0_var(--radius-sm)_var(--radius-sm))]'
+	);
+	theme.set.variant(
+		'div',
+		'bentoDialogPreview',
+		'relative flex h-56 w-full items-center justify-center overflow-visible sm:h-72 lg:h-80'
 	);
 	theme.set.variant(
 		'span',
@@ -89,11 +168,7 @@ export const initializeTheme = () => {
 		'bento',
 		'fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-x-hidden overflow-y-auto overscroll-contain rounded-none border-0 bg-transparent p-0 text-gray-950 shadow-none inset-ring-0 backdrop:bg-gray-950/25 backdrop:backdrop-blur-md backdrop:opacity-100 open:backdrop:backdrop-blur-md starting:open:backdrop:opacity-100 starting:open:backdrop:backdrop-blur-md dark:bg-transparent dark:text-gray-50'
 	);
-	theme.set.variant(
-		'div',
-		'bentoDialogHeader',
-		'sticky top-0 z-20 flex items-center justify-between gap-6 bg-white py-4 dark:bg-gray-900'
-	);
+	theme.set.variant('div', 'bentoDialogHeader', 'flex justify-end py-4');
 	// Rings define full edges, outlines mark focus, and borders are reserved for side separators.
 	theme.set.base(
 		'fieldset',

@@ -70,6 +70,8 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 
 ## Completion and commit messages
 
+- Routine project inspection, file edits, dependency installation, and local development, formatting, build, and test commands are authorized as needed to complete the user's requests. Do not ask for conversational confirmation for these actions; platform-enforced approvals still apply.
+- Never create Git commits or run `git push`. The user handles all commits and pushes. Read-only Git commands for reviewing status, history, and diffs are allowed.
 - After completing each user request, include a suggested Git commit message in the final response.
 - Before suggesting a commit message, review Git status, staged and unstaged diffs, and relevant untracked files. The message must encompass all current uncommitted work, including changes from earlier requests and user edits, rather than only the latest request.
 - Use a concise subject that describes the overall change. When multiple changes need explanation, add a commit message body summarizing them so all uncommitted work is represented.
