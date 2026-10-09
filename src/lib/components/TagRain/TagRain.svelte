@@ -103,7 +103,7 @@
 		data-tag-rain
 	/>
 	<!-- <Span
-		class="pointer-events-none absolute right-8 bottom-6 rounded-lg bg-gray-50/90 px-3 py-2 text-xs text-gray-600 dark:bg-gray-950/90 dark:text-gray-300"
+		class="pointer-events-none absolute right-8 bottom-6 rounded-sm bg-gray-50/90 px-3 py-2 text-xs text-gray-600 dark:bg-gray-950/90 dark:text-gray-300"
 		>Hover a tag, then click to explore</Span
 	> -->
 </Div>

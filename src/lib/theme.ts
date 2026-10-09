@@ -1,13 +1,97 @@
 import { theme } from 'sveltewind/theme';
 import { classic } from 'sveltewind/themes';
 
+// Keep inherited rectangular surfaces consistent; preserve intentional circles and flush edges.
+const normalizeCornerRadius = (classes: string) =>
+	classes.replace(
+		/\brounded(?:-([trblse]|[tb][rl]|[se][se]))?(?:-(?:xs|sm|md|lg|xl|[2-4]xl))?(?=\s|$)/g,
+		(_, side: string | undefined) => (side ? `rounded-${side}-sm` : 'rounded-sm')
+	);
+
 /** Initialize shared styles only; keep customer-specific data out of the global theme. */
 export const initializeTheme = () => {
-	theme.set.theme(structuredClone(classic));
+	const siteTheme = structuredClone(classic);
+	for (const component of Object.values(siteTheme)) {
+		component.base = normalizeCornerRadius(component.base);
+		for (const name of Object.keys(component.variants ?? {}))
+			component.variants![name] = normalizeCornerRadius(component.variants![name]);
+	}
+	theme.set.theme(siteTheme);
+	theme.set.variant(
+		'button',
+		'neutral-tile',
+		'group relative isolate flex h-full min-w-0 flex-col items-stretch justify-between gap-8 overflow-visible rounded-sm bg-transparent p-6 text-left text-gray-950 shadow-none hover:bg-transparent hover:text-gray-950 focus:bg-transparent focus:text-gray-950 sm:p-8 dark:bg-transparent dark:text-gray-50 dark:hover:bg-transparent dark:hover:text-gray-50 dark:focus:bg-transparent dark:focus:text-gray-50'
+	);
+	theme.set.variant(
+		'span',
+		'bentoSurface',
+		'pointer-events-none absolute inset-0 -z-10 rounded-sm bg-white inset-ring-1 inset-ring-gray-200 dark:bg-gray-900 dark:inset-ring-gray-800 motion-safe:transition-[inset] motion-safe:duration-300 motion-safe:group-hover:-inset-1 motion-safe:group-focus-visible:-inset-1'
+	);
+	theme.set.variant(
+		'span',
+		'bentoCopy',
+		'relative block space-y-2 pr-14 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-x-1 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:-translate-x-1 motion-safe:group-focus-visible:-translate-y-1'
+	);
+	theme.set.variant(
+		'div',
+		'bentoPreview',
+		'relative flex h-52 w-full items-center justify-center overflow-hidden'
+	);
+	theme.set.variant(
+		'span',
+		'bentoExpand',
+		'pointer-events-none absolute top-6 right-6 z-10 size-11 bg-gray-100 text-gray-700 sm:top-8 sm:right-8 dark:bg-gray-800 dark:text-gray-200 group-hover:bg-primary-500 group-hover:text-white group-focus-visible:bg-primary-500 group-focus-visible:text-white motion-safe:transition motion-safe:duration-300 motion-safe:group-hover:translate-x-1 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:translate-x-1 motion-safe:group-focus-visible:-translate-y-1'
+	);
+	theme.set.variant(
+		'span',
+		'bentoExpandIcon',
+		'flex items-center justify-center [&_path]:transition-transform [&_path]:duration-300 motion-reduce:[&_path]:transition-none motion-safe:group-hover:[&_path:nth-child(-n+2)]:translate-x-0.25 motion-safe:group-hover:[&_path:nth-child(-n+2)]:-translate-y-0.25 motion-safe:group-hover:[&_path:nth-child(n+3)]:-translate-x-0.25 motion-safe:group-hover:[&_path:nth-child(n+3)]:translate-y-0.25 motion-safe:group-focus-visible:[&_path:nth-child(-n+2)]:translate-x-0.25 motion-safe:group-focus-visible:[&_path:nth-child(-n+2)]:-translate-y-0.25 motion-safe:group-focus-visible:[&_path:nth-child(n+3)]:-translate-x-0.25 motion-safe:group-focus-visible:[&_path:nth-child(n+3)]:translate-y-0.25'
+	);
+	theme.set.variant('skeleton', 'bento', 'animate-none bg-gray-200 dark:bg-gray-700');
+	theme.set.variant(
+		'skeleton',
+		'bentoTag',
+		'absolute h-40 w-20 animate-none rounded-sm bg-gray-200 inset-ring-1 inset-ring-gray-300 dark:bg-gray-700 dark:inset-ring-gray-600 motion-safe:transition-transform motion-safe:duration-500'
+	);
+	theme.set.variant(
+		'skeleton',
+		'fanLeft',
+		'-translate-x-6 -rotate-12 bg-gray-300 dark:bg-gray-600 motion-safe:group-hover:-translate-x-9 motion-safe:group-hover:-rotate-18 motion-safe:group-focus-visible:-translate-x-9 motion-safe:group-focus-visible:-rotate-18'
+	);
+	theme.set.variant(
+		'skeleton',
+		'fanRight',
+		'translate-x-6 rotate-12 bg-gray-100 dark:bg-gray-800 motion-safe:group-hover:translate-x-9 motion-safe:group-hover:rotate-18 motion-safe:group-focus-visible:translate-x-9 motion-safe:group-focus-visible:rotate-18'
+	);
+	theme.set.variant(
+		'skeleton',
+		'bentoLayer',
+		'absolute h-24 w-36 animate-none rounded-sm bg-gray-200 inset-ring-1 inset-ring-gray-300 dark:bg-gray-700 dark:inset-ring-gray-600 motion-safe:transition-transform motion-safe:duration-500'
+	);
+	theme.set.variant(
+		'skeleton',
+		'layerBack',
+		'translate-y-6 rotate-12 bg-gray-300 dark:bg-gray-600 motion-safe:group-hover:translate-y-8 motion-safe:group-hover:rotate-16 motion-safe:group-focus-visible:translate-y-8 motion-safe:group-focus-visible:rotate-16'
+	);
+	theme.set.variant(
+		'skeleton',
+		'layerMiddle',
+		'translate-y-3 -rotate-6 bg-gray-100 dark:bg-gray-800 motion-safe:group-hover:-translate-y-1.5 motion-safe:group-hover:-rotate-9 motion-safe:group-focus-visible:-translate-y-1.5 motion-safe:group-focus-visible:-rotate-9'
+	);
+	theme.set.variant(
+		'dialog',
+		'bento',
+		'fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-x-hidden overflow-y-auto overscroll-contain rounded-none border-0 bg-transparent p-0 text-gray-950 shadow-none inset-ring-0 backdrop:bg-gray-950/25 backdrop:backdrop-blur-md backdrop:opacity-100 open:backdrop:backdrop-blur-md starting:open:backdrop:opacity-100 starting:open:backdrop:backdrop-blur-md dark:bg-transparent dark:text-gray-50'
+	);
+	theme.set.variant(
+		'div',
+		'bentoDialogHeader',
+		'sticky top-0 z-20 flex items-center justify-between gap-6 bg-white py-4 dark:bg-gray-900'
+	);
 	// Rings define full edges, outlines mark focus, and borders are reserved for side separators.
 	theme.set.base(
 		'fieldset',
-		'min-w-0 rounded-md p-6 inset-ring-1 inset-ring-gray-200 dark:inset-ring-gray-700'
+		'min-w-0 rounded-sm p-6 inset-ring-1 inset-ring-gray-200 dark:inset-ring-gray-700'
 	);
 	theme.set.variant(
 		'calendar',
@@ -16,7 +100,7 @@ export const initializeTheme = () => {
 	);
 	theme.set.base(
 		'fileUploadDropzone',
-		'flex flex-col items-center gap-3 rounded-lg bg-gray-50 p-6 text-center inset-ring-2 inset-ring-gray-300 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary-600 dark:bg-gray-900 dark:inset-ring-gray-700 dark:focus-within:outline-primary-300'
+		'flex flex-col items-center gap-3 rounded-sm bg-gray-50 p-6 text-center inset-ring-2 inset-ring-gray-300 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary-600 dark:bg-gray-900 dark:inset-ring-gray-700 dark:focus-within:outline-primary-300'
 	);
 	theme.set.variant(
 		'fileUploadDropzone',
@@ -35,7 +119,7 @@ export const initializeTheme = () => {
 		'heroMetric',
 		'mb-8 flex items-baseline gap-2 whitespace-nowrap text-sm font-medium text-gray-600 dark:text-gray-300'
 	);
-	theme.update.base('card', 'rounded-lg p-8 shadow-sm');
+	theme.update.base('card', 'rounded-sm bg-white p-8 shadow-sm dark:bg-gray-900');
 	theme.set.base(
 		'tagRain',
 		'absolute inset-0 z-0 hidden h-full w-full lg:block motion-reduce:hidden'
@@ -59,11 +143,11 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'span',
 		'heroText',
-		'relative -left-3 box-decoration-clone rounded-lg bg-gray-50/70 px-3 py-1 dark:bg-gray-950/70 backdrop-blur'
+		'relative -left-3 box-decoration-clone rounded-sm bg-gray-50/70 px-3 py-1 dark:bg-gray-950/70 backdrop-blur'
 	);
 	theme.set.variant('section', 'heroMarquee', 'relative bg-gray-50 dark:bg-gray-950');
 	theme.set.variant('canvas', 'tagRain', 'block h-full w-full opacity-80 dark:opacity-60');
-	theme.update.base('dialog', 'rounded-lg p-8 shadow-xl');
+	theme.update.base('dialog', 'rounded-sm p-8 shadow-xl');
 	theme.set.variant(
 		'dialog',
 		'tagViewer',
@@ -71,8 +155,8 @@ export const initializeTheme = () => {
 	);
 	theme.set.variant('canvas', 'tagViewer', 'my-4 block h-128 max-h-[65svh] w-full sm:h-160');
 	theme.update.base('input', 'rounded-sm px-4 py-3 text-base leading-5');
-	theme.update.base('popover', 'rounded-lg p-6');
-	theme.set.variant('button', 'icon', 'flex size-11 items-center justify-center rounded-full p-0');
+	theme.update.base('popover', 'rounded-sm p-6');
+	theme.set.variant('button', 'icon', 'flex size-11 items-center justify-center rounded-sm p-0');
 	theme.set.base('container', 'relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-16');
 	theme.set.variant(
 		'section',
@@ -146,7 +230,7 @@ export const initializeTheme = () => {
 	theme.set.variant('floatingTag', 'near', 'w-28 sm:w-40');
 	theme.set.base(
 		'tagSettings',
-		'fixed inset-x-4 bottom-4 z-30 max-h-3/4 overflow-auto rounded-lg bg-white p-5 text-sm text-gray-950 shadow-xl inset-ring-1 inset-ring-gray-200 sm:inset-x-auto sm:right-4 sm:w-80 dark:bg-gray-950 dark:text-gray-50 dark:inset-ring-gray-800'
+		'fixed inset-x-4 bottom-4 z-30 max-h-3/4 overflow-auto rounded-sm bg-white p-5 text-sm text-gray-950 shadow-xl inset-ring-1 inset-ring-gray-200 sm:inset-x-auto sm:right-4 sm:w-80 dark:bg-gray-950 dark:text-gray-50 dark:inset-ring-gray-800'
 	);
 	theme.set.base('tag', 'block aspect-1/2 h-auto w-full');
 	theme.set.variant('path', 'tagPatch', 'fill-tag-buff stroke-tag-brown stroke-1');
@@ -176,10 +260,10 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'a',
 		'skip',
-		'fixed top-3 left-3 z-30 -translate-y-24 rounded-md bg-gray-50 px-5 py-3 text-primary-600 focus:translate-y-0 dark:bg-gray-950 dark:text-primary-300'
+		'fixed top-3 left-3 z-30 -translate-y-24 rounded-sm bg-gray-50 px-5 py-3 text-primary-600 focus:translate-y-0 dark:bg-gray-950 dark:text-primary-300'
 	);
 	theme.set.variant('article', 'industry', 'border-t border-gray-200 pt-6 dark:border-gray-800');
-	theme.set.variant('article', 'product', 'space-y-6 rounded-lg bg-white dark:bg-gray-950');
+	theme.set.variant('article', 'product', 'space-y-6 rounded-sm bg-white dark:bg-gray-950');
 	theme.set.variant('button', 'cta', 'max-w-full gap-3 whitespace-normal');
 	theme.set.variant('container', 'section', 'space-y-4 py-20 lg:py-28');
 	theme.set.variant(
@@ -210,7 +294,7 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'img',
 		'hero',
-		'block h-auto w-full rounded-lg mix-blend-multiply dark:mix-blend-normal'
+		'block h-auto w-full rounded-sm mix-blend-multiply dark:mix-blend-normal'
 	);
 	theme.set.variant(
 		'span',

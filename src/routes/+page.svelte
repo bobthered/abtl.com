@@ -3,6 +3,7 @@
 	import {
 		A,
 		Article,
+		BentoSection,
 		Container,
 		Div,
 		H2,
@@ -40,6 +41,7 @@
 
 <Main id="main-content" tabindex={-1}>
 	<SiteHero />
+	<BentoSection />
 	<Section id="industries" variants={['surface']} aria-labelledby="industries-heading">
 		<Container variants={['section']}>
 			<P variants={['eyebrow']}>Industries</P>

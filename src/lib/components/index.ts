@@ -1,4 +1,5 @@
 export * from 'sveltewind/components';
+export { default as BentoSection } from './BentoSection/BentoSection.svelte';
 export { default as FloatingTagSettings } from './FloatingTags/FloatingTagSettings.svelte';
 export { default as FloatingTags } from './FloatingTags/FloatingTags.svelte';
 export { default as SiteHero } from './SiteHero/SiteHero.svelte';
