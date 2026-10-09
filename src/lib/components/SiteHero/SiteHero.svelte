@@ -141,13 +141,10 @@
 					</Span>
 				</P>
 				<Div class="mt-8 flex flex-wrap items-center gap-4 sm:mt-10 sm:gap-6">
-					<A
-						href="mailto:sales@abtl.com?subject=Tag%20project%20quote"
-						variants={['button.base', 'button.variant.heroPrimary']}
-					>
+					<A href="mailto:sales@abtl.com?subject=Tag%20project%20quote" variants={['button.base']}>
 						Get a quote <ArrowRight aria-hidden="true" class="size-4" />
 					</A>
-					<A href="#products" variants={['button.base', 'button.variant.heroSecondary']}>
+					<A href="#products" variants={['button.base', 'button.variant.neutral-outline']}>
 						Find your tags <ArrowRight aria-hidden="true" class="size-4" />
 					</A>
 				</Div>

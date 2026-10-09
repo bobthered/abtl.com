@@ -4,6 +4,28 @@ import { classic } from 'sveltewind/themes';
 /** Initialize shared styles only; keep customer-specific data out of the global theme. */
 export const initializeTheme = () => {
 	theme.set.theme(structuredClone(classic));
+	// Rings define full edges, outlines mark focus, and borders are reserved for side separators.
+	theme.set.base(
+		'fieldset',
+		'min-w-0 rounded-md p-6 inset-ring-1 inset-ring-gray-200 dark:inset-ring-gray-700'
+	);
+	theme.set.variant(
+		'calendar',
+		'bordered',
+		'inset-ring-1 inset-ring-gray-200 dark:inset-ring-gray-700'
+	);
+	theme.set.base(
+		'fileUploadDropzone',
+		'flex flex-col items-center gap-3 rounded-lg bg-gray-50 p-6 text-center inset-ring-2 inset-ring-gray-300 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary-600 dark:bg-gray-900 dark:inset-ring-gray-700 dark:focus-within:outline-primary-300'
+	);
+	theme.set.variant(
+		'fileUploadDropzone',
+		'active',
+		'bg-primary-500/5 inset-ring-primary-500 dark:bg-primary-500/5 dark:inset-ring-primary-400'
+	);
+	// Validation colors belong to the input's ring, not unused border colors.
+	theme.set.variant('input', 'error', 'inset-ring-red-500 focus-visible:inset-ring-red-500');
+	theme.set.variant('input', 'success', 'inset-ring-green-500 focus-visible:inset-ring-green-500');
 	// Stripe-inspired geometry and type hierarchy; ABTL's palette stays unchanged.
 	for (const heading of ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']) {
 		theme.update.base(heading, 'font-light leading-tight tracking-tight text-balance');
@@ -85,13 +107,8 @@ export const initializeTheme = () => {
 	);
 	theme.set.variant(
 		'button',
-		'heroPrimary',
-		'bg-abtl-blue-700 text-white hover:bg-abtl-blue-600 dark:bg-primary-400 dark:text-gray-950 dark:hover:bg-primary-300'
-	);
-	theme.set.variant(
-		'button',
-		'heroSecondary',
-		'border border-gray-300 bg-white/70 text-gray-950 hover:bg-white dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-50 dark:hover:bg-gray-800'
+		'neutral-outline',
+		'bg-white/70 text-gray-950 inset-ring-1 inset-ring-gray-300 hover:bg-white hover:text-gray-950 focus:bg-white focus:text-gray-950 dark:bg-gray-900/70 dark:text-gray-50 dark:inset-ring-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50'
 	);
 	theme.set.base('tagMachine', 'w-full min-w-0 py-6 lg:-mr-8 lg:w-auto');
 	theme.set.variant('svg', 'machine', 'block h-auto w-full overflow-visible');
@@ -129,7 +146,7 @@ export const initializeTheme = () => {
 	theme.set.variant('floatingTag', 'near', 'w-28 sm:w-40');
 	theme.set.base(
 		'tagSettings',
-		'fixed inset-x-4 bottom-4 z-30 max-h-3/4 overflow-auto rounded-lg border border-gray-200 bg-white p-5 text-sm text-gray-950 shadow-xl sm:inset-x-auto sm:right-4 sm:w-80 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50'
+		'fixed inset-x-4 bottom-4 z-30 max-h-3/4 overflow-auto rounded-lg bg-white p-5 text-sm text-gray-950 shadow-xl inset-ring-1 inset-ring-gray-200 sm:inset-x-auto sm:right-4 sm:w-80 dark:bg-gray-950 dark:text-gray-50 dark:inset-ring-gray-800'
 	);
 	theme.set.base('tag', 'block aspect-1/2 h-auto w-full');
 	theme.set.variant('path', 'tagPatch', 'fill-tag-buff stroke-tag-brown stroke-1');
@@ -138,7 +155,7 @@ export const initializeTheme = () => {
 	theme.set.variant('logo', 'site', 'w-20 sm:w-24');
 	theme.update.base(
 		'button',
-		'inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 py-3 text-sm leading-5 font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none text-white dark:text-white'
+		'inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 py-3 text-sm leading-5 font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 motion-reduce:transition-none text-white dark:text-white dark:focus-visible:outline-primary-300'
 	);
 	theme.update.base('p', 'text-base leading-relaxed dark:text-gray-50');
 	theme.set.variant(

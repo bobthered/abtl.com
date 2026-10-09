@@ -58,6 +58,10 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 - Prefer standard Tailwind spacing, sizing, typography, color tokens, and named responsive breakpoints. Use arbitrary values only when no suitable standard utility exists and the requirement justifies it.
 - Use Sveltewind's default styles and built-in variants first (for example, Button `ghost` for a transparent button). Reuse component styles through references such as `variants={['button.base', 'button.variant.ghost']}` on `A`.
 - Add shared custom variants in `src/lib/theme.ts` for recurring component styles. Keep page-level classes focused on layout and small, necessary overrides rather than restating component styling.
+- Use Tailwind rings for full component edges. Prefer `inset-ring-1` with the appropriate color token for a border-like edge; use an outer `ring` when the design calls for emphasis outside the component. Rings should not change layout dimensions.
+- Reserve outlines for accessible focus indicators, preferably `focus-visible:outline-*` with a suitable outline offset and sufficient contrast in light and dark mode. Preserve inherited focus indicators or provide an equally visible replacement.
+- Do not use borders unless an individual-side separator is necessary, such as `border-b` on a header or `border-t` between sections. Border-reset utilities remain allowed when removing inherited borders.
+- Name button color variants by their background color family, followed by any style modifier, such as `neutral-outline`. Avoid page-specific button variant names.
 - Respect reduced-motion preferences with Tailwind variants.
 - Do not create custom CSS classes, selector rules, inline styles, or component `<style>` blocks. Do not use `@apply` to recreate custom CSS classes.
 - Keep `src/routes/layout.css` limited to Tailwind/Sveltewind imports and Tailwind configuration directives such as `@source`, `@theme`, and `@custom-variant`.
