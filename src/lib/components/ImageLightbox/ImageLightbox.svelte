@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Imports
 	import { Button, Dialog, Div, Img, P } from '#lib/components';
+	import { dismissOutside } from '#lib/attachments';
 	import { fade } from 'svelte/transition';
 	import { X } from '#lib/icons';
 
@@ -99,6 +100,10 @@
 </script>
 
 <Dialog
+	{@attach dismissOutside({
+		contentSelector: '[data-lightbox-content]',
+		onDismiss: () => (isVisible = false)
+	})}
 	bind:element={dialogElement}
 	bind:isVisible
 	variants={['imageLightbox']}
@@ -113,24 +118,26 @@
 			aria-label="Close image"
 			onclick={() => (isVisible = false)}><X class="size-5" aria-hidden="true" /></Button
 		>
-		<Img
-			{src}
-			{alt}
-			width="960"
-			height="720"
-			loading="eager"
-			fetchpriority="high"
-			decoding="async"
-			class={`${isImageReady ? 'visible' : 'invisible'} h-auto max-h-[75dvh] w-auto max-w-full rounded-sm object-contain`}
-			{@attach enterImage}
-		/>
-		{#if !isImageReady}
-			<P class="absolute inset-x-6 top-1/2 text-center text-white" role="status">
-				{isImageError
-					? 'This image could not be loaded. Please close it and try again.'
-					: 'Loading image...'}
-			</P>
-		{/if}
-		{#if caption}<P class="text-center text-white">{caption}</P>{/if}
+		<Div class="relative flex max-w-full flex-col items-center gap-4" data-lightbox-content>
+			<Img
+				{src}
+				{alt}
+				width="960"
+				height="720"
+				loading="eager"
+				fetchpriority="high"
+				decoding="async"
+				class={`${isImageReady ? 'visible' : 'invisible'} h-auto max-h-[75dvh] w-auto max-w-full rounded-sm object-contain`}
+				{@attach enterImage}
+			/>
+			{#if !isImageReady}
+				<P class="absolute inset-x-6 top-1/2 text-center text-white" role="status">
+					{isImageError
+						? 'This image could not be loaded. Please close it and try again.'
+						: 'Loading image...'}
+				</P>
+			{/if}
+			{#if caption}<P class="text-center text-white">{caption}</P>{/if}
+		</Div>
 	</Div>
 </Dialog>

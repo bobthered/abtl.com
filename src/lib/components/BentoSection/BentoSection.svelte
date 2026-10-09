@@ -21,6 +21,7 @@
 	} from '#lib/components';
 	import { ArrowRight, X } from '#lib/icons';
 	import { cubicIn, cubicOut } from 'svelte/easing';
+	import { dismissOutside } from '#lib/attachments';
 	import { fade, fly } from 'svelte/transition';
 	import { onMount, tick } from 'svelte';
 	import { stockColors } from './stockColors';
@@ -227,6 +228,7 @@
 </Section>
 
 <Dialog
+	{@attach dismissOutside({ contentSelector: '[data-bento-card]', onDismiss: closeDialog })}
 	bind:element={dialogElement}
 	bind:isVisible={isDialogVisible}
 	variants={['bento']}

@@ -389,3 +389,56 @@ it('preloads photos on hover and keyboard focus without repeating the same decod
 		decode.mockRestore();
 	}
 });
+
+it('dismisses the bento dialog from its backdrop without dismissing content clicks or drags', async () => {
+	initializeTheme();
+	render(BentoSection);
+	const trigger = page.getByRole('button', { name: 'Explore Make your mark.' });
+	await trigger.click();
+	const dialog = page.getByRole('dialog', { name: 'Make your mark.' });
+	await expect.element(dialog).toBeVisible();
+	const card = dialog.element().querySelector<HTMLElement>('[data-bento-card]')!;
+	await expect
+		.poll(() => Math.round(card.getBoundingClientRect().top))
+		.toBe(window.innerWidth >= 640 ? 64 : 32);
+	await page.getByRole('heading', { name: 'Make your mark.', exact: true }).click();
+	await expect.element(dialog).toBeVisible();
+	card.dispatchEvent(
+		new PointerEvent('pointerdown', { bubbles: true, isPrimary: true, button: 0 })
+	);
+	dialog.element().dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+	await expect.element(dialog).toBeVisible();
+	await dialog.click({ position: { x: 4, y: 4 } });
+	await expect.element(dialog).not.toBeInTheDocument();
+	await expect.element(trigger).toHaveFocus();
+	await expect
+		.poll(() => document.documentElement.classList.contains('overflow-hidden'))
+		.toBe(false);
+});
+
+it('dismisses only the lightbox when its backdrop is clicked above a bento dialog', async () => {
+	initializeTheme();
+	render(BentoSection);
+	await page.getByRole('button', { name: 'Explore What color will you choose?' }).click();
+	const parent = page.getByRole('dialog', { name: 'What color will you choose?' });
+	await expect.element(parent).toBeVisible();
+	const trigger = parent.element().querySelector<HTMLButtonElement>('[data-stock-photo-color]')!;
+	trigger.focus({ preventScroll: true });
+	trigger.click();
+	const lightbox = page.getByRole('dialog', { name: /White/ });
+	await expect.element(lightbox).toBeVisible();
+	const image = lightbox.element().querySelector('img')!;
+	await expect.poll(() => getComputedStyle(image).visibility).toBe('visible');
+	image.dispatchEvent(
+		new PointerEvent('pointerdown', { bubbles: true, isPrimary: true, button: 0 })
+	);
+	lightbox.element().dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 1 }));
+	await expect.element(lightbox).toBeVisible();
+	await lightbox.click({ position: { x: 4, y: 4 } });
+	await expect.element(lightbox).not.toBeInTheDocument();
+	await expect.element(parent).toBeVisible();
+	expect(document.activeElement).toBe(trigger);
+	expect(document.documentElement.classList.contains('overflow-hidden')).toBe(true);
+	await userEvent.keyboard('{Escape}');
+	await expect.element(parent).not.toBeInTheDocument();
+});
