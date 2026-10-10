@@ -1,36 +1,78 @@
 import type { Attachment } from 'svelte/attachments';
 
+type RevealElement = HTMLElement | SVGSVGElement;
+
 // Reveal when the top reaches 80% of viewport height (20% above the bottom).
 const revealDuration = 700;
 const revealViewportOffset = 0.2;
 const pendingClass = 'motion-safe:opacity-0';
 
-const selector =
-	':is(main, dialog, footer) :is(h1, h2, h3, h4, h5, h6, p, article, figure, figcaption, img, a, button, ul, ol, dl, [role="group"]), [data-bento-topic], [data-scroll-reveal], [data-count-up]';
-// Reveal semantic content units together, including their icons and interactive children.
-const groupSelector =
-	'h1, h2, h3, h4, h5, h6, p, article, figure, a, button, ul, ol, dl, [role="group"], [data-bento-topic], [data-scroll-reveal]:not([data-scroll-reveal="off"])';
+const contentSelector =
+	'h1, h2, h3, h4, h5, h6, p, article, figure, figcaption, img, a, button, ul, ol, dl, blockquote, pre, table, form, label, input, select, textarea, details, summary, [role="group"]';
+const selector = `:is(main, dialog, footer) :is(${contentSelector}, div, span, svg, canvas), footer nav, [data-marquee], [data-bento-topic], [data-scroll-reveal], [data-count-up]`;
 const numberFormat = new Intl.NumberFormat('en-US');
-const excluded = 'header, nav, [data-scroll-reveal="off"], [data-marquee], [data-stock-columns]';
+const excluded =
+	'header, main nav, dialog nav, .sr-only, [data-scroll-reveal="off"], [data-stock-columns]';
+
+/** Discover content and visual surfaces from rendered DOM, without page-specific opt-ins. */
+const revealTarget = (element: Element): RevealElement | null => {
+	if (element.closest(excluded)) return null;
+	const marquee = element.closest('[data-marquee]');
+	// Move a stationary wrapper, never the scrolling track or repeated copies.
+	if (marquee)
+		return element === marquee && marquee.parentElement instanceof HTMLElement
+			? marquee.parentElement
+			: null;
+	const decorativeGroup = element.closest('[aria-hidden="true"]');
+	if (decorativeGroup instanceof HTMLElement) return decorativeGroup;
+	if (element instanceof SVGSVGElement) {
+		const parent = element.parentElement;
+		return parent instanceof HTMLElement && parent.matches('div, span, figure, a, button')
+			? parent
+			: element;
+	}
+	if (!(element instanceof HTMLElement)) return null;
+	if (
+		element.matches(
+			`${contentSelector}, canvas, footer nav, [data-bento-topic], [data-scroll-reveal], [data-count-up]`
+		)
+	)
+		return element;
+	if (
+		[...element.childNodes].some(
+			(node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim()
+		)
+	)
+		return element;
+	// CSS-only illustrations and card surfaces are content too. Leave large structural shells alone.
+	const style = getComputedStyle(element);
+	const isSurface =
+		style.backgroundImage !== 'none' ||
+		!['transparent', 'rgba(0, 0, 0, 0)'].includes(style.backgroundColor) ||
+		style.boxShadow !== 'none' ||
+		style.clipPath !== 'none';
+	return isSurface && element.getBoundingClientRect().height <= innerHeight * 1.5 ? element : null;
+};
 
 /** One observer for page content, routed content, and portalled dialogs. Content stays visible without JS. */
 export const scrollReveal: Attachment<HTMLElement> = () => {
 	const preference = matchMedia('(prefers-reduced-motion: reduce)');
-	const observed = new Set<HTMLElement>();
-	const completed = new WeakSet<HTMLElement>();
-	const pending = new Set<HTMLElement>();
-	const prepared = new Set<HTMLElement>();
-	const animations = new Map<HTMLElement, Animation>();
-	const counters = new Map<HTMLElement, { start: number; target: number; text: string }>();
+	const observed = new Set<RevealElement>();
+	const completed = new WeakSet<RevealElement>();
+	const groups = new WeakSet<RevealElement>();
+	const pending = new Set<RevealElement>();
+	const prepared = new Set<RevealElement>();
+	const animations = new Map<RevealElement, Animation>();
+	const counters = new Map<RevealElement, { start: number; target: number; text: string }>();
 	let batchFrame = 0;
 	let countFrame = 0;
 	let observer: IntersectionObserver;
 
-	const show = (element: HTMLElement) => {
+	const show = (element: RevealElement) => {
 		element.classList.remove(pendingClass);
 		prepared.delete(element);
 	};
-	const finishCounter = (element: HTMLElement) => {
+	const finishCounter = (element: RevealElement) => {
 		const counter = counters.get(element);
 		if (counter) element.textContent = counter.text;
 		counters.delete(element);
@@ -108,7 +150,7 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 			}
 		}
 	};
-	const queueReveal = (element: HTMLElement) => {
+	const queueReveal = (element: RevealElement) => {
 		observer.unobserve(element);
 		observed.delete(element);
 		pending.add(element);
@@ -120,7 +162,7 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 		observer = new IntersectionObserver(
 			(entries) => {
 				for (const entry of entries)
-					if (entry.isIntersecting) queueReveal(entry.target as HTMLElement);
+					if (entry.isIntersecting) queueReveal(entry.target as RevealElement);
 			},
 			{
 				rootMargin: `0px 0px -${Math.round(innerHeight * revealViewportOffset)}px 0px`,
@@ -146,21 +188,33 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 		}
 	};
 	const register = (root: Element) => {
-		const targets = [...(root.matches(selector) ? [root] : []), ...root.querySelectorAll(selector)];
+		const candidates = [
+			...(root.matches(selector) ? [root] : []),
+			...root.querySelectorAll(selector)
+		];
+		const targets = new Set(
+			candidates.map(revealTarget).filter((target): target is RevealElement => target !== null)
+		);
 		for (const target of targets) {
-			if (!(target instanceof HTMLElement) || observed.has(target) || completed.has(target))
-				continue;
-			if (target.closest(excluded) || target.parentElement?.closest('[aria-hidden="true"]'))
-				continue;
-			// Reveal each content group as a unit; avoid stacking entrances on its descendants.
-			if (!target.hasAttribute('data-count-up') && target.parentElement?.closest(groupSelector))
-				continue;
+			if (observed.has(target) || completed.has(target) || target.closest(excluded)) continue;
+			if (target.parentElement?.closest('[aria-hidden="true"]')) continue;
+			// Select outer content units first, regardless of discovery order; new descendants inherit them.
+			let ancestor = target.parentElement;
+			let isGrouped = false;
+			while (ancestor) {
+				if (targets.has(ancestor) || groups.has(ancestor)) {
+					isGrouped = true;
+					break;
+				}
+				ancestor = ancestor.parentElement;
+			}
+			if (isGrouped && !target.hasAttribute('data-count-up')) continue;
+			groups.add(target);
 			if (preference.matches) {
 				completed.add(target);
 				target.dataset.scrollRevealState = 'complete';
 				continue;
 			}
-			// Only client-enhanced content is hidden; SSR/no-JS content remains readable.
 			target.dataset.scrollRevealState = 'pending';
 			target.classList.add(pendingClass);
 			prepared.add(target);

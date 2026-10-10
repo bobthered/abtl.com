@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 8529733f080f26c4d852ba966c541d026dfe5d4b -->
+<!-- pending-base: 0bb00a7eccc8ee33f9b72792810a34cbfd3ca66c -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: complete site-wide scroll animation coverage
+refactor: discover scroll reveal content automatically
 
-Extend automatic reveals to links, buttons, all headings, lists and control groups; reveal artwork, footer groups and stationary marquee wrappers without nested entrances.
-Audit the homepage and six topic pages/dialogs, including every bottom CTA. Preserve 20% viewport triggers, reduced motion, existing artwork motion and immediate utility-dialog controls.
-Add route-wide browser coverage and update project instructions and changelog history.
+Discover unmarked content, controls, artwork and visual surfaces globally, including dynamic routes and dialogs; preserve grouping, marquee motion and accessibility.
+Remove page-level entrance opt-ins and add automatic-discovery regression coverage.
+Update project instructions and reconcile changelog history.
 ```
 
 ## 2026-10-10
+
+- **fix: complete site-wide scroll animation coverage** (`0bb00a7`)
+  Extend automatic reveals to links, buttons, all headings, lists and control groups; reveal artwork, footer groups and stationary marquee wrappers without nested entrances. Audit the homepage and six topic pages/dialogs, including every bottom CTA. Preserve 20% viewport triggers, reduced motion, existing artwork motion and immediate utility-dialog controls. Add route-wide browser coverage and update project instructions and changelog history.
 
 - **fix: make scroll reveals visible at a responsive viewport threshold** (`8529733`)
   Hide client-enhanced pending content and fade it in over 700ms at 80% of viewport height, refreshing the trigger on resize. Preserve staggering and count-ups, expose content for focus, reduced motion and scroll limits, and update browser coverage, instructions and changelog history.

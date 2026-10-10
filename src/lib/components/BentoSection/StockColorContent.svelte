@@ -135,12 +135,7 @@
 					<P class="max-w-40 text-base">stock colors.<Br />One unmistakable impression.</P>
 				</Div>
 				<P class="mt-8 mb-3 text-sm font-medium">Try a stock color</P>
-				<Div
-					class="flex max-w-sm flex-wrap gap-2"
-					role="group"
-					aria-label="Preview stock colors"
-					data-scroll-reveal
-				>
+				<Div class="flex max-w-sm flex-wrap gap-2" role="group" aria-label="Preview stock colors">
 					{#each stockColors as color (color.id)}
 						<Button
 							variants={['ghost']}
@@ -156,7 +151,7 @@
 					{/each}
 				</Div>
 			</Div>
-			<Figure data-scroll-reveal>
+			<Figure>
 				<Div variants={['colorStudio']}>
 					<Div bind:element={illustrationElement} class="relative h-96 w-full sm:h-112">
 						<Div
@@ -229,11 +224,8 @@
 				>One favorite or a handful of possibilities. We'll send the stock colors you want to
 				compare.</P
 			>
-			<Button
-				variants={['large', 'neutral']}
-				onclick={onRequestSamples}
-				aria-haspopup="dialog"
-				data-scroll-reveal>Request Samples <ArrowRight class="size-5" aria-hidden="true" /></Button
+			<Button variants={['large', 'neutral']} onclick={onRequestSamples} aria-haspopup="dialog"
+				>Request Samples <ArrowRight class="size-5" aria-hidden="true" /></Button
 			>
 			<P class="text-sm text-gray-300 dark:text-gray-600">Choose your colors in one quick list.</P>
 		</Container>

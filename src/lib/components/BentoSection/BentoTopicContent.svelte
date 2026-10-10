@@ -128,9 +128,7 @@
 >
 	<Div class="pb-12 sm:pb-16" data-topic-introduction>{@render constrained(introduction)}</Div>
 	{#if !isDetailedTopic}
-		<Div variants={['dialogArtwork']} data-scroll-reveal
-			><BentoPreview kind={topic.preview} isDialogPreview /></Div
-		>
+		<Div variants={['dialogArtwork']}><BentoPreview kind={topic.preview} isDialogPreview /></Div>
 	{/if}
 	{#if topic.id === 'colors'}
 		<Section

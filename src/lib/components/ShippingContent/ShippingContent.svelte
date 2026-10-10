@@ -114,7 +114,7 @@
 					></Div
 				>
 			</Div>
-			<Div variants={['shippingArtwork']} class="group p-6 sm:p-8" data-scroll-reveal>
+			<Div variants={['shippingArtwork']} class="group p-6 sm:p-8">
 				<Svg
 					bind:element={mapElement}
 					viewBox="0 0 600 410"
@@ -166,7 +166,7 @@
 	>
 		<Div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
 			<Div class="order-2 lg:order-1"
-				><Div variants={['shippingArtwork']} class="relative" data-scroll-reveal
+				><Div variants={['shippingArtwork']} class="relative"
 					><ShippingGlobe activeLocationId={selectedLocationId} /><Div
 						class="absolute right-6 bottom-6 left-6 rounded-sm bg-white/90 p-4 backdrop-blur-sm dark:bg-gray-950/90"
 						><P class="text-sm font-medium" aria-live="polite"
@@ -212,7 +212,7 @@
 
 {#snippet invitation()}
 	<Container class="flex flex-col items-center gap-6">
-		<Div data-scroll-reveal class="flex gap-3" aria-hidden="true"
+		<Div class="flex gap-3" aria-hidden="true"
 			><PackageCheck class="size-7" /><Globe2 class="size-7" /></Div
 		>
 		<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600"

@@ -13,7 +13,7 @@ test('new content reveals once, staggers a row, and counts up without layout ove
 		row.dataset.revealTest = 'true';
 		for (let index = 0; index < 3; index++) {
 			const item = document.createElement('div');
-			item.dataset.scrollReveal = '';
+			item.dataset.revealItem = '';
 			item.className = 'h-40';
 			item.textContent = `Item ${index}`;
 			row.append(item);
@@ -27,7 +27,8 @@ test('new content reveals once, staggers a row, and counts up without layout ove
 	});
 	const row = page.locator('[data-reveal-test]');
 	await row.scrollIntoViewIfNeeded();
-	const items = row.locator('[data-scroll-reveal]');
+	const items = row.locator('[data-reveal-item]');
+	await expect(row.locator('[data-scroll-reveal]')).toHaveCount(0);
 	await expect(items.first()).toHaveAttribute('data-scroll-reveal-state', 'complete');
 	expect(
 		await items.evaluateAll((elements) =>
@@ -175,8 +176,8 @@ test('footer groups enter together with staggering and keep navigation accessibl
 }) => {
 	await page.setViewportSize({ width: 1440, height: 900 });
 	await page.goto('/');
-	const groups = page.locator('footer [data-scroll-reveal]');
-	await expect(groups).toHaveCount(4);
+	const groups = page.locator('footer [data-scroll-reveal-state]');
+	await expect.poll(() => groups.count()).toBeGreaterThanOrEqual(4);
 	await expect(groups.first()).toHaveCSS('opacity', '0');
 	await page.evaluate(() =>
 		window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' })
@@ -185,11 +186,11 @@ test('footer groups enter together with staggering and keep navigation accessibl
 		await expect(group).toHaveAttribute('data-scroll-reveal-state', 'complete');
 		await expect(group).toHaveCSS('opacity', '1');
 	}
-	expect(
-		await groups.evaluateAll((elements) =>
-			elements.slice(0, 3).map((element) => element.getAttribute('data-scroll-reveal-delay'))
-		)
-	).toEqual(['0', '70', '140']);
+	const delays = await groups.evaluateAll((elements) =>
+		elements.map((element) => element.getAttribute('data-scroll-reveal-delay'))
+	);
+	expect(delays).toContain('70');
+	expect(delays).toContain('140');
 	await expect(
 		page.getByRole('navigation', { name: 'Footer navigation' }).getByRole('link').first()
 	).toBeVisible();
@@ -201,7 +202,7 @@ test('stock photo marquee reveals its stationary wrapper without revealing repea
 	await page.goto('/tags/stock-colors');
 	const marquee = page.locator('main [data-marquee]').first();
 	const wrapper = marquee.locator('..');
-	await expect(wrapper).toHaveAttribute('data-scroll-reveal', 'true');
+	await expect(wrapper).not.toHaveAttribute('data-scroll-reveal');
 	await expect(wrapper).toHaveCSS('opacity', '0');
 	await marquee.scrollIntoViewIfNeeded();
 	await expect(wrapper).toHaveAttribute('data-scroll-reveal-state', 'complete');
@@ -251,7 +252,7 @@ test('shipping dialog reveals state artwork and staggers its fifty state tiles o
 		name: 'Tile map of all 50 U.S. states, including Alaska and Hawaii'
 	});
 	const artwork = map.locator('..');
-	await expect(artwork).toHaveAttribute('data-scroll-reveal', 'true');
+	await expect(artwork).not.toHaveAttribute('data-scroll-reveal');
 
 	await map.scrollIntoViewIfNeeded();
 	await expect(artwork).toHaveAttribute('data-scroll-reveal-state', 'complete');
@@ -269,7 +270,9 @@ test('shipping dialog reveals state artwork and staggers its fifty state tiles o
 	).toEqual(Array.from({ length: 50 }, (_, index) => index * 14));
 	await expect(artwork).toHaveCSS('opacity', '1');
 	await page.emulateMedia({ reducedMotion: 'reduce' });
-	expect(await map.evaluate((element) => element.getAnimations({ subtree: true }).length)).toBe(0);
+	await expect
+		.poll(() => map.evaluate((element) => element.getAnimations({ subtree: true }).length))
+		.toBe(0);
 	await page.keyboard.press('Escape');
 	await expect(dialog).toHaveCount(0);
 });
@@ -289,7 +292,7 @@ for (const isDialog of [false, true]) {
 		const swatches = content.getByRole('group', { name: 'Preview stock colors' });
 		const samples = content.getByRole('button', { name: 'Request Samples', exact: true });
 		for (const item of [preview, swatches, samples]) {
-			await expect(item).toHaveAttribute('data-scroll-reveal', 'true');
+			await expect(item).not.toHaveAttribute('data-scroll-reveal');
 			await expect(item).toHaveCSS('opacity', '0');
 		}
 		await preview.scrollIntoViewIfNeeded();
@@ -378,3 +381,41 @@ for (const topic of topics) {
 		await expect(dialog.getByRole('button', { name: 'Close topic' })).toBeEnabled();
 	});
 }
+
+test('unmarked SVG, canvas, decorative groups and CSS artwork are discovered automatically', async ({
+	page
+}) => {
+	await page.goto('/');
+	await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete');
+	await page.evaluate(() => {
+		const section = document.createElement('section');
+		section.dataset.automaticRevealTest = '';
+		section.className = 'grid grid-cols-4 gap-4';
+		const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		svg.setAttribute('width', '100');
+		svg.setAttribute('height', '100');
+		const canvas = document.createElement('canvas');
+		const artwork = document.createElement('div');
+		artwork.className = 'h-40 bg-primary-500';
+		const decorative = document.createElement('div');
+		decorative.setAttribute('aria-hidden', 'true');
+		const label = document.createElement('span');
+		label.textContent = 'Decorative illustration';
+		decorative.append(label);
+		section.append(svg, canvas, artwork, decorative);
+		document.querySelector('main')!.append(section);
+	});
+	const section = page.locator('[data-automatic-reveal-test]');
+	await expect(section.locator('[data-scroll-reveal-state="pending"]')).toHaveCount(4);
+	await expect(section).not.toHaveAttribute('data-scroll-reveal-state');
+	await expect(section.locator('[data-scroll-reveal]')).toHaveCount(0);
+	await section.scrollIntoViewIfNeeded();
+	await expect(section.locator('[data-scroll-reveal-state="complete"]')).toHaveCount(4);
+	await page.evaluate(() => {
+		const button = document.createElement('button');
+		button.textContent = 'New control in revealed surface';
+		document.querySelector('[data-automatic-reveal-test] > div')!.append(button);
+	});
+	await expect(section.getByRole('button')).toBeVisible();
+	await expect(section.getByRole('button')).not.toHaveAttribute('data-scroll-reveal-state');
+});

@@ -162,7 +162,7 @@
 </script>
 
 <!-- Reveal the stationary wrapper, keeping the moving track and its copies independent. -->
-<Div class="w-full min-w-0" data-scroll-reveal>
+<Div class="w-full min-w-0">
 	<Div
 		{@attach dragMarquee}
 		bind:element

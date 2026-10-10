@@ -163,7 +163,7 @@
 	aria-label="Allen-Bailey brand"
 >
 	<Container>
-		<Div class={theme.resolve('heroBrand')} data-scroll-reveal>
+		<Div class={theme.resolve('heroBrand')}>
 			<Div
 				class="min-w-0 flex-1 overflow-hidden mask-x-from-90% mask-x-to-100%"
 				aria-hidden="true"
