@@ -6,20 +6,23 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 43c395f4b12d05330ef1781bc160b1e88e890ad4 -->
+<!-- pending-base: d85c12a513e8254729765ed75dc7a11ab01111d6 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add warehousing bento and interactive release page
+feat: add full-color printing bento and interactive page
 
-Add a route-backed warehousing dialog and standalone page with volume-order copy and a planning CTA.
-Animate isometric stocked shelves and carton releases, with hover/focus acceleration and reduced-motion support.
-Add demo inventory controls, workflow comparisons, responsive layouts, and browser coverage.
-Update bento progress and reconcile committed variable data work in the changelog.
+Replace the materials tile with a one-third-width printing tile and perspective CMYK layers that rotate and register on hover or focus.
+Build a route-backed dialog and standalone page around a botanical retail hangtag, with ink controls, reversible artwork, and eight-color printing copy.
+Reuse the supplied tag and patch shapes, keep ink planes transparent, cache artwork, respect reduced motion, and add a full-width project CTA.
+Add a dark-mode light backdrop, process-color tokens, and browser coverage; update bento progress and changelog history.
 ```
 
 ## 2026-10-10
+
+- **feat: add warehousing bento and interactive release page** (`d85c12a`)
+  Add a route-backed warehousing dialog and standalone page with volume-order copy and a planning CTA. Animate isometric stocked shelves and carton releases with hover/focus acceleration and reduced-motion support. Add demo inventory controls, workflow comparisons, responsive layouts, browser coverage, bento progress, and changelog reconciliation.
 
 - **feat: add variable data bento and interactive page** (`43c395f`)
   Replace the printing placeholder with a variable data tile, route-backed dialog, and standalone page. Add transparent QR artwork with 4,000 orbiting particles and hover/focus scanning, interactive codes and numbering, personalized mailing examples, and build-time SVG generation. Preserve former printing links. Remove the hero configurator and saved overrides; finalize zoom 3, floor timing 30s/2s, spread 5/5, and visual thickness scale 10. Update browser coverage, bento progress, and changelog history.

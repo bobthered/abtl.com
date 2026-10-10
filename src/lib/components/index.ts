@@ -26,3 +26,5 @@ export { default as VariableDataPiece } from './VariableData/VariableDataPiece.s
 export { default as VariableDataPreview } from './VariableData/VariableDataPreview.svelte';
 export { default as WarehouseScene } from './Warehousing/WarehouseScene.svelte';
 export { default as WarehousingContent } from './Warehousing/WarehousingContent.svelte';
+export { default as ProcessArtwork } from './ProcessPrinting/ProcessArtwork.svelte';
+export { default as ProcessPrintingContent } from './ProcessPrinting/ProcessPrintingContent.svelte';

@@ -12,7 +12,8 @@ export type Topic = {
 		| 'feed'
 		| 'sequence'
 		| 'data'
-		| 'warehouse';
+		| 'warehouse'
+		| 'process';
 	slug?: string;
 	title: string;
 };
@@ -42,10 +43,11 @@ export const topics: Topic[] = [
 		columns: 'third'
 	},
 	{
-		id: 'materials',
-		title: 'The right material for the job.',
-		description: 'Explore paper and synthetic options.',
-		preview: 'layers',
+		id: 'full-color-printing',
+		title: 'Full color. Both sides.',
+		description:
+			'Four-color process printing for full-color tags and labels, with up to eight total colors supporting CMYK on both the face and back.',
+		preview: 'process',
 		columns: 'third'
 	},
 	{

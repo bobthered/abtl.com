@@ -12,6 +12,10 @@
 }
 
 @theme {
+	--color-process-cyan: #00ffff;
+	--color-process-magenta: #ff00ff;
+	--color-process-yellow: #ffff00;
+	--color-process-black: #000000;
 	--font-sans: 'Inter Variable', 'SF Pro Display', system-ui, sans-serif;
 	--color-tag-blue-dark: #6789c6;
 	--color-tag-blue-light: #a7cbe2;

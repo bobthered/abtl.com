@@ -60,12 +60,12 @@ test('warehousing releases demo stock, compares workflows, and refreshes as a st
 const topics = [
 	'stock-colors',
 	'variable-data',
-	'materials',
 	'shapes',
 	'formats',
 	'numbering',
 	'shipping',
-	'warehousing'
+	'warehousing',
+	'full-color-printing'
 ];
 
 test('variable data QR scans on hover and keyboard focus and respects reduced motion', async ({

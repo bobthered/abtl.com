@@ -2,6 +2,7 @@
 	// Imports
 	import {
 		Div,
+		ProcessArtwork,
 		ShippingGlobe,
 		Skeleton,
 		Span,
@@ -45,6 +46,13 @@
 			isPreview
 			class="motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-105 motion-safe:group-focus-visible:scale-105"
 		/>
+	{:else if kind === 'process'}
+		<Div class="relative h-full w-full"
+			><ProcessArtwork isPreview /><Div
+				class="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center gap-4 text-xs font-medium text-gray-600 dark:text-gray-300"
+				><Span>C</Span><Span>M</Span><Span>Y</Span><Span>K</Span></Div
+			></Div
+		>
 	{:else if kind === 'print'}
 		<Skeleton variants={['bentoTag']}>
 			<Div

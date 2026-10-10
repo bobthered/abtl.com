@@ -10,6 +10,7 @@
 		H2,
 		H3,
 		P,
+		ProcessPrintingContent,
 		Section,
 		ShippingContent,
 		Skeleton,
@@ -38,6 +39,11 @@
 	let isReady = $state(false);
 	let isSamplesVisible = $state(false);
 
+	// $derived
+	const isDetailedTopic = $derived(
+		['colors', 'shipping', 'variable-data', 'warehousing', 'full-color-printing'].includes(topic.id)
+	);
+
 	// $effects
 	onMount(() => {
 		isReady = true;
@@ -45,7 +51,7 @@
 </script>
 
 {#snippet constrained(children: Snippet)}
-	{#if isStandalone && (topic.id === 'colors' || topic.id === 'shipping' || topic.id === 'variable-data' || topic.id === 'warehousing')}
+	{#if isStandalone && isDetailedTopic}
 		<Container>{@render children()}</Container>
 	{:else}
 		{@render children()}
@@ -62,7 +68,9 @@
 					? 'Variable data'
 					: topic.id === 'warehousing'
 						? 'Warehousing & releases'
-						: 'Content preview'}</P
+						: topic.id === 'full-color-printing'
+							? 'Four-color process printing'
+							: 'Content preview'}</P
 	>
 	{#if isStandalone}
 		<H1 id="bento-dialog-heading" variants={['h2.variant.section']}>{topic.title}</H1>
@@ -82,6 +90,9 @@
 		{:else if topic.id === 'warehousing'}
 			Get the efficiencies of a larger production run without taking the whole shipment at once. We
 			make your tags and labels, warehouse them, and release finished stock when you need it.
+		{:else if topic.id === 'full-color-printing'}
+			Bring full-color artwork to your tags and labels. Four-color process builds the image; our
+			eight-color capability brings that possibility to both the face and back.
 		{:else}This is a layout preview for {topic.description
 				.toLowerCase()
 				.replace(/^explore /, '')
@@ -100,17 +111,10 @@
 
 <Div
 	data-topic-ready={isReady}
-	class={isStandalone
-		? topic.id === 'colors' ||
-			topic.id === 'shipping' ||
-			topic.id === 'variable-data' ||
-			topic.id === 'warehousing'
-			? 'pt-20 lg:pt-28'
-			: ''
-		: 'pt-12 sm:pt-20'}
+	class={isStandalone ? (isDetailedTopic ? 'pt-20 lg:pt-28' : '') : 'pt-12 sm:pt-20'}
 >
 	<Div class="pb-12 sm:pb-16" data-topic-introduction>{@render constrained(introduction)}</Div>
-	{#if topic.id !== 'colors' && topic.id !== 'shipping' && topic.id !== 'variable-data' && topic.id !== 'warehousing'}
+	{#if !isDetailedTopic}
 		<Div variants={['dialogArtwork']}><BentoPreview kind={topic.preview} isDialogPreview /></Div>
 	{/if}
 	{#if topic.id === 'colors'}
@@ -133,6 +137,8 @@
 		<VariableDataContent {isStandalone} />
 	{:else if topic.id === 'warehousing'}
 		<WarehousingContent {isStandalone} />
+	{:else if topic.id === 'full-color-printing'}
+		<ProcessPrintingContent {isStandalone} />
 	{:else}
 		{#each detailSections as title, index (title)}
 			<Section
@@ -155,7 +161,7 @@
 			</Section>
 		{/each}
 	{/if}
-	{#if topic.id !== 'colors' && topic.id !== 'shipping' && topic.id !== 'variable-data' && topic.id !== 'warehousing'}
+	{#if !isDetailedTopic}
 		<Section
 			variants={['dialogSection']}
 			class="flex flex-wrap items-center gap-4"
