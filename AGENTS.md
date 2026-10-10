@@ -78,6 +78,16 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 - Every suggested commit message must start with exactly one of `fix: `, `feat: `, or `refactor: `, followed by a concise description of the completed changes.
 - Providing a commit message does not authorize creating a Git commit.
 
+## Changelog maintenance
+
+- Maintain the root `CHANGELOG.md` at the end of every task that changes repository files, before providing the final suggested commit message. Advice and read-only tasks do not require a changelog edit.
+- Keep exactly one pending entry under `Unreleased`. Its subject and body must match the final suggested commit message and encompass all current uncommitted work, including earlier tasks and user edits. Revise this entry across tasks until the user commits; do not append a separate entry for every prompt.
+- Record the full current HEAD hash in an HTML comment immediately under `Unreleased`, using `<!-- pending-base: <full hash> -->`. This is the baseline for detecting commits made by the user between tasks, not a hash assigned to the pending changes.
+- Before updating the pending entry, compare its baseline with Git history and review newly committed changes. Reconcile those commits into dated historical entries using their actual subjects, author dates, short hashes, and evidence-backed summaries. If the user changed the suggested message or split the work across commits, reflect the actual commits. Avoid duplicating commits already documented. Then update the baseline to the current HEAD and describe only the remaining uncommitted work in the pending entry.
+- Preserve historical entries when pending work is committed. Keep history newest first, grouped by author date, with a reference for each commit. If the baseline is missing or no longer an ancestor of HEAD, reconcile against the recorded commit references instead of assuming all pending work was committed.
+- Base summaries on commit messages and diffs. Include relevant untracked files when reviewing pending work. Distinguish historical experiments, removals, and replacements from current functionality; do not invent releases, version numbers, test results, or company claims.
+- Include the changelog and instruction changes themselves in the pending summary when relevant. Changelog maintenance does not authorize staging files, creating commits, or pushing; the user commits the changelog together with the associated changes.
+
 ## Project scope
 
 - This repository contains the customer-facing Allen-Bailey Tag & Label website and storefront.
