@@ -1,6 +1,14 @@
 <script lang="ts">
 	// Imports
-	import { Div, ShippingGlobe, Skeleton, Span, StockTag, StockTagColumns } from '#lib/components';
+	import {
+		Div,
+		ShippingGlobe,
+		Skeleton,
+		Span,
+		StockTag,
+		StockTagColumns,
+		VariableDataPreview
+	} from '#lib/components';
 	import { stockColors } from './stockColors';
 	import type { Topic } from './topics';
 
@@ -29,6 +37,8 @@
 				</Div>
 			{/each}
 		</Div>
+	{:else if kind === 'data'}
+		<VariableDataPreview />
 	{:else if kind === 'print'}
 		<Skeleton variants={['bentoTag']}>
 			<Div

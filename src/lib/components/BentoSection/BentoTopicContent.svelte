@@ -15,7 +15,8 @@
 		Skeleton,
 		StockColorContent,
 		StockSampleDialog,
-		StockTagExamples
+		StockTagExamples,
+		VariableDataContent
 	} from '#lib/components';
 	import { ArrowRight } from '#lib/icons';
 	import { onMount } from 'svelte';
@@ -43,7 +44,7 @@
 </script>
 
 {#snippet constrained(children: Snippet)}
-	{#if isStandalone && (topic.id === 'colors' || topic.id === 'shipping')}
+	{#if isStandalone && (topic.id === 'colors' || topic.id === 'shipping' || topic.id === 'variable-data')}
 		<Container>{@render children()}</Container>
 	{:else}
 		{@render children()}
@@ -56,7 +57,9 @@
 			? 'Stock tag colors'
 			: topic.id === 'shipping'
 				? 'Shipping & reach'
-				: 'Content preview'}</P
+				: topic.id === 'variable-data'
+					? 'Variable data'
+					: 'Content preview'}</P
 	>
 	{#if isStandalone}
 		<H1 id="bento-dialog-heading" variants={['h2.variant.section']}>{topic.title}</H1>
@@ -70,6 +73,9 @@
 		{:else if topic.id === 'shipping'}
 			Made for the work you do. Ready for the places you do it. We ship tags and labels to all 50
 			states and internationally.
+		{:else if topic.id === 'variable-data'}
+			Same design. Changing information. Print the codes, numbers, and personal details that make
+			each tag or label work for its purpose.
 		{:else}This is a layout preview for {topic.description
 				.toLowerCase()
 				.replace(/^explore /, '')
@@ -89,13 +95,13 @@
 <Div
 	data-topic-ready={isReady}
 	class={isStandalone
-		? topic.id === 'colors' || topic.id === 'shipping'
+		? topic.id === 'colors' || topic.id === 'shipping' || topic.id === 'variable-data'
 			? 'pt-20 lg:pt-28'
 			: ''
 		: 'pt-12 sm:pt-20'}
 >
 	<Div class="pb-12 sm:pb-16" data-topic-introduction>{@render constrained(introduction)}</Div>
-	{#if topic.id !== 'colors' && topic.id !== 'shipping'}
+	{#if topic.id !== 'colors' && topic.id !== 'shipping' && topic.id !== 'variable-data'}
 		<Div variants={['dialogArtwork']}><BentoPreview kind={topic.preview} isDialogPreview /></Div>
 	{/if}
 	{#if topic.id === 'colors'}
@@ -114,6 +120,8 @@
 		<StockColorContent {isStandalone} onRequestSamples={() => (isSamplesVisible = true)} />
 	{:else if topic.id === 'shipping'}
 		<ShippingContent {isStandalone} />
+	{:else if topic.id === 'variable-data'}
+		<VariableDataContent {isStandalone} />
 	{:else}
 		{#each detailSections as title, index (title)}
 			<Section
@@ -136,7 +144,7 @@
 			</Section>
 		{/each}
 	{/if}
-	{#if topic.id !== 'colors' && topic.id !== 'shipping'}
+	{#if topic.id !== 'colors' && topic.id !== 'shipping' && topic.id !== 'variable-data'}
 		<Section
 			variants={['dialogSection']}
 			class="flex flex-wrap items-center gap-4"

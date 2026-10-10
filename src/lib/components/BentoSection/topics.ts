@@ -2,7 +2,8 @@ export type Topic = {
 	columns: 'full' | 'third' | 'wide';
 	description: string;
 	id: string;
-	preview: 'globe' | 'columns' | 'fan' | 'print' | 'layers' | 'shape' | 'feed' | 'sequence';
+	preview:
+		'globe' | 'columns' | 'fan' | 'print' | 'layers' | 'shape' | 'feed' | 'sequence' | 'data';
 	slug?: string;
 	title: string;
 };
@@ -24,10 +25,11 @@ export const topics: Topic[] = [
 		columns: 'third'
 	},
 	{
-		id: 'printing',
-		title: 'Make your mark.',
-		description: 'Explore custom printing.',
-		preview: 'print',
+		id: 'variable-data',
+		title: 'One design. A different story on every piece.',
+		description:
+			'Variable data tags and labels with barcodes, QR codes, sequential numbering, and personalization for mailings.',
+		preview: 'data',
 		columns: 'third'
 	},
 	{

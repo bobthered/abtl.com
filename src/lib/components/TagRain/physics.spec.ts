@@ -3,7 +3,7 @@ import {
 	createTagGeometry,
 	createPatchGeometry,
 	createTagShape,
-	createTagWorld,
+	createTagWorld as createPhysicsWorld,
 	getTagSpawnBoundary,
 	maxTagBodies,
 	tagColors,
@@ -14,10 +14,19 @@ import {
 	tagsPerSecond
 } from './physics';
 import { expect, it } from 'vitest';
-import { defaultRainSettings, getVisualPatchThickness, getVisualThickness } from './settings';
+import {
+	defaultRainSettings as productionRainSettings,
+	getVisualPatchThickness,
+	getVisualThickness
+} from './settings';
 import { Mesh, MeshBasicMaterial, OrthographicCamera, Quaternion, Raycaster, Vector3 } from 'three';
 import { createPatchShape, tagHole, tagOutline } from './profile';
 import RAPIER from '@dimforge/rapier3d-compat';
+
+// Keep the rigid-body collision baseline's original spread; the live hero uses bounded cloth drops.
+const defaultRainSettings = { ...productionRainSettings, dropSpreadX: 1, dropSpreadY: 1 };
+const createTagWorld = (...args: Parameters<typeof createPhysicsWorld>) =>
+	createPhysicsWorld(args[0], args[1], args[2], args[3] ?? defaultRainSettings, args[4], args[5]);
 
 // Measure the visible paper, independently of the collision-only safety margin.
 const createVisiblePaperShape = (settings = defaultRainSettings) => {

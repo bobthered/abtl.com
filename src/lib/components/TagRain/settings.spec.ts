@@ -44,8 +44,8 @@ it('migrates minute preferences and adopts the 30-second default', () => {
 
 it('migrates saved preferences with default spread and clamps invalid spread values', () => {
 	expect(normalizeRainSettings({ tagsPerSecond: 4 })).toMatchObject({
-		dropSpreadX: 1,
-		dropSpreadY: 1,
+		dropSpreadX: 5,
+		dropSpreadY: 5,
 		tagsPerSecond: 4
 	});
 	expect(normalizeRainSettings({ dropSpreadX: -1, dropSpreadY: 100 })).toMatchObject({
@@ -53,8 +53,8 @@ it('migrates saved preferences with default spread and clamps invalid spread val
 		dropSpreadY: 10
 	});
 	expect(normalizeRainSettings({ dropSpreadX: NaN, dropSpreadY: Infinity })).toMatchObject({
-		dropSpreadX: 1,
-		dropSpreadY: 1
+		dropSpreadX: 5,
+		dropSpreadY: 5
 	});
 });
 

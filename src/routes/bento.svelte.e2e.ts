@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 const topics = [
 	'stock-colors',
-	'printing',
+	'variable-data',
 	'materials',
 	'shapes',
 	'formats',
@@ -10,29 +10,130 @@ const topics = [
 	'shipping'
 ];
 
+test('variable data QR scans on hover and keyboard focus and respects reduced motion', async ({
+	page
+}) => {
+	await page.goto('/');
+	await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
+	const trigger = page.locator('[data-bento-topic="variable-data"]');
+	const preview = trigger.locator('[data-variable-preview]');
+	const scan = preview.locator('[data-qr-scan]');
+	await trigger.scrollIntoViewIfNeeded();
+	await page.mouse.move(0, 0);
+	await expect(preview).toHaveAttribute('data-qr-scanning', 'idle');
+	await expect(preview).toHaveAttribute('data-qr-orbiting', 'active');
+	await expect(trigger.locator('[data-qr-code]')).toHaveCSS('color', 'rgb(10, 8, 12)');
+	await page.evaluate(() => (document.documentElement.dataset.theme = 'dark'));
+	await expect(trigger.locator('[data-qr-code]')).toHaveCSS('color', 'rgb(250, 249, 251)');
+	await trigger.hover();
+	await expect(preview).toHaveAttribute('data-qr-scanning', 'active');
+	const initialFrame = await scan.evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL());
+	await expect
+		.poll(() => scan.evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL()))
+		.not.toBe(initialFrame);
+	await page.mouse.move(0, 0);
+	await expect(preview).toHaveAttribute('data-qr-scanning', 'idle');
+	await page.keyboard.press('Tab');
+	await trigger.focus();
+	await expect(preview).toHaveAttribute('data-qr-scanning', 'active');
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await expect(preview).toHaveAttribute('data-qr-scanning', 'static');
+	await expect(preview).toHaveAttribute('data-qr-orbiting', 'static');
+	await page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
+	await expect(preview).toHaveAttribute('data-qr-scanning', 'idle');
+	await page.setViewportSize({ width: 390, height: 844 });
+	await trigger.scrollIntoViewIfNeeded();
+	const codeBounds = await trigger.locator('[data-qr-code]').boundingBox();
+	expect(codeBounds!.x).toBeGreaterThanOrEqual(0);
+	expect(codeBounds!.x + codeBounds!.width).toBeLessThanOrEqual(390);
+	await expect(trigger.locator('[data-qr-code]')).toHaveCount(1);
+});
+
+test('variable data keeps records, codes, formats, and mailing recipients in sync', async ({
+	page
+}) => {
+	await page.goto('/');
+	await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
+	await page.locator('[data-bento-topic="variable-data"]').click();
+	const dialog = page.getByRole('dialog', {
+		name: 'One design. A different story on every piece.',
+		exact: true
+	});
+	const studio = dialog.locator('[data-variable-section="studio"]');
+	const output = studio.locator('[data-variable-output]');
+	await expect(output.locator('[data-variable-piece]')).toHaveAttribute(
+		'data-variable-piece',
+		'AB-004201'
+	);
+	const firstBarcode = await output.locator('img').first().getAttribute('src');
+	await dialog.getByRole('button', { name: /AB-004203 Motor assembly/ }).click();
+	await expect(output).toContainText('Motor assembly');
+	await expect(output.locator('img').first()).toHaveAttribute(
+		'alt',
+		'Example Code 128 barcode encoding AB-004203'
+	);
+	await expect(output.locator('img').last()).toHaveAttribute(
+		'alt',
+		'Example QR code encoding AB-004203'
+	);
+	await expect.poll(() => output.locator('img').first().getAttribute('src')).not.toBe(firstBarcode);
+	await dialog.getByRole('button', { name: 'Label', exact: true }).click();
+	await expect(output.locator('svg')).toHaveCount(0);
+	await dialog.getByRole('button', { name: 'Tag', exact: true }).click();
+	await expect(output.locator('svg')).toHaveCount(1);
+	await dialog.getByRole('button', { name: 'Print the next record' }).click();
+	await expect(output).toContainText('AB-004204');
+	await dialog.getByRole('button', { name: 'Meet the next recipient' }).click();
+	await expect(dialog.locator('[data-variable-section="mailing"]')).toContainText('Morgan Lee');
+	await expect(dialog.locator('[data-variable-section="contact"] a')).toHaveAttribute(
+		'href',
+		/^mailto:sales@abtl.com\?subject=Variable/
+	);
+	await page.keyboard.press('Escape');
+	await expect(page).toHaveURL(/\/$/);
+	await page.goto('/tags/variable-data');
+	await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+		'One design. A different story on every piece.'
+	);
+	for (const width of [390, 1440]) {
+		await page.setViewportSize({ width, height: 900 });
+		expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+		const contact = await page.locator('[data-variable-section="contact"]').boundingBox();
+		expect(contact!.x).toBeCloseTo(0, 0);
+		expect(contact!.width).toBeCloseTo(width, 0);
+	}
+	await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'dark' });
+	await page.getByRole('button', { name: /AB-004202 Valve assembly/ }).click();
+	await expect(page.locator('[data-variable-output]')).toContainText('Valve assembly');
+	await page.goto('/tags/printing');
+	await expect(page).toHaveURL(/\/tags\/variable-data$/);
+});
+
 test('opens route-backed dialogs and preserves the gallery through history navigation', async ({
 	page
 }) => {
 	await page.goto('/');
 	// Before hydration, real links intentionally navigate to the standalone page.
 	await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
-	const trigger = page.locator('[data-bento-topic="printing"]');
+	const trigger = page.locator('[data-bento-topic="variable-data"]');
 	await trigger.scrollIntoViewIfNeeded();
-	await expect(trigger).toHaveAttribute('href', '/tags/printing');
+	await expect(trigger).toHaveAttribute('href', '/tags/variable-data');
 	await trigger.click();
-	await expect(page).toHaveURL(/\/tags\/printing$/);
-	await expect(page.getByRole('dialog', { name: 'Make your mark.' })).toBeVisible();
+	await expect(page).toHaveURL(/\/tags\/variable-data$/);
+	await expect(
+		page.getByRole('dialog', { name: 'One design. A different story on every piece.' })
+	).toBeVisible();
 	await expect(page.locator('[data-bento-section]')).toBeAttached();
 	// Playwright may scroll the large tile again before clicking it. Capture the position at opening.
 	const scroll = await page.evaluate(() => window.scrollY);
-	await expect(page).toHaveTitle('Printing | Tags | Allen-Bailey Tag & Label');
+	await expect(page).toHaveTitle('Variable Data | Tags | Allen-Bailey Tag & Label');
 	await page.goBack();
 	await expect(page.getByRole('dialog')).toHaveCount(0);
 	await expect(page).toHaveURL(/\/$/);
 	await expect(trigger).toBeFocused();
 	await expect.poll(() => page.evaluate(() => window.scrollY)).toBeCloseTo(scroll, 0);
 	await page.goForward();
-	await expect(page).toHaveURL(/\/tags\/printing$/);
+	await expect(page).toHaveURL(/\/tags\/variable-data$/);
 	await expect(page.getByRole('dialog')).toBeVisible();
 	await page.getByRole('button', { name: 'Close topic', exact: true }).click();
 	await expect(page).toHaveURL(/\/$/);
@@ -73,12 +174,15 @@ test('modified link clicks open standalone content in a new tab', async ({ page,
 	// Before hydration, real links intentionally navigate to the standalone page.
 	await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
 	const popup = context.waitForEvent('page');
-	await page.locator('[data-bento-topic="printing"]').click({ modifiers: ['ControlOrMeta'] });
+	await page.locator('[data-bento-topic="variable-data"]').click({ modifiers: ['ControlOrMeta'] });
 	const standalone = await popup;
 	await standalone.waitForLoadState();
-	await expect(standalone).toHaveURL(/\/tags\/printing$/);
+	await expect(standalone).toHaveURL(/\/tags\/variable-data$/);
 	await expect(
-		standalone.getByRole('heading', { level: 1, name: 'Make your mark.' })
+		standalone.getByRole('heading', {
+			level: 1,
+			name: 'One design. A different story on every piece.'
+		})
 	).toBeVisible();
 	await expect(standalone.getByRole('dialog')).toHaveCount(0);
 	await expect(page).toHaveURL(/\/$/);
@@ -191,8 +295,6 @@ test('shipping opens as a route-backed dialog, selects demo destinations, and re
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/');
 	await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
-	// The development-only physics configurator overlaps the right column.
-	await page.locator('[data-tag-rain-settings] summary').click();
 	const trigger = page.locator('[data-bento-topic="shipping"]');
 	await trigger.scrollIntoViewIfNeeded();
 	await trigger.click();

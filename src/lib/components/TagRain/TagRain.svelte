@@ -1,25 +1,13 @@
 <script lang="ts">
 	// Imports
-	import { Canvas, Div, TagRainSettings, TagViewer } from '#lib/components';
+	import { Canvas, Div, TagViewer } from '#lib/components';
 	import type { createTagRain } from './physics';
 	import type { TagSelection } from './physics';
-	import { defaultRainSettings, normalizeRainSettings } from './settings';
 	import { onMount, untrack } from 'svelte';
 	import { theme } from 'sveltewind/theme';
 
-	// consts
-	const isDevelopment = import.meta.env.DEV;
-
 	// helpers
 	const initialize = () => {
-		if (isDevelopment) {
-			try {
-				const saved = JSON.parse(localStorage.getItem('tag-rain-settings') ?? 'null');
-				if (saved && typeof saved === 'object') settings = normalizeRainSettings(saved);
-			} catch {
-				// Keep defaults when storage is unavailable or invalid.
-			}
-		}
 		const viewport = window.matchMedia('(min-width: 64rem)');
 		const updateViewport = () => {
 			isDesktop = viewport.matches;
@@ -61,9 +49,7 @@
 	let isDesktop = $state(false);
 	let isInitializing = $state(false);
 	let isMounted = $state(false);
-	let isPaused = $state(false);
 	let selection = $state.raw<TagSelection | null>(null);
-	let settings = $state({ ...defaultRainSettings });
 	let surface = $state.raw<Awaited<ReturnType<typeof createTagRain>> | null>(null);
 
 	// $effects
@@ -74,22 +60,10 @@
 			});
 	});
 	$effect(() => {
-		surface?.configure(normalizeRainSettings(settings));
-	});
-	$effect(() => {
-		surface?.update(isActive && isDesktop && !isPaused && selection === null);
+		surface?.update(isActive && isDesktop && selection === null);
 	});
 	$effect(() => {
 		if (!isDesktop) selection = null;
-	});
-	$effect(() => {
-		if (!isDevelopment || !isMounted) return;
-		const normalized = normalizeRainSettings(settings);
-		try {
-			localStorage.setItem('tag-rain-settings', JSON.stringify(normalized));
-		} catch {
-			// Controls still work when storage is unavailable.
-		}
 	});
 </script>
 
@@ -115,8 +89,4 @@
 			selection = null;
 		}}
 	/>
-{/if}
-
-{#if isDevelopment}
-	<TagRainSettings bind:isPaused bind:settings onclear={() => surface?.clear()} />
 {/if}

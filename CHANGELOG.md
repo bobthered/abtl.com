@@ -6,22 +6,25 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: c290cf790603c4459426591308cca01b1919f57d -->
+<!-- pending-base: 262c233af2b5007ce44d1fbddbf44cff6f491d08 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add shipping globe and destination page
+feat: add variable data bento and interactive page
 
-Add a route-backed shipping topic with a lazy-loaded 3D globe, polar color
-gradient, animated demo shipment arcs, and a local geographic fallback.
-Build a 50-state coverage map, destination explorer, and full-width contact CTA.
-Record stock colors as complete and isolate demo data for replacement.
-Synchronize dialog dismissal with route history. Add browser coverage,
-geographic asset tooling, and update changelog history.
+Replace the declined printing direction with a variable data tile and route-backed dialog.
+Add theme-aware transparent QR artwork, 4,000 flat particles scattered around orbits, and hover/focus scanning.
+Add synchronized code and numbering demos, tag/label previews, and personalized mailings.
+Generate local SVG sample codes with build-time tooling and preserve legacy printing links.
+Remove the hero configurator and saved overrides; use zoom 3, floor timing 30s/2s, spread 5/5, and thickness scale 10.
+Update browser coverage, bento progress, and changelog history.
 ```
 
 ## 2026-10-10
+
+- **feat: add shipping globe and destination page** (`262c233`)
+  Add a route-backed shipping topic with a lazy-loaded 3D globe, primary-to-secondary polar gradient, animated demo shipment arcs, and a local geographic fallback. Build a 50-state coverage map, destination explorer, and full-width contact CTA. Record stock colors as complete, isolate demo data for replacement, synchronize dialog dismissal with route history, and add browser coverage and geographic asset tooling.
 
 - **feat: redesign stock color content and sample requests** (`c290cf7`)
   Keep one photo marquee and add an animated color studio with three distinct fronts, reversible artwork, and a color count. Constrain dividers, normalize spacing, and finish with a full-width sample CTA. Add a compact sample picker with select-all, clear-all, and email requests; update shared styles, browser coverage, and changelog history.

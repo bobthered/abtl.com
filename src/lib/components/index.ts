@@ -9,7 +9,6 @@ export { default as StockTag } from './BentoSection/StockTag.svelte';
 export { default as Logo } from './Logo/Logo.svelte';
 export { default as TagMachine } from './TagMachine/TagMachine.svelte';
 export { default as TagRain } from './TagRain/TagRain.svelte';
-export { default as TagRainSettings } from './TagRain/TagRainSettings.svelte';
 export { default as TagViewer } from './TagRain/TagViewer.svelte';
 export { default as Marquee } from './Marquee/Marquee.svelte';
 export { default as StockTagExamples } from './BentoSection/StockTagExamples.svelte';
@@ -21,3 +20,7 @@ export { default as StockTagColumns } from './BentoSection/StockTagColumns.svelt
 export { default as StockSampleDialog } from './BentoSection/StockSampleDialog.svelte';
 export { default as ShippingGlobe } from './ShippingGlobe/ShippingGlobe.svelte';
 export { default as ShippingContent } from './ShippingContent/ShippingContent.svelte';
+
+export { default as VariableDataContent } from './VariableData/VariableDataContent.svelte';
+export { default as VariableDataPiece } from './VariableData/VariableDataPiece.svelte';
+export { default as VariableDataPreview } from './VariableData/VariableDataPreview.svelte';

@@ -463,4 +463,14 @@ export const initializeTheme = () => {
 		'shippingArtwork',
 		'overflow-hidden rounded-sm bg-gradient-to-br from-primary-50 via-gray-100 to-secondary-50 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950'
 	);
+	theme.set.variant(
+		'div',
+		'dataArtwork',
+		'rounded-sm bg-gradient-to-br from-primary-100 via-gray-100 to-secondary-100 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950'
+	);
+	theme.set.variant(
+		'button',
+		'dataRecord',
+		'flex w-full items-center justify-between gap-3 rounded-sm bg-white px-4 py-4 text-left text-gray-950 inset-ring-1 inset-ring-gray-200 hover:bg-primary-50 hover:text-gray-950 focus:bg-primary-50 focus:text-gray-950 dark:bg-gray-900 dark:text-gray-50 dark:inset-ring-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50'
+	);
 };

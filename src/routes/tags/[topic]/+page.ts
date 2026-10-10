@@ -3,6 +3,8 @@ import type { PageLoad } from './$types';
 import { topicHref, topics } from '#lib/components/BentoSection/topics.js';
 
 export const load: PageLoad = ({ params, url }) => {
+	// Preserve links to the former printing placeholder.
+	if (params.topic === 'printing') redirect(308, `/tags/variable-data${url.search}`);
 	const topic = topics.find(
 		(item) => (item.slug ?? item.id) === params.topic || item.id === params.topic
 	);
