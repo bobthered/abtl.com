@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: e5c29d623ea12c52d434a8d74e70ed2b33c551a5 -->
+<!-- pending-base: 720f1979833e2e9f96c316f302ae60ac7660b4c7 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add site-wide scroll reveals and shared count-ups
+fix: make scroll reveals visible at a responsive viewport threshold
 
-Add a root attachment with subtle fade-and-rise entrances, row staggering, dynamic route/dialog discovery, and reduced-motion cleanup.
-Consolidate stock-color and shipping count-ups, preserve live counters, and add browser coverage, usage instructions, and changelog history.
+Hide client-enhanced pending content and fade it in over 700ms when its top reaches 80% of viewport height; refresh the trigger on resize.
+Preserve staggering and count-ups, expose content for focus, reduced motion and scroll limits, and update browser coverage, instructions and changelog history.
 ```
 
 ## 2026-10-10
+
+- **feat: add site-wide scroll reveals and shared count-ups** (`720f197`)
+  Add a root attachment with subtle fade-and-rise entrances, row staggering, dynamic route/dialog discovery, and reduced-motion cleanup. Consolidate stock-color and shipping count-ups, preserve live counters, and add browser coverage, usage instructions, and changelog history.
 
 - **fix: contain animated bento artwork overflow** (`e5c29d6`)
   Contain scrolling tag columns and preview artwork without losing tile hover expansion. Add mobile, tablet, desktop, and dialog overflow regression coverage and reconcile changelog history.

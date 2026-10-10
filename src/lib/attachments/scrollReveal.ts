@@ -1,5 +1,10 @@
 import type { Attachment } from 'svelte/attachments';
 
+// Reveal when the top reaches 80% of viewport height (20% above the bottom).
+const revealDuration = 700;
+const revealViewportOffset = 0.2;
+const pendingClass = 'motion-safe:opacity-0';
+
 const selector =
 	':is(main, dialog) :is(h1, h2, h3, p, article), [data-bento-topic], [data-scroll-reveal], [data-count-up]';
 const numberFormat = new Intl.NumberFormat('en-US');
@@ -11,11 +16,17 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 	const observed = new Set<HTMLElement>();
 	const completed = new WeakSet<HTMLElement>();
 	const pending = new Set<HTMLElement>();
+	const prepared = new Set<HTMLElement>();
 	const animations = new Map<HTMLElement, Animation>();
 	const counters = new Map<HTMLElement, { start: number; target: number; text: string }>();
 	let batchFrame = 0;
 	let countFrame = 0;
+	let observer: IntersectionObserver;
 
+	const show = (element: HTMLElement) => {
+		element.classList.remove(pendingClass);
+		prepared.delete(element);
+	};
 	const finishCounter = (element: HTMLElement) => {
 		const counter = counters.get(element);
 		if (counter) element.textContent = counter.text;
@@ -39,7 +50,7 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 	const flush = () => {
 		batchFrame = 0;
 		const targets = [...pending]
-			.filter((element) => element.isConnected)
+			.filter((element) => element.isConnected && !completed.has(element))
 			.map((element) => ({ element, top: element.getBoundingClientRect().top }))
 			.sort(
 				(a, b) =>
@@ -55,6 +66,7 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 				rowIndex = 0;
 			}
 			const delay = Math.min(rowIndex++ * 70, 210);
+			show(element);
 			element.dataset.scrollRevealState = 'complete';
 			completed.add(element);
 			if (preference.matches || document.hidden || element.matches(':focus-within')) continue;
@@ -62,10 +74,15 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 			// Animate individual translate so existing hover rotations/scales remain intact.
 			const animation = element.animate(
 				[
-					{ opacity: 0.65, translate: '0 0.5rem' },
+					{ opacity: 0, translate: '0 0.75rem' },
 					{ opacity: 1, translate: '0 0' }
 				],
-				{ duration: 460, delay, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'backwards' }
+				{
+					duration: revealDuration,
+					delay,
+					easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+					fill: 'backwards'
+				}
 			);
 			animations.set(element, animation);
 			animation.onfinish = () => {
@@ -88,19 +105,43 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 			}
 		}
 	};
-	const observer = new IntersectionObserver(
-		(entries) => {
-			for (const entry of entries) {
-				if (!entry.isIntersecting) continue;
-				const element = entry.target as HTMLElement;
-				observer.unobserve(element);
-				observed.delete(element);
-				pending.add(element);
+	const queueReveal = (element: HTMLElement) => {
+		observer.unobserve(element);
+		observed.delete(element);
+		pending.add(element);
+		if (!batchFrame) batchFrame = requestAnimationFrame(flush);
+	};
+	const observeViewport = () => {
+		observer?.disconnect();
+		// IntersectionObserver percentage margins use width, so compute pixels from height.
+		observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries)
+					if (entry.isIntersecting) queueReveal(entry.target as HTMLElement);
+			},
+			{
+				rootMargin: `0px 0px -${Math.round(innerHeight * revealViewportOffset)}px 0px`,
+				threshold: 0
 			}
-			if (pending.size && !batchFrame) batchFrame = requestAnimationFrame(flush);
-		},
-		{ threshold: 0.12 }
-	);
+		);
+		observed.forEach((element) => observer.observe(element));
+	};
+	// At the scroll limit, reveal reachable content that cannot rise to the trigger line.
+	const revealAtEnd = (event: Event) => {
+		const scroller = event.target === document ? document.scrollingElement : event.target;
+		if (
+			!(scroller instanceof HTMLElement) ||
+			(scroller !== document.scrollingElement && !(scroller instanceof HTMLDialogElement))
+		)
+			return;
+		if (scroller.scrollHeight - scroller.clientHeight - scroller.scrollTop > 2) return;
+		for (const element of observed) {
+			const dialog = element.closest('dialog');
+			if (dialog ? dialog !== scroller : scroller !== document.scrollingElement) continue;
+			const bounds = element.getBoundingClientRect();
+			if (bounds.top < innerHeight && bounds.bottom > 0) queueReveal(element);
+		}
+	};
 	const register = (root: Element) => {
 		const targets = [...(root.matches(selector) ? [root] : []), ...root.querySelectorAll(selector)];
 		for (const target of targets) {
@@ -116,12 +157,30 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 				)
 			)
 				continue;
+			if (preference.matches) {
+				completed.add(target);
+				target.dataset.scrollRevealState = 'complete';
+				continue;
+			}
+			// Only client-enhanced content is hidden; SSR/no-JS content remains readable.
+			target.classList.add(pendingClass);
+			prepared.add(target);
 			observed.add(target);
 			observer.observe(target);
 		}
 	};
 	const finishMotion = () => {
 		if (!preference.matches && !document.hidden) return;
+		if (preference.matches) {
+			for (const element of prepared) {
+				show(element);
+				observer.unobserve(element);
+				observed.delete(element);
+				pending.delete(element);
+				completed.add(element);
+				element.dataset.scrollRevealState = 'complete';
+			}
+		}
 		animations.forEach((animation) => animation.cancel());
 		animations.clear();
 		counters.forEach((_, element) => finishCounter(element));
@@ -130,6 +189,15 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 	};
 	const focus = (event: FocusEvent) => {
 		if (!(event.target instanceof Element)) return;
+		for (const element of prepared) {
+			if (!element.contains(event.target)) continue;
+			show(element);
+			observer.unobserve(element);
+			observed.delete(element);
+			pending.delete(element);
+			completed.add(element);
+			element.dataset.scrollRevealState = 'complete';
+		}
 		for (const [element, animation] of animations) {
 			if (!element.contains(event.target)) continue;
 			animation.cancel();
@@ -144,6 +212,7 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 			return;
 		for (const element of observed)
 			if (!element.isConnected) {
+				show(element);
 				observer.unobserve(element);
 				observed.delete(element);
 			}
@@ -152,15 +221,26 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 				animation.cancel();
 				animations.delete(element);
 			}
+		for (const element of prepared)
+			if (!element.isConnected) {
+				show(element);
+				pending.delete(element);
+			}
 		for (const element of counters.keys()) if (!element.isConnected) counters.delete(element);
 	});
+	observeViewport();
 	register(document.body);
+	window.addEventListener('resize', observeViewport);
+	document.addEventListener('scroll', revealAtEnd, { capture: true, passive: true });
 	mutations.observe(document.body, { childList: true, subtree: true });
 	preference.addEventListener('change', finishMotion);
 	document.addEventListener('visibilitychange', finishMotion);
 	document.addEventListener('focusin', focus);
 	return () => {
 		observer.disconnect();
+		prepared.forEach(show);
+		window.removeEventListener('resize', observeViewport);
+		document.removeEventListener('scroll', revealAtEnd, true);
 		mutations.disconnect();
 		cancelAnimationFrame(batchFrame);
 		cancelAnimationFrame(countFrame);
