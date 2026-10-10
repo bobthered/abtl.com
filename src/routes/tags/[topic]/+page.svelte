@@ -13,7 +13,7 @@
 
 <Main id="main-content" tabindex={-1}>
 	<Section variants={['surface']}>
-		{#if ['colors', 'shipping', 'variable-data', 'warehousing', 'full-color-printing'].includes(data.topic.id)}
+		{#if ['colors', 'shipping', 'variable-data', 'warehousing', 'full-color-printing', 'synthetic-materials'].includes(data.topic.id)}
 			<BentoTopicContent topic={data.topic} isStandalone />
 		{:else}
 			<Container variants={['section']}>

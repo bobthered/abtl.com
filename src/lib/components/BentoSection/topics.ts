@@ -13,7 +13,8 @@ export type Topic = {
 		| 'sequence'
 		| 'data'
 		| 'warehouse'
-		| 'process';
+		| 'process'
+		| 'weather';
 	slug?: string;
 	title: string;
 };
@@ -48,6 +49,14 @@ export const topics: Topic[] = [
 		description:
 			'Four-color process printing for full-color tags and labels, with up to eight total colors supporting CMYK on both the face and back.',
 		preview: 'process',
+		columns: 'third'
+	},
+	{
+		id: 'synthetic-materials',
+		title: 'Built to weather it.',
+		description:
+			'Waterproof synthetic tags for outdoor applications, with material and attachment options for the way you work.',
+		preview: 'weather',
 		columns: 'third'
 	},
 	{

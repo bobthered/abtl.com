@@ -7,6 +7,7 @@
 | Variable data - `/tags/variable-data`             | Design implemented; illustrative data      | Review copy and examples; replace sample records with approved examples if desired.                                                |
 | Warehousing - `/tags/warehousing`                 | Design implemented; illustrative inventory | Review copy and release arrangements. Demo cartons do not represent live inventory.                                                |
 | Full-color printing - `/tags/full-color-printing` | Design implemented; illustrative artwork   | Review printing copy and replace the sample designs with approved artwork if desired.                                              |
+| Synthetic materials - `/tags/synthetic-materials` | Design implemented; illustrative weather   | Confirm grade-specific comparison copy, especially Tundra; review sample and attachment options.                                   |
 
 The declined custom-printing concept was replaced by variable data. The former `/tags/printing` placeholder redirects to `/tags/variable-data`.
 
@@ -25,12 +26,22 @@ Warehousing capabilities were supplied by Bob: larger production orders can redu
 
 ## Next topic research - 2026-10-10
 
-Removed the shapes, formats, and numbering placeholder tiles and their topic entries. Their former scaffold URLs now return 404. Five developed topics remain; the second desktop row has room for one more third-width tile. No replacement has been selected or implemented.
+Removed the shapes, formats, and numbering placeholder tiles and their topic entries. Their former scaffold URLs now return 404. The synthetic-materials topic now fills the remaining third-width slot in the second desktop row. Six developed topics remain.
 
-Research suggests focusing on a concrete customer outcome rather than another generic customization category. These are proposed creative directions, not approved product promises:
+The following research informed the synthetic-materials choice. Other directions remain unselected creative proposals:
 
 - **Built for the conditions.** Recommend exploring this first: a tag stays readable as rain and grit cross the artwork on hover. Page sections could demonstrate choosing for the environment, zoom into the stock/reinforcement/attachment construction, and invite application-specific sample evaluation. [DuraTech](https://www.duratech.com/capabilities/durable-labels/) emphasizes materials and protective finishing for demanding environments. [Badger's tag guide](https://badgertag.com/assets/Uploads/FileDownloads/BTL-Tags.pdf) covers stock, reinforcement, attachments, and lamination. Confirm ABTL's exact resistance properties before depicting any specific performance claim.
 - **Every inspection. Clearly recorded.** A service tag builds a visible history as dates and initials appear on hover. Page sections could follow an equipment inspection, show inspection/hold/service information layouts, and explore a custom record before a project CTA. [St. Louis Tag](https://www.stlouistag.com/custom-inspection-tags.html) markets equipment status and maintenance history as practical applications.
 - **One entry. Every copy connected.** A pen writes on a manifold tag; hover separates its layers to reveal matching entries. Page sections could demonstrate duplicate records, follow copies between equipment/technician/office, and explain the construction and ordering requirements. [Chicago Tag & Label](https://www.chicagotag.com/products/manufacturing-forms/) offers multipart manufacturing forms for documentation and handoffs. Confirm ABTL's copy-transfer construction and available configurations before showing automatic duplication.
 
 ABTL fit: [the current corporate product page](https://www.ennis.com/allen-bailey-tag-label/) lists heavy-duty industrial/agricultural tags, fire-extinguisher service tags, paper/synthetic tags, manifold tags, and fasteners. This supports researching all three directions, but does not establish chemical/temperature ratings, inspection compliance, carbonless construction, or specific attachment performance. Do not import competitor specifications into ABTL copy.
+
+## Synthetic materials implementation
+
+Bob selected **Built to weather it.**, highlighting Tyvek, Valeron, Polyart, Tundra, and V-Max as waterproof outdoor offerings. The third-width tile and `/tags/synthetic-materials` share a wire-tethered tag illustration: a breeze at rest, stronger wind/rain on hover or keyboard focus. The illustration reuses the exact supplied tag and patch SVG paths and bends the free end while keeping the hole connected. This is an art-directed illustration, not a certified weather test or a reproduction of a particular material grade.
+
+The dialog/standalone page includes a controllable storm and durability overview, five-material explorer with strengths and considerations, wire/string/elastic attachment selector, and full-width synthetic-sample email CTA. The email includes the selected material and attachment; it is not a submitted order or automated fulfillment service. A dedicated attachment bento topic is reserved for later; this page introduces attachments without making exclusivity claims about label manufacturers.
+
+Material copy uses Bob's availability/waterproof statements plus general supplier descriptions from [DuPont](https://www.dupont.com/graphics/tags-and-labels.html), [Valeron/V-Max](https://www.valeron.com/markets/print-media), and [Polyart](https://www.polyart.com/synthetic-paper/). These do not establish ABTL's particular grades, thicknesses, ink systems, or certified resistance ratings. Tundra remains general pending grade confirmation; [Contract Converting](https://www.contractconverting.com/substrates/) describes Tundra HD, which should not be assumed to match ABTL's offering. No fabricated durability scores, chemical/temperature guarantees, or comparative cost figures are used.
+
+The lightweight 2D canvas attachment caches its tag texture, caps pixel density at 1.5 and animation at 30 FPS, pauses offscreen/in hidden tabs, and renders a static scene for reduced motion. It adds no rendering or physics dependencies. Browser coverage checks hover/focus storm behavior, material and attachment selections, sample email context, route-backed dismissal, standalone refresh, reduced motion, and full-width/responsive layout. Desktop/mobile and light/dark views were visually reviewed.

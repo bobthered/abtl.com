@@ -56,6 +56,11 @@ export const initializeTheme = () => {
 	theme.set.variant('p', 'dialogBody', 'max-w-2xl text-gray-600 dark:text-gray-300');
 	theme.set.variant('figcaption', 'dialogCaption', 'mt-4 text-sm text-gray-600 dark:text-gray-300');
 	theme.set.variant('div', 'dialogBleed', '-mx-6 flex min-w-0 sm:-mx-8 lg:-mx-16');
+	theme.set.variant(
+		'button',
+		'neutral-selectable',
+		'aria-pressed:bg-primary-500 aria-pressed:text-white dark:aria-pressed:bg-primary-500 dark:aria-pressed:text-white'
+	);
 	theme.set.variant('card', 'neutral', 'bg-gray-100 dark:bg-gray-950');
 	theme.set.variant('card', 'dialogPanel', 'min-w-0 bg-gray-50 p-6 shadow-none dark:bg-gray-950');
 	theme.set.variant(

@@ -28,3 +28,5 @@ export { default as WarehouseScene } from './Warehousing/WarehouseScene.svelte';
 export { default as WarehousingContent } from './Warehousing/WarehousingContent.svelte';
 export { default as ProcessArtwork } from './ProcessPrinting/ProcessArtwork.svelte';
 export { default as ProcessPrintingContent } from './ProcessPrinting/ProcessPrintingContent.svelte';
+export { default as SyntheticContent } from './SyntheticMaterials/SyntheticContent.svelte';
+export { default as WeatherTag } from './SyntheticMaterials/WeatherTag.svelte';

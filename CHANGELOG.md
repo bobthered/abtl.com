@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: d519626fb13b36e781e25c186293d793ef2dc1b5 -->
+<!-- pending-base: 7a09353cac16414844b54467d3d00a9fbbff3a6f -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: remove placeholder bento topics and document new directions
+feat: add synthetic materials bento and interactive page
 
-Remove shapes, formats, and numbering tiles and their scaffold routes.
-Update existing dialog and route coverage to use retained topics.
-Record competitor-informed topic concepts and reconcile the printing commit in the changelog.
+Add a wire-tethered tag with wind, rain, hover/focus motion, and reduced-motion support.
+Build a route-backed dialog and standalone page with a five-material explorer, attachment selector, and full-width sample CTA.
+Use supplied tag geometry, supplier-informed copy, shared selectable button styling, and browser coverage; update progress and changelog history.
 ```
 
 ## 2026-10-10
+
+- **refactor: remove placeholder bento topics and document new directions** (`7a09353`)
+  Remove shapes, formats, and numbering tiles and their scaffold routes. Update existing dialog/route coverage to retained topics, record competitor-informed proposals, and reconcile the printing commit into changelog history.
 
 - **feat: add full-color printing bento and interactive page** (`d519626`)
   Replace the materials tile with a third-width printing tile whose perspective CMYK layers register on hover or focus. Add a route-backed dialog and standalone botanical hangtag design study with ink controls, reversible artwork, eight-color printing copy, and a project CTA. Reuse supplied tag/patch shapes, cache transparent ink artwork, add a dark-mode light backdrop and reduced-motion support, and update browser coverage, process-color tokens, progress documentation, and changelog history.

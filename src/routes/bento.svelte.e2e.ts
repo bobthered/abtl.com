@@ -57,7 +57,14 @@ test('warehousing releases demo stock, compares workflows, and refreshes as a st
 	}
 });
 
-const topics = ['stock-colors', 'variable-data', 'shipping', 'warehousing', 'full-color-printing'];
+const topics = [
+	'stock-colors',
+	'variable-data',
+	'shipping',
+	'warehousing',
+	'full-color-printing',
+	'synthetic-materials'
+];
 
 test('variable data QR scans on hover and keyboard focus and respects reduced motion', async ({
 	page
@@ -375,4 +382,74 @@ test('shipping opens as a route-backed dialog, selects demo destinations, and re
 		expect(contact!.x).toBeCloseTo(0, 0);
 		expect(contact!.width).toBeCloseTo(width, 0);
 	}
+});
+
+test('synthetic materials opens a storm dialog, explores stock and attachments, and refreshes standalone', async ({
+	page
+}) => {
+	await page.goto('/');
+	await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
+	const trigger = page.locator('[data-bento-topic="synthetic-materials"]');
+	await trigger.scrollIntoViewIfNeeded();
+	const weather = trigger.locator('[data-weather-tag]');
+	await expect(weather).toHaveAttribute('data-weather-ready', 'true');
+	await trigger.hover();
+	await expect(weather).toHaveAttribute('data-weather-intensity', 'storm');
+	await page.mouse.move(0, 0);
+	await expect(weather).toHaveAttribute('data-weather-intensity', 'breeze');
+	await trigger.focus();
+	await expect(weather).toHaveAttribute('data-weather-intensity', 'storm');
+	await trigger.click();
+	await expect(page).toHaveURL(/\/tags\/synthetic-materials$/);
+	const dialog = page.getByRole('dialog', { name: 'Built to weather it.' });
+	await expect(dialog).toBeVisible();
+	await expect(dialog.locator('[data-synthetic-material]')).toHaveCount(5);
+	await dialog.getByRole('button', { name: 'Turn up the wind', exact: true }).click();
+	await expect(dialog.locator('[data-weather-tag]').first()).toHaveAttribute(
+		'data-weather-intensity',
+		'storm'
+	);
+	for (const name of ['Tyvek', 'Valeron', 'Polyart', 'Tundra', 'V-Max']) {
+		await dialog.getByRole('button', { name, exact: true }).click();
+		await expect(dialog.getByRole('button', { name, exact: true })).toHaveAttribute(
+			'aria-pressed',
+			'true'
+		);
+	}
+	await expect(dialog.locator('[data-material-detail]')).toContainText(
+		'balance of toughness and value'
+	);
+	await dialog.getByRole('button', { name: 'Elastic', exact: true }).click();
+	await expect(
+		dialog.locator('[data-synthetic-section="attachments"] [data-weather-tag]')
+	).toHaveAttribute('data-weather-attachment', 'elastic');
+	const sampleLink = await dialog.locator('[data-synthetic-samples]').getAttribute('href');
+	const body = new URL(sampleLink!).searchParams.get('body');
+	expect(body).toContain('V-Max');
+	expect(body).toContain('Elastic');
+	await page.keyboard.press('Escape');
+	await expect(dialog).toHaveCount(0);
+	await expect(page).toHaveURL(/\/$/);
+	await expect(trigger).toBeFocused();
+	await trigger.click();
+	await page.reload();
+	await expect(page.getByRole('heading', { level: 1, name: 'Built to weather it.' })).toBeVisible();
+	await expect(page.getByRole('dialog')).toHaveCount(0);
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await expect(page.locator('[data-weather-tag]').first()).toHaveAttribute(
+		'data-weather-motion',
+		'static'
+	);
+	for (const width of [390, 1440]) {
+		await page.setViewportSize({ width, height: 900 });
+		expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+		const samples = await page.locator('[data-synthetic-section="samples"]').boundingBox();
+		expect(samples!.x).toBeCloseTo(0, 0);
+		expect(samples!.width).toBeCloseTo(width, 0);
+	}
+	await page.evaluate(() => {
+		document.documentElement.classList.add('dark');
+		document.documentElement.dataset.theme = 'dark';
+	});
+	await expect(page.getByRole('heading', { level: 1, name: 'Built to weather it.' })).toBeVisible();
 });

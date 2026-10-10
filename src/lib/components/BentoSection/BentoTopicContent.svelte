@@ -17,6 +17,7 @@
 		StockColorContent,
 		StockSampleDialog,
 		StockTagExamples,
+		SyntheticContent,
 		VariableDataContent,
 		WarehousingContent
 	} from '#lib/components';
@@ -41,7 +42,14 @@
 
 	// $derived
 	const isDetailedTopic = $derived(
-		['colors', 'shipping', 'variable-data', 'warehousing', 'full-color-printing'].includes(topic.id)
+		[
+			'colors',
+			'shipping',
+			'variable-data',
+			'warehousing',
+			'full-color-printing',
+			'synthetic-materials'
+		].includes(topic.id)
 	);
 
 	// $effects
@@ -70,7 +78,9 @@
 						? 'Warehousing & releases'
 						: topic.id === 'full-color-printing'
 							? 'Four-color process printing'
-							: 'Content preview'}</P
+							: topic.id === 'synthetic-materials'
+								? 'Synthetic tag materials'
+								: 'Content preview'}</P
 	>
 	{#if isStandalone}
 		<H1 id="bento-dialog-heading" variants={['h2.variant.section']}>{topic.title}</H1>
@@ -93,6 +103,9 @@
 		{:else if topic.id === 'full-color-printing'}
 			Bring full-color artwork to your tags and labels. Four-color process builds the image; our
 			eight-color capability brings that possibility to both the face and back.
+		{:else if topic.id === 'synthetic-materials'}
+			Tyvek, Valeron, Polyart, Tundra, and V-Max. Waterproof synthetic materials for outdoor tags,
+			with the durability and attachment options to suit the work ahead.
 		{:else}This is a layout preview for {topic.description
 				.toLowerCase()
 				.replace(/^explore /, '')
@@ -139,6 +152,8 @@
 		<WarehousingContent {isStandalone} />
 	{:else if topic.id === 'full-color-printing'}
 		<ProcessPrintingContent {isStandalone} />
+	{:else if topic.id === 'synthetic-materials'}
+		<SyntheticContent {isStandalone} />
 	{:else}
 		{#each detailSections as title, index (title)}
 			<Section
