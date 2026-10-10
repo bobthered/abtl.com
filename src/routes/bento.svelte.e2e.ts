@@ -57,16 +57,7 @@ test('warehousing releases demo stock, compares workflows, and refreshes as a st
 	}
 });
 
-const topics = [
-	'stock-colors',
-	'variable-data',
-	'shapes',
-	'formats',
-	'numbering',
-	'shipping',
-	'warehousing',
-	'full-color-printing'
-];
+const topics = ['stock-colors', 'variable-data', 'shipping', 'warehousing', 'full-color-printing'];
 
 test('variable data QR scans on hover and keyboard focus and respects reduced motion', async ({
 	page
@@ -272,10 +263,10 @@ test('mobile back navigation dismisses the dialog and forward restores it', asyn
 	await page.goto('/');
 	// Before hydration, real links intentionally navigate to the standalone page.
 	await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
-	const trigger = page.locator('[data-bento-topic="numbering"]');
+	const trigger = page.locator('[data-bento-topic="full-color-printing"]');
 	await trigger.click();
-	await expect(page).toHaveURL(/\/tags\/numbering$/);
-	await expect(page.getByRole('dialog', { name: 'Keep every number in order.' })).toBeVisible();
+	await expect(page).toHaveURL(/\/tags\/full-color-printing$/);
+	await expect(page.getByRole('dialog', { name: 'Full color. Both sides.' })).toBeVisible();
 	await page.goBack();
 	await expect(page.getByRole('dialog')).toHaveCount(0);
 	await expect(trigger).toBeFocused();

@@ -104,12 +104,14 @@ it('scrolls a constrained card through a full-screen backdrop and restores focus
 it('closes with the visible control and opens another topic with fresh scroll position', async () => {
 	initializeTheme();
 	render(BentoSection);
-	await page.getByRole('link', { name: 'Explore Make your mark.' }).click();
-	await expect.element(page.getByRole('dialog', { name: 'Make your mark.' })).toBeVisible();
+	await page.getByRole('link', { name: 'Explore What color will you choose?' }).click();
+	await expect
+		.element(page.getByRole('dialog', { name: 'What color will you choose?' }))
+		.toBeVisible();
 	await page.getByRole('button', { name: 'Close topic', exact: true }).click();
 	await expect.element(page.getByRole('dialog')).not.toBeInTheDocument();
-	await page.getByRole('link', { name: 'Explore Keep every number in order.' }).click();
-	const dialog = page.getByRole('dialog', { name: 'Keep every number in order.' });
+	await page.getByRole('link', { name: 'Explore Full color. Both sides.' }).click();
+	const dialog = page.getByRole('dialog', { name: 'Full color. Both sides.' });
 	await expect.element(dialog).toBeVisible();
 	expect(dialog.element().scrollTop).toBe(0);
 	await page.getByRole('button', { name: 'Close topic', exact: true }).click();
@@ -459,15 +461,15 @@ it('preloads photos on hover and keyboard focus without repeating the same decod
 it('dismisses the bento dialog from its backdrop without dismissing content clicks or drags', async () => {
 	initializeTheme();
 	render(BentoSection);
-	const trigger = page.getByRole('link', { name: 'Explore Make your mark.' });
+	const trigger = page.getByRole('link', { name: 'Explore What color will you choose?' });
 	await trigger.click();
-	const dialog = page.getByRole('dialog', { name: 'Make your mark.' });
+	const dialog = page.getByRole('dialog', { name: 'What color will you choose?' });
 	await expect.element(dialog).toBeVisible();
 	const card = dialog.element().querySelector<HTMLElement>('[data-bento-card]')!;
 	await expect
 		.poll(() => Math.round(card.getBoundingClientRect().top))
 		.toBe(window.innerWidth >= 640 ? 64 : 32);
-	await page.getByRole('heading', { name: 'Make your mark.', exact: true }).click();
+	await page.getByRole('heading', { name: 'What color will you choose?', exact: true }).click();
 	await expect.element(dialog).toBeVisible();
 	card.dispatchEvent(
 		new PointerEvent('pointerdown', { bubbles: true, isPrimary: true, button: 0 })

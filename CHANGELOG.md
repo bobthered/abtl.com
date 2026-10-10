@@ -6,20 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: d85c12a513e8254729765ed75dc7a11ab01111d6 -->
+<!-- pending-base: d519626fb13b36e781e25c186293d793ef2dc1b5 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add full-color printing bento and interactive page
+refactor: remove placeholder bento topics and document new directions
 
-Replace the materials tile with a one-third-width printing tile and perspective CMYK layers that rotate and register on hover or focus.
-Build a route-backed dialog and standalone page around a botanical retail hangtag, with ink controls, reversible artwork, and eight-color printing copy.
-Reuse the supplied tag and patch shapes, keep ink planes transparent, cache artwork, respect reduced motion, and add a full-width project CTA.
-Add a dark-mode light backdrop, process-color tokens, and browser coverage; update bento progress and changelog history.
+Remove shapes, formats, and numbering tiles and their scaffold routes.
+Update existing dialog and route coverage to use retained topics.
+Record competitor-informed topic concepts and reconcile the printing commit in the changelog.
 ```
 
 ## 2026-10-10
+
+- **feat: add full-color printing bento and interactive page** (`d519626`)
+  Replace the materials tile with a third-width printing tile whose perspective CMYK layers register on hover or focus. Add a route-backed dialog and standalone botanical hangtag design study with ink controls, reversible artwork, eight-color printing copy, and a project CTA. Reuse supplied tag/patch shapes, cache transparent ink artwork, add a dark-mode light backdrop and reduced-motion support, and update browser coverage, process-color tokens, progress documentation, and changelog history.
 
 - **feat: add warehousing bento and interactive release page** (`d85c12a`)
   Add a route-backed warehousing dialog and standalone page with volume-order copy and a planning CTA. Animate isometric stocked shelves and carton releases with hover/focus acceleration and reduced-motion support. Add demo inventory controls, workflow comparisons, responsive layouts, browser coverage, bento progress, and changelog reconciliation.

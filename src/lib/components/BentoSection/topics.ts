@@ -51,27 +51,6 @@ export const topics: Topic[] = [
 		columns: 'third'
 	},
 	{
-		id: 'shapes',
-		title: 'A shape that fits.',
-		description: 'Explore sizes, shapes, and details.',
-		preview: 'shape',
-		columns: 'third'
-	},
-	{
-		id: 'formats',
-		title: 'Ready for your workflow.',
-		description: 'Explore single, continuous, and roll formats.',
-		preview: 'feed',
-		columns: 'third'
-	},
-	{
-		id: 'numbering',
-		title: 'Keep every number in order.',
-		description: 'Explore consecutive numbering.',
-		preview: 'sequence',
-		columns: 'wide'
-	},
-	{
 		id: 'warehousing',
 		title: 'Produce in volume. Release on demand.',
 		description:
