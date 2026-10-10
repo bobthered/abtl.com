@@ -6,19 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 7a09353cac16414844b54467d3d00a9fbbff3a6f -->
+<!-- pending-base: bd512cff29c3f8fed3e751f58af8ed23098c0c1d -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add synthetic materials bento and interactive page
+fix: contain animated bento artwork overflow
 
-Add a wire-tethered tag with wind, rain, hover/focus motion, and reduced-motion support.
-Build a route-backed dialog and standalone page with a five-material explorer, attachment selector, and full-width sample CTA.
-Use supplied tag geometry, supplier-informed copy, shared selectable button styling, and browser coverage; update progress and changelog history.
+Prevent scrolling tag columns and preview artwork from extending the page beyond its footer or tile bounds while preserving hover expansion.
+Add mobile, tablet, desktop, and dialog overflow regression coverage; reconcile changelog history.
 ```
 
 ## 2026-10-10
+
+- **feat: add synthetic materials bento and interactive page** (`bd512cf`)
+  Add a wire-tethered tag with wind, rain, hover/focus motion, and reduced-motion support. Build a route-backed dialog and standalone page with a five-material explorer, attachment selector, and full-width sample CTA. Use supplied tag geometry, supplier-informed copy, shared selectable button styling, and browser coverage; update progress and changelog history.
 
 - **refactor: remove placeholder bento topics and document new directions** (`7a09353`)
   Remove shapes, formats, and numbering tiles and their scaffold routes. Update existing dialog/route coverage to retained topics, record competitor-informed proposals, and reconcile the printing commit into changelog history.

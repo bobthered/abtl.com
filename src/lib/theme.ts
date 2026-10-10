@@ -148,10 +148,11 @@ export const initializeTheme = () => {
 		'bentoCopy',
 		'relative block pt-4 pr-18 pl-4 sm:pt-5 sm:pr-19 sm:pl-5 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-x-1 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:-translate-x-1 motion-safe:group-focus-visible:-translate-y-1'
 	);
+	// Clip scroll overflow as well as paint; the margin preserves the tile's hover expansion.
 	theme.set.variant(
 		'div',
 		'bentoPreview',
-		'relative flex h-72 w-full sm:h-80 lg:h-96 items-center justify-center overflow-visible [clip-path:inset(0_round_0_0_var(--radius-sm)_var(--radius-sm))] motion-safe:transition-[clip-path] motion-safe:duration-300 motion-safe:group-hover:[clip-path:inset(0_calc(-1*var(--spacing))_calc(-1*var(--spacing))_round_0_0_var(--radius-sm)_var(--radius-sm))] motion-safe:group-focus-visible:[clip-path:inset(0_calc(-1*var(--spacing))_calc(-1*var(--spacing))_round_0_0_var(--radius-sm)_var(--radius-sm))]'
+		'relative flex h-72 w-full sm:h-80 lg:h-96 items-center justify-center overflow-clip [overflow-clip-margin:var(--spacing)] [clip-path:inset(0_round_0_0_var(--radius-sm)_var(--radius-sm))] motion-safe:transition-[clip-path] motion-safe:duration-300 motion-safe:group-hover:[clip-path:inset(0_calc(-1*var(--spacing))_calc(-1*var(--spacing))_round_0_0_var(--radius-sm)_var(--radius-sm))] motion-safe:group-focus-visible:[clip-path:inset(0_calc(-1*var(--spacing))_calc(-1*var(--spacing))_round_0_0_var(--radius-sm)_var(--radius-sm))]'
 	);
 	theme.set.variant(
 		'div',

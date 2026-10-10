@@ -453,3 +453,43 @@ test('synthetic materials opens a storm dialog, explores stock and attachments, 
 	});
 	await expect(page.getByRole('heading', { level: 1, name: 'Built to weather it.' })).toBeVisible();
 });
+
+test('animated bento artwork stays within the page on mobile and desktop', async ({ page }) => {
+	for (const width of [320, 390, 768, 1440]) {
+		await page.setViewportSize({ width, height: 900 });
+		await page.goto('/');
+		await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
+		const tile = page.locator('[data-bento-topic="colors"]');
+		await expect(tile.locator('[data-stock-columns]')).toHaveCSS('opacity', '1');
+		await tile.hover();
+		await expect
+			.poll(() =>
+				page.evaluate(() => {
+					const footer = document.querySelector('footer')!;
+					return (
+						document.documentElement.scrollHeight -
+						(footer.getBoundingClientRect().bottom + scrollY)
+					);
+				})
+			)
+			.toBeLessThanOrEqual(1);
+		expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+		const bounds = await tile.boundingBox();
+		expect(bounds!.x).toBeGreaterThanOrEqual(0);
+		expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+	}
+	await page.setViewportSize({ width: 320, height: 844 });
+	await page.locator('[data-bento-topic="synthetic-materials"]').click();
+	const dialog = page.getByRole('dialog', { name: 'Built to weather it.' });
+	await expect(dialog).toBeVisible();
+	await expect
+		.poll(() =>
+			dialog.evaluate((element) =>
+				[...element.querySelectorAll('a, button, h1, h2, p, canvas')].every((child) => {
+					const bounds = child.getBoundingClientRect();
+					return bounds.left >= 0 && bounds.right <= innerWidth;
+				})
+			)
+		)
+		.toBe(true);
+});
