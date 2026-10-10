@@ -2,7 +2,7 @@ export type Topic = {
 	columns: 'full' | 'third' | 'wide';
 	description: string;
 	id: string;
-	preview: 'columns' | 'fan' | 'print' | 'layers' | 'shape' | 'feed' | 'sequence';
+	preview: 'globe' | 'columns' | 'fan' | 'print' | 'layers' | 'shape' | 'feed' | 'sequence';
 	slug?: string;
 	title: string;
 };
@@ -15,6 +15,13 @@ export const topics: Topic[] = [
 		description: 'Explore stock tag colors.',
 		preview: 'columns',
 		columns: 'wide'
+	},
+	{
+		id: 'shipping',
+		title: 'Your tags. A world of possibilities.',
+		description: 'Tags and labels shipped to all 50 states and internationally.',
+		preview: 'globe',
+		columns: 'third'
 	},
 	{
 		id: 'printing',
@@ -49,7 +56,7 @@ export const topics: Topic[] = [
 		title: 'Keep every number in order.',
 		description: 'Explore consecutive numbering.',
 		preview: 'sequence',
-		columns: 'full'
+		columns: 'wide'
 	}
 ];
 

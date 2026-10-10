@@ -11,6 +11,7 @@
 		H3,
 		P,
 		Section,
+		ShippingContent,
 		Skeleton,
 		StockColorContent,
 		StockSampleDialog,
@@ -42,7 +43,7 @@
 </script>
 
 {#snippet constrained(children: Snippet)}
-	{#if isStandalone && topic.id === 'colors'}
+	{#if isStandalone && (topic.id === 'colors' || topic.id === 'shipping')}
 		<Container>{@render children()}</Container>
 	{:else}
 		{@render children()}
@@ -50,7 +51,13 @@
 {/snippet}
 
 {#snippet introduction()}
-	<P variants={['eyebrow']}>{topic.id === 'colors' ? 'Stock tag colors' : 'Content preview'}</P>
+	<P variants={['eyebrow']}
+		>{topic.id === 'colors'
+			? 'Stock tag colors'
+			: topic.id === 'shipping'
+				? 'Shipping & reach'
+				: 'Content preview'}</P
+	>
 	{#if isStandalone}
 		<H1 id="bento-dialog-heading" variants={['h2.variant.section']}>{topic.title}</H1>
 	{:else}
@@ -60,6 +67,9 @@
 		>{#if topic.id === 'colors'}
 			Make the next step easy to spot. Use color to distinguish a process, organize a collection, or
 			give your tags a look of their own.
+		{:else if topic.id === 'shipping'}
+			Made for the work you do. Ready for the places you do it. We ship tags and labels to all 50
+			states and internationally.
 		{:else}This is a layout preview for {topic.description
 				.toLowerCase()
 				.replace(/^explore /, '')
@@ -78,10 +88,14 @@
 
 <Div
 	data-topic-ready={isReady}
-	class={isStandalone ? (topic.id === 'colors' ? 'pt-20 lg:pt-28' : '') : 'pt-12 sm:pt-20'}
+	class={isStandalone
+		? topic.id === 'colors' || topic.id === 'shipping'
+			? 'pt-20 lg:pt-28'
+			: ''
+		: 'pt-12 sm:pt-20'}
 >
 	<Div class="pb-12 sm:pb-16" data-topic-introduction>{@render constrained(introduction)}</Div>
-	{#if topic.id !== 'colors'}
+	{#if topic.id !== 'colors' && topic.id !== 'shipping'}
 		<Div variants={['dialogArtwork']}><BentoPreview kind={topic.preview} isDialogPreview /></Div>
 	{/if}
 	{#if topic.id === 'colors'}
@@ -98,6 +112,8 @@
 		</Section>
 
 		<StockColorContent {isStandalone} onRequestSamples={() => (isSamplesVisible = true)} />
+	{:else if topic.id === 'shipping'}
+		<ShippingContent {isStandalone} />
 	{:else}
 		{#each detailSections as title, index (title)}
 			<Section
@@ -120,7 +136,7 @@
 			</Section>
 		{/each}
 	{/if}
-	{#if topic.id !== 'colors'}
+	{#if topic.id !== 'colors' && topic.id !== 'shipping'}
 		<Section
 			variants={['dialogSection']}
 			class="flex flex-wrap items-center gap-4"

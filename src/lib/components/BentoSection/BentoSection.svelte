@@ -27,12 +27,7 @@
 
 	// helpers
 	const closeDialog = () => {
-		if (onNavigate) onNavigate(null);
-		else isDialogVisible = false;
-	};
-	const handleDialogCancel = (element: Element) => {
-		element.addEventListener('cancel', closeDialog);
-		return () => element.removeEventListener('cancel', closeDialog);
+		isDialogVisible = false;
 	};
 	const initializeMotion = () => {
 		isReady = true;
@@ -100,6 +95,11 @@
 		});
 	});
 	$effect(() => {
+		// Sveltewind also changes visibility on native Escape/cancel events.
+		// Synchronize every dismissal with the shallow route in one place.
+		if (topicId && selectedTopic && !isDialogVisible) untrack(() => onNavigate?.(null));
+	});
+	$effect(() => {
 		// Keep the page locked through the exit transition, until Dialog removes its element.
 		if (!dialogElement) return;
 		const root = document.documentElement;
@@ -138,7 +138,6 @@
 </Section>
 
 <Dialog
-	{@attach handleDialogCancel}
 	{@attach dismissOutside({ contentSelector: '[data-bento-card]', onDismiss: closeDialog })}
 	bind:element={dialogElement}
 	bind:isVisible={isDialogVisible}

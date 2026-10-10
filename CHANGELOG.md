@@ -6,21 +6,25 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 2fc26c5e13fc5f33d4449e69014fabb24bae9fb4 -->
+<!-- pending-base: c290cf790603c4459426591308cca01b1919f57d -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: redesign stock color content and sample requests
+feat: add shipping globe and destination page
 
-Keep one photo marquee and add an animated color studio with distinct fronts,
-reversible artwork, and a color count. Constrain dividers, normalize spacing,
-and finish with a full-width sample CTA.
-Add a compact sample picker with select-all, clear-all, and email requests.
-Update shared styles, browser coverage, and changelog history.
+Add a route-backed shipping topic with a lazy-loaded 3D globe, polar color
+gradient, animated demo shipment arcs, and a local geographic fallback.
+Build a 50-state coverage map, destination explorer, and full-width contact CTA.
+Record stock colors as complete and isolate demo data for replacement.
+Synchronize dialog dismissal with route history. Add browser coverage,
+geographic asset tooling, and update changelog history.
 ```
 
 ## 2026-10-10
+
+- **feat: redesign stock color content and sample requests** (`c290cf7`)
+  Keep one photo marquee and add an animated color studio with three distinct fronts, reversible artwork, and a color count. Constrain dividers, normalize spacing, and finish with a full-width sample CTA. Add a compact sample picker with select-all, clear-all, and email requests; update shared styles, browser coverage, and changelog history.
 
 - **feat: refresh stock color animation and route** (`2fc26c5`)
   Replace the color tile preview with independently shuffled, looping tag columns, hover/focus acceleration and zoom, a title fade, and reduced-motion support. Retain the original fan preview. Move the color route to `/tags/stock-colors`, redirect the former URL, document the changes, and cover the animation and routing behavior.

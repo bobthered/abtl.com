@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Imports
-	import { Div, Skeleton, Span, StockTag, StockTagColumns } from '#lib/components';
+	import { Div, ShippingGlobe, Skeleton, Span, StockTag, StockTagColumns } from '#lib/components';
 	import { stockColors } from './stockColors';
 	import type { Topic } from './topics';
 
@@ -10,7 +10,15 @@
 </script>
 
 <Div variants={[isDialogPreview ? 'bentoDialogPreview' : 'bentoPreview']} aria-hidden="true">
-	{#if kind === 'columns'}
+	{#if kind === 'globe'}
+		<Div class="relative h-full w-full"
+			><ShippingGlobe
+				class="absolute top-1/2 left-1/2 max-h-full max-w-96 -translate-1/2 scale-110 motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-125 motion-safe:group-focus-visible:scale-125"
+			/><Span class="absolute right-4 bottom-4 text-xs text-gray-500 dark:text-gray-400"
+				>Demo locations</Span
+			></Div
+		>
+	{:else if kind === 'columns'}
 		<StockTagColumns />
 	{:else if kind === 'fan'}
 		<!-- Retained as an alternate preview for future use. -->

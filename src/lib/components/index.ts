@@ -19,3 +19,5 @@ export { default as BentoPreview } from './BentoSection/BentoPreview.svelte';
 export { default as BentoTopicContent } from './BentoSection/BentoTopicContent.svelte';
 export { default as StockTagColumns } from './BentoSection/StockTagColumns.svelte';
 export { default as StockSampleDialog } from './BentoSection/StockSampleDialog.svelte';
+export { default as ShippingGlobe } from './ShippingGlobe/ShippingGlobe.svelte';
+export { default as ShippingContent } from './ShippingContent/ShippingContent.svelte';

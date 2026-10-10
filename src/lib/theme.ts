@@ -458,4 +458,9 @@ export const initializeTheme = () => {
 		'sampleInvitation',
 		'bg-gray-950 py-12 text-center text-gray-50 sm:py-16 dark:bg-gray-50 dark:text-gray-950'
 	);
+	theme.set.variant(
+		'div',
+		'shippingArtwork',
+		'overflow-hidden rounded-sm bg-gradient-to-br from-primary-50 via-gray-100 to-secondary-50 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950'
+	);
 };

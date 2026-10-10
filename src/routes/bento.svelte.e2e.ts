@@ -1,6 +1,14 @@
 import { expect, test } from '@playwright/test';
 
-const topics = ['stock-colors', 'printing', 'materials', 'shapes', 'formats', 'numbering'];
+const topics = [
+	'stock-colors',
+	'printing',
+	'materials',
+	'shapes',
+	'formats',
+	'numbering',
+	'shipping'
+];
 
 test('opens route-backed dialogs and preserves the gallery through history navigation', async ({
 	page
@@ -175,4 +183,45 @@ test('mobile sample picker keeps selections compact and its request action visib
 	await page.keyboard.press('Escape');
 	await expect(picker).toHaveCount(0);
 	await expect(trigger).toBeFocused();
+});
+
+test('shipping opens as a route-backed dialog, selects demo destinations, and refreshes standalone', async ({
+	page
+}) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/');
+	await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
+	// The development-only physics configurator overlaps the right column.
+	await page.locator('[data-tag-rain-settings] summary').click();
+	const trigger = page.locator('[data-bento-topic="shipping"]');
+	await trigger.scrollIntoViewIfNeeded();
+	await trigger.click();
+	await expect(page).toHaveURL(/\/tags\/shipping$/);
+	const dialog = page.getByRole('dialog', { name: 'Your tags. A world of possibilities.' });
+	await expect(dialog).toBeVisible();
+	await expect(dialog.locator('[data-shipping-state]')).toHaveCount(50);
+	await expect(dialog.locator('[data-shipping-state-count]')).toHaveText('50');
+	await dialog.getByRole('button', { name: 'Sydney', exact: true }).click();
+	await expect(dialog.getByRole('button', { name: 'Sydney', exact: true })).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
+	await expect(dialog.getByText('Sydney Demo destination', { exact: false })).toBeVisible();
+	await expect(dialog.getByText('Demo visualization.', { exact: false })).toBeVisible();
+	await page.keyboard.press('Escape');
+	await expect(page).toHaveURL(/\/$/);
+	await expect(trigger).toBeFocused();
+	await trigger.click();
+	await page.reload();
+	await expect(
+		page.getByRole('heading', { level: 1, name: 'Your tags. A world of possibilities.' })
+	).toBeVisible();
+	await expect(page.getByRole('dialog')).toHaveCount(0);
+	for (const width of [390, 1440]) {
+		await page.setViewportSize({ width, height: 900 });
+		expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+		const contact = await page.locator('[data-shipping-section="contact"]').boundingBox();
+		expect(contact!.x).toBeCloseTo(0, 0);
+		expect(contact!.width).toBeCloseTo(width, 0);
+	}
 });
