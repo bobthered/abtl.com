@@ -14,6 +14,7 @@ Content retains its position as the tile's surface expands.
 </BentoItem>
 ```
 
+- `href` renders a real Sveltewind link when interactive; supports new tabs and normal browser navigation.
 - `isInteractive` defaults to `true`: renders a Sveltewind Button; `false` renders Div.
 - `isExpandVisible` defaults to `true` and controls the decorative expand indicator.
 - `title` is optional. It uses the shared inset and hover translation.

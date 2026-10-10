@@ -15,3 +15,5 @@ export { default as Marquee } from './Marquee/Marquee.svelte';
 export { default as StockTagExamples } from './BentoSection/StockTagExamples.svelte';
 export { default as BentoItem } from './BentoItem/BentoItem.svelte';
 export { default as ImageLightbox } from './ImageLightbox/ImageLightbox.svelte';
+export { default as BentoPreview } from './BentoSection/BentoPreview.svelte';
+export { default as BentoTopicContent } from './BentoSection/BentoTopicContent.svelte';

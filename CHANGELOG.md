@@ -6,16 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 8cea94c0dfba4415c5a7e1984713e93e27bbd27b -->
+<!-- pending-base: e0741344bea009d1f2a017a0cc3a429f8a90902c -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add audited changelog and task completion conventions
+feat: add route-backed bento dialogs and standalone topic pages
 
-Backfill all 93 existing commits with dated summaries and references.
-Maintain one pending changelog entry covering all uncommitted work.
+Share topic content between animated dialogs and standalone tag routes.
+Use standard standalone page sections with full-width color marquees.
+Retain Card styling in dialogs.
+Preserve browser history, direct links, new tabs, focus, and SSR-safe page titles.
+Add routing regression coverage and reconcile the committed changelog entry.
 ```
+
+## 2026-10-10
+
+- **feat: add audited changelog and task completion conventions** (`e074134`)
+  Backfill all 93 earlier commits with dated summaries and references. Require one pending changelog entry covering all uncommitted work and matching the suggested commit message.
 
 ## 2026-10-09
 

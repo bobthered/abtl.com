@@ -1,12 +1,13 @@
 <script lang="ts">
 	// Imports
-	import { Button, Canvas, Div, Span } from '#lib/components';
+	import { A, Button, Canvas, Div, Span } from '#lib/components';
 	import type { ComponentProps } from 'svelte';
 	import { Maximize2 } from '#lib/icons';
 	import { pointerOutline } from '#lib/attachments';
 
 	// Types
 	type Props = ComponentProps<typeof Button> & {
+		href?: string;
 		isExpandVisible?: boolean;
 		isInteractive?: boolean;
 		surface?: 'default' | 'neutral';
@@ -17,6 +18,7 @@
 	let {
 		children,
 		class: className = '',
+		href,
 		isExpandVisible = true,
 		isInteractive = true,
 		surface = 'default',
@@ -51,7 +53,22 @@
 	{#if children}{@render children()}{/if}
 {/snippet}
 
-{#if isInteractive}
+{#if isInteractive && href}
+	<A
+		{...restProps as ComponentProps<typeof A>}
+		{href}
+		variants={[
+			'button.base',
+			'button.variant.neutral-tile',
+			...(surface === 'neutral' ? ['button.variant.neutral-tile-muted'] : []),
+			...variants
+		]}
+		class={className}
+		{@attach pointerOutline}
+	>
+		{@render content()}
+	</A>
+{:else if isInteractive}
 	<Button
 		{...restProps}
 		type="button"

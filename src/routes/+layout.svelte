@@ -13,6 +13,7 @@
 		P,
 		Popover
 	} from '#lib/components';
+	import { browser } from '$app/env';
 	import type { ComponentProps } from 'svelte';
 	import { createPageTitle } from '#lib/pageTitle.js';
 	import { fade } from 'svelte/transition';
@@ -29,6 +30,8 @@
 	type ColorMode = 'dark' | 'light';
 
 	// consts
+	// Capture request state during component initialization for async server rendering.
+	const initialPathname = page.url.pathname;
 	const navigation = [
 		{ href: '/#products', label: 'Products' },
 		{ href: '/#industries', label: 'Industries' },
@@ -120,9 +123,11 @@
 
 	// $derived
 	const faviconHref = $derived(colorMode === 'dark' ? faviconDark : favicon);
-	const pageTitle = $derived(createPageTitle(page.url.pathname));
+	const pageTitle = $derived(
+		createPageTitle(browser ? (page.shallow?.url ?? page.url).pathname : initialPathname)
+	);
 
-	// $effects$
+	// $effects
 	$effect(() => {
 		if (!isMenuVisible) {
 			isNavigationVisible = false;
