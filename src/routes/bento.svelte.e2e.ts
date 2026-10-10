@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const topics = ['colors', 'printing', 'materials', 'shapes', 'formats', 'numbering'];
+const topics = ['stock-colors', 'printing', 'materials', 'shapes', 'formats', 'numbering'];
 
 test('opens route-backed dialogs and preserves the gallery through history navigation', async ({
 	page
@@ -43,9 +43,13 @@ test('refreshing an open dialog renders the standalone topic', async ({ page }) 
 	await page.goto('/');
 	// Before hydration, real links intentionally navigate to the standalone page.
 	await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
+	await expect(page.locator('[data-bento-topic="colors"]')).toHaveAttribute(
+		'href',
+		'/tags/stock-colors'
+	);
 	await page.locator('[data-bento-topic="colors"]').click();
 	await expect(page.getByRole('dialog', { name: 'What color will you choose?' })).toBeVisible();
-	await expect(page).toHaveURL(/\/tags\/colors$/);
+	await expect(page).toHaveURL(/\/tags\/stock-colors$/);
 	await page.reload();
 	await expect(
 		page.getByRole('heading', { level: 1, name: 'What color will you choose?' })
@@ -115,7 +119,7 @@ test('mobile back navigation dismisses the dialog and forward restores it', asyn
 test('standalone color marquees fill the viewport without horizontal overflow', async ({
 	page
 }) => {
-	await page.goto('/tags/colors');
+	await page.goto('/tags/stock-colors');
 	await expect(
 		page.getByRole('heading', { level: 1, name: 'What color will you choose?' })
 	).toBeVisible();
@@ -131,4 +135,12 @@ test('standalone color marquees fill the viewport without horizontal overflow', 
 		}
 		expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(viewportWidth);
 	}
+});
+
+test('redirects the former color route to stock colors and preserves query parameters', async ({
+	request
+}) => {
+	const response = await request.get('/tags/colors?source=sample', { maxRedirects: 0 });
+	expect(response.status()).toBe(308);
+	expect(response.headers().location).toBe('/tags/stock-colors?source=sample');
 });

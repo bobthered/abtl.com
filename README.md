@@ -75,3 +75,17 @@ npm run build
 ```
 
 You can preview the production build with `npm run preview`.
+
+## Stock color tile previews
+
+The color tile uses `StockTagColumns`: independently shuffled stock palettes in six
+seamlessly looping columns (four visible on small screens). Odd columns travel down
+and even columns travel up. Hovering or focusing the tile smoothly accelerates the
+columns to 2.5x speed and zooms the tag field in by 5%, then eases back on exit. A top fade protects the title. Motion pauses offscreen,
+when the document is hidden, and for reduced-motion preferences.
+
+The original fan preview and its theme variants remain available: change the colors
+topic's `preview` from `columns` to `fan` in `BentoSection/topics.ts` to restore it.
+
+The stock color page lives at `/tags/stock-colors`. Its internal topic ID remains
+`colors` for dialog state; `/tags/colors` redirects permanently to the new route.

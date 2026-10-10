@@ -2,16 +2,18 @@ export type Topic = {
 	columns: 'full' | 'third' | 'wide';
 	description: string;
 	id: string;
-	preview: 'fan' | 'print' | 'layers' | 'shape' | 'feed' | 'sequence';
+	preview: 'columns' | 'fan' | 'print' | 'layers' | 'shape' | 'feed' | 'sequence';
+	slug?: string;
 	title: string;
 };
 
 export const topics: Topic[] = [
 	{
 		id: 'colors',
+		slug: 'stock-colors',
 		title: 'What color will you choose?',
 		description: 'Explore stock tag colors.',
-		preview: 'fan',
+		preview: 'columns',
 		columns: 'wide'
 	},
 	{
@@ -51,4 +53,4 @@ export const topics: Topic[] = [
 	}
 ];
 
-export const topicHref = (topic: Topic) => `/tags/${topic.id}`;
+export const topicHref = (topic: Topic) => `/tags/${topic.slug ?? topic.id}`;

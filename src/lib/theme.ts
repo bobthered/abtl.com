@@ -24,6 +24,22 @@ export const initializeTheme = () => {
 	);
 	theme.set.variant('path', 'stockPaper', 'fill-current stroke-gray-950/15 stroke-1');
 	theme.set.variant('path', 'stockPatch', 'fill-tag-brown stroke-gray-950/15 stroke-1');
+	theme.set.variant(
+		'div',
+		'stockColumns',
+		'pointer-events-none absolute inset-0 mask-t-from-70% mask-t-to-100%'
+	);
+	theme.set.variant(
+		'div',
+		'stockColumnGrid',
+		'grid h-full w-full origin-center grid-cols-4 gap-4 px-4 sm:grid-cols-6 sm:gap-6 sm:px-6 motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out motion-safe:group-hover:scale-105 motion-safe:group-focus-visible:scale-105'
+	);
+	theme.set.variant(
+		'div',
+		'stockColumnTrack',
+		'flex w-full flex-col motion-safe:will-change-transform'
+	);
+	theme.set.variant('div', 'stockColumnCopy', 'flex shrink-0 flex-col gap-6 pb-6');
 	theme.set.variant('div', 'stockFan', 'relative flex h-full w-full items-end justify-center');
 	theme.set.variant(
 		'div',

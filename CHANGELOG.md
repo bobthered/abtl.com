@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: e0741344bea009d1f2a017a0cc3a429f8a90902c -->
+<!-- pending-base: b0e15d7858772bc168df8eba655a79ae13e10340 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add route-backed bento dialogs and standalone topic pages
+feat: refresh stock color animation and route
 
-Share topic content between animated dialogs and standalone tag routes.
-Use standard standalone page sections with full-width color marquees.
-Retain Card styling in dialogs.
-Preserve browser history, direct links, new tabs, focus, and SSR-safe page titles.
-Add routing regression coverage and reconcile the committed changelog entry.
+Add shuffled, seamless tag columns with a title fade and reduced-motion support.
+Smoothly accelerate and zoom tags on hover and keyboard focus without restarting loops.
+Preserve the original fan preview and document how to restore it.
+Use /tags/stock-colors and permanently redirect /tags/colors.
+Reconcile the committed route-backed dialogs in the changelog.
 ```
 
 ## 2026-10-10
+
+- **feat: add route-backed bento dialogs and standalone topic pages** (`b0e15d7`)
+  Share topic content across route-backed animated dialogs and standalone pages, with full-width color marquees. Preserve browser history, direct links, new tabs, focus, and SSR-safe page titles. Add routing regression coverage and reconcile the previous changelog entry.
 
 - **feat: add audited changelog and task completion conventions** (`e074134`)
   Backfill all 93 earlier commits with dated summaries and references. Require one pending changelog entry covering all uncommitted work and matching the suggested commit message.

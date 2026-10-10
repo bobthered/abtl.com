@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Imports
-	import { Div, Skeleton, Span, StockTag } from '#lib/components';
+	import { Div, Skeleton, Span, StockTag, StockTagColumns } from '#lib/components';
 	import { stockColors } from './stockColors';
 	import type { Topic } from './topics';
 
@@ -10,7 +10,10 @@
 </script>
 
 <Div variants={[isDialogPreview ? 'bentoDialogPreview' : 'bentoPreview']} aria-hidden="true">
-	{#if kind === 'fan'}
+	{#if kind === 'columns'}
+		<StockTagColumns />
+	{:else if kind === 'fan'}
+		<!-- Retained as an alternate preview for future use. -->
 		<Div variants={['stockFan']} data-stock-fan>
 			{#each stockColors as color (color.id)}
 				<Div variants={['stockFanTag']} class={color.fanClass} data-stock-color={color.id}>
