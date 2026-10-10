@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: b0e15d7858772bc168df8eba655a79ae13e10340 -->
+<!-- pending-base: 2fc26c5e13fc5f33d4449e69014fabb24bae9fb4 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: refresh stock color animation and route
+feat: redesign stock color content and sample requests
 
-Add shuffled, seamless tag columns with a title fade and reduced-motion support.
-Smoothly accelerate and zoom tags on hover and keyboard focus without restarting loops.
-Preserve the original fan preview and document how to restore it.
-Use /tags/stock-colors and permanently redirect /tags/colors.
-Reconcile the committed route-backed dialogs in the changelog.
+Keep one photo marquee and add an animated color studio with distinct fronts,
+reversible artwork, and a color count. Constrain dividers, normalize spacing,
+and finish with a full-width sample CTA.
+Add a compact sample picker with select-all, clear-all, and email requests.
+Update shared styles, browser coverage, and changelog history.
 ```
 
 ## 2026-10-10
+
+- **feat: refresh stock color animation and route** (`2fc26c5`)
+  Replace the color tile preview with independently shuffled, looping tag columns, hover/focus acceleration and zoom, a title fade, and reduced-motion support. Retain the original fan preview. Move the color route to `/tags/stock-colors`, redirect the former URL, document the changes, and cover the animation and routing behavior.
 
 - **feat: add route-backed bento dialogs and standalone topic pages** (`b0e15d7`)
   Share topic content across route-backed animated dialogs and standalone pages, with full-width color marquees. Preserve browser history, direct links, new tabs, focus, and SSR-safe page titles. Add routing regression coverage and reconcile the previous changelog entry.

@@ -18,3 +18,4 @@ export { default as ImageLightbox } from './ImageLightbox/ImageLightbox.svelte';
 export { default as BentoPreview } from './BentoSection/BentoPreview.svelte';
 export { default as BentoTopicContent } from './BentoSection/BentoTopicContent.svelte';
 export { default as StockTagColumns } from './BentoSection/StockTagColumns.svelte';
+export { default as StockSampleDialog } from './BentoSection/StockSampleDialog.svelte';

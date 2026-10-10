@@ -74,6 +74,21 @@ export const initializeTheme = () => {
 		'stockQuestion',
 		'cursor-pointer rounded-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:focus-visible:outline-primary-300'
 	);
+	theme.set.variant(
+		'dialog',
+		'stockSamples',
+		'fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-y-auto rounded-none border-0 bg-transparent p-0 shadow-none inset-ring-0 backdrop:bg-gray-950/50 backdrop:backdrop-blur-md'
+	);
+	theme.set.variant(
+		'card',
+		'samplePicker',
+		'flex max-h-[calc(100dvh-2rem)] w-full max-w-3xl flex-col gap-4 overflow-hidden p-5 sm:max-h-[calc(100dvh-4rem)] sm:p-8'
+	);
+	theme.set.variant(
+		'button',
+		'sampleColor',
+		'flex min-h-11 items-center justify-start gap-2 whitespace-normal bg-gray-50 px-3 py-2 text-left text-xs text-gray-950 inset-ring-1 inset-ring-gray-200 hover:bg-gray-100 hover:text-gray-950 focus:bg-gray-100 focus:text-gray-950 sm:text-sm dark:bg-gray-950 dark:text-gray-50 dark:inset-ring-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50'
+	);
 	theme.set.variant('button', 'large', 'min-h-16 px-8 py-5 text-lg');
 	theme.set.variant(
 		'button',
@@ -427,5 +442,20 @@ export const initializeTheme = () => {
 		'svg',
 		'arrow',
 		'size-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transform-none motion-reduce:transition-none'
+	);
+	theme.set.variant(
+		'div',
+		'colorStudio',
+		'group relative flex flex-col items-center overflow-hidden rounded-sm bg-gradient-to-br from-primary-100 via-gray-100 to-secondary-100 p-6 perspective-distant sm:p-8 dark:from-primary-950 dark:via-gray-800 dark:to-secondary-950'
+	);
+	theme.set.variant(
+		'div',
+		'colorStudioSide',
+		'absolute top-1/2 w-28 -translate-y-1/2 transition-transform duration-700 ease-out sm:w-36 motion-reduce:transition-none'
+	);
+	theme.set.variant(
+		'section',
+		'sampleInvitation',
+		'bg-gray-950 py-12 text-center text-gray-50 sm:py-16 dark:bg-gray-50 dark:text-gray-950'
 	);
 };

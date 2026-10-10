@@ -25,14 +25,23 @@ it('scrolls a constrained card through a full-screen backdrop and restores focus
 	expect(getComputedStyle(marquee).overflowX).toBe('hidden');
 	expect(marquee.querySelectorAll('[data-marquee-copy]').length).toBe(2);
 	expect(marquee.querySelector('[data-marquee-copy]')!.children.length).toBe(21);
-	expect(marquee.querySelectorAll('button').length).toBe(0);
+	expect(element.querySelectorAll('[data-marquee]').length).toBe(1);
 	expect(Math.round(marquee.getBoundingClientRect().width)).toBe(
 		Math.round(card.getBoundingClientRect().width)
 	);
 	expect(Math.round(marquee.getBoundingClientRect().left)).toBe(
 		Math.round(card.getBoundingClientRect().left)
 	);
-	const colorCard = marquee.querySelector<HTMLElement>('[data-stock-marquee-color]')!;
+	const sampleBounds = element
+		.querySelector('[data-color-section="samples"]')!
+		.getBoundingClientRect();
+	const dividerBounds = element.querySelector('[data-color-divider]')!.getBoundingClientRect();
+	const headingBounds = element.querySelector('#bento-dialog-heading')!.getBoundingClientRect();
+	expect(Math.round(sampleBounds.left)).toBe(Math.round(card.getBoundingClientRect().left));
+	expect(Math.round(sampleBounds.width)).toBe(Math.round(card.getBoundingClientRect().width));
+	expect(Math.round(dividerBounds.left)).toBe(Math.round(headingBounds.left));
+	expect(dividerBounds.width).toBeLessThan(card.getBoundingClientRect().width);
+	const colorCard = marquee.querySelector<HTMLElement>('[data-stock-photo-color]')!;
 	expect(getComputedStyle(colorCard).backgroundColor).not.toBe(
 		getComputedStyle(card).backgroundColor
 	);
@@ -44,11 +53,8 @@ it('scrolls a constrained card through a full-screen backdrop and restores focus
 	const photoCards = examples.querySelectorAll<HTMLElement>(
 		'[data-marquee-copy]:first-child [data-stock-photo-color]'
 	);
-	const colorCards = marquee.querySelectorAll<HTMLElement>(
-		'[data-marquee-copy]:first-child [data-stock-marquee-color]'
-	);
 	expect(Array.from(photoCards, (item) => item.dataset.stockPhotoColor)).toEqual(
-		Array.from(colorCards, (item) => item.dataset.stockMarqueeColor)
+		stockPhotoExamples.map((example) => example.id)
 	);
 	expect(
 		new Set(Array.from(photoCards, (item) => item.querySelector('img')!.getAttribute('src'))).size
@@ -116,6 +122,12 @@ it('builds one sample request from selected colors and presents divided content 
 	await page.getByRole('link', { name: 'Explore What color will you choose?' }).click();
 	const dialog = page.getByRole('dialog', { name: 'What color will you choose?' });
 	await expect.element(dialog).toBeVisible();
+	const sampleTrigger = page.getByRole('button', { name: 'Request Samples', exact: true }).first();
+	await sampleTrigger.click();
+	const picker = page.getByRole('dialog', { name: 'Request Samples', exact: true });
+	await expect.element(picker).toBeVisible();
+	expect(picker.element().querySelectorAll('[data-stock-swatch]').length).toBe(21);
+	expect(picker.element().querySelectorAll('[data-color-dot]').length).toBe(21);
 	const white = page.getByRole('button', { name: 'Select White for samples', exact: true });
 	const pink = page.getByRole('button', {
 		name: 'Select Fluorescent Pink for samples',
@@ -124,20 +136,74 @@ it('builds one sample request from selected colors and presents divided content 
 	await white.click();
 	await pink.click();
 	await expect.element(white).toHaveAttribute('aria-pressed', 'true');
-	const request = dialog.element().querySelector<HTMLAnchorElement>('[data-stock-sample-request]')!;
+	const request = picker.element().querySelector<HTMLAnchorElement>('[data-stock-sample-request]')!;
 	const body = new URL(request.href).searchParams.get('body')!;
 	expect(body).toContain('White');
 	expect(body).toContain('Fluorescent Pink');
 	await pink.click();
 	expect(new URL(request.href).searchParams.get('body')).not.toContain('Fluorescent Pink');
+	await picker.getByRole('button', { name: 'Select all', exact: true }).click();
+	expect(picker.element().querySelectorAll('[data-stock-swatch][aria-pressed="true"]').length).toBe(
+		21
+	);
+	expect(new URL(request.href).searchParams.get('body')).toContain('Fluorescent Pink');
+	await picker.getByRole('button', { name: 'Clear all', exact: true }).click();
+	expect(picker.element().querySelectorAll('[data-stock-swatch][aria-pressed="true"]').length).toBe(
+		0
+	);
+	await expect.element(picker.getByRole('button', { name: 'Email sample request' })).toBeDisabled();
+	await white.click();
 	const sections = dialog.element().querySelectorAll<HTMLElement>('[data-color-section]');
-	expect(sections.length).toBeGreaterThanOrEqual(10);
-	for (const section of sections) expect(getComputedStyle(section).borderTopWidth).toBe('1px');
+	expect([...sections].map((section) => section.dataset.colorSection)).toEqual([
+		'examples',
+		'color-studio',
+		'samples'
+	]);
+	for (const section of sections) {
+		expect(getComputedStyle(section).borderTopWidth).toBe(
+			section.dataset.colorSection === 'examples' ? '0px' : '1px'
+		);
+	}
 	expect(sections[sections.length - 1].dataset.colorSection).toBe('samples');
-	await page.getByText('Can I compare more than one color?', { exact: true }).click();
-	expect(dialog.element().querySelector('details')?.open).toBe(true);
+	await userEvent.keyboard('{Escape}');
+	await expect.element(picker).not.toBeInTheDocument();
+	await expect.element(dialog).toBeVisible();
+	await expect.element(sampleTrigger).toHaveFocus();
+	await sampleTrigger.click();
+	await expect.element(picker).toBeVisible();
+	await expect.element(white).toHaveAttribute('aria-pressed', 'true');
+	await picker.click({ position: { x: 2, y: 2 } });
+	await expect.element(picker).not.toBeInTheDocument();
+	await expect.element(dialog).toBeVisible();
+
 	await userEvent.keyboard('{Escape}');
 	await expect.element(dialog).not.toBeInTheDocument();
+});
+
+it('previews stock colors and both artwork faces with a padded final sample section', async () => {
+	initializeTheme();
+	render(BentoSection);
+	await page.getByRole('link', { name: 'Explore What color will you choose?' }).click();
+	const dialog = page.getByRole('dialog', { name: 'What color will you choose?' });
+	await page.getByRole('button', { name: 'Preview Blue (Dark)', exact: true }).click();
+	const preview = dialog.element().querySelector<HTMLElement>('[data-stock-preview-color]')!;
+	expect(preview.dataset.stockPreviewColor).toBe('blue-dark');
+	expect(preview.dataset.stockPreviewSide).toBe('front');
+	await page.getByRole('button', { name: 'Flip tag', exact: true }).click();
+	await expect.poll(() => preview.dataset.stockPreviewSide).toBe('back');
+	await userEvent.hover(page.getByRole('button', { name: 'Show tag front', exact: true }));
+	await page.getByRole('button', { name: 'Show tag front', exact: true }).click();
+	await expect.poll(() => preview.dataset.stockPreviewSide).toBe('front');
+	const samples = dialog.element().querySelector<HTMLElement>('[data-color-section="samples"]')!;
+	expect(parseFloat(getComputedStyle(samples).paddingBottom)).toBeGreaterThanOrEqual(48);
+	const trigger = page.getByRole('button', { name: 'Request Samples', exact: true });
+	expect(
+		[...dialog.element().querySelectorAll('button')].filter((button) =>
+			button.textContent?.includes('Request Samples')
+		).length
+	).toBe(1);
+	expect(samples.contains(trigger.element())).toBe(true);
+	await userEvent.keyboard('{Escape}');
 });
 
 it('resumes the marquee after pointer clicks and pauses for keyboard browsing', async () => {
@@ -441,4 +507,23 @@ it('dismisses only the lightbox when its backdrop is clicked above a bento dialo
 	expect(document.documentElement.classList.contains('overflow-hidden')).toBe(true);
 	await userEvent.keyboard('{Escape}');
 	await expect.element(parent).not.toBeInTheDocument();
+});
+
+it('counts stock colors when the number section scrolls into view', async () => {
+	initializeTheme();
+	render(BentoSection);
+	await page.getByRole('link', { name: 'Explore What color will you choose?' }).click();
+	const dialog = page.getByRole('dialog', { name: 'What color will you choose?' });
+	await expect.element(dialog).toBeVisible();
+	const counter = dialog.element().querySelector<HTMLElement>('[data-stock-color-counter]')!;
+	const number = counter.querySelector<HTMLElement>('[data-stock-color-total]')!;
+	expect(number.textContent).toBe('0');
+	counter.scrollIntoView({ block: 'center' });
+	await expect
+		.poll(() => Number(number.textContent) > 0 && Number(number.textContent) < 21)
+		.toBe(true);
+	await expect.poll(() => number.textContent, { timeout: 3000 }).toBe('21');
+	expect(number.getAttribute('aria-hidden')).toBe('true');
+	await page.getByRole('button', { name: 'Close topic', exact: true }).click();
+	await expect.element(dialog).not.toBeInTheDocument();
 });

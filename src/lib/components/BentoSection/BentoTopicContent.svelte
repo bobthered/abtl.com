@@ -13,10 +13,11 @@
 		Section,
 		Skeleton,
 		StockColorContent,
-		StockColorMarquee,
+		StockSampleDialog,
 		StockTagExamples
 	} from '#lib/components';
 	import { ArrowRight } from '#lib/icons';
+	import { onMount } from 'svelte';
 	import type { Snippet } from 'svelte';
 	import type { Topic } from './topics';
 
@@ -29,6 +30,15 @@
 		onClose,
 		topic
 	}: { isStandalone?: boolean; onClose?: () => void; topic: Topic } = $props();
+
+	// $state
+	let isReady = $state(false);
+	let isSamplesVisible = $state(false);
+
+	// $effects
+	onMount(() => {
+		isReady = true;
+	});
 </script>
 
 {#snippet constrained(children: Snippet)}
@@ -58,30 +68,28 @@
 {/snippet}
 
 {#snippet examplesIntroduction()}
+	<Div class="border-t border-gray-200 pt-12 sm:pt-16 dark:border-gray-800" data-color-divider
+	></Div>
 	<H3 id="stock-examples-heading" class="text-3xl sm:text-4xl">Color, out in the world.</H3>
 	<P variants={['dialogBody']} class="mt-4"
 		>Illustrative examples of stock colors at work, from the parts shelf to the service bench.</P
 	>
 {/snippet}
 
-{#snippet colorDetails()}<StockColorContent />{/snippet}
-
-<Div class={isStandalone ? (topic.id === 'colors' ? 'py-20 lg:py-28' : '') : 'pt-12 sm:pt-20'}>
-	{@render constrained(introduction)}
-	{#if topic.id === 'colors'}
-		<Div variants={isStandalone ? [] : ['dialogBleed']} class="my-12 flex min-w-0">
-			<StockColorMarquee />
-		</Div>
-	{:else}
-		<Div variants={['dialogArtwork']}>
-			<BentoPreview kind={topic.preview} isDialogPreview />
-		</Div>
+<Div
+	data-topic-ready={isReady}
+	class={isStandalone ? (topic.id === 'colors' ? 'pt-20 lg:pt-28' : '') : 'pt-12 sm:pt-20'}
+>
+	<Div class="pb-12 sm:pb-16" data-topic-introduction>{@render constrained(introduction)}</Div>
+	{#if topic.id !== 'colors'}
+		<Div variants={['dialogArtwork']}><BentoPreview kind={topic.preview} isDialogPreview /></Div>
 	{/if}
 	{#if topic.id === 'colors'}
 		<Section
 			variants={['dialogSection']}
 			aria-labelledby="stock-examples-heading"
 			data-color-section="examples"
+			class="border-t-0 pt-0 sm:pt-0"
 		>
 			{@render constrained(examplesIntroduction)}
 			<Div variants={isStandalone ? [] : ['dialogBleed']} class="mt-8 flex min-w-0">
@@ -89,7 +97,7 @@
 			</Div>
 		</Section>
 
-		{@render constrained(colorDetails)}
+		<StockColorContent {isStandalone} onRequestSamples={() => (isSamplesVisible = true)} />
 	{:else}
 		{#each detailSections as title, index (title)}
 			<Section
@@ -134,3 +142,5 @@
 		</Section>
 	{/if}
 </Div>
+
+{#if topic.id === 'colors'}<StockSampleDialog bind:isVisible={isSamplesVisible} />{/if}
