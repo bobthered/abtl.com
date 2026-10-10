@@ -24,3 +24,5 @@ export { default as ShippingContent } from './ShippingContent/ShippingContent.sv
 export { default as VariableDataContent } from './VariableData/VariableDataContent.svelte';
 export { default as VariableDataPiece } from './VariableData/VariableDataPiece.svelte';
 export { default as VariableDataPreview } from './VariableData/VariableDataPreview.svelte';
+export { default as WarehouseScene } from './Warehousing/WarehouseScene.svelte';
+export { default as WarehousingContent } from './Warehousing/WarehousingContent.svelte';

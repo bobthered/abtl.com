@@ -13,7 +13,7 @@
 
 <Main id="main-content" tabindex={-1}>
 	<Section variants={['surface']}>
-		{#if data.topic.id === 'colors' || data.topic.id === 'shipping' || data.topic.id === 'variable-data'}
+		{#if data.topic.id === 'colors' || data.topic.id === 'shipping' || data.topic.id === 'variable-data' || data.topic.id === 'warehousing'}
 			<BentoTopicContent topic={data.topic} isStandalone />
 		{:else}
 			<Container variants={['section']}>

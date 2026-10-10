@@ -1,5 +1,62 @@
 import { expect, test } from '@playwright/test';
 
+test('warehousing releases demo stock, compares workflows, and refreshes as a standalone page', async ({
+	page
+}) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/');
+	await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
+	const trigger = page.locator('[data-bento-topic="warehousing"]');
+	await trigger.scrollIntoViewIfNeeded();
+	await expect(trigger.locator('[data-warehouse-preview]')).toHaveAttribute(
+		'data-warehouse-motion',
+		'static'
+	);
+	await trigger.click();
+	await expect(page).toHaveURL(/\/tags\/warehousing$/);
+	const dialog = page.getByRole('dialog', { name: 'Produce in volume. Release on demand.' });
+	await expect(dialog).toBeVisible();
+	await expect(dialog.locator('[data-warehouse-count]')).toHaveText('24cartons');
+	await dialog.getByRole('button', { name: '6 cartons', exact: true }).click();
+	await dialog.getByRole('button', { name: 'Release from stock', exact: true }).click();
+	await expect(dialog.locator('[data-warehouse-count]')).toHaveText('18cartons');
+	await expect(dialog.locator('[data-warehouse-status]')).toHaveText(
+		'6 cartons released. 18 remain for your next request.'
+	);
+	for (let index = 0; index < 3; index++)
+		await dialog.getByRole('button', { name: 'Release from stock', exact: true }).click();
+	await expect(dialog.locator('[data-warehouse-count]')).toHaveText('0cartons');
+	await expect(
+		dialog.getByRole('button', { name: 'Release from stock', exact: true })
+	).toBeDisabled();
+	await dialog.getByRole('button', { name: 'Reset demo', exact: true }).click();
+	await expect(dialog.locator('[data-warehouse-count]')).toHaveText('24cartons');
+	await dialog.getByRole('button', { name: 'New production', exact: true }).click();
+	await expect(dialog.locator('[data-warehouse-workflow]')).toContainText(
+		'A new run starts with production'
+	);
+	await dialog.getByRole('button', { name: 'Warehoused stock', exact: true }).click();
+	await expect(dialog.locator('[data-warehouse-workflow]')).toContainText(
+		'Release from available stock'
+	);
+	await page.keyboard.press('Escape');
+	await expect(page).toHaveURL(/\/$/);
+	await expect(trigger).toBeFocused();
+	await trigger.click();
+	await page.reload();
+	await expect(
+		page.getByRole('heading', { level: 1, name: 'Produce in volume. Release on demand.' })
+	).toBeVisible();
+	await expect(page.getByRole('dialog')).toHaveCount(0);
+	for (const width of [390, 1440]) {
+		await page.setViewportSize({ width, height: 900 });
+		expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+		const contact = await page.locator('[data-warehouse-section="contact"]').boundingBox();
+		expect(contact!.x).toBeCloseTo(0, 0);
+		expect(contact!.width).toBeCloseTo(width, 0);
+	}
+});
+
 const topics = [
 	'stock-colors',
 	'variable-data',
@@ -7,7 +64,8 @@ const topics = [
 	'shapes',
 	'formats',
 	'numbering',
-	'shipping'
+	'shipping',
+	'warehousing'
 ];
 
 test('variable data QR scans on hover and keyboard focus and respects reduced motion', async ({

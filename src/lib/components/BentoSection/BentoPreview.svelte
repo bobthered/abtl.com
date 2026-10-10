@@ -7,7 +7,8 @@
 		Span,
 		StockTag,
 		StockTagColumns,
-		VariableDataPreview
+		VariableDataPreview,
+		WarehouseScene
 	} from '#lib/components';
 	import { stockColors } from './stockColors';
 	import type { Topic } from './topics';
@@ -39,6 +40,11 @@
 		</Div>
 	{:else if kind === 'data'}
 		<VariableDataPreview />
+	{:else if kind === 'warehouse'}
+		<WarehouseScene
+			isPreview
+			class="motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-105 motion-safe:group-focus-visible:scale-105"
+		/>
 	{:else if kind === 'print'}
 		<Skeleton variants={['bentoTag']}>
 			<Div

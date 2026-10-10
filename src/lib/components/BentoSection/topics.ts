@@ -3,7 +3,16 @@ export type Topic = {
 	description: string;
 	id: string;
 	preview:
-		'globe' | 'columns' | 'fan' | 'print' | 'layers' | 'shape' | 'feed' | 'sequence' | 'data';
+		| 'globe'
+		| 'columns'
+		| 'fan'
+		| 'print'
+		| 'layers'
+		| 'shape'
+		| 'feed'
+		| 'sequence'
+		| 'data'
+		| 'warehouse';
 	slug?: string;
 	title: string;
 };
@@ -59,6 +68,14 @@ export const topics: Topic[] = [
 		description: 'Explore consecutive numbering.',
 		preview: 'sequence',
 		columns: 'wide'
+	},
+	{
+		id: 'warehousing',
+		title: 'Produce in volume. Release on demand.',
+		description:
+			'Lower your unit price with a larger production run. Warehouse finished tags and labels for later shipments, available for immediate release from stock.',
+		preview: 'warehouse',
+		columns: 'full'
 	}
 ];
 

@@ -1,11 +1,12 @@
 # Bento content progress
 
-| Item / route                          | Status                                | Remaining work                                                                                                                     |
-| ------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Stock colors - `/tags/stock-colors`   | Complete                              | Approved by Bob. Maintain existing artwork, color studio, marquee, and sample picker.                                              |
-| Shipping - `/tags/shipping`           | Design implemented; demo data         | Replace illustrative globe locations/origin with supplied shipment data. Review final shipping copy with real operational details. |
-| Variable data - `/tags/variable-data` | Design implemented; illustrative data | Review copy and examples; replace sample records with approved examples if desired.                                                |
-| Materials, shapes, formats, numbering | Scaffold                              | Develop one topic at a time.                                                                                                       |
+| Item / route                          | Status                                     | Remaining work                                                                                                                     |
+| ------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Stock colors - `/tags/stock-colors`   | Complete                                   | Approved by Bob. Maintain existing artwork, color studio, marquee, and sample picker.                                              |
+| Shipping - `/tags/shipping`           | Design implemented; demo data              | Replace illustrative globe locations/origin with supplied shipment data. Review final shipping copy with real operational details. |
+| Variable data - `/tags/variable-data` | Design implemented; illustrative data      | Review copy and examples; replace sample records with approved examples if desired.                                                |
+| Warehousing - `/tags/warehousing`     | Design implemented; illustrative inventory | Review copy and release arrangements. Demo cartons do not represent live inventory.                                                |
+| Materials, shapes, formats, numbering | Scaffold                                   | Develop one topic at a time.                                                                                                       |
 
 The declined custom-printing concept was replaced by variable data. The former `/tags/printing` placeholder redirects to `/tags/variable-data`.
 
@@ -17,3 +18,5 @@ Shipping coverage (all 50 states and internationally) was supplied by Bob. Demo 
 
 The local globe land dots are derived from public-domain Natural Earth 1:110m land polygons: https://www.naturalearthdata.com/about/terms-of-use/
 Regenerate with `node scripts/build-globe-land.mjs`. The script downloads the official Natural Earth repository source; the customer-facing site uses only the generated local asset.
+
+Warehousing capabilities were supplied by Bob: larger production orders can reduce unit prices, completed goods can be held for later shipments, and on-shelf stock is available for immediate release. The new full-width tile retains the remaining placeholder topics. The lightweight isometric canvas accelerates on tile hover/focus; the page demo releases 2, 4, or 6 illustrative cartons from a stock of 24. Motion pauses offscreen and in hidden tabs, respects reduced motion, and stops when a page release finishes. No storage terms, quantified savings, dispatch deadline, or transit-time promise is implied.

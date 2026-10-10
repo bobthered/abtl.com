@@ -6,22 +6,23 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 262c233af2b5007ce44d1fbddbf44cff6f491d08 -->
+<!-- pending-base: 43c395f4b12d05330ef1781bc160b1e88e890ad4 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add variable data bento and interactive page
+feat: add warehousing bento and interactive release page
 
-Replace the declined printing direction with a variable data tile and route-backed dialog.
-Add theme-aware transparent QR artwork, 4,000 flat particles scattered around orbits, and hover/focus scanning.
-Add synchronized code and numbering demos, tag/label previews, and personalized mailings.
-Generate local SVG sample codes with build-time tooling and preserve legacy printing links.
-Remove the hero configurator and saved overrides; use zoom 3, floor timing 30s/2s, spread 5/5, and thickness scale 10.
-Update browser coverage, bento progress, and changelog history.
+Add a route-backed warehousing dialog and standalone page with volume-order copy and a planning CTA.
+Animate isometric stocked shelves and carton releases, with hover/focus acceleration and reduced-motion support.
+Add demo inventory controls, workflow comparisons, responsive layouts, and browser coverage.
+Update bento progress and reconcile committed variable data work in the changelog.
 ```
 
 ## 2026-10-10
+
+- **feat: add variable data bento and interactive page** (`43c395f`)
+  Replace the printing placeholder with a variable data tile, route-backed dialog, and standalone page. Add transparent QR artwork with 4,000 orbiting particles and hover/focus scanning, interactive codes and numbering, personalized mailing examples, and build-time SVG generation. Preserve former printing links. Remove the hero configurator and saved overrides; finalize zoom 3, floor timing 30s/2s, spread 5/5, and visual thickness scale 10. Update browser coverage, bento progress, and changelog history.
 
 - **feat: add shipping globe and destination page** (`262c233`)
   Add a route-backed shipping topic with a lazy-loaded 3D globe, primary-to-secondary polar gradient, animated demo shipment arcs, and a local geographic fallback. Build a 50-state coverage map, destination explorer, and full-width contact CTA. Record stock colors as complete, isolate demo data for replacement, synchronize dialog dismissal with route history, and add browser coverage and geographic asset tooling.

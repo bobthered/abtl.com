@@ -16,7 +16,8 @@
 		StockColorContent,
 		StockSampleDialog,
 		StockTagExamples,
-		VariableDataContent
+		VariableDataContent,
+		WarehousingContent
 	} from '#lib/components';
 	import { ArrowRight } from '#lib/icons';
 	import { onMount } from 'svelte';
@@ -44,7 +45,7 @@
 </script>
 
 {#snippet constrained(children: Snippet)}
-	{#if isStandalone && (topic.id === 'colors' || topic.id === 'shipping' || topic.id === 'variable-data')}
+	{#if isStandalone && (topic.id === 'colors' || topic.id === 'shipping' || topic.id === 'variable-data' || topic.id === 'warehousing')}
 		<Container>{@render children()}</Container>
 	{:else}
 		{@render children()}
@@ -59,7 +60,9 @@
 				? 'Shipping & reach'
 				: topic.id === 'variable-data'
 					? 'Variable data'
-					: 'Content preview'}</P
+					: topic.id === 'warehousing'
+						? 'Warehousing & releases'
+						: 'Content preview'}</P
 	>
 	{#if isStandalone}
 		<H1 id="bento-dialog-heading" variants={['h2.variant.section']}>{topic.title}</H1>
@@ -76,6 +79,9 @@
 		{:else if topic.id === 'variable-data'}
 			Same design. Changing information. Print the codes, numbers, and personal details that make
 			each tag or label work for its purpose.
+		{:else if topic.id === 'warehousing'}
+			Get the efficiencies of a larger production run without taking the whole shipment at once. We
+			make your tags and labels, warehouse them, and release finished stock when you need it.
 		{:else}This is a layout preview for {topic.description
 				.toLowerCase()
 				.replace(/^explore /, '')
@@ -95,13 +101,16 @@
 <Div
 	data-topic-ready={isReady}
 	class={isStandalone
-		? topic.id === 'colors' || topic.id === 'shipping' || topic.id === 'variable-data'
+		? topic.id === 'colors' ||
+			topic.id === 'shipping' ||
+			topic.id === 'variable-data' ||
+			topic.id === 'warehousing'
 			? 'pt-20 lg:pt-28'
 			: ''
 		: 'pt-12 sm:pt-20'}
 >
 	<Div class="pb-12 sm:pb-16" data-topic-introduction>{@render constrained(introduction)}</Div>
-	{#if topic.id !== 'colors' && topic.id !== 'shipping' && topic.id !== 'variable-data'}
+	{#if topic.id !== 'colors' && topic.id !== 'shipping' && topic.id !== 'variable-data' && topic.id !== 'warehousing'}
 		<Div variants={['dialogArtwork']}><BentoPreview kind={topic.preview} isDialogPreview /></Div>
 	{/if}
 	{#if topic.id === 'colors'}
@@ -122,6 +131,8 @@
 		<ShippingContent {isStandalone} />
 	{:else if topic.id === 'variable-data'}
 		<VariableDataContent {isStandalone} />
+	{:else if topic.id === 'warehousing'}
+		<WarehousingContent {isStandalone} />
 	{:else}
 		{#each detailSections as title, index (title)}
 			<Section
@@ -144,7 +155,7 @@
 			</Section>
 		{/each}
 	{/if}
-	{#if topic.id !== 'colors' && topic.id !== 'shipping' && topic.id !== 'variable-data'}
+	{#if topic.id !== 'colors' && topic.id !== 'shipping' && topic.id !== 'variable-data' && topic.id !== 'warehousing'}
 		<Section
 			variants={['dialogSection']}
 			class="flex flex-wrap items-center gap-4"
