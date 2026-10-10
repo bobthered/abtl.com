@@ -24,6 +24,7 @@
 	import { Menu, ShoppingCart, X } from '#lib/icons';
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
+	import { scrollReveal } from '#lib/attachments';
 	import { subtleReveal } from 'sveltewind/transitions';
 
 	// Types
@@ -156,7 +157,10 @@
 </svelte:head>
 
 <A href="#main-content" variants={['ghost', 'skip']}>Skip to content</A>
-<Div variants={isScrolled ? ['siteFrame', 'siteFrameScrolled'] : ['siteFrame']}>
+<Div
+	{@attach scrollReveal}
+	variants={isScrolled ? ['siteFrame', 'siteFrameScrolled'] : ['siteFrame']}
+>
 	<Header variants={['site']}>
 		<Container
 			variants={['siteHeader']}

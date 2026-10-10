@@ -22,9 +22,6 @@
 	import serviceSecondFront from '#lib/assets/tags/fronts/service-tag-02.svg';
 	import { stockColors } from './stockColors';
 
-	// consts
-	const countDuration = 1800;
-
 	// $props()
 	let {
 		isStandalone = false,
@@ -32,8 +29,6 @@
 	}: { isStandalone?: boolean; onRequestSamples: () => void } = $props();
 
 	// $state
-	let counterElement = $state<HTMLDivElement | null>(null);
-	let displayedColorCount = $state(stockColors.length);
 	let illustrationElement = $state<HTMLDivElement | null>(null);
 	let isBackVisible = $state(false);
 	let selectedColorId = $state('manila');
@@ -42,46 +37,6 @@
 	const selectedColor = $derived(stockColors.find((color) => color.id === selectedColorId)!);
 
 	// $effects
-	onMount(() => {
-		if (!counterElement) return;
-		let animationFrame = 0;
-		let isStarted = false;
-		const preference = matchMedia('(prefers-reduced-motion: reduce)');
-		const finishCount = () => {
-			if (!preference.matches) return;
-			cancelAnimationFrame(animationFrame);
-			displayedColorCount = stockColors.length;
-			isStarted = true;
-			observer.disconnect();
-		};
-		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (!entry.isIntersecting || isStarted) return;
-				isStarted = true;
-				observer.disconnect();
-				if (preference.matches) {
-					displayedColorCount = stockColors.length;
-					return;
-				}
-				const start = performance.now();
-				const advance = (time: number) => {
-					const progress = Math.min((time - start) / countDuration, 1);
-					displayedColorCount = Math.round(stockColors.length * (1 - (1 - progress) ** 3));
-					if (progress < 1) animationFrame = requestAnimationFrame(advance);
-				};
-				animationFrame = requestAnimationFrame(advance);
-			},
-			{ threshold: 0.35 }
-		);
-		if (!preference.matches) displayedColorCount = 0;
-		observer.observe(counterElement);
-		preference.addEventListener('change', finishCount);
-		return () => {
-			cancelAnimationFrame(animationFrame);
-			observer.disconnect();
-			preference.removeEventListener('change', finishCount);
-		};
-	});
 	onMount(() => {
 		if (!illustrationElement) return;
 		const preference = matchMedia('(prefers-reduced-motion: reduce)');
@@ -169,15 +124,12 @@
 					here&rdquo; before anyone reads a word. Give every step in your workflow a color of its
 					own.</P
 				>
-				<Div
-					bind:element={counterElement}
-					data-stock-color-counter
-					class="mt-8 flex items-center gap-4"
-				>
+				<Div data-stock-color-counter class="mt-8 flex items-center gap-4">
 					<Span
 						class="text-6xl font-semibold tracking-tight text-primary-500 tabular-nums dark:text-primary-400"
 						aria-hidden="true"
-						data-stock-color-total>{displayedColorCount}</Span
+						data-count-up={stockColors.length}
+						data-stock-color-total>{stockColors.length}</Span
 					>
 					<Span class="sr-only">{stockColors.length}</Span>
 					<P class="max-w-40 text-base">stock colors.<Br />One unmistakable impression.</P>

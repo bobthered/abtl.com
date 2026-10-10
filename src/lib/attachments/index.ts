@@ -6,3 +6,5 @@ export { processPrint } from './processPrint';
 export { qrScan } from './qrScan';
 export { warehouseFlow } from './warehouseFlow';
 export { weatherTag } from './weatherTag';
+
+export { scrollReveal } from './scrollReveal';

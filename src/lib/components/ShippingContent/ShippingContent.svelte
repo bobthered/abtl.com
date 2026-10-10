@@ -30,8 +30,6 @@
 	let { isStandalone = false }: { isStandalone?: boolean } = $props();
 
 	// $state
-	let countElement = $state<HTMLSpanElement | null>(null);
-	let displayedStateCount = $state(50);
 	let mapElement = $state<SVGSVGElement | null>(null);
 	let selectedLocationId = $state('london');
 
@@ -41,40 +39,6 @@
 	);
 
 	// $effects
-	onMount(() => {
-		if (!countElement) return;
-		const preference = matchMedia('(prefers-reduced-motion: reduce)');
-		let frame = 0;
-		const finish = () => {
-			if (preference.matches) {
-				cancelAnimationFrame(frame);
-				displayedStateCount = 50;
-			}
-		};
-		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (!entry.isIntersecting) return;
-				observer.disconnect();
-				if (preference.matches) return;
-				const start = performance.now();
-				const advance = (time: number) => {
-					const progress = Math.min((time - start) / 1400, 1);
-					displayedStateCount = Math.round(50 * (1 - (1 - progress) ** 3));
-					if (progress < 1 && !preference.matches) frame = requestAnimationFrame(advance);
-				};
-				frame = requestAnimationFrame(advance);
-			},
-			{ threshold: 0.6 }
-		);
-		if (!preference.matches) displayedStateCount = 0;
-		observer.observe(countElement);
-		preference.addEventListener('change', finish);
-		return () => {
-			cancelAnimationFrame(frame);
-			observer.disconnect();
-			preference.removeEventListener('change', finish);
-		};
-	});
 	onMount(() => {
 		if (!mapElement) return;
 		const preference = matchMedia('(prefers-reduced-motion: reduce)');
@@ -133,10 +97,10 @@
 				>
 				<Div class="mt-8 flex items-center gap-5"
 					><Span
-						bind:element={countElement}
 						class="text-8xl font-semibold tracking-tight text-primary-500 tabular-nums dark:text-primary-400"
 						aria-hidden="true"
-						data-shipping-state-count>{displayedStateCount}</Span
+						data-count-up={50}
+						data-shipping-state-count>{50}</Span
 					><P class="max-w-36">states.<Br />One place to start.</P><Span class="sr-only"
 						>Shipping to all 50 states.</Span
 					></Div

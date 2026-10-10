@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: bd512cff29c3f8fed3e751f58af8ed23098c0c1d -->
+<!-- pending-base: e5c29d623ea12c52d434a8d74e70ed2b33c551a5 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: contain animated bento artwork overflow
+feat: add site-wide scroll reveals and shared count-ups
 
-Prevent scrolling tag columns and preview artwork from extending the page beyond its footer or tile bounds while preserving hover expansion.
-Add mobile, tablet, desktop, and dialog overflow regression coverage; reconcile changelog history.
+Add a root attachment with subtle fade-and-rise entrances, row staggering, dynamic route/dialog discovery, and reduced-motion cleanup.
+Consolidate stock-color and shipping count-ups, preserve live counters, and add browser coverage, usage instructions, and changelog history.
 ```
 
 ## 2026-10-10
+
+- **fix: contain animated bento artwork overflow** (`e5c29d6`)
+  Contain scrolling tag columns and preview artwork without losing tile hover expansion. Add mobile, tablet, desktop, and dialog overflow regression coverage and reconcile changelog history.
 
 - **feat: add synthetic materials bento and interactive page** (`bd512cf`)
   Add a wire-tethered tag with wind, rain, hover/focus motion, and reduced-motion support. Build a route-backed dialog and standalone page with a five-material explorer, attachment selector, and full-width sample CTA. Use supplied tag geometry, supplier-informed copy, shared selectable button styling, and browser coverage; update progress and changelog history.
