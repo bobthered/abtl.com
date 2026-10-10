@@ -6,18 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 720f1979833e2e9f96c316f302ae60ac7660b4c7 -->
+<!-- pending-base: 8529733f080f26c4d852ba966c541d026dfe5d4b -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: make scroll reveals visible at a responsive viewport threshold
+fix: complete site-wide scroll animation coverage
 
-Hide client-enhanced pending content and fade it in over 700ms when its top reaches 80% of viewport height; refresh the trigger on resize.
-Preserve staggering and count-ups, expose content for focus, reduced motion and scroll limits, and update browser coverage, instructions and changelog history.
+Extend automatic reveals to links, buttons, all headings, lists and control groups; reveal artwork, footer groups and stationary marquee wrappers without nested entrances.
+Audit the homepage and six topic pages/dialogs, including every bottom CTA. Preserve 20% viewport triggers, reduced motion, existing artwork motion and immediate utility-dialog controls.
+Add route-wide browser coverage and update project instructions and changelog history.
 ```
 
 ## 2026-10-10
+
+- **fix: make scroll reveals visible at a responsive viewport threshold** (`8529733`)
+  Hide client-enhanced pending content and fade it in over 700ms at 80% of viewport height, refreshing the trigger on resize. Preserve staggering and count-ups, expose content for focus, reduced motion and scroll limits, and update browser coverage, instructions and changelog history.
 
 - **feat: add site-wide scroll reveals and shared count-ups** (`720f197`)
   Add a root attachment with subtle fade-and-rise entrances, row staggering, dynamic route/dialog discovery, and reduced-motion cleanup. Consolidate stock-color and shipping count-ups, preserve live counters, and add browser coverage, usage instructions, and changelog history.

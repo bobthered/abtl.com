@@ -111,7 +111,9 @@
 					></Div
 				>
 			</Div>
-			<Div class="overflow-hidden rounded-sm bg-gray-100 p-6 lg:col-span-3 dark:bg-gray-900"
+			<Div
+				data-scroll-reveal
+				class="overflow-hidden rounded-sm bg-gray-100 p-6 lg:col-span-3 dark:bg-gray-900"
 				><ProcessArtwork class="min-h-112 sm:min-h-128" {channels} {isSeparated} /><Div
 					class="flex items-center justify-between gap-4 px-2 pb-2 text-xs text-gray-500 dark:text-gray-400"
 					><Span aria-live="polite" data-process-count>{enabledCount} of 4 inks active</Span><Span
@@ -139,14 +141,14 @@
 					collection detail, or a thoughtful message. Both sides can feel like one considered
 					design. Our eight-color capability supports CMYK on the face and CMYK on the back.</P
 				><Div class="mt-8 grid grid-cols-2 gap-4"
-					><Div class="rounded-sm bg-gray-100 p-5 dark:bg-gray-900"
+					><Div class="rounded-sm bg-gray-100 p-5 dark:bg-gray-900" data-scroll-reveal
 						><P class="text-5xl font-light">4</P><P class="mt-3 text-sm font-medium">Face / CMYK</P
 						><Div class="mt-4 flex gap-1" aria-hidden="true"
 							>{#each inks as ink (ink.code)}<Span
 									class={`h-2 flex-1 rounded-sm ${ink.color}`}
 								/>{/each}</Div
 						></Div
-					><Div class="rounded-sm bg-gray-100 p-5 dark:bg-gray-900"
+					><Div class="rounded-sm bg-gray-100 p-5 dark:bg-gray-900" data-scroll-reveal
 						><P class="text-5xl font-light">4</P><P class="mt-3 text-sm font-medium">Back / CMYK</P
 						><Div class="mt-4 flex gap-1" aria-hidden="true"
 							>{#each inks as ink (ink.code)}<Span
@@ -157,6 +159,7 @@
 				></Div
 			>
 			<Div
+				data-scroll-reveal
 				class="overflow-hidden rounded-sm bg-gradient-to-br from-primary-100 via-gray-100 to-secondary-100 p-6 sm:p-8 lg:col-span-3 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950"
 				><Div class="flex items-center justify-between gap-4"
 					><Span class="text-sm font-medium" aria-live="polite" data-process-side
@@ -195,7 +198,7 @@
 		class={isStandalone ? '' : '-mx-6 sm:-mx-8 lg:-mx-16'}
 		data-process-section="contact"
 		><Container class="flex flex-col items-center gap-6"
-			><Layers class="size-8" aria-hidden="true" /><P
+			><Div data-scroll-reveal><Layers class="size-8" aria-hidden="true" /></Div><P
 				variants={['eyebrow']}
 				class="text-gray-300 dark:text-gray-600">Four-color process. Eight-color capability.</P
 			><H3 class="max-w-3xl text-4xl sm:text-5xl"

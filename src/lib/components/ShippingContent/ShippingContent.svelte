@@ -46,29 +46,37 @@
 		const finish = () => {
 			if (preference.matches) animations.forEach((animation) => animation.cancel());
 		};
-		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (!entry.isIntersecting) return;
-				observer.disconnect();
-				if (preference.matches) return;
-				mapElement!.querySelectorAll('[data-shipping-state]').forEach((tile, index) => {
-					animations.push(
-						tile.animate(
-							[
-								{ opacity: 0.25, transform: 'translateY(6px)' },
-								{ opacity: 1, transform: 'translateY(0)' }
-							],
-							{ duration: 450, delay: index * 14, easing: 'ease-out', fill: 'backwards' }
-						)
-					);
-				});
-			},
-			{ threshold: 0.25 }
-		);
-		observer.observe(mapElement);
+		let observer: IntersectionObserver;
+		const observeMap = () => {
+			observer?.disconnect();
+			if (animations.length) return;
+			observer = new IntersectionObserver(
+				([entry]) => {
+					if (!entry.isIntersecting) return;
+					observer.disconnect();
+					if (preference.matches) return;
+					mapElement!.querySelectorAll('[data-shipping-state]').forEach((tile, index) => {
+						animations.push(
+							tile.animate(
+								[
+									{ opacity: 0.25, transform: 'translateY(6px)' },
+									{ opacity: 1, transform: 'translateY(0)' }
+								],
+								{ duration: 450, delay: index * 14, easing: 'ease-out', fill: 'backwards' }
+							)
+						);
+					});
+				},
+				{ rootMargin: `0px 0px -${Math.round(window.innerHeight * 0.2)}px 0px`, threshold: 0 }
+			);
+			observer.observe(mapElement!);
+		};
+		observeMap();
+		window.addEventListener('resize', observeMap);
 		preference.addEventListener('change', finish);
 		return () => {
 			observer.disconnect();
+			window.removeEventListener('resize', observeMap);
 			animations.forEach((animation) => animation.cancel());
 			preference.removeEventListener('change', finish);
 		};
@@ -106,7 +114,7 @@
 					></Div
 				>
 			</Div>
-			<Div variants={['shippingArtwork']} class="group p-6 sm:p-8">
+			<Div variants={['shippingArtwork']} class="group p-6 sm:p-8" data-scroll-reveal>
 				<Svg
 					bind:element={mapElement}
 					viewBox="0 0 600 410"
@@ -158,7 +166,7 @@
 	>
 		<Div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
 			<Div class="order-2 lg:order-1"
-				><Div variants={['shippingArtwork']} class="relative"
+				><Div variants={['shippingArtwork']} class="relative" data-scroll-reveal
 					><ShippingGlobe activeLocationId={selectedLocationId} /><Div
 						class="absolute right-6 bottom-6 left-6 rounded-sm bg-white/90 p-4 backdrop-blur-sm dark:bg-gray-950/90"
 						><P class="text-sm font-medium" aria-live="polite"
@@ -204,7 +212,7 @@
 
 {#snippet invitation()}
 	<Container class="flex flex-col items-center gap-6">
-		<Div class="flex gap-3" aria-hidden="true"
+		<Div data-scroll-reveal class="flex gap-3" aria-hidden="true"
 			><PackageCheck class="size-7" /><Globe2 class="size-7" /></Div
 		>
 		<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600"

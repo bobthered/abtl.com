@@ -61,13 +61,16 @@
 					to receive it all at once. We can warehouse your finished tags and labels, then ship
 					portions as you need them.</P
 				>
-				<Div class="mt-8 flex items-center gap-3 text-primary-600 dark:text-primary-300"
+				<Div
+					data-scroll-reveal
+					class="mt-8 flex items-center gap-3 text-primary-600 dark:text-primary-300"
 					><Boxes class="size-5 shrink-0" aria-hidden="true" /><Span class="text-sm font-medium"
 						>One production run. Multiple releases.</Span
 					></Div
 				>
 			</Div>
 			<Div
+				data-scroll-reveal
 				class="overflow-hidden rounded-sm bg-gray-100 p-6 sm:p-10 lg:col-span-3 dark:bg-gray-900"
 			>
 				<Div class="flex items-center justify-between gap-4"
@@ -117,7 +120,7 @@
 			></Div
 		>
 		<Div class="mt-10 grid overflow-hidden rounded-sm bg-gray-100 lg:grid-cols-3 dark:bg-gray-900">
-			<Div class="relative min-w-0 lg:col-span-2">
+			<Div data-scroll-reveal class="relative min-w-0 lg:col-span-2">
 				<WarehouseScene class="min-h-80 sm:min-h-112" release={releases} {stock} />
 				<Span class="absolute bottom-5 left-6 text-xs text-gray-500 dark:text-gray-400"
 					>Illustrative warehouse & carton counts</Span
@@ -183,7 +186,7 @@
 					are separate from production.</P
 				></Div
 			>
-			<Div class="rounded-sm bg-gray-100 p-6 sm:p-10 dark:bg-gray-900">
+			<Div data-scroll-reveal class="rounded-sm bg-gray-100 p-6 sm:p-10 dark:bg-gray-900">
 				<Div class="flex flex-wrap gap-2" role="group" aria-label="Compare order workflows"
 					><Button
 						variants={['neutral', ...(!isStocked ? ['stockSwatchSelected'] : [])]}
@@ -238,7 +241,7 @@
 		data-warehouse-section="contact"
 	>
 		<Container class="flex flex-col items-center gap-6">
-			<PackageCheck class="size-8" aria-hidden="true" /><P
+			<Div data-scroll-reveal><PackageCheck class="size-8" aria-hidden="true" /></Div><P
 				variants={['eyebrow']}
 				class="text-gray-300 dark:text-gray-600">Plan the run. Choose the releases.</P
 			><H3 class="max-w-3xl text-4xl sm:text-5xl"

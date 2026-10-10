@@ -78,7 +78,7 @@
 					identification a tougher starting point.</P
 				>
 				<Div class="mt-8 space-y-5">
-					<Div class="flex gap-4"
+					<Div class="flex gap-4" data-scroll-reveal
 						><Droplets class="mt-1 size-5 shrink-0 text-primary-500" aria-hidden="true" /><Div
 							><H4 class="text-base font-medium">Waterproof materials</H4><P
 								class="mt-1 text-sm text-gray-600 dark:text-gray-300"
@@ -86,7 +86,7 @@
 							></Div
 						></Div
 					>
-					<Div class="flex gap-4"
+					<Div class="flex gap-4" data-scroll-reveal
 						><Hand class="mt-1 size-5 shrink-0 text-primary-500" aria-hidden="true" /><Div
 							><H4 class="text-base font-medium">Durability for the way you work</H4><P
 								class="mt-1 text-sm text-gray-600 dark:text-gray-300"
@@ -94,7 +94,7 @@
 							></Div
 						></Div
 					>
-					<Div class="flex gap-4"
+					<Div class="flex gap-4" data-scroll-reveal
 						><Link class="mt-1 size-5 shrink-0 text-primary-500" aria-hidden="true" /><Div
 							><H4 class="text-base font-medium">A considered connection</H4><P
 								class="mt-1 text-sm text-gray-600 dark:text-gray-300"
@@ -104,7 +104,10 @@
 					>
 				</Div>
 			</Div>
-			<Div class="relative overflow-hidden rounded-sm bg-gray-100 lg:col-span-3 dark:bg-gray-900">
+			<Div
+				data-scroll-reveal
+				class="relative overflow-hidden rounded-sm bg-gray-100 lg:col-span-3 dark:bg-gray-900"
+			>
 				<Div class="absolute inset-x-6 top-6 z-10 flex items-center justify-between gap-4"
 					><Span class="text-xs font-medium tracking-widest uppercase">Out in the elements</Span
 					><Span class="flex items-center gap-2 text-xs"
@@ -160,6 +163,7 @@
 		</Div>
 		<Div class="mt-6 grid overflow-hidden rounded-sm bg-gray-100 lg:grid-cols-5 dark:bg-gray-900">
 			<Div
+				data-scroll-reveal
 				class="relative flex min-h-80 items-center justify-center overflow-hidden bg-radial from-primary-200/60 to-transparent p-8 lg:col-span-2 dark:from-primary-800/40"
 			>
 				<Span class="absolute top-5 left-6 text-xs font-medium tracking-widest uppercase"
@@ -234,7 +238,9 @@
 		aria-labelledby="synthetic-attachment-heading"
 	>
 		<Div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-			<Div class="relative overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-900"
+			<Div
+				data-scroll-reveal
+				class="relative overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-900"
 				><WeatherTag
 					class="min-h-88 sm:min-h-100"
 					{attachment}
@@ -279,7 +285,7 @@
 		data-synthetic-section="samples"
 	>
 		<Container class="flex flex-col items-center gap-6"
-			><ShieldCheck class="size-8" aria-hidden="true" /><P
+			><Div data-scroll-reveal><ShieldCheck class="size-8" aria-hidden="true" /></Div><P
 				variants={['eyebrow']}
 				class="text-gray-300 dark:text-gray-600">Take the comparison into your own hands</P
 			><H3 class="max-w-3xl text-4xl sm:text-5xl">Feel the difference.<Br />Find the right fit.</H3

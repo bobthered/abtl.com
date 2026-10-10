@@ -1,3 +1,4 @@
+import { topics, topicHref } from '../lib/components/BentoSection/topics';
 import { expect, test } from '@playwright/test';
 
 test('new content reveals once, staggers a row, and counts up without layout overflow', async ({
@@ -168,3 +169,212 @@ test('content at the scroll limit is revealed even below the trigger line', asyn
 	);
 	await expect(target).toHaveCSS('opacity', '1');
 });
+
+test('footer groups enter together with staggering and keep navigation accessible', async ({
+	page
+}) => {
+	await page.setViewportSize({ width: 1440, height: 900 });
+	await page.goto('/');
+	const groups = page.locator('footer [data-scroll-reveal]');
+	await expect(groups).toHaveCount(4);
+	await expect(groups.first()).toHaveCSS('opacity', '0');
+	await page.evaluate(() =>
+		window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' })
+	);
+	for (const group of await groups.all()) {
+		await expect(group).toHaveAttribute('data-scroll-reveal-state', 'complete');
+		await expect(group).toHaveCSS('opacity', '1');
+	}
+	expect(
+		await groups.evaluateAll((elements) =>
+			elements.slice(0, 3).map((element) => element.getAttribute('data-scroll-reveal-delay'))
+		)
+	).toEqual(['0', '70', '140']);
+	await expect(
+		page.getByRole('navigation', { name: 'Footer navigation' }).getByRole('link').first()
+	).toBeVisible();
+});
+
+test('stock photo marquee reveals its stationary wrapper without revealing repeated cards', async ({
+	page
+}) => {
+	await page.goto('/tags/stock-colors');
+	const marquee = page.locator('main [data-marquee]').first();
+	const wrapper = marquee.locator('..');
+	await expect(wrapper).toHaveAttribute('data-scroll-reveal', 'true');
+	await expect(wrapper).toHaveCSS('opacity', '0');
+	await marquee.scrollIntoViewIfNeeded();
+	await expect(wrapper).toHaveAttribute('data-scroll-reveal-state', 'complete');
+	await expect(wrapper).toHaveCSS('opacity', '1');
+	await expect(marquee.locator('[data-scroll-reveal-state]')).toHaveCount(0);
+	const track = marquee.locator('[data-marquee-track]');
+	await page.mouse.move(0, 0);
+	await expect
+		.poll(() =>
+			track.evaluate((element) =>
+				element.getAnimations().some((animation) => animation.playState === 'running')
+			)
+		)
+		.toBe(true);
+	await marquee.hover();
+	await expect
+		.poll(() =>
+			track.evaluate((element) =>
+				element.getAnimations().every((animation) => animation.playState === 'paused')
+			)
+		)
+		.toBe(true);
+});
+
+test('shipping dialog reveals state artwork and staggers its fifty state tiles on entry', async ({
+	page
+}) => {
+	await page.addInitScript(() => {
+		const animate = Element.prototype.animate;
+		const entries: number[] = [];
+		Object.assign(window, { stateEntranceDelays: entries });
+		// A standard function preserves the animated element as dynamic this.
+		Element.prototype.animate = function (...args) {
+			if (this.hasAttribute('data-shipping-state')) {
+				const options = args[1];
+				entries.push(typeof options === 'object' ? Number(options?.delay ?? 0) : 0);
+			}
+			return animate.apply(this, args);
+		};
+	});
+	await page.setViewportSize({ width: 1440, height: 900 });
+	await page.goto('/');
+	await expect(page.locator('[data-bento-ready="true"]')).toBeVisible();
+	await page.locator('[data-bento-topic="shipping"]').click();
+	const dialog = page.getByRole('dialog', { name: 'Your tags. A world of possibilities.' });
+	const map = dialog.getByRole('img', {
+		name: 'Tile map of all 50 U.S. states, including Alaska and Hawaii'
+	});
+	const artwork = map.locator('..');
+	await expect(artwork).toHaveAttribute('data-scroll-reveal', 'true');
+
+	await map.scrollIntoViewIfNeeded();
+	await expect(artwork).toHaveAttribute('data-scroll-reveal-state', 'complete');
+	await expect
+		.poll(() =>
+			page.evaluate(
+				() => (window as unknown as { stateEntranceDelays: number[] }).stateEntranceDelays.length
+			)
+		)
+		.toBe(50);
+	expect(
+		await page.evaluate(
+			() => (window as unknown as { stateEntranceDelays: number[] }).stateEntranceDelays
+		)
+	).toEqual(Array.from({ length: 50 }, (_, index) => index * 14));
+	await expect(artwork).toHaveCSS('opacity', '1');
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	expect(await map.evaluate((element) => element.getAnimations({ subtree: true }).length)).toBe(0);
+	await page.keyboard.press('Escape');
+	await expect(dialog).toHaveCount(0);
+});
+
+for (const isDialog of [false, true]) {
+	test(`stock color preview and sample action reveal in the ${isDialog ? 'dialog' : 'standalone page'}`, async ({
+		page
+	}) => {
+		await page.setViewportSize({ width: 1440, height: 900 });
+		await page.goto(isDialog ? '/' : '/tags/stock-colors');
+		if (isDialog) {
+			await expect(page.locator('[data-bento-ready="true"]')).toBeVisible();
+			await page.locator('[data-bento-topic="colors"]').click();
+		}
+		const content = page.locator('[data-stock-color-content]');
+		const preview = content.locator('figure');
+		const swatches = content.getByRole('group', { name: 'Preview stock colors' });
+		const samples = content.getByRole('button', { name: 'Request Samples', exact: true });
+		for (const item of [preview, swatches, samples]) {
+			await expect(item).toHaveAttribute('data-scroll-reveal', 'true');
+			await expect(item).toHaveCSS('opacity', '0');
+		}
+		await preview.scrollIntoViewIfNeeded();
+		await expect(preview).toHaveAttribute('data-scroll-reveal-state', 'complete');
+		await expect(swatches).toHaveAttribute('data-scroll-reveal-state', 'complete');
+		await expect(preview).toHaveCSS('opacity', '1');
+		await swatches.getByRole('button', { name: 'Preview White', exact: true }).click();
+		await expect(preview.locator('[data-stock-preview-color]')).toHaveAttribute(
+			'data-stock-preview-color',
+			'white'
+		);
+		await preview.getByRole('button', { name: 'Flip tag' }).click();
+		await expect(preview.locator('[data-stock-preview-side]')).toHaveAttribute(
+			'data-stock-preview-side',
+			'back'
+		);
+		await samples.scrollIntoViewIfNeeded();
+		await expect(samples).toHaveAttribute('data-scroll-reveal-state', 'complete');
+		await expect(samples).toHaveCSS('opacity', '1');
+		await samples.click();
+		await expect(page.getByRole('dialog').last()).toContainText('Select all');
+	});
+}
+
+// Audit every content leaf, including decorative artwork and labels, against actual registration.
+// A unit is covered by its own entrance or a revealed ancestor. Explicit opt-outs stay immediate.
+for (const width of [390, 1440]) {
+	for (const route of ['/', ...topics.map(topicHref)]) {
+		test(`all content has entrance coverage at ${width}px on ${route}`, async ({ page }) => {
+			await page.setViewportSize({ width, height: 900 });
+			await page.goto(route);
+			await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete');
+			const missing = await page.locator('main, footer').evaluateAll((roots) =>
+				roots.flatMap((root) =>
+					[
+						...root.querySelectorAll(
+							'h1,h2,h3,h4,h5,h6,p,figure,figcaption,img,a,button,ul,ol,dl,[role="group"],svg,canvas,span'
+						)
+					]
+						.filter((element) => {
+							if (element.closest('header, nav, .sr-only, [inert], [data-scroll-reveal="off"]'))
+								return false;
+							if (!element.getBoundingClientRect().width || !element.getBoundingClientRect().height)
+								return false;
+							return !element.closest('[data-scroll-reveal-state]');
+						})
+						.map((element) => element.outerHTML.slice(0, 220))
+				)
+			);
+			expect(missing).toEqual([]);
+		});
+	}
+}
+
+for (const topic of topics) {
+	test(`all ${topic.id} dialog content and its bottom CTA have entrance coverage`, async ({
+		page
+	}) => {
+		await page.setViewportSize({ width: 1440, height: 900 });
+		await page.goto('/');
+		await expect(page.locator('[data-bento-ready="true"]')).toBeVisible();
+		await page.locator(`[data-bento-topic="${topic.id}"]`).click();
+		const dialog = page.locator('[data-bento-dialog]');
+		await expect(dialog.locator('[data-topic-ready="true"]')).toBeVisible();
+		const missing = await dialog.evaluate((root) =>
+			[
+				...root.querySelectorAll(
+					'h1,h2,h3,h4,h5,h6,p,figure,figcaption,img,a,button,ul,ol,dl,[role="group"],svg,canvas,span'
+				)
+			]
+				.filter((element) => {
+					if (element.closest('.sr-only, [inert], [data-scroll-reveal="off"]')) return false;
+					if (!element.getBoundingClientRect().width || !element.getBoundingClientRect().height)
+						return false;
+					return !element.closest('[data-scroll-reveal-state]');
+				})
+				.map((element) => element.outerHTML.slice(0, 220))
+		);
+		expect(missing).toEqual([]);
+		const cta = dialog.locator('section').last().locator('a,button').last();
+		await expect(cta).toHaveAttribute('data-scroll-reveal-state', 'pending');
+		await expect(cta).toHaveCSS('opacity', '0');
+		await cta.scrollIntoViewIfNeeded();
+		await expect(cta).toHaveAttribute('data-scroll-reveal-state', 'complete');
+		await expect(cta).toHaveCSS('opacity', '1');
+		await expect(dialog.getByRole('button', { name: 'Close topic' })).toBeEnabled();
+	});
+}

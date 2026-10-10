@@ -67,7 +67,7 @@
 	});
 </script>
 
-<Div class={theme.resolve('tagRain')}>
+<Div class={theme.resolve('tagRain')} data-scroll-reveal="off">
 	<Canvas
 		bind:element={canvas}
 		variants={['tagRain']}

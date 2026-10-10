@@ -161,45 +161,48 @@
 	});
 </script>
 
-<Div
-	{@attach dragMarquee}
-	bind:element
-	variants={['marquee']}
-	class={`${className} ${isReady ? '' : 'opacity-0'} ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-	role="region"
-	tabindex={0}
-	aria-label={ariaLabel}
-	aria-describedby={helpId}
-	onpointerenter={(event) => {
-		if (event.pointerType !== 'touch') isHovered = true;
-	}}
-	onpointerleave={(event) => {
-		if (event.pointerType !== 'touch') isHovered = false;
-	}}
-	onfocusin={(event) => (isFocused = (event.target as HTMLElement).matches(':focus-visible'))}
-	onfocusout={() => (isFocused = false)}
-	onkeydown={browseItems}
-	data-marquee
->
-	<Span id={helpId} class="sr-only"
-		>Hover or focus to pause. Drag horizontally or use the left and right arrow keys to browse
-		items.</Span
+<!-- Reveal the stationary wrapper, keeping the moving track and its copies independent. -->
+<Div class="w-full min-w-0" data-scroll-reveal>
+	<Div
+		{@attach dragMarquee}
+		bind:element
+		variants={['marquee']}
+		class={`${className} ${isReady ? '' : 'opacity-0'} ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+		role="region"
+		tabindex={0}
+		aria-label={ariaLabel}
+		aria-describedby={helpId}
+		onpointerenter={(event) => {
+			if (event.pointerType !== 'touch') isHovered = true;
+		}}
+		onpointerleave={(event) => {
+			if (event.pointerType !== 'touch') isHovered = false;
+		}}
+		onfocusin={(event) => (isFocused = (event.target as HTMLElement).matches(':focus-visible'))}
+		onfocusout={() => (isFocused = false)}
+		onkeydown={browseItems}
+		data-marquee
 	>
-	<Div bind:element={track} variants={['marqueeTrack']} class={gapClass} data-marquee-track>
-		{#each Array.from({ length: copyCount }, (_, index) => index) as copy (copy)}
-			<Div
-				variants={['marqueeCopy']}
-				class={gapClass}
-				aria-hidden={copy > 0 && !isCopiesInteractive ? 'true' : undefined}
-				inert={copy > 0 && !isCopiesInteractive}
-				data-marquee-copy
-			>
-				{#each items as item, index (index)}
-					<Div class="flex shrink-0" data-marquee-item>
-						{@render renderItem(item, copy > 0)}
-					</Div>
-				{/each}
-			</Div>
-		{/each}
+		<Span id={helpId} class="sr-only"
+			>Hover or focus to pause. Drag horizontally or use the left and right arrow keys to browse
+			items.</Span
+		>
+		<Div bind:element={track} variants={['marqueeTrack']} class={gapClass} data-marquee-track>
+			{#each Array.from({ length: copyCount }, (_, index) => index) as copy (copy)}
+				<Div
+					variants={['marqueeCopy']}
+					class={gapClass}
+					aria-hidden={copy > 0 && !isCopiesInteractive ? 'true' : undefined}
+					inert={copy > 0 && !isCopiesInteractive}
+					data-marquee-copy
+				>
+					{#each items as item, index (index)}
+						<Div class="flex shrink-0" data-marquee-item>
+							{@render renderItem(item, copy > 0)}
+						</Div>
+					{/each}
+				</Div>
+			{/each}
+		</Div>
 	</Div>
 </Div>

@@ -66,6 +66,7 @@
 </script>
 
 <Dialog
+	data-scroll-reveal="off"
 	bind:element={dialogElement}
 	bind:isVisible
 	variants={['stockSamples']}

@@ -6,7 +6,10 @@ const revealViewportOffset = 0.2;
 const pendingClass = 'motion-safe:opacity-0';
 
 const selector =
-	':is(main, dialog) :is(h1, h2, h3, p, article), [data-bento-topic], [data-scroll-reveal], [data-count-up]';
+	':is(main, dialog, footer) :is(h1, h2, h3, h4, h5, h6, p, article, figure, figcaption, img, a, button, ul, ol, dl, [role="group"]), [data-bento-topic], [data-scroll-reveal], [data-count-up]';
+// Reveal semantic content units together, including their icons and interactive children.
+const groupSelector =
+	'h1, h2, h3, h4, h5, h6, p, article, figure, a, button, ul, ol, dl, [role="group"], [data-bento-topic], [data-scroll-reveal]:not([data-scroll-reveal="off"])';
 const numberFormat = new Intl.NumberFormat('en-US');
 const excluded = 'header, nav, [data-scroll-reveal="off"], [data-marquee], [data-stock-columns]';
 
@@ -149,13 +152,8 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 				continue;
 			if (target.closest(excluded) || target.parentElement?.closest('[aria-hidden="true"]'))
 				continue;
-			// Reveal a card as a unit; avoid stacking entrance transforms on its descendants.
-			if (
-				!target.hasAttribute('data-count-up') &&
-				target.parentElement?.closest(
-					'article, [data-bento-topic], [data-scroll-reveal]:not([data-scroll-reveal="off"])'
-				)
-			)
+			// Reveal each content group as a unit; avoid stacking entrances on its descendants.
+			if (!target.hasAttribute('data-count-up') && target.parentElement?.closest(groupSelector))
 				continue;
 			if (preference.matches) {
 				completed.add(target);
@@ -163,6 +161,7 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 				continue;
 			}
 			// Only client-enhanced content is hidden; SSR/no-JS content remains readable.
+			target.dataset.scrollRevealState = 'pending';
 			target.classList.add(pendingClass);
 			prepared.add(target);
 			observed.add(target);

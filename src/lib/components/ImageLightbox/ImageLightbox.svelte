@@ -100,6 +100,7 @@
 </script>
 
 <Dialog
+	data-scroll-reveal="off"
 	{@attach dismissOutside({
 		contentSelector: '[data-lightbox-content]',
 		onDismiss: () => (isVisible = false)

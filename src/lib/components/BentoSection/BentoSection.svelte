@@ -169,6 +169,7 @@
 						variants={['neutral', 'icon']}
 						aria-label="Close topic"
 						onclick={closeDialog}
+						data-scroll-reveal="off"
 						data-bento-close><X class="size-5" aria-hidden="true" /></Button
 					>
 				</Div>

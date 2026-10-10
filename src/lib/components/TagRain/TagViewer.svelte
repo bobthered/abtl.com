@@ -39,7 +39,13 @@
 	});
 </script>
 
-<Dialog bind:isVisible variants={['tagViewer']} aria-labelledby="tag-viewer-title" data-tag-viewer>
+<Dialog
+	data-scroll-reveal="off"
+	bind:isVisible
+	variants={['tagViewer']}
+	aria-labelledby="tag-viewer-title"
+	data-tag-viewer
+>
 	<Div class="flex items-start justify-between gap-4">
 		<Div>
 			<H2 id="tag-viewer-title" class="mb-1 text-xl font-medium capitalize">{selection.name}</H2>

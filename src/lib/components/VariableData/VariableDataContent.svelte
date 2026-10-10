@@ -83,6 +83,7 @@
 			</Div>
 			<Div
 				variants={['dataArtwork']}
+				data-scroll-reveal
 				class="flex min-h-128 flex-col items-center justify-center gap-8 p-6 sm:p-10"
 			>
 				<Div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Printed format">
@@ -128,7 +129,11 @@
 		aria-labelledby="variable-sequence-heading"
 	>
 		<Div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-			<Div variants={['dataArtwork']} class="order-2 overflow-hidden p-6 sm:p-10 lg:order-1">
+			<Div
+				variants={['dataArtwork']}
+				data-scroll-reveal
+				class="order-2 overflow-hidden p-6 sm:p-10 lg:order-1"
+			>
 				<Div class="mb-8 flex items-center justify-between text-primary-600 dark:text-primary-300"
 					><Database class="size-6" aria-hidden="true" /><Span class="font-mono text-xs"
 						>RECORD → PRINTED PIECE</Span
@@ -165,14 +170,14 @@
 					information printed on it.</P
 				>
 				<Div class="mt-8 grid gap-6 sm:grid-cols-2">
-					<Div
+					<Div data-scroll-reveal
 						><ScanLine class="mb-3 size-6 text-primary-500" aria-hidden="true" /><P
 							class="font-medium">Built around your data</P
 						><P class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300"
 							>Asset IDs, reference numbers, or other changing fields from your project.</P
 						></Div
 					>
-					<Div
+					<Div data-scroll-reveal
 						><ArrowDown class="mb-3 size-6 text-secondary-500" aria-hidden="true" /><P
 							class="font-medium">One record at a time</P
 						><P class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300"
@@ -211,6 +216,7 @@
 			</Div>
 			<Div
 				variants={['dataArtwork']}
+				data-scroll-reveal
 				class="relative flex min-h-112 items-center justify-center overflow-hidden p-6 sm:p-12 lg:col-span-3"
 			>
 				<Div
@@ -241,7 +247,7 @@
 		data-variable-section="contact"
 	>
 		<Container class="flex flex-col items-center gap-6">
-			<Mail class="size-8" aria-hidden="true" />
+			<Div data-scroll-reveal><Mail class="size-8" aria-hidden="true" /></Div>
 			<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600"
 				>Your data. Your next project.</P
 			>
