@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 85d17d287abe27b45f2fdca64a907f9ebe3b3d5c -->
+<!-- pending-base: 068e86310191d2ea47a8fb01a69fe4cce23126ca -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: simplify homepage animation controls
+feat: open news highlights in route-backed dialogs
 
-Use the shared marquee for hover-to-pause and bidirectional dragging, removing the brand pause button and duplicate motion logic.
-Remove captions and controls below the metric canvas while preserving pointer and keyboard interactions.
+Use shared bento tiles with pointer outlines and expand indicators for carousel images, widening hovered images by 2rem.
+Share post content between shallow-route dialogs and standalone news pages, preserving dismissal and browser history behavior.
 Update browser coverage and reconcile changelog history.
 ```
 
 ## 2026-10-11
+
+- **fix: simplify homepage animation controls** (`068e863`)
+  Use the shared brand marquee for hover-to-pause and bidirectional dragging. Remove brand and metric canvas pause buttons and the captions and action controls below the canvas, preserving pointer and keyboard interactions. Update browser coverage and changelog history.
 
 - **feat: add shared news highlights and standardize grid spacing** (`85d17d2`)
   Replace the customer spotlight with shared publication data, homepage news highlights, a news listing and article routes. Retain animated golden-ratio image widths and controls above the row; standardize content grids and card collections to 1rem gaps, document publishing conventions and update browser coverage.

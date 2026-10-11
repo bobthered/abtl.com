@@ -7,6 +7,7 @@ declare global {
 		// interface PageData {}
 		interface PageState {
 			bentoTopic?: string;
+			newsPost?: string;
 		}
 		// interface Platform {}
 	}

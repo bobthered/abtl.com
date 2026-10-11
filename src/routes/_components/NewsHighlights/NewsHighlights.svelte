@@ -1,9 +1,22 @@
 <script lang="ts">
 	// Imports
-	import { A, Button, Container, Div, H2, H3, Img, P, Section, Span } from '#lib/components';
+	import {
+		A,
+		BentoItem,
+		Button,
+		Container,
+		Div,
+		H2,
+		H3,
+		Img,
+		P,
+		Section,
+		Span
+	} from '#lib/components';
 	import { ChevronLeft, ChevronRight } from '#lib/icons';
 	import { MediaQuery } from 'svelte/reactivity';
-	import { newsHighlights } from '#lib/data/news.js';
+	import NewsDialog from './NewsDialog.svelte';
+	import { newsHighlights, type NewsPost } from '#lib/data/news.js';
 	import { onDestroy, tick, untrack } from 'svelte';
 
 	// consts
@@ -23,8 +36,38 @@
 	const uid = $props.id();
 
 	// helpers
+	const expandImage = (index: number | null) => {
+		if (!track || isAnimating || visibleCount < 2) return;
+		const nodes = [...track.children] as HTMLElement[];
+		const starts = nodes.map((node) => getComputedStyle(node).flexGrow);
+		hoverAnimations.forEach((animation) => animation.cancel());
+		const weights = nodes.map((_, position) =>
+			position < visibleCount ? (1 / imageRatio) ** position : 0
+		);
+		const total = weights.reduce((sum, weight) => sum + weight, 0);
+		const gap = parseFloat(getComputedStyle(nodes[0]).marginRight);
+		const available = track.clientWidth - gap * (visibleCount - 1);
+		if (available <= 0) return;
+		const extra =
+			((2 * parseFloat(getComputedStyle(document.documentElement).fontSize)) / available) * total;
+		const targets = weights.map((weight, position) =>
+			index === null
+				? weight
+				: position === index
+					? weight + extra
+					: weight - (extra * weight) / (total - weights[index])
+		);
+		hoverAnimations = nodes.map((node, position) =>
+			node.animate(
+				[{ flexGrow: starts[position] }, { flexGrow: String(Math.max(0, targets[position])) }],
+				{ duration: isReducedMotion.current ? 0 : 300, easing: 'ease-out', fill: 'both' }
+			)
+		);
+	};
 	const move = async (direction: number) => {
 		if (isAnimating || !track) return;
+		hoverAnimations.forEach((animation) => animation.cancel());
+		hoverAnimations = [];
 		isAnimating = true;
 		const count = visibleCount;
 		if (newsHighlights.length < 2) {
@@ -64,9 +107,29 @@
 		animations = [];
 		isAnimating = false;
 	};
+	const openPost = (event: MouseEvent, post: NewsPost) => {
+		if (
+			event.button !== 0 ||
+			event.metaKey ||
+			event.ctrlKey ||
+			event.shiftKey ||
+			event.altKey ||
+			!onNavigate
+		)
+			return;
+		event.preventDefault();
+		onNavigate(post);
+	};
+
+	// $props()
+	let {
+		onNavigate,
+		postId
+	}: { onNavigate?: (post: NewsPost | null) => void; postId?: string | null } = $props();
 
 	// $state
 	let animations = $state.raw<Animation[]>([]);
+	let hoverAnimations = $state.raw<Animation[]>([]);
 	let isAnimating = $state(false);
 	let isDisposed = $state(false);
 	let order = $state(newsHighlights);
@@ -83,10 +146,15 @@
 		// Finish an active resize/reduced-motion transition with the new responsive layout.
 		void visibleCount;
 		void isReducedMotion.current;
-		untrack(() => animations.forEach((animation) => animation.finish()));
+		untrack(() => {
+			animations.forEach((animation) => animation.finish());
+			hoverAnimations.forEach((animation) => animation.cancel());
+			hoverAnimations = [];
+		});
 	});
 	onDestroy(() => {
 		isDisposed = true;
+		hoverAnimations.forEach((animation) => animation.cancel());
 		animations.forEach((animation) => animation.cancel());
 	});
 </script>
@@ -147,17 +215,36 @@
 				>
 					{#each order as story, index (story.id)}
 						<Div
-							class={`flex min-w-0 basis-0 items-center justify-center overflow-hidden rounded-sm ${proportions[index]} ${index < visibleCount - 1 ? 'mr-4' : 'mr-0'}`}
+							class={`flex min-w-0 basis-0 items-center justify-center ${index >= visibleCount && !isAnimating ? 'invisible' : ''} ${proportions[index]} ${index < visibleCount - 1 ? 'mr-4' : 'mr-0'}`}
 							aria-hidden={index >= visibleCount}
+							inert={index >= visibleCount}
+							onpointerenter={(event) => {
+								if (event.pointerType !== 'touch') expandImage(index);
+							}}
+							onpointerleave={() => expandImage(null)}
+							onfocusin={() => expandImage(index)}
+							onfocusout={() => expandImage(null)}
 							data-news-image={story.id}
 						>
-							<Img
-								src={story.image}
-								alt={story.alt}
-								class="h-auto w-160 max-w-none shrink-0 sm:w-192 lg:w-256"
-								loading="lazy"
-								decoding="async"
-							/>
+							<BentoItem
+								href={`/news/${story.id}`}
+								aria-label={`Read ${story.title}`}
+								aria-haspopup="dialog"
+								class="w-full"
+								onclick={(event) => openPost(event, story)}
+							>
+								<Div
+									class="flex h-full w-full items-center justify-center overflow-hidden rounded-sm"
+								>
+									<Img
+										src={story.image}
+										alt={story.alt}
+										class="h-auto w-160 max-w-none shrink-0 sm:w-192 lg:w-256"
+										loading="lazy"
+										decoding="async"
+									/>
+								</Div>
+							</BentoItem>
 						</Div>
 					{/each}
 				</Div>
@@ -178,6 +265,8 @@
 						<H3 class="text-2xl font-semibold tracking-tight sm:text-3xl"
 							><A
 								href={`/news/${selected.id}`}
+								onclick={(event) => openPost(event, selected)}
+								aria-haspopup="dialog"
 								class="text-inherit hover:text-primary-600 dark:hover:text-primary-300"
 								>{selected.title}</A
 							></H3
@@ -187,6 +276,8 @@
 						>
 						<A
 							href={`/news/${selected.id}`}
+							onclick={(event) => openPost(event, selected)}
+							aria-haspopup="dialog"
 							class="mt-5 inline-flex"
 							variants={['button.base', 'button.variant.ghost']}>Read article</A
 						>
@@ -196,3 +287,5 @@
 		</Container>
 	</Section>
 {/if}
+
+<NewsDialog {postId} {onNavigate} />

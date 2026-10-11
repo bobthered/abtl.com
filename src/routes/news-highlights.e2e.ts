@@ -137,3 +137,64 @@ test('unknown news articles return a real 404', async ({ page }) => {
 	const response = await page.goto('/news/not-a-post');
 	expect(response?.status()).toBe(404);
 });
+
+for (const width of [390, 1440]) {
+	test(`news tiles expand and open route-backed dialogs at ${width}px`, async ({ page }) => {
+		await page.setViewportSize({ width, height: 900 });
+		await page.goto('/');
+		await expect(page.locator('[data-bento-ready]')).toHaveAttribute('data-bento-ready', 'true', {
+			timeout: 60000
+		});
+		const section = page.locator('[data-news-highlights]');
+		await section.scrollIntoViewIfNeeded();
+		await page.mouse.move(0, 0);
+		const slide = section.locator('[data-news-image="equipment"]');
+		const tile = slide.getByRole('link');
+		const initialWidth = (await slide.boundingBox())!.width;
+		await tile.scrollIntoViewIfNeeded();
+		await expect(tile).toHaveAttribute('data-scroll-reveal-state', 'complete');
+		await tile.hover();
+
+		await expect
+			.poll(async () => (await slide.boundingBox())!.width - initialWidth)
+			.toBeCloseTo(32, 0);
+		await expect(tile.locator('[data-bento-expand]')).toBeVisible();
+		await expect(tile.locator('[data-bento-outline]')).toHaveCSS('opacity', '0.6');
+		expect(
+			await tile.locator('[data-bento-outline]').evaluate((el) => (el as HTMLCanvasElement).width)
+		).toBeGreaterThan(0);
+		await page.mouse.move(0, 0);
+		await expect.poll(async () => (await slide.boundingBox())!.width).toBeCloseTo(initialWidth, 0);
+		await tile.click();
+		await expect(page).toHaveURL(/\/news\/equipment$/);
+		const dialog = page.locator('[data-news-dialog]');
+		await expect(dialog).toBeVisible();
+		await expect(dialog.getByRole('heading', { level: 1 })).toHaveText(
+			'Every inspection has a story.'
+		);
+		await expect(page.locator('[data-news-highlights]')).toBeAttached();
+		await expect(dialog.getByRole('button', { name: 'Close article' })).toBeFocused();
+		await page.keyboard.press('Escape');
+		await expect(page).toHaveURL(/\/$/);
+		await expect(dialog).toHaveCount(0);
+		await expect(tile).toBeFocused();
+		await page.goForward();
+		await expect(dialog).toBeVisible();
+		await dialog.getByRole('button', { name: 'Close article' }).click();
+		await expect(page).toHaveURL(/\/$/);
+		await expect(dialog).toHaveCount(0);
+		await tile.click();
+		await expect(dialog).toBeVisible();
+		await dialog.click({ position: { x: 2, y: 2 } });
+		await expect(page).toHaveURL(/\/$/);
+		await expect(dialog).toHaveCount(0);
+		await tile.click();
+		await expect(dialog).toBeVisible();
+		await page.reload();
+		await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+			'Every inspection has a story.'
+		);
+		await expect(page.locator('[data-news-dialog]')).toHaveCount(0);
+		await expect(page.locator('[data-news-highlights]')).toHaveCount(0);
+	});
+}
