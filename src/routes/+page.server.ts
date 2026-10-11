@@ -1,4 +1,4 @@
-import { topics } from '#lib/components/BentoSection/topics.js';
+import { topics } from '#lib/data/topics.js';
 import type { PageServerLoad } from './$types';
 
 // Shuffle per page request on the server, so SSR and hydration share one order.

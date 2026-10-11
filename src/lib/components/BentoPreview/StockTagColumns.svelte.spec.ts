@@ -1,10 +1,10 @@
 import '../../../routes/layout.css';
 import BentoPreview from './BentoPreview.svelte';
-import BentoSection from './BentoSection.svelte';
+import BentoSection from '../../../routes/_components/BentoSection/BentoSection.svelte';
 import { expect, it } from 'vitest';
 import { initializeTheme } from '#lib/theme.js';
 import { render } from 'vitest-browser-svelte';
-import { stockColors } from './stockColors';
+import { stockColors } from '#lib/data/stockColors.js';
 
 it('loops complete stock palettes in opposite directions with a title fade', async () => {
 	initializeTheme();

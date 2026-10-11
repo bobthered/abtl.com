@@ -1,4 +1,4 @@
-import { topics, topicHref } from '../lib/components/BentoSection/topics';
+import { topics, topicHref } from '../lib/data/topics';
 import { expect, test } from '@playwright/test';
 
 test('new content reveals once, staggers a row, and counts up without layout overflow', async ({

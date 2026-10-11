@@ -1,9 +1,10 @@
 <script lang="ts">
 	// Imports
-	import { Canvas, Div, TagViewer } from '#lib/components';
+	import { Canvas, Div } from '#lib/components';
 	import type { createTagRain } from './physics';
-	import type { TagSelection } from './physics';
 	import { onMount, untrack } from 'svelte';
+	import type { TagSelection } from './physics';
+	import TagViewer from './TagViewer.svelte';
 	import { theme } from 'sveltewind/theme';
 
 	// helpers

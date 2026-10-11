@@ -2,7 +2,7 @@
 	// Imports
 	import { Div, StockTag } from '#lib/components';
 	import { onMount, tick } from 'svelte';
-	import { stockColors } from './stockColors';
+	import { stockColors } from '#lib/data/stockColors.js';
 
 	// consts
 	const columnCount = 6;

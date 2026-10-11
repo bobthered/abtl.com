@@ -10,21 +10,21 @@
 		H2,
 		H3,
 		P,
-		ProcessPrintingContent,
 		Section,
-		ShippingContent,
-		Skeleton,
-		StockColorContent,
-		StockSampleDialog,
-		StockTagExamples,
-		SyntheticContent,
-		VariableDataContent,
-		WarehousingContent
+		Skeleton
 	} from '#lib/components';
 	import { ArrowRight } from '#lib/icons';
 	import { onMount } from 'svelte';
+	import ProcessPrintingContent from './ProcessPrinting/ProcessPrintingContent.svelte';
+	import ShippingContent from './ShippingContent/ShippingContent.svelte';
 	import type { Snippet } from 'svelte';
-	import type { Topic } from './topics';
+	import StockColorContent from './StockColors/StockColorContent.svelte';
+	import StockSampleDialog from './StockColors/StockSampleDialog.svelte';
+	import StockTagExamples from './StockColors/StockTagExamples.svelte';
+	import SyntheticContent from './SyntheticMaterials/SyntheticContent.svelte';
+	import type { Topic } from '#lib/data/topics.js';
+	import VariableDataContent from './VariableData/VariableDataContent.svelte';
+	import WarehousingContent from './Warehousing/WarehousingContent.svelte';
 
 	// consts
 	const detailSections = ['Options at a glance', 'Examples & applications', 'Planning your order'];

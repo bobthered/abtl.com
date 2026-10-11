@@ -12,8 +12,8 @@
 		WarehouseScene,
 		WeatherTag
 	} from '#lib/components';
-	import { stockColors } from './stockColors';
-	import type { Topic } from './topics';
+	import { stockColors } from '#lib/data/stockColors.js';
+	import type { Topic } from '#lib/data/topics.js';
 
 	// $props()
 	let { isDialogPreview = false, kind }: { isDialogPreview?: boolean; kind: Topic['preview'] } =

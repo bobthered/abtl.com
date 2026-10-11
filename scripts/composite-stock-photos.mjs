@@ -9,10 +9,7 @@ const manifest = JSON.parse(await readFile(new URL('composites.json', directory)
 const palette = await readFile(new URL('src/routes/layout.css', root), 'utf8');
 const paperSvg = await readFile(new URL('src/lib/assets/tag-shape.svg', root), 'utf8');
 const patchSvg = await readFile(new URL('src/lib/assets/tag-patch.svg', root), 'utf8');
-const stockSource = await readFile(
-	new URL('src/lib/components/BentoSection/stockColors.ts', root),
-	'utf8'
-);
+const stockSource = await readFile(new URL('src/lib/data/stockColors.ts', root), 'utf8');
 
 const extractPath = (svg) => {
 	const path = svg.match(/<path\b[^>]*\bd="([^"]+)"/);

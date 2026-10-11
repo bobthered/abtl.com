@@ -1,22 +1,11 @@
 <script lang="ts">
 	// Imports
-	import {
-		A,
-		Button,
-		Container,
-		Div,
-		H1,
-		P,
-		Path,
-		Section,
-		Span,
-		Svg,
-		TagRain
-	} from '#lib/components';
+	import { A, Button, Container, Div, H1, P, Path, Section, Span, Svg } from '#lib/components';
 	import { ArrowRight, Pause, Play } from '#lib/icons';
 	import { estimateAnnualProduction } from '#lib/productionMetric.js';
 	import { onMount } from 'svelte';
-	import { redPath } from '../Logo/paths';
+	import { redPath } from '../../../lib/components/Logo/paths';
+	import TagRain from '../TagRain/TagRain.svelte';
 	import { theme } from 'sveltewind/theme';
 
 	// consts

@@ -1,9 +1,9 @@
 <script lang="ts">
 	// Imports
 	import { Button, Canvas, Dialog, Div, H2, P, Span } from '#lib/components';
+	import type { createTagViewer } from './viewer';
 	import { Rotate3D, X } from '#lib/icons';
 	import type { TagSelection } from './physics';
-	import type { createTagViewer } from './viewer';
 
 	// helpers
 	const initializeViewer = async (target: HTMLCanvasElement, isCurrent: () => boolean) => {

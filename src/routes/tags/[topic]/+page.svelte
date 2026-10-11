@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Imports
-	import { BentoTopicContent, Container, Main, Section } from '#lib/components';
+	import BentoTopicContent from './_components/BentoTopicContent.svelte';
+	import { Container, Main, Section } from '#lib/components';
 	import type { PageProps } from './$types';
 
 	// $props()

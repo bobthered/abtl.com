@@ -6,7 +6,7 @@ Use a `viewBox="0 0 237 474"` aligned to `../tag-shape.svg`. Keep the paper/back
 
 Use the same filename for matching fronts and backs, for example `fronts/inspection-record-01.svg` and `backs/inspection-record-01.svg`. If using subdirectories, match the relative path on both sides. Each tag randomly chooses one design pair when it spawns and retains it while falling and resting. If a matching side is missing, that side stays blank; artwork from unrelated designs is never combined.
 
-Stock colors are also chosen at spawn: white has a 75% probability, and the other 20 colors share the remaining 25% (1.25% each). These are probabilities rather than fixed quotas, so a small pile can vary from that split. Adjust `tagColorWeights` in `src/lib/components/TagRain/physics.ts` to change the stock mix.
+Stock colors are also chosen at spawn: white has a 75% probability, and the other 20 colors share the remaining 25% (1.25% each). These are probabilities rather than fixed quotas, so a small pile can vary from that split. Adjust `tagColorWeights` in `src/routes/_components/TagRain/physics.ts` to change the stock mix.
 
 Back artwork should read normally in the SVG; the renderer handles its orientation so it reads correctly when viewing the reverse of the tag.
 

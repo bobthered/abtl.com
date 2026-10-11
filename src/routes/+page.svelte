@@ -1,11 +1,14 @@
 <script lang="ts">
 	// Imports
-	import { BentoSection, Main, ProductionMetrics, SiteHero } from '#lib/components';
+	import BentoSection from './_components/BentoSection/BentoSection.svelte';
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
+	import { Main } from '#lib/components';
 	import { page } from '$app/state';
 	import type { PageProps } from './$types';
-	import { type Topic, topicHref } from '#lib/components/BentoSection/topics.js';
+	import ProductionMetrics from './_components/ProductionMetrics/ProductionMetrics.svelte';
+	import SiteHero from './_components/SiteHero/SiteHero.svelte';
+	import { type Topic, topicHref } from '#lib/data/topics.js';
 
 	// helpers
 	const navigateTopic = (topic: Topic | null) => {

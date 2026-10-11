@@ -1,22 +1,11 @@
 <script lang="ts">
 	// Imports
-	import {
-		A,
-		Br,
-		Button,
-		Container,
-		Div,
-		H3,
-		Img,
-		P,
-		Section,
-		Span,
-		VariableDataPiece
-	} from '#lib/components';
+	import { A, Br, Button, Container, Div, H3, Img, P, Section, Span } from '#lib/components';
 	import { ArrowDown, ArrowRight, Check, Database, Mail, ScanLine } from '#lib/icons';
 	import { fade } from 'svelte/transition';
 	import { MediaQuery } from 'svelte/reactivity';
 	import type { Snippet } from 'svelte';
+	import VariableDataPiece from './VariableDataPiece.svelte';
 	import { variableExamples } from './examples';
 
 	// consts

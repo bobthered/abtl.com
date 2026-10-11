@@ -1,7 +1,8 @@
 # Bento topics and routes
 
-Each entry in `topics.ts` has a standalone `/tags/[topic]` page. `BentoTopicContent`
-provides the shared content; `BentoPreview` provides its tile and detail preview.
+Each entry in `src/lib/data/topics.ts` has a standalone `/tags/[topic]` page. `_components/BentoTopicContent.svelte`
+provides the route-owned content reused in the homepage dialog; the shared
+`BentoPreview` provides tile and fallback detail previews.
 The standalone page uses an H1, normal section/Container spacing, and no surrounding
 Card. Color-page marquees span the viewport, with text and detail content in Containers.
 The dialog uses an H2,

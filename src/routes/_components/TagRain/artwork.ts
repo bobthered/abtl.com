@@ -17,14 +17,14 @@ const collectArtwork = (files: Record<string, string>) =>
 // Adding an SVG to either directory automatically includes it in the next build.
 const artworkFiles = {
 	backs: collectArtwork(
-		import.meta.glob<string>('../../assets/tags/backs/**/*.svg', {
+		import.meta.glob<string>('/src/lib/assets/tags/backs/**/*.svg', {
 			eager: true,
 			import: 'default',
 			query: '?url'
 		})
 	),
 	fronts: collectArtwork(
-		import.meta.glob<string>('../../assets/tags/fronts/**/*.svg', {
+		import.meta.glob<string>('/src/lib/assets/tags/fronts/**/*.svg', {
 			eager: true,
 			import: 'default',
 			query: '?url'

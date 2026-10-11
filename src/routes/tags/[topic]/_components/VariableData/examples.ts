@@ -1,6 +1,6 @@
 import records from './examples.json';
 
-const artwork = import.meta.glob<string>('../../assets/variable-data/*.svg', {
+const artwork = import.meta.glob<string>('/src/lib/assets/variable-data/*.svg', {
 	eager: true,
 	import: 'default',
 	query: '?url'
@@ -8,8 +8,8 @@ const artwork = import.meta.glob<string>('../../assets/variable-data/*.svg', {
 
 export const variableExamples = records.map((record) => ({
 	...record,
-	barcode: artwork[`../../assets/variable-data/${record.id}-barcode.svg`],
-	qr: artwork[`../../assets/variable-data/${record.id}-qr.svg`]
+	barcode: artwork[`/src/lib/assets/variable-data/${record.id}-barcode.svg`],
+	qr: artwork[`/src/lib/assets/variable-data/${record.id}-qr.svg`]
 }));
 
 export type VariableExample = (typeof variableExamples)[number];

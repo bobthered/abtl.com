@@ -1,13 +1,13 @@
-import '../../../routes/layout.css';
+import '../../layout.css';
 import BentoSection from './BentoSection.svelte';
 import { expect, it, vi } from 'vitest';
-import ImageLightbox from '../ImageLightbox/ImageLightbox.svelte';
+import ImageLightbox from '../../../lib/components/ImageLightbox/ImageLightbox.svelte';
 import { initializeTheme } from '#lib/theme.js';
 import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
-import StockColorMarquee from './StockColorMarquee.svelte';
-import StockTagExamples from './StockTagExamples.svelte';
-import { stockPhotoExamples } from './stockPhotoExamples';
+import StockColorMarquee from '../../tags/[topic]/_components/StockColors/StockColorMarquee.svelte';
+import StockTagExamples from '../../tags/[topic]/_components/StockColors/StockTagExamples.svelte';
+import { stockPhotoExamples } from '../../tags/[topic]/_components/StockColors/stockPhotoExamples';
 
 it('scrolls a constrained card through a full-screen backdrop and restores focus on Escape', async () => {
 	initializeTheme();
@@ -511,20 +511,16 @@ it('dismisses only the lightbox when its backdrop is clicked above a bento dialo
 	await expect.element(parent).not.toBeInTheDocument();
 });
 
-it('counts stock colors when the number section scrolls into view', async () => {
+it('renders the stock total for root-layout count-up enhancement', async () => {
 	initializeTheme();
 	render(BentoSection);
 	await page.getByRole('link', { name: 'Explore What color will you choose?' }).click();
 	const dialog = page.getByRole('dialog', { name: 'What color will you choose?' });
 	await expect.element(dialog).toBeVisible();
-	const counter = dialog.element().querySelector<HTMLElement>('[data-stock-color-counter]')!;
-	const number = counter.querySelector<HTMLElement>('[data-stock-color-total]')!;
-	expect(number.textContent).toBe('0');
-	counter.scrollIntoView({ block: 'center' });
-	await expect
-		.poll(() => Number(number.textContent) > 0 && Number(number.textContent) < 21)
-		.toBe(true);
-	await expect.poll(() => number.textContent, { timeout: 3000 }).toBe('21');
+	const number = dialog.element().querySelector<HTMLElement>('[data-stock-color-total]')!;
+	// The root layout enhances this final, accessible value when it enters the viewport.
+	expect(number.textContent).toBe('21');
+	expect(number.getAttribute('data-count-up')).toBe('21');
 	expect(number.getAttribute('aria-hidden')).toBe('true');
 	await page.getByRole('button', { name: 'Close topic', exact: true }).click();
 	await expect.element(dialog).not.toBeInTheDocument();

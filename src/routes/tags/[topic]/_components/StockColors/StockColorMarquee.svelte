@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Imports
 	import { BentoItem, Figcaption, Figure, Marquee, StockTag } from '#lib/components';
-	import { stockColorGroups } from './stockColors';
+	import { stockColorGroups } from '#lib/data/stockColors.js';
 
 	// consts
 	const colors = stockColorGroups.flatMap((group) => group.colors);

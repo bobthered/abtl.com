@@ -1,7 +1,8 @@
 <script lang="ts">
 	// Imports
-	import { Button, Container, Div, H2, MetricCanvas, P, Section, Span } from '#lib/components';
-	import { stockColors } from '#lib/components/BentoSection/stockColors.js';
+	import { Button, Container, Div, H2, P, Section, Span } from '#lib/components';
+	import MetricCanvas from './MetricCanvas.svelte';
+	import { stockColors } from '#lib/data/stockColors.js';
 
 	// consts
 	const indicatorPositions = [

@@ -20,7 +20,7 @@
 	import { onMount } from 'svelte';
 	import serviceFront from '#lib/assets/tags/fronts/service-tag-01.svg';
 	import serviceSecondFront from '#lib/assets/tags/fronts/service-tag-02.svg';
-	import { stockColors } from './stockColors';
+	import { stockColors } from '#lib/data/stockColors.js';
 
 	// $props()
 	let {

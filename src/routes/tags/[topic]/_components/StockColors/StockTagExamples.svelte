@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Imports
 	import { BentoItem, Figcaption, Figure, ImageLightbox, Img, Marquee, P } from '#lib/components';
-	import { SvelteMap } from 'svelte/reactivity';
 	import { stockPhotoExamples } from './stockPhotoExamples';
+	import { SvelteMap } from 'svelte/reactivity';
 
 	// Types
 	type LightboxSelection = (typeof stockPhotoExamples)[number] & {

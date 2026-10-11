@@ -3,7 +3,6 @@
 	import {
 		BentoItem,
 		BentoPreview,
-		BentoTopicContent,
 		Button,
 		Card,
 		Container,
@@ -11,11 +10,12 @@
 		Div,
 		Section
 	} from '#lib/components';
+	import BentoTopicContent from '../../tags/[topic]/_components/BentoTopicContent.svelte';
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { dismissOutside } from '#lib/attachments';
 	import { fade, fly } from 'svelte/transition';
 	import { onMount, tick, untrack } from 'svelte';
-	import { type Topic, topicHref, topics } from './topics';
+	import { type Topic, topicHref, topics } from '#lib/data/topics.js';
 	import { X } from '#lib/icons';
 
 	// consts

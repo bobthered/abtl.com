@@ -38,8 +38,12 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 ## Sveltewind components
 
 - Never use native HTML tags in Svelte component markup. Use the corresponding Sveltewind components imported from `#lib/components` instead.
-- Import components through `#lib/components`, the shared entry point at `src/lib/components/index.ts`. It re-exports all of `sveltewind/components`; direct imports from `sveltewind/components` belong only in this entry point.
-- Place future site-specific components in `src/lib/components` and export them from its `index.ts` so they are available through the same import path.
+- Import shared components through `#lib/components`, the shared entry point at `src/lib/components/index.ts`. It re-exports all of `sveltewind/components`; direct imports from `sveltewind/components` belong only in this entry point.
+- Keep reusable UI, brand components, and artwork intended for use across routes in `src/lib/components`, exported from its `index.ts`.
+- Place page-specific sections, content, and their private components in that route's `_components` directory (for example, `src/routes/_components` for the homepage). Import them directly with relative paths; do not export them from `#lib/components`.
+- Keep a component's private helpers, data, assets, and tests alongside it when moving it. Put shared non-component data in `src/lib/data`, rather than coupling routes to another page's component directory.
+- Topic content belongs next to its standalone route, even when the homepage also renders that same content in a dialog. Reuse that single route-owned implementation; do not duplicate it or promote an entire page into the shared component barrel just for its dialog presentation.
+- Choose ownership by purpose and intended reuse, not only the number of current imports. A private child stays with its page; a reusable illustration shared by previews and topic pages stays in the library.
 - Sveltewind is intended to provide a component for every HTML tag. Verify the available exports and documentation rather than guessing component names.
 - If a required HTML primitive is missing, notify the user so it can be added to Sveltewind. The user maintains Sveltewind. Do not silently fall back to native HTML or create a replacement primitive in this project.
 - Before creating any project component, check Sveltewind for an existing component that meets the need, including composed components such as Calendar, Popover, and Datatable. Prefer using or composing existing Sveltewind components.

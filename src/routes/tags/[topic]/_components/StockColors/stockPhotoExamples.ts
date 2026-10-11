@@ -19,7 +19,7 @@ import red from '#lib/assets/tags/photos/red.webp';
 import salmon from '#lib/assets/tags/photos/salmon.webp';
 import white from '#lib/assets/tags/photos/white-equipment.webp';
 import yellow from '#lib/assets/tags/photos/yellow.webp';
-import { stockColorGroups } from './stockColors';
+import { stockColorGroups } from '#lib/data/stockColors.js';
 
 const photos: Record<string, { alt: string; context: string; image: string }> = {
 	'blue-dark': {

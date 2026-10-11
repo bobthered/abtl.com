@@ -6,21 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 74a0c168b3d30e542179d0b61ff03e0448711207 -->
+<!-- pending-base: 70495c23bbd1fa6310c959d1b647e573a80864da -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: deepen abstract particle animations and interactions
+refactor: colocate page components with their routes
 
-Use primary and secondary points over full-width background glows, with stronger depth fading and a jumbled gathering sphere.
-Replace flat mesh and prism scenes with a deep helical current and rotating torus knot.
-Pulse each point independently on randomized 5?10 second cycles, respecting pause and reduced motion.
-Strengthen cursor repulsion, align its field with projected point positions and verify responsive interactions.
-Reconcile committed animation work into changelog history.
+Move homepage sections, hero animations and topic-specific content, helpers and tests beside their owning routes.
+Keep reusable UI and artwork in the shared component library, and move shared topic and stock-color data into lib/data.
+Update imports, asset scripts, documentation and component ownership instructions; reconcile changelog history.
 ```
 
 ## 2026-10-11
+
+- **refactor: deepen abstract particle animations and interactions** (`70495c2`)
+  Use primary and secondary points over full-width background glows, with stronger depth fading and a jumbled gathering sphere. Replace flat scenes with a helical current and rotating torus knot, add independent 5-10 second size pulses, and strengthen cursor repulsion in projected screen space. Update responsive coverage and reconcile changelog history.
 
 - **feat: add interactive abstract metric animations** (`74a0c16`)
   Add four selectable abstract point formations sharing 1,200 particles. Gather points into a spring-driven sphere before releasing into the selected scene, including interrupted selections. Add pointer, touch and keyboard interactions, pause and effect controls, theme colors, reduced motion, offscreen rendering suspension and browser coverage. Reconcile changelog history.

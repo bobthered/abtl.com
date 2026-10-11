@@ -17,8 +17,11 @@
 		Text
 	} from '#lib/components';
 	import { ArrowRight, Globe2, MapPin, PackageCheck } from '#lib/icons';
+	import {
+		shippingLocations,
+		stateRows
+	} from '../../../../../lib/components/ShippingGlobe/shippingLocations';
 	import type { Snippet } from 'svelte';
-	import { shippingLocations, stateRows } from '../ShippingGlobe/shippingLocations';
 
 	// consts
 	const internationalLocations = shippingLocations.filter(

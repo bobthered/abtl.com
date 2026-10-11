@@ -1,6 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import { topicHref, topics } from '#lib/components/BentoSection/topics.js';
+import { topicHref, topics } from '#lib/data/topics.js';
 
 export const load: PageLoad = ({ params, url }) => {
 	// Preserve links to the former printing placeholder.

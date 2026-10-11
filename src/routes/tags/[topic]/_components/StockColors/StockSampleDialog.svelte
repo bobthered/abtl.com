@@ -4,7 +4,7 @@
 	import { Check, X } from '#lib/icons';
 	import { dismissOutside } from '#lib/attachments';
 	import { fade } from 'svelte/transition';
-	import { stockColorGroups } from './stockColors';
+	import { stockColorGroups } from '#lib/data/stockColors.js';
 
 	// consts
 	const allColorIds = stockColorGroups.flatMap((group) => group.colors.map((color) => color.id));
