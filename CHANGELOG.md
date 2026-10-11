@@ -6,19 +6,23 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: d58a5a327e66a94fea293957b4e70b4f46bd6051 -->
+<!-- pending-base: 890ba49487be613704d8f059c199a48f808f2270 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add animated production metrics section
+feat: add interactive abstract metric animations
 
-Add four confirmed production, shipping, stock color and printing metrics below the bento grid.
-Animate top and bottom gradient rules that fade to transparent at both ends on hover and keyboard focus, with responsive layouts and reduced-motion support.
-Reuse global count-ups, add interaction coverage and reconcile changelog history.
+Make metric buttons select four abstract point formations with a persistent 1,200-particle system.
+Gather particles into a spring-driven, jiggling sphere before releasing them into the next formation; handle interrupted selections and reduced motion.
+Add pointer, touch and keyboard interactions, effect and pause controls, theme-aware colors and reduced-motion support.
+Pause offscreen rendering, verify responsive interactions and reconcile changelog history.
 ```
 
 ## 2026-10-11
+
+- **feat: add animated production metrics section** (`890ba49`)
+  Add four confirmed production, shipping, stock color and printing metrics below the bento grid. Animate top and bottom gradient rules that fade to transparent at both ends on hover and keyboard focus, with responsive layouts and reduced-motion support. Reuse global count-ups, add interaction coverage and reconcile changelog history.
 
 - **refactor: remove homepage placeholder sections** (`d58a5a3`)
   Remove industries, products, capabilities and resources sections and their unused content. Keep future navigation labels inactive and direct the hero CTA to the bento grid. Update affected scroll-reveal coverage and reconcile changelog history.

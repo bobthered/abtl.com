@@ -8,3 +8,5 @@ export { warehouseFlow } from './warehouseFlow';
 export { weatherTag } from './weatherTag';
 
 export { scrollReveal } from './scrollReveal';
+
+export { abstractScene } from './abstractScene';

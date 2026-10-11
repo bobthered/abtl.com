@@ -449,9 +449,9 @@ export const initializeTheme = () => {
 		'absolute inset-x-0 h-px bg-linear-to-r from-primary-500 via-secondary-500 to-primary-500 mask-x-from-70% mask-x-to-100% dark:from-primary-400 dark:via-secondary-400 dark:to-primary-400'
 	);
 	theme.set.variant(
-		'a',
+		'button',
 		'metric',
-		'relative flex min-w-0 flex-col items-center justify-start gap-4 rounded-sm px-4 py-10 text-center text-gray-600 no-underline transition-colors duration-500 hover:text-gray-950 focus:text-gray-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 data-[active=true]:text-gray-950 motion-reduce:transition-none sm:px-6 lg:py-12 dark:text-gray-400 dark:hover:text-gray-50 dark:focus:text-gray-50 dark:focus-visible:outline-primary-300 dark:data-[active=true]:text-gray-50'
+		'relative flex min-w-0 flex-col items-center justify-start gap-4 rounded-sm bg-transparent px-4 py-10 text-center font-normal text-gray-600 hover:bg-transparent focus:bg-transparent dark:bg-transparent dark:hover:bg-transparent dark:focus:bg-transparent no-underline transition-colors duration-500 hover:text-gray-950 focus:text-gray-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 data-[active=true]:text-gray-950 motion-reduce:transition-none sm:px-6 lg:py-12 dark:text-gray-400 dark:hover:text-gray-50 dark:focus:text-gray-50 dark:focus-visible:outline-primary-300 dark:data-[active=true]:text-gray-50'
 	);
 	theme.set.variant(
 		'span',

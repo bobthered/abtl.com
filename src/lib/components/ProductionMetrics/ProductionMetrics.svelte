@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Imports
-	import { A, Container, Div, H2, P, Section, Span } from '#lib/components';
+	import { Button, Container, Div, H2, MetricCanvas, P, Section, Span } from '#lib/components';
 	import { stockColors } from '#lib/components/BentoSection/stockColors.js';
 
 	// consts
@@ -13,29 +13,25 @@
 	const metrics = [
 		{
 			description: 'tags produced last year',
-			href: 'mailto:sales@abtl.com?subject=Tag%20project%20quote',
-			label: 'Over 90 million tags produced last year. Discuss your project.',
+			label: 'Over 90 million tags produced last year. Select animation one.',
 			suffix: 'M+',
 			value: 90
 		},
 		{
 			description: 'states served, plus international shipping',
-			href: '/tags/shipping',
-			label: 'All 50 states served, plus international shipping. Explore shipping.',
+			label: 'All 50 states served, plus international shipping. Select animation two.',
 			suffix: '',
 			value: 50
 		},
 		{
 			description: 'stock colors to make your message stand out',
-			href: '/tags/stock-colors',
-			label: `${stockColors.length} stock colors. Explore stock color options.`,
+			label: `${stockColors.length} stock colors. Select animation three.`,
 			suffix: '',
 			value: stockColors.length
 		},
 		{
 			description: 'printing colors for full color on both sides',
-			href: '/tags/full-color-printing',
-			label: 'Up to 8 printing colors for full color on both sides. Explore printing.',
+			label: 'Up to 8 printing colors for full color on both sides. Select animation four.',
 			prefix: 'Up to',
 			suffix: '',
 			value: 8
@@ -44,6 +40,8 @@
 
 	// $state
 	let activeIndex = $state(0);
+	let selectedIndex = $state(0);
+	let selectionRevision = $state(0);
 </script>
 
 <Section
@@ -70,13 +68,20 @@
 				<Span variants={['metricRule']} class="top-0" />
 				<Span variants={['metricRule']} class="bottom-0" />
 			</Div>
-			{#each metrics as metric, index (metric.href)}
-				<A
-					href={metric.href}
-					variants={['metric']}
+			{#each metrics as metric, index (metric.label)}
+				<Button
+					type="button"
+					aria-controls="metric-animation-panel"
+					aria-pressed={selectedIndex === index}
+					variants={['ghost', 'metric']}
 					aria-label={metric.label}
 					data-metric-index={index}
 					data-active={activeIndex === index}
+					onclick={() => {
+						selectedIndex = index;
+						selectionRevision += 1;
+						activeIndex = index;
+					}}
 					onpointerenter={() => {
 						activeIndex = index;
 					}}
@@ -90,8 +95,9 @@
 							>{/if}<Span data-count-up={metric.value}>{metric.value}</Span>{metric.suffix}
 					</Span>
 					<Span variants={['metricDescription']}>{metric.description}</Span>
-				</A>
+				</Button>
 			{/each}
 		</Div>
+		<MetricCanvas scene={selectedIndex} selection={selectionRevision} />
 	</Container>
 </Section>

@@ -32,3 +32,4 @@ export { default as SyntheticContent } from './SyntheticMaterials/SyntheticConte
 export { default as WeatherTag } from './SyntheticMaterials/WeatherTag.svelte';
 
 export { default as ProductionMetrics } from './ProductionMetrics/ProductionMetrics.svelte';
+export { default as MetricCanvas } from './ProductionMetrics/MetricCanvas.svelte';
