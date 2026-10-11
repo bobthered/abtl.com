@@ -78,8 +78,13 @@
 				}
 			])
 		);
+		// Hold the exact rendered widths across decoding and any keyed DOM reorder.
+		// Cancelling hover first would expose the base widths for one or more frames.
+		const holds = [...track.children].map((node) =>
+			node.animate([starts.get(node)!], { duration: 0, fill: 'both' })
+		);
 		hoverAnimations.forEach((animation) => animation.cancel());
-		hoverAnimations = [];
+		hoverAnimations = holds;
 		isAnimating = true;
 		const count = visibleCount;
 		const steps = direction > 0 ? Math.min(direction, order.length - 1) : 1;
@@ -113,6 +118,8 @@
 					{ duration: 700, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' }
 				)
 			);
+			hoverAnimations.forEach((animation) => animation.cancel());
+			hoverAnimations = [];
 			await Promise.all(animations.map((animation) => animation.finished.catch(() => undefined)));
 		}
 		if (isDisposed) return;
@@ -121,11 +128,15 @@
 		await tick();
 		animations.forEach((animation) => animation.cancel());
 		animations = [];
-		isAnimating = false;
+		hoverAnimations.forEach((animation) => animation.cancel());
+		hoverAnimations = [];
 		if (focusedImage)
 			track
 				.querySelector<HTMLElement>(`[data-news-image="${focusedImage}"] button`)
 				?.focus({ preventScroll: true });
+		// Focus restoration belongs to the handoff, not a fresh hover resize.
+		await tick();
+		isAnimating = false;
 	};
 	const openPost = (event: MouseEvent, post: NewsPost) => {
 		if (
@@ -332,7 +343,7 @@
 							onclick={(event) => openPost(event, selected)}
 							aria-haspopup="dialog"
 							class="mt-5 inline-flex"
-							variants={['button.base', 'button.variant.ghost']}>Read article</A
+							variants={['button.base']}>Read article</A
 						>
 					</Div>
 				</Div>

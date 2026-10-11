@@ -6,19 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: b0cd07020d64c1de5624e6f5f6a2813d2f32b69e -->
+<!-- pending-base: 0e193ae4316ee4954bca4538b721fb976204058c -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: smooth news carousel wrapping and highlight the active image
+fix: stabilize news carousel transitions and use a primary article CTA
 
-Restore the bento outline and expand icon on the active news image only.
-Animate wrapped incoming images during multi-slide selections, decode artwork before movement, and preserve hover widths and keyboard focus.
-Add transition continuity coverage and reconcile changelog history.
+Hold hover widths while artwork decodes and suppress resizing during focus restoration.
+Use the primary Read article button, add delayed-loading regression coverage, and reconcile changelog history.
 ```
 
 ## 2026-10-11
+
+- **fix: smooth news carousel wrapping and highlight the active image** (`0e193ae`)
+  Restore the bento outline and expand icon on the active news image. Animate wrapped incoming images during multi-slide selections, decode artwork before movement, preserve hover widths and keyboard focus, and add transition continuity coverage and changelog history.
 
 - **fix: refine news carousel image interactions** (`b0cd070`)
   Replace bento tiles with plain image buttons, keep 2rem hover expansion, and open the route-backed dialog from the active image only. Animate later images to first position without navigation, update article details, and add responsive and keyboard browser coverage.

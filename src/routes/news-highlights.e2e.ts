@@ -287,16 +287,18 @@ test('multi-image advances animate all incoming slots and preserve their geometr
 	await target.evaluate((element) => (element as HTMLButtonElement).click());
 	const track = section.locator('[data-news-track]');
 	await expect
-		.poll(() =>
-			track.evaluate((element) =>
-				element.children[3]
-					.getAnimations()
-					.some((animation) =>
-						(animation.effect as KeyframeEffect)
-							.getKeyframes()
-							.some((frame) => frame.flexGrow === '1')
-					)
-			)
+		.poll(
+			() =>
+				track.evaluate((element) =>
+					element.children[3]
+						.getAnimations()
+						.some((animation) =>
+							(animation.effect as KeyframeEffect)
+								.getKeyframes()
+								.some((frame) => frame.flexGrow === '1')
+						)
+				),
+			{ intervals: [20] }
 		)
 		.toBe(true);
 	const before = await track.evaluate((element) => {
@@ -361,4 +363,58 @@ test('multi-image advances animate all incoming slots and preserve their geometr
 		expect(bounds.x).toBeCloseTo(before.bounds[index].x, 0);
 		expect(bounds.width).toBeCloseTo(before.bounds[index].width, 0);
 	});
+});
+
+test('hovered fourth image holds its width while decoding and uses a primary article CTA', async ({
+	page
+}) => {
+	await page.setViewportSize({ width: 1440, height: 1000 });
+	await page.goto('/');
+	await expect(page.locator('[data-bento-ready]')).toHaveAttribute('data-bento-ready', 'true', {
+		timeout: 60000
+	});
+	const section = page.locator('[data-news-highlights]');
+	const target = section.locator('[data-news-image="textile"]');
+	await target.scrollIntoViewIfNeeded();
+	await expect(section.locator('[data-news-images-reveal]')).toHaveAttribute(
+		'data-scroll-reveal-state',
+		'complete'
+	);
+	await target.getByRole('button').hover();
+	await target.evaluate(async (node) => {
+		await Promise.all(
+			node.getAnimations().map((animation) => animation.finished.catch(() => undefined))
+		);
+	});
+	// Keep decoding pending to expose any base-layout flash before movement starts.
+	await page.evaluate(() => {
+		const decode = HTMLImageElement.prototype.decode;
+		HTMLImageElement.prototype.decode = async function () {
+			await new Promise((resolve) => setTimeout(resolve, 400));
+			return decode.call(this);
+		};
+	});
+	const widths = await target.evaluate(async (node) => {
+		const before = node.getBoundingClientRect().width;
+		node.querySelector<HTMLButtonElement>('button')!.focus();
+		node.querySelector<HTMLButtonElement>('button')!.click();
+		await new Promise((resolve) => setTimeout(resolve, 150));
+		return { before, during: node.getBoundingClientRect().width };
+	});
+	expect(widths.during).toBeCloseTo(widths.before, 0);
+	await expect(section.locator('[data-news-image]').first()).toHaveAttribute(
+		'data-news-image',
+		'textile'
+	);
+	await expect(section.getByRole('button', { name: 'Next article', exact: true })).toHaveAttribute(
+		'aria-disabled',
+		'false'
+	);
+	await expect(target.getByRole('button')).toBeFocused();
+	const isHoverAnimation = await target.evaluate((node) =>
+		node.getAnimations().some((animation) => animation.effect?.getTiming().duration === 300)
+	);
+	expect(isHoverAnimation).toBe(false);
+	const cta = section.getByRole('link', { name: 'Read article', exact: true });
+	await expect(cta).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 });
