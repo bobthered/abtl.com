@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 70495c23bbd1fa6310c959d1b647e573a80864da -->
+<!-- pending-base: 77a99b9d615925efdd8b012e989b456dacef8500 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: colocate page components with their routes
+feat: add golden-ratio customer spotlight carousel
 
-Move homepage sections, hero animations and topic-specific content, helpers and tests beside their owning routes.
-Keep reusable UI and artwork in the shared component library, and move shared topic and stock-color data into lib/data.
-Update imports, asset scripts, documentation and component ownership instructions; reconcile changelog history.
+Add a responsive homepage spotlight with five desktop images, animated width transitions, looping chevron controls and keyboard navigation.
+Use labeled preview stories and local photography pending approved customer content, with reduced-motion support and browser coverage.
+Reconcile the component-colocation commit into changelog history.
 ```
 
 ## 2026-10-11
+
+- **refactor: colocate page components with their routes** (`77a99b9`)
+  Move homepage sections and topic-specific content, helpers and tests beside their owning routes. Retain reusable UI and artwork in the shared component library, move shared topic and stock-color data into lib/data, and update imports, asset scripts and ownership instructions.
 
 - **refactor: deepen abstract particle animations and interactions** (`70495c2`)
   Use primary and secondary points over full-width background glows, with stronger depth fading and a jumbled gathering sphere. Replace flat scenes with a helical current and rotating torus knot, add independent 5-10 second size pulses, and strengthen cursor repulsion in projected screen space. Update responsive coverage and reconcile changelog history.

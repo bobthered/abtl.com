@@ -2,6 +2,7 @@
 	// Imports
 	import BentoSection from './_components/BentoSection/BentoSection.svelte';
 	import { browser } from '$app/env';
+	import CustomerSpotlight from './_components/CustomerSpotlight/CustomerSpotlight.svelte';
 	import { goto } from '$app/navigation';
 	import { Main } from '#lib/components';
 	import { page } from '$app/state';
@@ -27,4 +28,5 @@
 	<SiteHero />
 	<BentoSection orderedTopics={data.bentoTopics} {topicId} onNavigate={navigateTopic} />
 	<ProductionMetrics />
+	<CustomerSpotlight />
 </Main>
