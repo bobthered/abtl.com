@@ -139,7 +139,9 @@ test('unknown news articles return a real 404', async ({ page }) => {
 });
 
 for (const width of [390, 1440]) {
-	test(`news tiles expand and open route-backed dialogs at ${width}px`, async ({ page }) => {
+	test(`active news images expand and open route-backed dialogs at ${width}px`, async ({
+		page
+	}) => {
 		await page.setViewportSize({ width, height: 900 });
 		await page.goto('/');
 		await expect(page.locator('[data-bento-ready]')).toHaveAttribute('data-bento-ready', 'true', {
@@ -149,7 +151,7 @@ for (const width of [390, 1440]) {
 		await section.scrollIntoViewIfNeeded();
 		await page.mouse.move(0, 0);
 		const slide = section.locator('[data-news-image="equipment"]');
-		const tile = slide.getByRole('link');
+		const tile = slide.getByRole('button');
 		const initialWidth = (await slide.boundingBox())!.width;
 		await tile.scrollIntoViewIfNeeded();
 		await expect(tile).toHaveAttribute('data-scroll-reveal-state', 'complete');
@@ -158,11 +160,7 @@ for (const width of [390, 1440]) {
 		await expect
 			.poll(async () => (await slide.boundingBox())!.width - initialWidth)
 			.toBeCloseTo(32, 0);
-		await expect(tile.locator('[data-bento-expand]')).toBeVisible();
-		await expect(tile.locator('[data-bento-outline]')).toHaveCSS('opacity', '0.6');
-		expect(
-			await tile.locator('[data-bento-outline]').evaluate((el) => (el as HTMLCanvasElement).width)
-		).toBeGreaterThan(0);
+		await expect(section.locator('[data-bento-expand], [data-bento-outline]')).toHaveCount(0);
 		await page.mouse.move(0, 0);
 		await expect.poll(async () => (await slide.boundingBox())!.width).toBeCloseTo(initialWidth, 0);
 		await tile.click();
@@ -196,5 +194,59 @@ for (const width of [390, 1440]) {
 		);
 		await expect(page.locator('[data-news-dialog]')).toHaveCount(0);
 		await expect(page.locator('[data-news-highlights]')).toHaveCount(0);
+	});
+}
+
+for (const [width, index, id, title] of [
+	[390, 1, 'nursery', 'A little detail. A growing connection.'],
+	[1440, 3, 'textile', 'Make the first impression count.']
+] as const) {
+	test(`selecting image ${index + 1} animates it to the front at ${width}px`, async ({ page }) => {
+		await page.setViewportSize({ width, height: 900 });
+		await page.goto('/');
+		await expect(page.locator('[data-bento-ready]')).toHaveAttribute('data-bento-ready', 'true', {
+			timeout: 60000
+		});
+		const section = page.locator('[data-news-highlights]');
+		const slides = section.locator('[data-news-image]');
+		const target = section.locator(`[data-news-image="${id}"]`);
+		const button = target.getByRole('button', { name: `Select ${title}`, exact: true });
+		await button.scrollIntoViewIfNeeded();
+		await expect(button).toHaveAttribute('data-scroll-reveal-state', 'complete');
+		await button.focus();
+		const frames = await button.evaluate((element) => {
+			(element as HTMLButtonElement).click();
+			return element.parentElement!.getAnimations().flatMap((animation) =>
+				(animation.effect as KeyframeEffect)
+					.getKeyframes()
+					.filter((frame) => frame.flexGrow !== undefined)
+					.map((frame) => frame.flexGrow)
+			);
+		});
+		expect(Number(frames[0])).toBeCloseTo((1 / (1 + Math.sqrt(5))) ** index, 5);
+		expect(frames[1]).toBe('1');
+		await expect(slides.first()).toHaveAttribute('data-news-image', id);
+		await expect(section.locator('[data-news-story]')).toContainText(title);
+		await expect(section.locator('[data-news-story]')).toContainText(
+			id === 'textile' ? 'bringing a brand and its product details together' : 'identifying plants'
+		);
+		await expect(page).toHaveURL(/\/$/);
+		await expect(page.locator('[data-news-dialog]')).toHaveCount(0);
+		await expect(target.getByRole('button')).toBeFocused();
+		await target.getByRole('button', { name: `Read ${title}` }).press('Enter');
+		await expect(page).toHaveURL(new RegExp(`/news/${id}$`));
+		await expect(page.locator('[data-news-dialog]').getByRole('heading', { level: 1 })).toHaveText(
+			title
+		);
+		await page.keyboard.press('Escape');
+		await expect(page.locator('[data-news-dialog]')).toHaveCount(0);
+		await expect(slides.first()).toHaveAttribute('data-news-image', id);
+		await page.emulateMedia({ reducedMotion: 'reduce' });
+		const following = slides.nth(1);
+		const nextId = await following.getAttribute('data-news-image');
+		await following.getByRole('button').press('Enter');
+		await expect(slides.first()).toHaveAttribute('data-news-image', nextId!);
+		await expect(page).toHaveURL(/\/$/);
+		await expect(page.locator('[data-news-dialog]')).toHaveCount(0);
 	});
 }

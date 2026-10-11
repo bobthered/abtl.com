@@ -1,18 +1,6 @@
 <script lang="ts">
 	// Imports
-	import {
-		A,
-		BentoItem,
-		Button,
-		Container,
-		Div,
-		H2,
-		H3,
-		Img,
-		P,
-		Section,
-		Span
-	} from '#lib/components';
+	import { A, Button, Container, Div, H2, H3, Img, P, Section, Span } from '#lib/components';
 	import { ChevronLeft, ChevronRight } from '#lib/icons';
 	import { MediaQuery } from 'svelte/reactivity';
 	import NewsDialog from './NewsDialog.svelte';
@@ -70,6 +58,7 @@
 		hoverAnimations = [];
 		isAnimating = true;
 		const count = visibleCount;
+		const steps = direction > 0 ? Math.min(direction, order.length - 1) : 1;
 		if (newsHighlights.length < 2) {
 			isAnimating = false;
 			return;
@@ -90,8 +79,8 @@
 							marginRight: margin(direction > 0 ? index : index - 1)
 						},
 						{
-							flexGrow: String(weight(direction > 0 ? index - 1 : index)),
-							marginRight: margin(direction > 0 ? index - 1 : index)
+							flexGrow: String(weight(direction > 0 ? index - steps : index)),
+							marginRight: margin(direction > 0 ? index - steps : index)
 						}
 					],
 					{ duration: 700, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' }
@@ -100,7 +89,7 @@
 			await Promise.all(animations.map((animation) => animation.finished.catch(() => undefined)));
 		}
 		if (isDisposed) return;
-		if (direction > 0) order = [...order.slice(1), order[0]];
+		if (direction > 0) order = [...order.slice(steps), ...order.slice(0, steps)];
 		selected = order[0];
 		await tick();
 		animations.forEach((animation) => animation.cancel());
@@ -109,6 +98,7 @@
 	};
 	const openPost = (event: MouseEvent, post: NewsPost) => {
 		if (
+			isAnimating ||
 			event.button !== 0 ||
 			event.metaKey ||
 			event.ctrlKey ||
@@ -226,12 +216,18 @@
 							onfocusout={() => expandImage(null)}
 							data-news-image={story.id}
 						>
-							<BentoItem
-								href={`/news/${story.id}`}
-								aria-label={`Read ${story.title}`}
-								aria-haspopup="dialog"
-								class="w-full"
-								onclick={(event) => openPost(event, story)}
+							<Button
+								type="button"
+								variants={['ghost']}
+								aria-label={`${index === 0 ? 'Read' : 'Select'} ${story.title}`}
+								aria-haspopup={index === 0 ? 'dialog' : undefined}
+								aria-controls={index === 0 ? undefined : `${uid}-story`}
+								aria-disabled={isAnimating}
+								class="h-full w-full overflow-hidden rounded-sm p-0"
+								onclick={(event) => {
+									if (index === 0) openPost(event, story);
+									else void move(index);
+								}}
 							>
 								<Div
 									class="flex h-full w-full items-center justify-center overflow-hidden rounded-sm"
@@ -244,7 +240,7 @@
 										decoding="async"
 									/>
 								</Div>
-							</BentoItem>
+							</Button>
 						</Div>
 					{/each}
 				</Div>

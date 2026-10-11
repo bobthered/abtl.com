@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 068e86310191d2ea47a8fb01a69fe4cce23126ca -->
+<!-- pending-base: a0a2a25ebfdd88c39091fffc44046155a5c0da11 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: open news highlights in route-backed dialogs
+fix: refine news carousel image interactions
 
-Use shared bento tiles with pointer outlines and expand indicators for carousel images, widening hovered images by 2rem.
-Share post content between shallow-route dialogs and standalone news pages, preserving dismissal and browser history behavior.
-Update browser coverage and reconcile changelog history.
+Replace bento tiles with plain image buttons while retaining 2rem hover expansion and the active image's route-backed post dialog.
+Animate later images directly into first position on selection and update the article details without navigation.
+Update responsive and keyboard browser coverage and reconcile changelog history.
 ```
 
 ## 2026-10-11
+
+- **feat: open news highlights in route-backed dialogs** (`a0a2a25`)
+  Add bento-style news image tiles with 2rem hover expansion and shallow-route post dialogs. Share post content with standalone articles, preserve dismissal and browser history, and update browser coverage and changelog history.
 
 - **fix: simplify homepage animation controls** (`068e863`)
   Use the shared brand marquee for hover-to-pause and bidirectional dragging. Remove brand and metric canvas pause buttons and the captions and action controls below the canvas, preserving pointer and keyboard interactions. Update browser coverage and changelog history.
