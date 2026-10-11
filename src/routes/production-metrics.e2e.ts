@@ -74,12 +74,16 @@ for (const width of [390, 1440]) {
 		});
 		const panel = page.locator('[data-metric-animation]');
 		const canvas = panel.locator('canvas');
+		const background = panel.locator('[data-scene-background]');
+		const bounds = await background.boundingBox();
+		expect(bounds!.x).toBeCloseTo(0);
+		expect(bounds!.width).toBe(width);
 		const images = new Set<string>();
 		for (const [index, name] of [
 			'Flow field',
 			'Orbital ribbons',
-			'Elastic mesh',
-			'Prism field'
+			'Helical current',
+			'Torus knot'
 		].entries()) {
 			const selector = page.locator(`[data-metric-index="${index}"]`);
 			await selector.click();
@@ -94,7 +98,7 @@ for (const width of [390, 1440]) {
 			images.add(before);
 			await panel
 				.getByRole('button', {
-					name: /Send a pulse|Turn the orbits|Ripple the mesh|Fold the field/
+					name: /Send a pulse|Turn the orbits|Twist the current|Turn the knot/
 				})
 				.click();
 			await expect
@@ -175,7 +179,7 @@ test('points gather into a springy sphere before reaching the latest selected fo
 	await canvas.screenshot({ path: testInfo.outputPath('particle-sphere.png') });
 	await expect(canvas).toHaveAttribute('data-particle-phase', 'release');
 	await expect(canvas).toHaveAttribute('data-particle-phase', 'settled');
-	await canvas.screenshot({ path: testInfo.outputPath('particle-mesh.png') });
+	await canvas.screenshot({ path: testInfo.outputPath('particle-helix.png') });
 	await page.locator('[data-metric-index="1"]').click();
 	await canvas.scrollIntoViewIfNeeded();
 	await expect(canvas).toHaveAttribute('data-particle-phase', 'gather');
@@ -191,5 +195,5 @@ test('points gather into a springy sphere before reaching the latest selected fo
 			(element) => element === document.querySelector('[data-abstract-canvas]')
 		)
 	).toBe(true);
-	await canvas.screenshot({ path: testInfo.outputPath('particle-prisms.png') });
+	await canvas.screenshot({ path: testInfo.outputPath('particle-knot.png') });
 });

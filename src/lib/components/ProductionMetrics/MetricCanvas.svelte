@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Imports
 	import { abstractScene } from '#lib/attachments';
-	import { Button, Canvas, Div, P, Span } from '#lib/components';
+	import { Button, Canvas, Container, Div, P, Span } from '#lib/components';
 	import { Pause, Play } from '#lib/icons';
 
 	// consts
@@ -17,14 +17,14 @@
 			name: 'Orbital ribbons'
 		},
 		{
-			action: 'Ripple the mesh',
-			description: 'Move to stretch the mesh. Click or press Space to release a ripple.',
-			name: 'Elastic mesh'
+			action: 'Twist the current',
+			description: 'Move to part the points. Click or press Space to twist the current.',
+			name: 'Helical current'
 		},
 		{
-			action: 'Fold the field',
-			description: 'Move to change the perspective. Click or press Space to fold the prisms.',
-			name: 'Prism field'
+			action: 'Turn the knot',
+			description: 'Drag to turn the knot. Click or press Space to shift its shape.',
+			name: 'Torus knot'
 		}
 	];
 
@@ -63,24 +63,40 @@
 	data-metric-animation={scene}
 >
 	<Div class="relative h-80 sm:h-96 lg:h-120" data-scene-surface>
-		<Span class="hidden text-primary-500 dark:text-primary-400" data-scene-color="primary" />
-		<Span class="hidden text-secondary-500 dark:text-secondary-400" data-scene-color="secondary" />
-		<Span class="hidden text-tertiary-500 dark:text-tertiary-400" data-scene-color="tertiary" />
-		<Canvas
-			{@attach abstractScene}
-			bind:element={canvas}
-			class="h-full w-full cursor-crosshair touch-pan-y rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:focus-visible:outline-primary-300"
-			tabindex={0}
-			role="img"
-			aria-label={`${current.name}. Interactive abstract artwork. Arrow keys move the interaction point; Space sends an effect.`}
-			aria-describedby="metric-animation-instructions"
-			data-abstract-canvas
+		<Div
+			class="pointer-events-none absolute inset-0 overflow-hidden"
+			aria-hidden="true"
+			data-scene-background
 		>
-			{current.name}: interactive artwork. Use the controls below to explore.
-		</Canvas>
+			<Div
+				class="absolute inset-0 bg-radial from-primary-500/10 via-primary-500/5 to-transparent mask-r-from-0% mask-r-to-100% dark:from-primary-400/10 dark:via-primary-400/5"
+			/>
+			<Div
+				class="absolute inset-0 bg-radial from-secondary-500/10 via-secondary-500/5 to-transparent mask-l-from-0% mask-l-to-100% dark:from-secondary-400/10 dark:via-secondary-400/5"
+			/>
+		</Div>
+		<Container class="h-full">
+			<Span class="hidden text-primary-500 dark:text-primary-400" data-scene-color="primary" />
+			<Span
+				class="hidden text-secondary-500 dark:text-secondary-400"
+				data-scene-color="secondary"
+			/>
+			<Canvas
+				{@attach abstractScene}
+				bind:element={canvas}
+				class="relative h-full w-full cursor-crosshair touch-pan-y rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:focus-visible:outline-primary-300"
+				tabindex={0}
+				role="img"
+				aria-label={`${current.name}. Interactive abstract artwork. Arrow keys move the interaction point; Space sends an effect.`}
+				aria-describedby="metric-animation-instructions"
+				data-abstract-canvas
+			>
+				{current.name}: interactive artwork. Use the controls below to explore.
+			</Canvas>
+		</Container>
 	</Div>
-	<Div
-		class="flex flex-col items-center justify-between gap-6 pt-6 text-center sm:flex-row sm:text-left"
+	<Container
+		class="flex flex-col items-center justify-between gap-6 pt-6 pb-20 text-center sm:flex-row sm:text-left lg:pb-28"
 	>
 		<Div>
 			<P class="font-medium" aria-live="polite">{current.name}</P>
@@ -102,5 +118,5 @@
 					/>{/if}
 			</Button>
 		</Div>
-	</Div>
+	</Container>
 </Div>

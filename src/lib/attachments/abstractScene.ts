@@ -12,6 +12,8 @@ type Particle = {
 	sz: number;
 	seed: number;
 	size: number;
+	pulseDuration: number;
+	pulsePhase: number;
 };
 type Point = [number, number, number];
 
@@ -26,11 +28,12 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 		const value = Math.sin(index * 127.1 + 311.7) * 43758.5453;
 		return value - Math.floor(value);
 	};
-	// Fibonacci distribution gives every point its own stable place on the gathering sphere.
+	// Stable random directions and varied radii form a loose volume with scattered outer points.
 	const particles: Particle[] = Array.from({ length: count }, (_, index) => {
-		const y = 1 - (2 * (index + 0.5)) / count;
+		const y = 1 - 2 * sample(index + 1031);
 		const radius = Math.sqrt(1 - y * y);
-		const angle = index * Math.PI * (3 - Math.sqrt(5));
+		const angle = sample(index + 2077) * Math.PI * 2;
+		const distance = 18 + Math.pow(sample(index + 4093), 0.6) * 115;
 		return {
 			x: 0,
 			y: 0,
@@ -38,21 +41,25 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 			vx: 0,
 			vy: 0,
 			vz: 0,
-			sx: Math.cos(angle) * radius * 90,
-			sy: y * 90,
-			sz: Math.sin(angle) * radius * 90,
+			sx: Math.cos(angle) * radius * distance,
+			sy: y * distance,
+			sz: Math.sin(angle) * radius * distance,
 			seed: sample(index + 43),
-			size: 1.1 + sample(index + 7) * 0.9
+			size: 1.1 + sample(index + 7) * 0.9,
+			pulseDuration: 5 + sample(index + 8191) * 5,
+			pulsePhase: sample(index + 16381) * Math.PI * 2
 		};
 	});
-	let colors = ['#4851a3', '#a348a0', '#c75362'];
+	let colors = ['#4851a3', '#a348a0'];
 	let elapsed = 0;
 	let frame = 0;
 	let isDragging = false;
 	let isInitialized = false;
 	let isInView = false;
 	let isPaused = false;
+	let isPointerActive = false;
 	let lastFrame = 0;
+	let motionElapsed = 0;
 	let phase: 'gather' | 'sphere' | 'release' | 'settled' = 'settled';
 	let pointerX = 0.5;
 	let pointerY = 0.5;
@@ -91,33 +98,31 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 			];
 		}
 		if (scene === 2) {
-			const x = ((index % 40) / 39) * width * 0.92 - width * 0.46;
-			const y = (Math.floor(index / 40) / 29) * 300 - 150;
-			const distance = Math.hypot(x - (pointerX - 0.5) * width, y - (pointerY - 0.5) * height);
-			const wave = Math.sin(distance * 0.035 - elapsed * 2) * (10 + pulse * 22);
-			return [x, y + Math.sin(x * 0.009 + elapsed) * 18, wave + Math.exp(-distance / 100) * 70];
+			// Two corkscrew currents turn through a deep cylinder, rather than a flat grid.
+			const progress = index / count;
+			const angle = progress * Math.PI * 8 + (index % 2) * Math.PI + elapsed * 0.55 + rotation;
+			const radius = 100 + (seed - 0.5) * 45 + pulse * 18;
+			return [
+				(progress - 0.5) * width * 0.78,
+				Math.cos(angle) * radius * 0.7,
+				Math.sin(angle) * radius * 1.9
+			];
 		}
-		const cell = Math.floor(index / 30);
-		const column = cell % 8;
-		const row = Math.floor(cell / 8);
-		const x = ((column - 3.5) * width) / 9;
-		const y = (row - 2) * 65;
-		const size = Math.min(width / 22, 35);
-		const fold = 0.7 + Math.sin(column * 0.5 + row * 0.7 + elapsed * 0.6 + pulse) * 0.3;
-		const corners: Point[] = [
-			[0, -size * fold, 35],
-			[-size, 0, 0],
-			[0, size * 0.55, -15],
-			[size, 0, 0]
-		];
-		const edge = Math.floor(((index % 30) / 30) * 4);
-		const progress = (((index % 30) / 30) * 4) % 1;
-		const a = corners[edge];
-		const b = corners[(edge + 1) % 4];
+		// A thick torus knot rotates in three dimensions, passing in front of and behind itself.
+		const angle = (index / count) * Math.PI * 2;
+		const tube = seed * Math.PI * 2 + elapsed * 0.35;
+		const radius = 110 + 38 * Math.cos(3 * angle) + Math.cos(tube) * (14 + pulse * 12);
+		const x = radius * Math.cos(2 * angle);
+		const y = radius * Math.sin(2 * angle);
+		const z = 80 * Math.sin(3 * angle) + Math.sin(tube) * 24;
+		const turn = elapsed * 0.22 + rotation + 0.7;
+		const tilt = 0.7 + Math.sin(elapsed * 0.18) * 0.25;
+		const turnedX = x * Math.cos(turn) + z * Math.sin(turn);
+		const turnedZ = -x * Math.sin(turn) + z * Math.cos(turn);
 		return [
-			x + a[0] + (b[0] - a[0]) * progress + (pointerX - 0.5) * size,
-			y + a[1] + (b[1] - a[1]) * progress,
-			a[2] + (b[2] - a[2]) * progress + Math.sin(column * 0.4 + elapsed) * 15
+			turnedX * 1.5,
+			(y * Math.cos(tilt) - turnedZ * Math.sin(tilt)) * 0.7,
+			(y * Math.sin(tilt) + turnedZ * Math.cos(tilt)) * 1.65
 		];
 	};
 	const sphere = (particle: Particle, index: number): Point => {
@@ -151,13 +156,21 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 		for (let index = 0; index < count; index++) {
 			const particle = particles[index];
 			const perspective = 700 / (700 - particle.z);
-			context.fillStyle = colors[index % 3];
-			context.globalAlpha = Math.max(0.25, Math.min(0.95, 0.65 + particle.z / 400));
+			context.fillStyle = colors[index % colors.length];
+			// Positive z is closer to the camera. Smoothly fade distant points into the backdrop.
+			const depth = Math.max(0, Math.min(1, (particle.z + 100) / 200));
+			context.globalAlpha = 0.015 + Math.pow(depth * depth * (3 - 2 * depth), 1.5) * 0.985;
+			// Independent 5?10 second cycles; effects do not jump this animation clock.
+			const sizePulse = preference.matches
+				? 1
+				: 1 +
+					Math.sin((motionElapsed / particle.pulseDuration) * Math.PI * 2 + particle.pulsePhase) *
+						0.3;
 			context.beginPath();
 			context.arc(
 				canvas.width / 2 + particle.x * perspective * unit,
 				canvas.height / 2 + particle.y * perspective * unit,
-				particle.size * perspective * unit,
+				particle.size * sizePulse * perspective * unit,
 				0,
 				Math.PI * 2
 			);
@@ -169,6 +182,7 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 	};
 	const advance = (delta: number) => {
 		elapsed += delta;
+		motionElapsed += delta;
 		pulse = Math.max(0, pulse - delta * 0.4);
 		if (phase !== 'settled') {
 			transitionTime += delta;
@@ -186,6 +200,10 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 		// Integrate at <=120Hz steps for consistent spring stability on slower devices.
 		const steps = Math.max(1, Math.ceil(delta * 120));
 		const step = delta / steps;
+		// Read layout once per frame, rather than once for each particle.
+		const unit = Math.min(canvas.clientWidth / width, canvas.clientHeight / height);
+		const cursorX = ((pointerX - 0.5) * canvas.clientWidth) / unit;
+		const cursorY = ((pointerY - 0.5) * canvas.clientHeight) / unit;
 		for (let index = 0; index < count; index++) {
 			const particle = particles[index];
 			const goal = target(particle, index);
@@ -194,12 +212,17 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 				for (let axis = 0; axis < 3; axis++)
 					goal[axis] =
 						phase === 'release' ? center[axis] + (goal[axis] - center[axis]) * blend : center[axis];
-			} else {
-				const dx = goal[0] - (pointerX - 0.5) * width;
-				const dy = goal[1] - (pointerY - 0.5) * height;
-				const force = Math.exp(-Math.hypot(dx, dy) / 110);
-				goal[0] += Math.tanh(dx / 50) * force * 32;
-				goal[1] += Math.tanh(dy / 50) * force * 32;
+			} else if (isPointerActive) {
+				// Repel in projected screen space so the field stays under the cursor at any depth.
+				const perspective = 700 / (700 - goal[2]);
+				const dx = goal[0] * perspective - cursorX;
+				const dy = goal[1] * perspective - cursorY;
+				const distance = Math.hypot(dx, dy);
+				const force = Math.exp(-(distance * distance) / (2 * 100 * 100));
+				const direction = distance > 0.01 ? Math.atan2(dy, dx) : particle.seed * Math.PI * 2;
+				goal[0] += (Math.cos(direction) * force * 155) / perspective;
+				goal[1] += (Math.sin(direction) * force * 155) / perspective;
+				goal[2] -= force * 40;
 			}
 			for (let iteration = 0; iteration < steps; iteration++) {
 				const stiffness = phase === 'settled' ? 75 : 110;
@@ -241,7 +264,7 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 		canvas.width = Math.max(1, Math.round(bounds.width * ratio));
 		canvas.height = Math.max(1, Math.round(bounds.height * ratio));
 		width = bounds.width < 700 ? 600 : 1000;
-		colors = ['primary', 'secondary', 'tertiary'].map(
+		colors = ['primary', 'secondary'].map(
 			(name) => getComputedStyle(surface.querySelector(`[data-scene-color="${name}"]`)!).color
 		);
 		if (!isInitialized) {
@@ -268,6 +291,7 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 		draw();
 	};
 	const move = (event: PointerEvent) => {
+		isPointerActive = true;
 		const bounds = canvas.getBoundingClientRect();
 		const nextX = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
 		if (isDragging) rotation += (nextX - pointerX) * 3;
@@ -283,6 +307,9 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 		move(event);
 		if (event.pointerType !== 'touch') canvas.setPointerCapture(event.pointerId);
 	};
+	const leave = () => {
+		isPointerActive = false;
+	};
 	const up = () => {
 		isDragging = false;
 	};
@@ -290,6 +317,7 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 		if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ', 'Enter'].includes(event.key))
 			return;
 		event.preventDefault();
+		isPointerActive = true;
 		if (event.key === ' ' || event.key === 'Enter') action();
 		else {
 			pointerX = Math.max(
@@ -327,6 +355,7 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 	preference.addEventListener('change', refresh);
 	document.addEventListener('visibilitychange', refresh);
 	canvas.addEventListener('pointermove', move);
+	canvas.addEventListener('pointerleave', leave);
 	canvas.addEventListener('pointerdown', down);
 	canvas.addEventListener('pointerup', up);
 	canvas.addEventListener('pointercancel', up);
@@ -344,6 +373,7 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 		preference.removeEventListener('change', refresh);
 		document.removeEventListener('visibilitychange', refresh);
 		canvas.removeEventListener('pointermove', move);
+		canvas.removeEventListener('pointerleave', leave);
 		canvas.removeEventListener('pointerdown', down);
 		canvas.removeEventListener('pointerup', up);
 		canvas.removeEventListener('pointercancel', up);

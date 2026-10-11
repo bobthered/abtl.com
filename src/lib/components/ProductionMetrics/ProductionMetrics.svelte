@@ -49,7 +49,7 @@
 	aria-labelledby="production-metrics-heading"
 	data-production-metrics
 >
-	<Container variants={['section']} class="space-y-0">
+	<Container variants={['section']} class="space-y-0 pb-0 lg:pb-0">
 		<Div class="mx-auto mb-14 max-w-2xl text-center sm:mb-16 lg:mb-20">
 			<H2 id="production-metrics-heading" variants={['section']}>The scale behind every detail.</H2>
 			<P class="mt-6 text-lg text-gray-600 dark:text-gray-300">
@@ -98,6 +98,6 @@
 				</Button>
 			{/each}
 		</Div>
-		<MetricCanvas scene={selectedIndex} selection={selectionRevision} />
 	</Container>
+	<MetricCanvas scene={selectedIndex} selection={selectionRevision} />
 </Section>

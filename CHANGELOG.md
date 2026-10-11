@@ -6,20 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 890ba49487be613704d8f059c199a48f808f2270 -->
+<!-- pending-base: 74a0c168b3d30e542179d0b61ff03e0448711207 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add interactive abstract metric animations
+refactor: deepen abstract particle animations and interactions
 
-Make metric buttons select four abstract point formations with a persistent 1,200-particle system.
-Gather particles into a spring-driven, jiggling sphere before releasing them into the next formation; handle interrupted selections and reduced motion.
-Add pointer, touch and keyboard interactions, effect and pause controls, theme-aware colors and reduced-motion support.
-Pause offscreen rendering, verify responsive interactions and reconcile changelog history.
+Use primary and secondary points over full-width background glows, with stronger depth fading and a jumbled gathering sphere.
+Replace flat mesh and prism scenes with a deep helical current and rotating torus knot.
+Pulse each point independently on randomized 5?10 second cycles, respecting pause and reduced motion.
+Strengthen cursor repulsion, align its field with projected point positions and verify responsive interactions.
+Reconcile committed animation work into changelog history.
 ```
 
 ## 2026-10-11
+
+- **feat: add interactive abstract metric animations** (`74a0c16`)
+  Add four selectable abstract point formations sharing 1,200 particles. Gather points into a spring-driven sphere before releasing into the selected scene, including interrupted selections. Add pointer, touch and keyboard interactions, pause and effect controls, theme colors, reduced motion, offscreen rendering suspension and browser coverage. Reconcile changelog history.
 
 - **feat: add animated production metrics section** (`890ba49`)
   Add four confirmed production, shipping, stock color and printing metrics below the bento grid. Animate top and bottom gradient rules that fade to transparent at both ends on hover and keyboard focus, with responsive layouts and reduced-motion support. Reuse global count-ups, add interaction coverage and reconcile changelog history.
