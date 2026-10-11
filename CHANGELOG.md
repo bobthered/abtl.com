@@ -6,17 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 9a29e75c47fb1bea614dcdf46a96339057866697 -->
+<!-- pending-base: d26a333bdaa7a7a187958a33e327e69459ba5aae -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: adapt scroll stagger timing to group size
+refactor: remove homepage placeholder sections
 
-Lengthen the overall entrance wave while shortening individual gaps as groups grow.
-Stagger control groups automatically and move shipping states into shared SVG group handling, preserving focus, reduced motion and hover behavior.
-Add browser coverage, document grouping rules and reconcile changelog history.
+Remove industries, products, capabilities and resources sections and their unused content.
+Keep future navigation labels inactive and direct the hero CTA to the bento grid.
+Update affected scroll-reveal coverage and reconcile changelog history.
 ```
+
+## 2026-10-11
+
+- **feat: adapt scroll stagger timing to group size** (`d26a333`)
+  Lengthen the overall entrance wave while shortening individual gaps as groups grow. Stagger control groups automatically and move shipping states into shared SVG group handling, preserving focus, reduced motion and hover behavior. Add browser coverage, document grouping rules and reconcile changelog history.
 
 ## 2026-10-10
 

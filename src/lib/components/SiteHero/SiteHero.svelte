@@ -144,7 +144,7 @@
 					<A href="mailto:sales@abtl.com?subject=Tag%20project%20quote" variants={['button.base']}>
 						Get a quote <ArrowRight aria-hidden="true" class="size-4" />
 					</A>
-					<A href="#products" variants={['button.base', 'button.variant.neutral-outline']}>
+					<A href="#possibilities" variants={['button.base', 'button.variant.neutral-outline']}>
 						Find your tags <ArrowRight aria-hidden="true" class="size-4" />
 					</A>
 				</Div>

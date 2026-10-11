@@ -137,19 +137,19 @@ for (const height of [600, 900]) {
 
 test('keyboard focus and reduced motion expose pending content immediately', async ({ page }) => {
 	await page.goto('/');
-	const heading = page.locator('#industries-heading');
-	await expect(heading).toHaveCSS('opacity', '0');
-	await heading.evaluate((element) => {
+	const focusTarget = page.locator('footer [data-scroll-reveal-state]').first();
+	await expect(focusTarget).toHaveCSS('opacity', '0');
+	await focusTarget.evaluate((element) => {
 		element.setAttribute('tabindex', '-1');
 		(element as HTMLElement).focus({ preventScroll: true });
 	});
-	await expect(heading).toHaveCSS('opacity', '1');
-	const products = page.locator('#products-heading');
-	await expect(products).toHaveCSS('opacity', '0');
+	await expect(focusTarget).toHaveCSS('opacity', '1');
+	const footerNote = page.locator('footer p').last();
+	await expect(footerNote).toHaveCSS('opacity', '0');
 	await page.emulateMedia({ reducedMotion: 'reduce' });
-	await expect(products).toHaveCSS('opacity', '1');
+	await expect(footerNote).toHaveCSS('opacity', '1');
 	await page.emulateMedia({ reducedMotion: 'no-preference' });
-	await expect(products).toHaveCSS('opacity', '1');
+	await expect(footerNote).toHaveCSS('opacity', '1');
 });
 
 test('content at the scroll limit is revealed even below the trigger line', async ({ page }) => {
@@ -192,7 +192,9 @@ test('footer groups enter together with staggering and keep navigation accessibl
 	expect(delays).toContain('0');
 	expect(delays.some((delay) => Number(delay) > 0)).toBe(true);
 	await expect(
-		page.getByRole('navigation', { name: 'Footer navigation' }).getByRole('link').first()
+		page
+			.getByRole('navigation', { name: 'Footer navigation' })
+			.getByText('Products', { exact: true })
 	).toBeVisible();
 });
 

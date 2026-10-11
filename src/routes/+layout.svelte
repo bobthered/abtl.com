@@ -34,10 +34,10 @@
 	// Capture request state during component initialization for async server rendering.
 	const initialPathname = page.url.pathname;
 	const navigation = [
-		{ href: '/#products', label: 'Products' },
-		{ href: '/#industries', label: 'Industries' },
-		{ href: '/#capabilities', label: 'Capabilities' },
-		{ href: '/#resources', label: 'Resources' }
+		{ label: 'Products' },
+		{ label: 'Industries' },
+		{ label: 'Capabilities' },
+		{ label: 'Resources' }
 	];
 
 	// helpers
@@ -170,8 +170,10 @@
 				><Logo aria-hidden="true" variants={['onSurface', 'site']} /></A
 			>
 			<Nav aria-label="Main navigation" class="hidden items-center gap-6 lg:flex xl:gap-12">
-				{#each navigation as item (item.href)}<A href={item.href} variants={['ghost', 'navigation']}
-						>{item.label}</A
+				{#each navigation as item (item.label)}<A
+						aria-disabled="true"
+						title="Coming soon"
+						variants={['ghost', 'navigation']}>{item.label}</A
 					>{/each}
 			</Nav>
 			<Div class="hidden items-center gap-8 lg:flex">
@@ -224,13 +226,9 @@
 							isVisible={isNavigationVisible}
 							transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
 						>
-							{#each navigation as item (item.href)}
-								<A
-									href={item.href}
-									onclick={() => {
-										isMenuVisible = false;
-									}}
-									variants={['ghost', 'navigation']}>{item.label}</A
+							{#each navigation as item (item.label)}
+								<A aria-disabled="true" title="Coming soon" variants={['ghost', 'navigation']}
+									>{item.label}</A
 								>
 							{/each}
 							<A
@@ -271,9 +269,12 @@
 				</Div>
 				<Div>
 					<Nav aria-label="Footer navigation" class="grid grid-cols-2 gap-x-6">
-						{#each navigation as item (item.href)}
-							<A href={item.href} variants={['ghost', 'navigation']} class="justify-start"
-								>{item.label}</A
+						{#each navigation as item (item.label)}
+							<A
+								aria-disabled="true"
+								title="Coming soon"
+								variants={['ghost', 'navigation']}
+								class="justify-start">{item.label}</A
 							>
 						{/each}
 					</Nav>
