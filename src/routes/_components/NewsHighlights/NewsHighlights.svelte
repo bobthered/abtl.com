@@ -1,6 +1,18 @@
 <script lang="ts">
 	// Imports
-	import { A, Button, Container, Div, H2, H3, Img, P, Section, Span } from '#lib/components';
+	import {
+		A,
+		BentoItem,
+		Button,
+		Container,
+		Div,
+		H2,
+		H3,
+		Img,
+		P,
+		Section,
+		Span
+	} from '#lib/components';
 	import { ChevronLeft, ChevronRight } from '#lib/icons';
 	import { MediaQuery } from 'svelte/reactivity';
 	import NewsDialog from './NewsDialog.svelte';
@@ -54,6 +66,18 @@
 	};
 	const move = async (direction: number) => {
 		if (isAnimating || !track) return;
+		const focusedImage =
+			document.activeElement?.closest<HTMLElement>('[data-news-image]')?.dataset.newsImage;
+		// Continue from the current hover widths instead of snapping back before moving.
+		const starts = new Map(
+			[...track.children].map((node) => [
+				node,
+				{
+					flexGrow: getComputedStyle(node).flexGrow,
+					marginRight: getComputedStyle(node).marginRight
+				}
+			])
+		);
 		hoverAnimations.forEach((animation) => animation.cancel());
 		hoverAnimations = [];
 		isAnimating = true;
@@ -66,15 +90,18 @@
 		const gap = parseFloat(getComputedStyle(track.firstElementChild!).marginRight);
 		const margin = (index: number) => (index >= 0 && index < count - 1 ? `${gap}px` : '0px');
 		const weight = (index: number) => (index >= 0 && index < count ? (1 / imageRatio) ** index : 0);
-		if (direction < 0) {
-			order = [order[order.length - 1], ...order.slice(0, -1)];
-			await tick();
-		}
+		if (direction < 0) order = [order[order.length - 1], ...order.slice(0, -1)];
+		await tick();
+		// Decode incoming artwork before growing its slot, including wrapped copies.
+		await Promise.all(
+			[...track.querySelectorAll('img')].map((image) => image.decode().catch(() => undefined))
+		);
+		if (isDisposed) return;
 		if (!isReducedMotion.current) {
 			animations = [...track.children].map((node, index) =>
 				node.animate(
 					[
-						{
+						starts.get(node) ?? {
 							flexGrow: String(weight(direction > 0 ? index : index - 1)),
 							marginRight: margin(direction > 0 ? index : index - 1)
 						},
@@ -95,6 +122,10 @@
 		animations.forEach((animation) => animation.cancel());
 		animations = [];
 		isAnimating = false;
+		if (focusedImage)
+			track
+				.querySelector<HTMLElement>(`[data-news-image="${focusedImage}"] button`)
+				?.focus({ preventScroll: true });
 	};
 	const openPost = (event: MouseEvent, post: NewsPost) => {
 		if (
@@ -127,9 +158,19 @@
 	let track = $state<HTMLDivElement | null>(null);
 
 	// $derived
+	// Resolve the responsive slot count before deriving the loop entries that depend on it.
 	const visibleCount = $derived(
 		Math.min(newsHighlights.length, isDesktop.current ? 5 : isTablet.current ? 3 : 2)
 	);
+
+	// Extra loop entries fill every incoming slot during a multi-image advance.
+	// Their own motion replaces scroll reveals, so incoming copies do not fade in late.
+	const renderedStories = $derived([
+		...order.map((post) => ({ isCopy: false, key: post.id, post })),
+		...order
+			.slice(0, Math.max(0, visibleCount - 1))
+			.map((post) => ({ isCopy: true, key: `copy-${post.id}`, post }))
+	]);
 
 	// $effects
 	$effect(() => {
@@ -148,6 +189,18 @@
 		animations.forEach((animation) => animation.cancel());
 	});
 </script>
+
+{#snippet image(story: NewsPost)}
+	<Div class="flex h-full w-full items-center justify-center overflow-hidden rounded-sm">
+		<Img
+			src={story.image}
+			alt={story.alt}
+			class="h-auto w-160 max-w-none shrink-0 sm:w-192 lg:w-256"
+			loading={isAnimating ? 'eager' : 'lazy'}
+			decoding="async"
+		/>
+	</Div>
+{/snippet}
 
 {#if selected}
 	<Section variants={['surface']} aria-labelledby={`${uid}-heading`} data-news-highlights>
@@ -197,52 +250,56 @@
 						onclick={() => void move(1)}><ChevronRight class="size-5" aria-hidden="true" /></Button
 					>
 				</Div>
-				<Div
-					id={`${uid}-images`}
-					bind:element={track}
-					class="flex h-64 sm:h-80 lg:h-96"
-					data-news-track
-				>
-					{#each order as story, index (story.id)}
-						<Div
-							class={`flex min-w-0 basis-0 items-center justify-center ${index >= visibleCount && !isAnimating ? 'invisible' : ''} ${proportions[index]} ${index < visibleCount - 1 ? 'mr-4' : 'mr-0'}`}
-							aria-hidden={index >= visibleCount}
-							inert={index >= visibleCount}
-							onpointerenter={(event) => {
-								if (event.pointerType !== 'touch') expandImage(index);
-							}}
-							onpointerleave={() => expandImage(null)}
-							onfocusin={() => expandImage(index)}
-							onfocusout={() => expandImage(null)}
-							data-news-image={story.id}
-						>
-							<Button
-								type="button"
-								variants={['ghost']}
-								aria-label={`${index === 0 ? 'Read' : 'Select'} ${story.title}`}
-								aria-haspopup={index === 0 ? 'dialog' : undefined}
-								aria-controls={index === 0 ? undefined : `${uid}-story`}
-								aria-disabled={isAnimating}
-								class="h-full w-full overflow-hidden rounded-sm p-0"
-								onclick={(event) => {
-									if (index === 0) openPost(event, story);
-									else void move(index);
+				<!-- Reveal the stationary wrapper once; moving images handle their own transitions. -->
+				<Div data-scroll-reveal data-news-images-reveal>
+					<Div
+						id={`${uid}-images`}
+						bind:element={track}
+						class="flex h-64 sm:h-80 lg:h-96"
+						data-scroll-reveal="off"
+						data-news-track
+					>
+						{#each renderedStories as entry, index (entry.key)}
+							{@const story = entry.post}
+							<Div
+								class={`flex min-w-0 basis-0 items-center justify-center ${index >= visibleCount && !isAnimating ? 'invisible' : ''} ${proportions[index] ?? 'grow-0'} ${index < visibleCount - 1 ? 'mr-4' : 'mr-0'}`}
+								aria-hidden={index >= visibleCount}
+								inert={index >= visibleCount}
+								onpointerenter={(event) => {
+									if (event.pointerType !== 'touch') expandImage(index);
 								}}
+								onpointerleave={() => expandImage(null)}
+								onfocusin={() => expandImage(index)}
+								onfocusout={() => expandImage(null)}
+								data-news-image={entry.isCopy ? undefined : story.id}
+								data-news-copy={entry.isCopy ? story.id : undefined}
 							>
-								<Div
-									class="flex h-full w-full items-center justify-center overflow-hidden rounded-sm"
-								>
-									<Img
-										src={story.image}
-										alt={story.alt}
-										class="h-auto w-160 max-w-none shrink-0 sm:w-192 lg:w-256"
-										loading="lazy"
-										decoding="async"
-									/>
-								</Div>
-							</Button>
-						</Div>
-					{/each}
+								{#if index === 0}
+									<BentoItem
+										aria-label={`Read ${story.title}`}
+										aria-haspopup="dialog"
+										aria-disabled={isAnimating}
+										class="w-full"
+										onclick={(event) => openPost(event, story)}
+									>
+										{@render image(story)}
+									</BentoItem>
+								{:else}
+									<Button
+										type="button"
+										variants={['ghost']}
+										aria-label={`Select ${story.title}`}
+										aria-controls={`${uid}-story`}
+										aria-disabled={isAnimating}
+										class="h-full w-full overflow-hidden rounded-sm p-0"
+										onclick={() => void move(index)}
+									>
+										{@render image(story)}
+									</Button>
+								{/if}
+							</Div>
+						{/each}
+					</Div>
 				</Div>
 				<Div class="mt-8 sm:mt-10">
 					<Div

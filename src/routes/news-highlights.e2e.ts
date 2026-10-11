@@ -48,21 +48,23 @@ for (const [width, count] of [
 			(await section.locator('[data-news-track]').boundingBox())!.y
 		);
 		await next.focus();
-		const collapsingFrames = await next.evaluate((button) => {
-			(button as HTMLButtonElement).click();
-			const leading = document.querySelector('[data-news-track]')!.firstElementChild!;
-			const animation = leading
-				.getAnimations()
-				.find((item) =>
-					(item.effect as KeyframeEffect)
-						.getKeyframes()
-						.some((frame) => frame.flexGrow !== undefined)
-				);
-			return animation
-				? (animation.effect as KeyframeEffect).getKeyframes().map((frame) => frame.flexGrow)
-				: [];
-		});
-		expect(collapsingFrames).toEqual(['1', '0']);
+		await next.click();
+		await expect
+			.poll(() =>
+				section.locator('[data-news-track]').evaluate((track) => {
+					const animation = track
+						.firstElementChild!.getAnimations()
+						.find((item) =>
+							(item.effect as KeyframeEffect)
+								.getKeyframes()
+								.some((frame) => frame.flexGrow !== undefined)
+						);
+					return animation
+						? (animation.effect as KeyframeEffect).getKeyframes().map((frame) => frame.flexGrow)
+						: [];
+				})
+			)
+			.toEqual(['1', '0']);
 		await expect(slides.first()).toHaveAttribute('data-news-image', 'nursery');
 		await expect(section.locator('[data-news-story]')).toContainText('A little detail.');
 		await expect(slides.last()).toHaveAttribute('data-news-image', 'equipment');
@@ -154,13 +156,20 @@ for (const width of [390, 1440]) {
 		const tile = slide.getByRole('button');
 		const initialWidth = (await slide.boundingBox())!.width;
 		await tile.scrollIntoViewIfNeeded();
-		await expect(tile).toHaveAttribute('data-scroll-reveal-state', 'complete');
+		await expect(section.locator('[data-news-images-reveal]')).toHaveAttribute(
+			'data-scroll-reveal-state',
+			'complete'
+		);
 		await tile.hover();
 
 		await expect
 			.poll(async () => (await slide.boundingBox())!.width - initialWidth)
 			.toBeCloseTo(32, 0);
-		await expect(section.locator('[data-bento-expand], [data-bento-outline]')).toHaveCount(0);
+		await expect(tile.locator('[data-bento-expand]')).toBeVisible();
+		await expect(tile.locator('[data-bento-outline]')).toHaveCSS('opacity', '0.6');
+		await expect(section.locator('[data-news-image]').locator('[data-bento-expand]')).toHaveCount(
+			1
+		);
 		await page.mouse.move(0, 0);
 		await expect.poll(async () => (await slide.boundingBox())!.width).toBeCloseTo(initialWidth, 0);
 		await tile.click();
@@ -212,19 +221,25 @@ for (const [width, index, id, title] of [
 		const target = section.locator(`[data-news-image="${id}"]`);
 		const button = target.getByRole('button', { name: `Select ${title}`, exact: true });
 		await button.scrollIntoViewIfNeeded();
-		await expect(button).toHaveAttribute('data-scroll-reveal-state', 'complete');
+		await expect(section.locator('[data-news-images-reveal]')).toHaveAttribute(
+			'data-scroll-reveal-state',
+			'complete'
+		);
 		await button.focus();
-		const frames = await button.evaluate((element) => {
-			(element as HTMLButtonElement).click();
-			return element.parentElement!.getAnimations().flatMap((animation) =>
-				(animation.effect as KeyframeEffect)
-					.getKeyframes()
-					.filter((frame) => frame.flexGrow !== undefined)
-					.map((frame) => frame.flexGrow)
-			);
-		});
-		expect(Number(frames[0])).toBeCloseTo((1 / (1 + Math.sqrt(5))) ** index, 5);
-		expect(frames[1]).toBe('1');
+		await button.click();
+		await expect
+			.poll(() =>
+				target.evaluate((element) =>
+					element
+						.getAnimations()
+						.some((animation) =>
+							(animation.effect as KeyframeEffect)
+								.getKeyframes()
+								.some((frame) => frame.flexGrow === '1')
+						)
+				)
+			)
+			.toBe(true);
 		await expect(slides.first()).toHaveAttribute('data-news-image', id);
 		await expect(section.locator('[data-news-story]')).toContainText(title);
 		await expect(section.locator('[data-news-story]')).toContainText(
@@ -233,6 +248,8 @@ for (const [width, index, id, title] of [
 		await expect(page).toHaveURL(/\/$/);
 		await expect(page.locator('[data-news-dialog]')).toHaveCount(0);
 		await expect(target.getByRole('button')).toBeFocused();
+		await expect(target.locator('[data-bento-expand]')).toBeVisible();
+		await expect(slides.nth(1).locator('[data-bento-expand]')).toHaveCount(0);
 		await target.getByRole('button', { name: `Read ${title}` }).press('Enter');
 		await expect(page).toHaveURL(new RegExp(`/news/${id}$`));
 		await expect(page.locator('[data-news-dialog]').getByRole('heading', { level: 1 })).toHaveText(
@@ -250,3 +267,98 @@ for (const [width, index, id, title] of [
 		await expect(page.locator('[data-news-dialog]')).toHaveCount(0);
 	});
 }
+
+test('multi-image advances animate all incoming slots and preserve their geometry at handoff', async ({
+	page
+}) => {
+	await page.setViewportSize({ width: 1440, height: 1000 });
+	await page.goto('/');
+	await expect(page.locator('[data-bento-ready]')).toHaveAttribute('data-bento-ready', 'true', {
+		timeout: 60000
+	});
+	const section = page.locator('[data-news-highlights]');
+	const target = section.locator('[data-news-image="textile"] button');
+	await target.scrollIntoViewIfNeeded();
+	await expect(section.locator('[data-news-images-reveal]')).toHaveAttribute(
+		'data-scroll-reveal-state',
+		'complete'
+	);
+	await page.mouse.move(0, 0);
+	await target.evaluate((element) => (element as HTMLButtonElement).click());
+	const track = section.locator('[data-news-track]');
+	await expect
+		.poll(() =>
+			track.evaluate((element) =>
+				element.children[3]
+					.getAnimations()
+					.some((animation) =>
+						(animation.effect as KeyframeEffect)
+							.getKeyframes()
+							.some((frame) => frame.flexGrow === '1')
+					)
+			)
+		)
+		.toBe(true);
+	const before = await track.evaluate((element) => {
+		const nodes = [...element.children] as HTMLElement[];
+		const transitions = nodes.flatMap((node) =>
+			node
+				.getAnimations()
+				.filter((animation) =>
+					(animation.effect as KeyframeEffect)
+						.getKeyframes()
+						.some((frame) => frame.flexGrow !== undefined)
+				)
+		);
+		transitions.forEach((animation) => {
+			animation.pause();
+			animation.currentTime = 350;
+		});
+		const incoming = nodes.slice(3, 8);
+		const halfway = incoming.map((node) => node.getBoundingClientRect().width);
+		const isImagesReady = incoming.every((node) => {
+			const image = node.querySelector('img')!;
+			return image.complete && image.naturalWidth > 0;
+		});
+		transitions.forEach((animation) => {
+			animation.currentTime = 699.99;
+		});
+		const bounds = incoming.map((node) => {
+			const rect = node.getBoundingClientRect();
+			return { x: rect.x, width: rect.width };
+		});
+		return { isImagesReady, bounds, halfway };
+	});
+	expect(before.isImagesReady).toBe(true);
+	before.halfway.forEach((width) => expect(width).toBeGreaterThan(0));
+	await track.evaluate((element) =>
+		[...element.children].forEach((node) =>
+			node.getAnimations().forEach((animation) => {
+				if (
+					(animation.effect as KeyframeEffect)
+						.getKeyframes()
+						.some((frame) => frame.flexGrow !== undefined)
+				)
+					animation.finish();
+			})
+		)
+	);
+	await expect(section.locator('[data-news-image]').first()).toHaveAttribute(
+		'data-news-image',
+		'textile'
+	);
+	await expect(section.getByRole('button', { name: 'Next article', exact: true })).toHaveAttribute(
+		'aria-disabled',
+		'false'
+	);
+	const after = await section.locator('[data-news-image]').evaluateAll((nodes) =>
+		nodes.slice(0, 5).map((node) => {
+			const rect = node.getBoundingClientRect();
+			return { x: rect.x, width: rect.width };
+		})
+	);
+	after.forEach((bounds, index) => {
+		expect(bounds.x).toBeCloseTo(before.bounds[index].x, 0);
+		expect(bounds.width).toBeCloseTo(before.bounds[index].width, 0);
+	});
+});

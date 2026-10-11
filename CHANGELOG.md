@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: a0a2a25ebfdd88c39091fffc44046155a5c0da11 -->
+<!-- pending-base: b0cd07020d64c1de5624e6f5f6a2813d2f32b69e -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: refine news carousel image interactions
+fix: smooth news carousel wrapping and highlight the active image
 
-Replace bento tiles with plain image buttons while retaining 2rem hover expansion and the active image's route-backed post dialog.
-Animate later images directly into first position on selection and update the article details without navigation.
-Update responsive and keyboard browser coverage and reconcile changelog history.
+Restore the bento outline and expand icon on the active news image only.
+Animate wrapped incoming images during multi-slide selections, decode artwork before movement, and preserve hover widths and keyboard focus.
+Add transition continuity coverage and reconcile changelog history.
 ```
 
 ## 2026-10-11
+
+- **fix: refine news carousel image interactions** (`b0cd070`)
+  Replace bento tiles with plain image buttons, keep 2rem hover expansion, and open the route-backed dialog from the active image only. Animate later images to first position without navigation, update article details, and add responsive and keyboard browser coverage.
 
 - **feat: open news highlights in route-backed dialogs** (`a0a2a25`)
   Add bento-style news image tiles with 2rem hover expansion and shallow-route post dialogs. Share post content with standalone articles, preserve dismissal and browser history, and update browser coverage and changelog history.
