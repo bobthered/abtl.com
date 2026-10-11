@@ -17,7 +17,6 @@
 		Text
 	} from '#lib/components';
 	import { ArrowRight, Globe2, MapPin, PackageCheck } from '#lib/icons';
-	import { onMount } from 'svelte';
 	import type { Snippet } from 'svelte';
 	import { shippingLocations, stateRows } from '../ShippingGlobe/shippingLocations';
 
@@ -30,57 +29,12 @@
 	let { isStandalone = false }: { isStandalone?: boolean } = $props();
 
 	// $state
-	let mapElement = $state<SVGSVGElement | null>(null);
 	let selectedLocationId = $state('london');
 
 	// $derived
 	const selectedLocation = $derived(
 		internationalLocations.find((location) => location.id === selectedLocationId)!
 	);
-
-	// $effects
-	onMount(() => {
-		if (!mapElement) return;
-		const preference = matchMedia('(prefers-reduced-motion: reduce)');
-		const animations: Animation[] = [];
-		const finish = () => {
-			if (preference.matches) animations.forEach((animation) => animation.cancel());
-		};
-		let observer: IntersectionObserver;
-		const observeMap = () => {
-			observer?.disconnect();
-			if (animations.length) return;
-			observer = new IntersectionObserver(
-				([entry]) => {
-					if (!entry.isIntersecting) return;
-					observer.disconnect();
-					if (preference.matches) return;
-					mapElement!.querySelectorAll('[data-shipping-state]').forEach((tile, index) => {
-						animations.push(
-							tile.animate(
-								[
-									{ opacity: 0.25, transform: 'translateY(6px)' },
-									{ opacity: 1, transform: 'translateY(0)' }
-								],
-								{ duration: 450, delay: index * 14, easing: 'ease-out', fill: 'backwards' }
-							)
-						);
-					});
-				},
-				{ rootMargin: `0px 0px -${Math.round(window.innerHeight * 0.2)}px 0px`, threshold: 0 }
-			);
-			observer.observe(mapElement!);
-		};
-		observeMap();
-		window.addEventListener('resize', observeMap);
-		preference.addEventListener('change', finish);
-		return () => {
-			observer.disconnect();
-			window.removeEventListener('resize', observeMap);
-			animations.forEach((animation) => animation.cancel());
-			preference.removeEventListener('change', finish);
-		};
-	});
 </script>
 
 {#snippet constrained(children: Snippet)}
@@ -116,7 +70,7 @@
 			</Div>
 			<Div variants={['shippingArtwork']} class="group p-6 sm:p-8">
 				<Svg
-					bind:element={mapElement}
+					data-scroll-stagger
 					viewBox="0 0 600 410"
 					class="w-full"
 					role="img"

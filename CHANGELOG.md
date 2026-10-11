@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 2ba8aab73f47a42e2c0461c65ed09b814ea26f34 -->
+<!-- pending-base: 9a29e75c47fb1bea614dcdf46a96339057866697 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: randomize bento topics within fixed layout slots
+feat: adapt scroll stagger timing to group size
 
-Shuffle topics per page request while preserving SSR hydration, dialog return order and the 2/3, 1/3, 1/3, 1/3, 1/3, 3/3 layout.
-Decouple widths from topics, adapt QR artwork to narrow tiles and verify every animation at all three widths.
-Update browser coverage and reconcile changelog history.
+Lengthen the overall entrance wave while shortening individual gaps as groups grow.
+Stagger control groups automatically and move shipping states into shared SVG group handling, preserving focus, reduced motion and hover behavior.
+Add browser coverage, document grouping rules and reconcile changelog history.
 ```
 
 ## 2026-10-10
+
+- **feat: randomize bento topics within fixed layout slots** (`9a29e75`)
+  Shuffle topics per page request while preserving SSR hydration, dialog return order and the 2/3, 1/3, 1/3, 1/3, 1/3, 3/3 layout. Decouple widths from topics, adapt QR artwork to narrow tiles and verify every animation at all three widths. Update browser coverage and reconcile changelog history.
 
 - **refactor: discover scroll reveal content automatically** (`2ba8aab`)
   Discover unmarked content, controls, artwork and visual surfaces globally, including dynamic routes and dialogs; preserve grouping, marquee motion and accessibility. Remove page-level entrance opt-ins and add automatic-discovery regression coverage. Update project instructions and reconcile changelog history.

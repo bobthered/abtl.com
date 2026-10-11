@@ -1,15 +1,27 @@
 import type { Attachment } from 'svelte/attachments';
 
-type RevealElement = HTMLElement | SVGSVGElement;
+type RevealElement = HTMLElement | SVGElement;
 
 // Reveal when the top reaches 80% of viewport height (20% above the bottom).
 const revealDuration = 700;
+// More items extend the overall wave, while reducing the gap between starts.
+const staggerGap = (count: number) => (count > 1 ? 140 / Math.sqrt(count - 1) : 0);
+const staggerChildren = (element: Element): RevealElement[] => {
+	const isExplicit = element.hasAttribute('data-scroll-stagger');
+	if (!isExplicit && !element.matches('[role="group"]')) return [];
+	return [...element.children].filter(
+		(child): child is RevealElement =>
+			(child instanceof HTMLElement || child instanceof SVGElement) &&
+			(isExplicit || child.matches('a, button, input, select, textarea')) &&
+			!child.matches('.sr-only, [data-scroll-reveal="off"]')
+	);
+};
 const revealViewportOffset = 0.2;
 const pendingClass = 'motion-safe:opacity-0';
 
 const contentSelector =
 	'h1, h2, h3, h4, h5, h6, p, article, figure, figcaption, img, a, button, ul, ol, dl, blockquote, pre, table, form, label, input, select, textarea, details, summary, [role="group"]';
-const selector = `:is(main, dialog, footer) :is(${contentSelector}, div, span, svg, canvas), footer nav, [data-marquee], [data-bento-topic], [data-scroll-reveal], [data-count-up]`;
+const selector = `:is(main, dialog, footer) :is(${contentSelector}, div, span, svg, canvas), footer nav, [data-marquee], [data-bento-topic], [data-scroll-reveal], [data-count-up], [data-scroll-stagger]`;
 const numberFormat = new Intl.NumberFormat('en-US');
 const excluded =
 	'header, main nav, dialog nav, .sr-only, [data-scroll-reveal="off"], [data-stock-columns]';
@@ -17,6 +29,7 @@ const excluded =
 /** Discover content and visual surfaces from rendered DOM, without page-specific opt-ins. */
 const revealTarget = (element: Element): RevealElement | null => {
 	if (element.closest(excluded)) return null;
+	if (element.hasAttribute('data-scroll-stagger')) return element as RevealElement;
 	const marquee = element.closest('[data-marquee]');
 	// Move a stationary wrapper, never the scrolling track or repeated copies.
 	if (marquee)
@@ -62,6 +75,8 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 	const groups = new WeakSet<RevealElement>();
 	const pending = new Set<RevealElement>();
 	const prepared = new Set<RevealElement>();
+	const staggerGroups = new Map<RevealElement, RevealElement[]>();
+	const staggerOwners = new WeakMap<RevealElement, RevealElement>();
 	const animations = new Map<RevealElement, Animation>();
 	const counters = new Map<RevealElement, { start: number; target: number; text: string }>();
 	let batchFrame = 0;
@@ -103,14 +118,36 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 					a.element.getBoundingClientRect().left - b.element.getBoundingClientRect().left
 			);
 		pending.clear();
+		const batches: (typeof targets)[] = [];
+		const groupBatches = new Map<RevealElement, typeof targets>();
 		let rowTop = -Infinity;
-		let rowIndex = 0;
-		for (const { element, top } of targets) {
-			if (top - rowTop > 16) {
-				rowTop = top;
-				rowIndex = 0;
+		let row: typeof targets = [];
+		for (const target of targets) {
+			const owner = staggerOwners.get(target.element);
+			if (owner) {
+				let batch = groupBatches.get(owner);
+				if (!batch) {
+					batch = [];
+					groupBatches.set(owner, batch);
+					batches.push(batch);
+				}
+				batch.push(target);
+			} else {
+				if (target.top - rowTop > 16) {
+					rowTop = target.top;
+					row = [];
+					batches.push(row);
+				}
+				row.push(target);
 			}
-			const delay = Math.min(rowIndex++ * 70, 210);
+		}
+		const delays = new Map<RevealElement, number>();
+		for (const batch of batches)
+			batch.forEach(({ element }, index) =>
+				delays.set(element, Math.round(index * staggerGap(batch.length)))
+			);
+		for (const { element } of targets) {
+			const delay = delays.get(element) ?? 0;
 			show(element);
 			element.dataset.scrollRevealState = 'complete';
 			completed.add(element);
@@ -153,7 +190,13 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 	const queueReveal = (element: RevealElement) => {
 		observer.unobserve(element);
 		observed.delete(element);
-		pending.add(element);
+		const children = staggerGroups.get(element);
+		if (children) {
+			element.dataset.scrollRevealState = 'complete';
+			completed.add(element);
+			children.forEach((child) => pending.add(child));
+			staggerGroups.delete(element);
+		} else pending.add(element);
 		if (!batchFrame) batchFrame = requestAnimationFrame(flush);
 	};
 	const observeViewport = () => {
@@ -195,6 +238,15 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 		const targets = new Set(
 			candidates.map(revealTarget).filter((target): target is RevealElement => target !== null)
 		);
+		// A stagger group owns its entrance. Do not fade a surrounding surface as well.
+		for (const target of targets) {
+			if (staggerChildren(target).length < 2) continue;
+			let ancestor = target.parentElement;
+			while (ancestor) {
+				targets.delete(ancestor);
+				ancestor = ancestor.parentElement;
+			}
+		}
 		for (const target of targets) {
 			if (observed.has(target) || completed.has(target) || target.closest(excluded)) continue;
 			if (target.parentElement?.closest('[aria-hidden="true"]')) continue;
@@ -208,7 +260,8 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 				}
 				ancestor = ancestor.parentElement;
 			}
-			if (isGrouped && !target.hasAttribute('data-count-up')) continue;
+			if (isGrouped && !target.hasAttribute('data-count-up') && staggerChildren(target).length < 2)
+				continue;
 			groups.add(target);
 			if (preference.matches) {
 				completed.add(target);
@@ -216,8 +269,19 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 				continue;
 			}
 			target.dataset.scrollRevealState = 'pending';
-			target.classList.add(pendingClass);
-			prepared.add(target);
+			const children = staggerChildren(target);
+			if (children.length > 1) {
+				staggerGroups.set(target, children);
+				for (const child of children) {
+					staggerOwners.set(child, target);
+					child.dataset.scrollRevealState = 'pending';
+					child.classList.add(pendingClass);
+					prepared.add(child);
+				}
+			} else {
+				target.classList.add(pendingClass);
+				prepared.add(target);
+			}
 			observed.add(target);
 			observer.observe(target);
 		}
@@ -225,6 +289,13 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 	const finishMotion = () => {
 		if (!preference.matches && !document.hidden) return;
 		if (preference.matches) {
+			for (const [group] of staggerGroups) {
+				observer.unobserve(group);
+				observed.delete(group);
+				completed.add(group);
+				group.dataset.scrollRevealState = 'complete';
+			}
+			staggerGroups.clear();
 			for (const element of prepared) {
 				show(element);
 				observer.unobserve(element);
@@ -268,6 +339,7 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 				show(element);
 				observer.unobserve(element);
 				observed.delete(element);
+				staggerGroups.delete(element);
 			}
 		for (const [element, animation] of animations)
 			if (!element.isConnected) {

@@ -34,7 +34,7 @@ test('new content reveals once, staggers a row, and counts up without layout ove
 		await items.evaluateAll((elements) =>
 			elements.map((element) => element.getAttribute('data-scroll-reveal-delay'))
 		)
-	).toEqual(['0', '70', '140']);
+	).toEqual(['0', '99', '198']);
 	const counter = row.locator('[data-count-up]');
 	await expect
 		.poll(async () => Number((await counter.textContent())!.replaceAll(',', '')))
@@ -189,8 +189,8 @@ test('footer groups enter together with staggering and keep navigation accessibl
 	const delays = await groups.evaluateAll((elements) =>
 		elements.map((element) => element.getAttribute('data-scroll-reveal-delay'))
 	);
-	expect(delays).toContain('70');
-	expect(delays).toContain('140');
+	expect(delays).toContain('0');
+	expect(delays.some((delay) => Number(delay) > 0)).toBe(true);
 	await expect(
 		page.getByRole('navigation', { name: 'Footer navigation' }).getByRole('link').first()
 	).toBeVisible();
@@ -255,7 +255,8 @@ test('shipping dialog reveals state artwork and staggers its fifty state tiles o
 	await expect(artwork).not.toHaveAttribute('data-scroll-reveal');
 
 	await map.scrollIntoViewIfNeeded();
-	await expect(artwork).toHaveAttribute('data-scroll-reveal-state', 'complete');
+	await expect(map).toHaveAttribute('data-scroll-reveal-state', 'complete');
+	await expect(artwork).not.toHaveAttribute('data-scroll-reveal-state');
 	await expect
 		.poll(() =>
 			page.evaluate(
@@ -267,7 +268,7 @@ test('shipping dialog reveals state artwork and staggers its fifty state tiles o
 		await page.evaluate(
 			() => (window as unknown as { stateEntranceDelays: number[] }).stateEntranceDelays
 		)
-	).toEqual(Array.from({ length: 50 }, (_, index) => index * 14));
+	).toEqual(Array.from({ length: 50 }, (_, index) => index * 20));
 	await expect(artwork).toHaveCSS('opacity', '1');
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await expect
@@ -291,7 +292,7 @@ for (const isDialog of [false, true]) {
 		const preview = content.locator('figure');
 		const swatches = content.getByRole('group', { name: 'Preview stock colors' });
 		const samples = content.getByRole('button', { name: 'Request Samples', exact: true });
-		for (const item of [preview, swatches, samples]) {
+		for (const item of [preview, swatches.getByRole('button').first(), samples]) {
 			await expect(item).not.toHaveAttribute('data-scroll-reveal');
 			await expect(item).toHaveCSS('opacity', '0');
 		}
@@ -309,7 +310,10 @@ for (const isDialog of [false, true]) {
 			'data-stock-preview-side',
 			'back'
 		);
-		await samples.scrollIntoViewIfNeeded();
+		// Bring the CTA past the 20% inset, rather than merely inside the viewport.
+		await samples.evaluate((element) =>
+			element.scrollIntoView({ block: 'center', behavior: 'instant' })
+		);
 		await expect(samples).toHaveAttribute('data-scroll-reveal-state', 'complete');
 		await expect(samples).toHaveCSS('opacity', '1');
 		await samples.click();
@@ -419,3 +423,78 @@ test('unmarked SVG, canvas, decorative groups and CSS artwork are discovered aut
 	await expect(section.getByRole('button')).toBeVisible();
 	await expect(section.getByRole('button')).not.toHaveAttribute('data-scroll-reveal-state');
 });
+
+test('larger automatic control groups have a longer wave and shorter individual gaps', async ({
+	page
+}) => {
+	await page.goto('/');
+	await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete');
+	await page.evaluate(() => {
+		for (const count of [2, 10]) {
+			const group = document.createElement('div');
+			group.setAttribute('role', 'group');
+			group.dataset.staggerTest = String(count);
+			group.className = 'grid grid-cols-2 gap-4 py-8';
+			for (let index = 0; index < count; index++) {
+				const button = document.createElement('button');
+				button.className = 'h-12';
+				button.textContent = 'Control ' + index;
+				group.append(button);
+			}
+			document.querySelector('main')!.append(group);
+		}
+	});
+	const delays: number[][] = [];
+	for (const count of [2, 10]) {
+		const group = page.locator('[data-stagger-test="' + count + '"]');
+
+		await group.scrollIntoViewIfNeeded();
+		await expect(group.locator('[data-scroll-reveal-state="complete"]')).toHaveCount(count);
+		delays.push(
+			await group
+				.locator('button')
+				.evaluateAll((elements) =>
+					elements.map((element) => Number((element as HTMLElement).dataset.scrollRevealDelay))
+				)
+		);
+	}
+	expect(delays[0][0]).toBe(0);
+	expect(delays[1][0]).toBe(0);
+	expect(delays[0][1]).toBeGreaterThan(delays[1][1]);
+	expect(delays[0].at(-1)!).toBeLessThan(delays[1].at(-1)!);
+	expect(new Set(delays[1]).size).toBe(10);
+});
+
+for (const isDialog of [false, true]) {
+	test(
+		'stock swatches stagger individually in ' + (isDialog ? 'dialog' : 'standalone route'),
+		async ({ page }) => {
+			await page.setViewportSize({ width: 1440, height: 900 });
+			await page.goto(isDialog ? '/' : '/tags/stock-colors');
+			if (isDialog) {
+				await expect(page.locator('[data-bento-ready="true"]')).toBeVisible();
+				await page.locator('[data-bento-topic="colors"]').click();
+			}
+			const group = page.getByRole('group', { name: 'Preview stock colors' });
+			const buttons = group.getByRole('button');
+			await expect(buttons).toHaveCount(21);
+			await expect(buttons.first()).toHaveCSS('opacity', '0');
+			await group.scrollIntoViewIfNeeded();
+			await expect(group.locator('[data-scroll-reveal-state="complete"]')).toHaveCount(21);
+			const delays = await buttons.evaluateAll((elements) =>
+				elements.map((element) => Number((element as HTMLElement).dataset.scrollRevealDelay))
+			);
+			expect(delays[0]).toBe(0);
+			expect(new Set(delays).size).toBe(21);
+			expect(delays.at(-1)).toBeGreaterThan(500);
+			expect(delays[1]).toBeLessThan(140);
+			await buttons.last().focus();
+			await expect(buttons.last()).toHaveCSS('opacity', '1');
+			await expect
+				.poll(() => buttons.last().evaluate((element) => element.getAnimations().length))
+				.toBe(0);
+			await page.emulateMedia({ reducedMotion: 'reduce' });
+			for (const button of await buttons.all()) await expect(button).toHaveCSS('opacity', '1');
+		}
+	);
+}
