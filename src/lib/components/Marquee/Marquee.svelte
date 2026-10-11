@@ -118,7 +118,7 @@
 	let {
 		ariaLabel,
 		class: className = '',
-		gapClass = 'gap-8',
+		gapClass = 'gap-4',
 		isCopiesInteractive = false,
 		isPaused = false,
 		isRandomStart = true,

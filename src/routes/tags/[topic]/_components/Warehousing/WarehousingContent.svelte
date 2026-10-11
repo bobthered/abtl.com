@@ -50,7 +50,7 @@
 		data-warehouse-section="volume"
 		aria-labelledby="warehouse-volume-heading"
 	>
-		<Div class="grid items-center gap-12 lg:grid-cols-5 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-5">
 			<Div class="lg:col-span-2">
 				<P variants={['eyebrow']}>Make more at once</P>
 				<H3 id="warehouse-volume-heading" class="text-4xl sm:text-5xl"
@@ -82,7 +82,7 @@
 						/>
 					{/each}
 				</Div>
-				<Div class="mt-8 grid grid-cols-3 gap-3">
+				<Div class="mt-8 grid grid-cols-3 gap-4">
 					{#each ['First release', 'Next release', 'Held for later'] as label, index (label)}
 						<Div class="rounded-sm bg-white p-3 text-center dark:bg-gray-950"
 							><Span
@@ -116,7 +116,9 @@
 				immediate release.</P
 			></Div
 		>
-		<Div class="mt-10 grid overflow-hidden rounded-sm bg-gray-100 lg:grid-cols-3 dark:bg-gray-900">
+		<Div
+			class="mt-10 grid gap-4 overflow-hidden rounded-sm bg-gray-100 lg:grid-cols-3 dark:bg-gray-900"
+		>
 			<Div class="relative min-w-0 lg:col-span-2">
 				<WarehouseScene class="min-h-80 sm:min-h-112" release={releases} {stock} />
 				<Span class="absolute bottom-5 left-6 text-xs text-gray-500 dark:text-gray-400"
@@ -169,7 +171,7 @@
 		data-warehouse-section="timing"
 		aria-labelledby="warehouse-timing-heading"
 	>
-		<Div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div
 				><P variants={['eyebrow']}>Move the waiting upstream</P><H3
 					id="warehouse-timing-heading"

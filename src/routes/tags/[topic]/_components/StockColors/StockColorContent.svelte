@@ -113,7 +113,7 @@
 		aria-labelledby="stock-count-heading"
 		data-color-section="color-studio"
 	>
-		<Div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div>
 				<P variants={['eyebrow']}>Your color. Your message.</P>
 				<H3 id="stock-count-heading" class="text-4xl font-light tracking-tight sm:text-5xl"

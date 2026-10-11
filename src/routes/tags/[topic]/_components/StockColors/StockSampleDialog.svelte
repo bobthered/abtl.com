@@ -106,7 +106,7 @@
 							id={`sample-group-${group.id}`}
 							class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-300">{group.name}</H3
 						>
-						<Div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+						<Div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
 							{#each group.colors as color (color.id)}
 								<Button
 									variants={[

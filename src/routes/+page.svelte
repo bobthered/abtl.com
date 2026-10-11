@@ -2,9 +2,9 @@
 	// Imports
 	import BentoSection from './_components/BentoSection/BentoSection.svelte';
 	import { browser } from '$app/env';
-	import CustomerSpotlight from './_components/CustomerSpotlight/CustomerSpotlight.svelte';
 	import { goto } from '$app/navigation';
 	import { Main } from '#lib/components';
+	import NewsHighlights from './_components/NewsHighlights/NewsHighlights.svelte';
 	import { page } from '$app/state';
 	import type { PageProps } from './$types';
 	import ProductionMetrics from './_components/ProductionMetrics/ProductionMetrics.svelte';
@@ -28,5 +28,5 @@
 	<SiteHero />
 	<BentoSection orderedTopics={data.bentoTopics} {topicId} onNavigate={navigateTopic} />
 	<ProductionMetrics />
-	<CustomerSpotlight />
+	<NewsHighlights />
 </Main>

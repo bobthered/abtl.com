@@ -250,7 +250,7 @@
 
 	<Footer variants={['bordered', 'site']}>
 		<Container class="space-y-10 py-12 lg:py-16">
-			<Div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+			<Div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				<Div class="space-y-4">
 					<A
 						href="/"
@@ -268,7 +268,7 @@
 					<P variants={['footer']}>Stock and custom tags and labels.</P>
 				</Div>
 				<Div>
-					<Nav aria-label="Footer navigation" class="grid grid-cols-2 gap-x-6">
+					<Nav aria-label="Footer navigation" class="grid grid-cols-2 gap-4">
 						{#each navigation as item (item.label)}
 							<A
 								aria-disabled="true"

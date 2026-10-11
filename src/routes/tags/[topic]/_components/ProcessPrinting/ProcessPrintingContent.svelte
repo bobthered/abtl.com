@@ -67,7 +67,7 @@
 		data-process-section="process"
 		aria-labelledby="process-heading"
 	>
-		<Div class="grid items-center gap-12 lg:grid-cols-5 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-5">
 			<Div class="lg:col-span-2"
 				><P variants={['eyebrow']}>Design study / A premium product hangtag</P><H3
 					id="process-heading"
@@ -80,7 +80,7 @@
 					>Four-color process brings that illustration to print using cyan, magenta, yellow, and
 					black. Explore each ink, then align the layers to reveal the finished design.</P
 				>
-				<Div class="mt-8 grid grid-cols-2 gap-3" role="group" aria-label="Process ink channels">
+				<Div class="mt-8 grid grid-cols-2 gap-4" role="group" aria-label="Process ink channels">
 					{#each inks as ink, index (ink.code)}
 						<Button
 							variants={['neutral', ...(channels[index] === '1' ? ['stockSwatchSelected'] : [])]}
@@ -129,7 +129,7 @@
 		data-process-section="sides"
 		aria-labelledby="process-sides-heading"
 	>
-		<Div class="grid items-center gap-12 lg:grid-cols-5 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-5">
 			<Div class="lg:col-span-2"
 				><P variants={['eyebrow']}>Up to eight total colors</P><H3
 					id="process-sides-heading"
@@ -203,7 +203,7 @@
 			><P class="max-w-xl text-lg text-gray-300 dark:text-gray-600"
 				>Start with your artwork, the stock you have in mind, and the quantity you need. Tell us
 				what belongs on each side. We'll help plan the full-color printing for your tags or labels.</P
-			><Div class="grid w-full max-w-3xl gap-6 py-4 text-left sm:grid-cols-3">
+			><Div class="grid w-full max-w-3xl gap-4 py-4 text-left sm:grid-cols-3">
 				{#each [{ title: 'The artwork', text: 'Illustration, photography, or a mix. Share the look you want to achieve.' }, { title: 'The printed piece', text: 'Tags or labels, stock, size, and quantity. Let the application guide the choices.' }, { title: 'Both sides', text: 'Plan the image and information together, with up to eight total printing colors.' }] as detail (detail.title)}
 					<Div
 						><H3 class="text-lg">{detail.title}</H3><P

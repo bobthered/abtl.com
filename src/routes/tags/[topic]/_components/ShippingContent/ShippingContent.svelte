@@ -50,7 +50,7 @@
 		data-shipping-section="domestic"
 		aria-labelledby="shipping-domestic-heading"
 	>
-		<Div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div>
 				<P variants={['eyebrow']}>Across the country</P>
 				<H3 id="shipping-domestic-heading" class="text-4xl font-light tracking-tight sm:text-5xl"
@@ -121,7 +121,7 @@
 		data-shipping-section="international"
 		aria-labelledby="shipping-international-heading"
 	>
-		<Div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div class="order-2 lg:order-1"
 				><Div variants={['shippingArtwork']} class="relative"
 					><ShippingGlobe activeLocationId={selectedLocationId} /><Div

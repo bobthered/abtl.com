@@ -66,7 +66,7 @@
 		data-synthetic-section="weather"
 		aria-labelledby="synthetic-weather-heading"
 	>
-		<Div class="grid items-center gap-10 lg:grid-cols-5 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-5">
 			<Div class="lg:col-span-2">
 				<P variants={['eyebrow']}>Durability starts with the stock</P>
 				<H3 id="synthetic-weather-heading" class="text-4xl sm:text-5xl"
@@ -138,7 +138,7 @@
 		data-synthetic-section="materials"
 		aria-labelledby="synthetic-material-heading"
 	>
-		<Div class="grid gap-6 lg:grid-cols-2 lg:gap-16"
+		<Div class="grid gap-4 lg:grid-cols-2"
 			><Div
 				><P variants={['eyebrow']}>Five ways to go outside</P><H3
 					id="synthetic-material-heading"
@@ -158,7 +158,9 @@
 					data-synthetic-material={option.id}>{option.name}</Button
 				>{/each}
 		</Div>
-		<Div class="mt-6 grid overflow-hidden rounded-sm bg-gray-100 lg:grid-cols-5 dark:bg-gray-900">
+		<Div
+			class="mt-6 grid gap-4 overflow-hidden rounded-sm bg-gray-100 lg:grid-cols-5 dark:bg-gray-900"
+		>
 			<Div
 				class="relative flex min-h-80 items-center justify-center overflow-hidden bg-radial from-primary-200/60 to-transparent p-8 lg:col-span-2 dark:from-primary-800/40"
 			>
@@ -192,7 +194,7 @@
 				<H4 class="text-2xl sm:text-3xl">{material.heading}</H4><P
 					class="mt-4 leading-relaxed text-gray-600 dark:text-gray-300">{material.description}</P
 				>
-				<Div class="mt-8 grid gap-6 sm:grid-cols-2"
+				<Div class="mt-8 grid gap-4 sm:grid-cols-2"
 					><Div
 						><P class="flex items-center gap-2 text-sm font-semibold"
 							><Check class="size-4 text-primary-500" aria-hidden="true" />Why consider it</P
@@ -233,7 +235,7 @@
 		data-synthetic-section="attachments"
 		aria-labelledby="synthetic-attachment-heading"
 	>
-		<Div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div class="relative overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-900"
 				><WeatherTag
 					class="min-h-88 sm:min-h-100"

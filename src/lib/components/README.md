@@ -7,7 +7,7 @@ topic pages (BentoPreview, StockTagColumns, ShippingGlobe, ProcessArtwork,
 VariableDataPreview, WarehouseScene, WeatherTag).
 
 Homepage sections belong to `src/routes/_components`: SiteHero, its TagRain
-animation/viewer, ProductionMetrics, and BentoSection. The preserved TagMachine
+animation/viewer, ProductionMetrics, BentoSection, and NewsHighlights. The preserved TagMachine
 experiment also stays with the homepage.
 
 Topic page content belongs to `src/routes/tags/[topic]/_components`, grouped by topic.

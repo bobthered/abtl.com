@@ -128,7 +128,7 @@
 	data-bento-ready={isReady}
 >
 	<Container variants={['section']}>
-		<Div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
+		<Div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
 			{#each orderedTopics as topic, index (topic.id)}
 				<BentoItem
 					class={slotClasses[index % slotClasses.length]}

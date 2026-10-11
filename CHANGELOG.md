@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 77a99b9d615925efdd8b012e989b456dacef8500 -->
+<!-- pending-base: 8276163373c6f5138f1c50900e477485caf006e0 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add golden-ratio customer spotlight carousel
+feat: add shared news highlights and standardize grid spacing
 
-Add a responsive homepage spotlight with five desktop images, animated width transitions, looping chevron controls and keyboard navigation.
-Use labeled preview stories and local photography pending approved customer content, with reduced-motion support and browser coverage.
-Reconcile the component-colocation commit into changelog history.
+Replace the customer spotlight with homepage news highlights, a shared publication registry, news listing and article routes.
+Retain the doubled golden-ratio animation, centered equal-width images and controls above the row; use 1rem grid and card gaps across the site.
+Document publishing and grid conventions, update coverage and reconcile carousel changelog history.
 ```
 
 ## 2026-10-11
+
+- **feat: add golden-ratio customer spotlight carousel** (`8276163`)
+  Add a responsive homepage spotlight with five desktop images, animated width transitions, looping chevron controls and keyboard navigation. Use labeled preview stories and local photography pending approved customer content, with reduced-motion support and browser coverage.
 
 - **refactor: colocate page components with their routes** (`77a99b9`)
   Move homepage sections and topic-specific content, helpers and tests beside their owning routes. Retain reusable UI and artwork in the shared component library, move shared topic and stock-color data into lib/data, and update imports, asset scripts and ownership instructions.

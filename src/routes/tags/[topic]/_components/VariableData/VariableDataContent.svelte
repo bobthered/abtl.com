@@ -39,7 +39,7 @@
 		data-variable-section="studio"
 		aria-labelledby="variable-studio-heading"
 	>
-		<Div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div>
 				<P variants={['eyebrow']}>Variable data printing</P>
 				<H3 id="variable-studio-heading" class="text-4xl sm:text-5xl"
@@ -116,7 +116,7 @@
 		data-variable-section="sequence"
 		aria-labelledby="variable-sequence-heading"
 	>
-		<Div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div variants={['dataArtwork']} class="order-2 overflow-hidden p-6 sm:p-10 lg:order-1">
 				<Div class="mb-8 flex items-center justify-between text-primary-600 dark:text-primary-300"
 					><Database class="size-6" aria-hidden="true" /><Span class="font-mono text-xs"
@@ -153,7 +153,7 @@
 					gives each piece its place in the run. Variable codes give your scanner a way to read the
 					information printed on it.</P
 				>
-				<Div class="mt-8 grid gap-6 sm:grid-cols-2">
+				<Div class="mt-8 grid gap-4 sm:grid-cols-2">
 					<Div
 						><ScanLine class="mb-3 size-6 text-primary-500" aria-hidden="true" /><P
 							class="font-medium">Built around your data</P
@@ -181,7 +181,7 @@
 		data-variable-section="mailing"
 		aria-labelledby="variable-mailing-heading"
 	>
-		<Div class="grid items-center gap-12 lg:grid-cols-5 lg:gap-16">
+		<Div class="grid items-center gap-4 lg:grid-cols-5">
 			<Div class="lg:col-span-2">
 				<P variants={['eyebrow']}>Personalization for mailings</P>
 				<H3 id="variable-mailing-heading" class="text-4xl sm:text-5xl"

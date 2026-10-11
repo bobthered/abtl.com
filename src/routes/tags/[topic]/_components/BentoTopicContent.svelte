@@ -159,7 +159,7 @@
 			<Section
 				aria-labelledby={`bento-detail-${index}`}
 				variants={['dialogSection']}
-				class="grid gap-8 lg:grid-cols-2 lg:gap-16"
+				class="grid gap-4 lg:grid-cols-2"
 			>
 				<Div class="space-y-6">
 					<H3 id={`bento-detail-${index}`} class="text-2xl font-medium tracking-tight">{title}</H3>
