@@ -245,11 +245,11 @@ test('modified link clicks open standalone content in a new tab', async ({ page,
 });
 
 for (const topic of topics) {
-	test(`serves ${topic} directly without JavaScript`, async ({ browser }) => {
-		const context = await browser.newContext({ javaScriptEnabled: false });
+	test(`serves ${topic} directly without JavaScript`, async ({ baseURL, browser }) => {
+		const context = await browser.newContext({ baseURL, javaScriptEnabled: false });
 		const page = await context.newPage();
 		try {
-			const response = await page.goto(`http://localhost:4173/tags/${topic}`);
+			const response = await page.goto(`/tags/${topic}`);
 			expect(response?.status()).toBe(200);
 			await expect(page.locator('h1')).toBeVisible();
 			await expect(page.getByRole('dialog')).toHaveCount(0);

@@ -19,11 +19,15 @@
 	import { X } from '#lib/icons';
 
 	// consts
-	const columnClasses = {
-		full: 'sm:col-span-2 lg:col-span-6',
-		third: 'lg:col-span-2',
-		wide: 'sm:col-span-2 lg:col-span-4'
-	};
+	// Widths belong to positions, so every topic can occupy every slot.
+	const slotClasses = [
+		'sm:col-span-2 lg:col-span-4',
+		'lg:col-span-2',
+		'lg:col-span-2',
+		'lg:col-span-2',
+		'lg:col-span-2',
+		'sm:col-span-2 lg:col-span-6'
+	];
 
 	// helpers
 	const closeDialog = () => {
@@ -72,8 +76,13 @@
 	// $props()
 	let {
 		onNavigate,
+		orderedTopics = topics,
 		topicId
-	}: { onNavigate?: (topic: Topic | null) => void; topicId?: string | null } = $props();
+	}: {
+		onNavigate?: (topic: Topic | null) => void;
+		orderedTopics?: Topic[];
+		topicId?: string | null;
+	} = $props();
 
 	// $state
 	let dialogElement = $state<HTMLDialogElement | null>(null);
@@ -120,9 +129,9 @@
 >
 	<Container variants={['section']}>
 		<Div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
-			{#each topics as topic (topic.id)}
+			{#each orderedTopics as topic, index (topic.id)}
 				<BentoItem
-					class={columnClasses[topic.columns]}
+					class={slotClasses[index % slotClasses.length]}
 					title={topic.title}
 					aria-label={`Explore ${topic.title}`}
 					aria-haspopup="dialog"

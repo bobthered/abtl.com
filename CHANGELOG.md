@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 0bb00a7eccc8ee33f9b72792810a34cbfd3ca66c -->
+<!-- pending-base: 2ba8aab73f47a42e2c0461c65ed09b814ea26f34 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: discover scroll reveal content automatically
+feat: randomize bento topics within fixed layout slots
 
-Discover unmarked content, controls, artwork and visual surfaces globally, including dynamic routes and dialogs; preserve grouping, marquee motion and accessibility.
-Remove page-level entrance opt-ins and add automatic-discovery regression coverage.
-Update project instructions and reconcile changelog history.
+Shuffle topics per page request while preserving SSR hydration, dialog return order and the 2/3, 1/3, 1/3, 1/3, 1/3, 3/3 layout.
+Decouple widths from topics, adapt QR artwork to narrow tiles and verify every animation at all three widths.
+Update browser coverage and reconcile changelog history.
 ```
 
 ## 2026-10-10
+
+- **refactor: discover scroll reveal content automatically** (`2ba8aab`)
+  Discover unmarked content, controls, artwork and visual surfaces globally, including dynamic routes and dialogs; preserve grouping, marquee motion and accessibility. Remove page-level entrance opt-ins and add automatic-discovery regression coverage. Update project instructions and reconcile changelog history.
 
 - **fix: complete site-wide scroll animation coverage** (`0bb00a7`)
   Extend automatic reveals to links, buttons, all headings, lists and control groups; reveal artwork, footer groups and stationary marquee wrappers without nested entrances. Audit the homepage and six topic pages/dialogs, including every bottom CTA. Preserve 20% viewport triggers, reduced motion, existing artwork motion and immediate utility-dialog controls. Add route-wide browser coverage and update project instructions and changelog history.

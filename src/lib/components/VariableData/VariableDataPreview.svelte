@@ -20,7 +20,7 @@
 		data-qr-accent
 		aria-hidden="true"
 	/>
-	<Div class="relative size-56 sm:size-64 xl:size-72">
+	<Div class="relative mx-6 aspect-square w-full max-w-56 sm:max-w-64 xl:max-w-72">
 		<Svg
 			viewBox={qrModules.viewBox}
 			class="size-full text-gray-950 dark:text-gray-50"

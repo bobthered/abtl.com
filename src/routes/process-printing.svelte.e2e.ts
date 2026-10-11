@@ -9,9 +9,10 @@ test('full-color printing opens a routed dialog, combines ink channels, and flip
 	const trigger = page.locator('[data-bento-topic="full-color-printing"]');
 	await expect(page.locator('[data-bento-topic="materials"]')).toHaveCount(0);
 	await page.setViewportSize({ width: 1440, height: 900 });
-	const shippingBounds = await page.locator('[data-bento-topic="shipping"]').boundingBox();
-	const printBounds = await trigger.boundingBox();
-	expect(printBounds!.width).toBeCloseTo(shippingBounds!.width, 0);
+	const slot = await trigger.evaluate((element) =>
+		[...element.parentElement!.children].indexOf(element)
+	);
+	await expect(trigger).toHaveCSS('grid-column-end', 'span ' + [4, 2, 2, 2, 2, 6][slot]);
 	await trigger.scrollIntoViewIfNeeded();
 	await trigger.click();
 	await expect(page).toHaveURL(/\/tags\/full-color-printing$/);

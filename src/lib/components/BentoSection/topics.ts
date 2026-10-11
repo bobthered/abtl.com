@@ -1,5 +1,4 @@
 export type Topic = {
-	columns: 'full' | 'third' | 'wide';
 	description: string;
 	id: string;
 	preview:
@@ -25,47 +24,41 @@ export const topics: Topic[] = [
 		slug: 'stock-colors',
 		title: 'What color will you choose?',
 		description: 'Explore stock tag colors.',
-		preview: 'columns',
-		columns: 'wide'
+		preview: 'columns'
 	},
 	{
 		id: 'shipping',
 		title: 'Your tags. A world of possibilities.',
 		description: 'Tags and labels shipped to all 50 states and internationally.',
-		preview: 'globe',
-		columns: 'third'
+		preview: 'globe'
 	},
 	{
 		id: 'variable-data',
 		title: 'One design. A different story on every piece.',
 		description:
 			'Variable data tags and labels with barcodes, QR codes, sequential numbering, and personalization for mailings.',
-		preview: 'data',
-		columns: 'third'
+		preview: 'data'
 	},
 	{
 		id: 'full-color-printing',
 		title: 'Full color. Both sides.',
 		description:
 			'Four-color process printing for full-color tags and labels, with up to eight total colors supporting CMYK on both the face and back.',
-		preview: 'process',
-		columns: 'third'
+		preview: 'process'
 	},
 	{
 		id: 'synthetic-materials',
 		title: 'Built to weather it.',
 		description:
 			'Waterproof synthetic tags for outdoor applications, with material and attachment options for the way you work.',
-		preview: 'weather',
-		columns: 'third'
+		preview: 'weather'
 	},
 	{
 		id: 'warehousing',
 		title: 'Produce in volume. Release on demand.',
 		description:
 			'Lower your unit price with a larger production run. Warehouse finished tags and labels for later shipments, available for immediate release from stock.',
-		preview: 'warehouse',
-		columns: 'full'
+		preview: 'warehouse'
 	}
 ];
 
