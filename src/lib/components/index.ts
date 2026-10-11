@@ -30,3 +30,5 @@ export { default as ProcessArtwork } from './ProcessPrinting/ProcessArtwork.svel
 export { default as ProcessPrintingContent } from './ProcessPrinting/ProcessPrintingContent.svelte';
 export { default as SyntheticContent } from './SyntheticMaterials/SyntheticContent.svelte';
 export { default as WeatherTag } from './SyntheticMaterials/WeatherTag.svelte';
+
+export { default as ProductionMetrics } from './ProductionMetrics/ProductionMetrics.svelte';

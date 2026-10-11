@@ -433,6 +433,37 @@ export const initializeTheme = () => {
 	);
 	theme.set.variant('section', 'surface', 'bg-gray-50 dark:bg-gray-950');
 	theme.set.variant('section', 'surfaceAlternate', 'bg-white dark:bg-gray-900');
+	theme.set.variant(
+		'div',
+		'metricGrid',
+		'relative isolate grid grid-cols-2 border-y border-gray-200 lg:grid-cols-4 dark:border-gray-800'
+	);
+	theme.set.variant(
+		'div',
+		'metricHighlight',
+		'pointer-events-none absolute -z-10 h-1/2 w-1/2 transition-all duration-500 ease-out motion-reduce:transition-none lg:h-full lg:w-1/4'
+	);
+	theme.set.variant(
+		'span',
+		'metricRule',
+		'absolute inset-x-0 h-px bg-linear-to-r from-primary-500 via-secondary-500 to-primary-500 mask-x-from-70% mask-x-to-100% dark:from-primary-400 dark:via-secondary-400 dark:to-primary-400'
+	);
+	theme.set.variant(
+		'a',
+		'metric',
+		'relative flex min-w-0 flex-col items-center justify-start gap-4 rounded-sm px-4 py-10 text-center text-gray-600 no-underline transition-colors duration-500 hover:text-gray-950 focus:text-gray-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 data-[active=true]:text-gray-950 motion-reduce:transition-none sm:px-6 lg:py-12 dark:text-gray-400 dark:hover:text-gray-50 dark:focus:text-gray-50 dark:focus-visible:outline-primary-300 dark:data-[active=true]:text-gray-50'
+	);
+	theme.set.variant(
+		'span',
+		'metricValue',
+		'block whitespace-nowrap text-5xl leading-none font-light tracking-tight tabular-nums sm:text-6xl'
+	);
+	theme.set.variant(
+		'span',
+		'metricDescription',
+		'block max-w-56 text-sm leading-relaxed sm:text-base'
+	);
+
 	theme.set.variant('span', 'brandDetail', 'text-xs font-bold tracking-widest uppercase');
 	theme.set.variant(
 		'span',

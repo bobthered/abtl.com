@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Imports
-	import { BentoSection, Main, SiteHero } from '#lib/components';
+	import { BentoSection, Main, ProductionMetrics, SiteHero } from '#lib/components';
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
@@ -23,4 +23,5 @@
 <Main id="main-content" tabindex={-1}>
 	<SiteHero />
 	<BentoSection orderedTopics={data.bentoTopics} {topicId} onNavigate={navigateTopic} />
+	<ProductionMetrics />
 </Main>

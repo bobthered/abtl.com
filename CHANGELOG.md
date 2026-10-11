@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: d26a333bdaa7a7a187958a33e327e69459ba5aae -->
+<!-- pending-base: d58a5a327e66a94fea293957b4e70b4f46bd6051 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: remove homepage placeholder sections
+feat: add animated production metrics section
 
-Remove industries, products, capabilities and resources sections and their unused content.
-Keep future navigation labels inactive and direct the hero CTA to the bento grid.
-Update affected scroll-reveal coverage and reconcile changelog history.
+Add four confirmed production, shipping, stock color and printing metrics below the bento grid.
+Animate top and bottom gradient rules that fade to transparent at both ends on hover and keyboard focus, with responsive layouts and reduced-motion support.
+Reuse global count-ups, add interaction coverage and reconcile changelog history.
 ```
 
 ## 2026-10-11
+
+- **refactor: remove homepage placeholder sections** (`d58a5a3`)
+  Remove industries, products, capabilities and resources sections and their unused content. Keep future navigation labels inactive and direct the hero CTA to the bento grid. Update affected scroll-reveal coverage and reconcile changelog history.
 
 - **feat: adapt scroll stagger timing to group size** (`d26a333`)
   Lengthen the overall entrance wave while shortening individual gaps as groups grow. Stagger control groups automatically and move shipping states into shared SVG group handling, preserving focus, reduced motion and hover behavior. Add browser coverage, document grouping rules and reconcile changelog history.
