@@ -63,7 +63,7 @@ for (const width of [390, 1440]) {
 }
 
 for (const width of [390, 1440]) {
-	test(`abstract scenes switch on selection and respond to keyboard and effect controls at ${width}px`, async ({
+	test(`abstract scenes switch on selection and respond to pointer and keyboard interaction at ${width}px`, async ({
 		page
 	}) => {
 		await page.setViewportSize({ width, height: 900 });
@@ -96,11 +96,7 @@ for (const width of [390, 1440]) {
 				.toBeGreaterThan(0);
 			const before = await canvas.evaluate((el) => (el as HTMLCanvasElement).toDataURL());
 			images.add(before);
-			await panel
-				.getByRole('button', {
-					name: /Send a pulse|Turn the orbits|Twist the current|Turn the knot/
-				})
-				.click();
+			await canvas.click();
 			await expect
 				.poll(() => canvas.evaluate((el) => (el as HTMLCanvasElement).toDataURL()))
 				.not.toBe(before);
@@ -114,28 +110,8 @@ for (const width of [390, 1440]) {
 		}
 		expect(images.size).toBe(4);
 		expect(new URL(page.url()).pathname).toBe('/');
-		await page.emulateMedia({ reducedMotion: 'no-preference' });
-		await panel.getByRole('button', { name: 'Pause animation' }).click();
-		await page.waitForTimeout(100);
-		const paused = await canvas.evaluate((el) => (el as HTMLCanvasElement).toDataURL());
-		await page.waitForTimeout(200);
-		expect(await canvas.evaluate((el) => (el as HTMLCanvasElement).toDataURL())).toBe(paused);
-		await page.locator('[data-metric-index="0"]').click();
-		await canvas.scrollIntoViewIfNeeded();
-		await expect(panel.getByRole('button', { name: 'Play animation' })).toHaveAttribute(
-			'aria-pressed',
-			'true'
-		);
-		await page.waitForTimeout(100);
-		const switchedPaused = await canvas.evaluate((el) => (el as HTMLCanvasElement).toDataURL());
-		await page.waitForTimeout(200);
-		expect(await canvas.evaluate((el) => (el as HTMLCanvasElement).toDataURL())).toBe(
-			switchedPaused
-		);
-		await panel.getByRole('button', { name: 'Play animation' }).click();
-		await expect
-			.poll(() => canvas.evaluate((el) => (el as HTMLCanvasElement).toDataURL()))
-			.not.toBe(switchedPaused);
+		await expect(panel.getByRole('button')).toHaveCount(0);
+		await expect(panel.locator('p')).toHaveCount(0);
 		expect(await panel.evaluate((el) => el.scrollWidth <= innerWidth)).toBe(true);
 	});
 }

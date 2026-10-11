@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 8276163373c6f5138f1c50900e477485caf006e0 -->
+<!-- pending-base: 85d17d287abe27b45f2fdca64a907f9ebe3b3d5c -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add shared news highlights and standardize grid spacing
+fix: simplify homepage animation controls
 
-Replace the customer spotlight with homepage news highlights, a shared publication registry, news listing and article routes.
-Retain the doubled golden-ratio animation, centered equal-width images and controls above the row; use 1rem grid and card gaps across the site.
-Document publishing and grid conventions, update coverage and reconcile carousel changelog history.
+Use the shared marquee for hover-to-pause and bidirectional dragging, removing the brand pause button and duplicate motion logic.
+Remove captions and controls below the metric canvas while preserving pointer and keyboard interactions.
+Update browser coverage and reconcile changelog history.
 ```
 
 ## 2026-10-11
+
+- **feat: add shared news highlights and standardize grid spacing** (`85d17d2`)
+  Replace the customer spotlight with shared publication data, homepage news highlights, a news listing and article routes. Retain animated golden-ratio image widths and controls above the row; standardize content grids and card collections to 1rem gaps, document publishing conventions and update browser coverage.
 
 - **feat: add golden-ratio customer spotlight carousel** (`8276163`)
   Add a responsive homepage spotlight with five desktop images, animated width transitions, looping chevron controls and keyboard navigation. Use labeled preview stories and local photography pending approved customer content, with reduced-motion support and browser coverage.
