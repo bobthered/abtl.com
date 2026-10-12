@@ -1,0 +1,62 @@
+{
+	"sourceSha256": "b6202a6537bed96d46f9055697db2b294778e1794080d80c5c57458684f2b6ac",
+	"coordinateSources": {
+		"BM.txt": "6508a8b2e73ef6339741ba116257b5c987ffcf4b3844e625bd30ca7546d5bb2f",
+		"CA.txt": "0980e72da7c3c39a066dcad5cf6348adf72e4c7149aee204e7155cf6af8cd61b",
+		"CH.txt": "ec9775eca9d7232fb9ed2bd28028ceb20d8fae97106081bf54118c7b079fbe4f",
+		"cities15000.txt": "15fbaa64521212adb3dbc4166b9fca4ad931ed5ec93cdb93fdeb386b50f98e85",
+		"PR.txt": "456f64214a3f79d9fa63773baf40c8b873a9076433690f2c30d18270efcf05ae",
+		"US.txt": "88495471922bbafb1e982c01aafd1e38038d08dde578be2ec5bbc0f16bf9dc9e",
+		"VI.txt": "96acce1d153bf75642ac0c6baebc494a10b118f9547d604b4ca3e1c48db965d8"
+	},
+	"unresolved": [
+		{
+			"line": 6,
+			"address": " QUEBEC ON H3N1W7",
+			"orderCount": 2,
+			"reason": "Province conflicts with postal prefix; not plotted"
+		},
+		{
+			"line": 794,
+			"address": "Colchester VT 054495",
+			"orderCount": 1,
+			"reason": "ZIP invalid or missing from reference; not plotted"
+		},
+		{
+			"line": 967,
+			"address": "DEARBORN MI 481201",
+			"orderCount": 1,
+			"reason": "ZIP invalid or missing from reference; not plotted"
+		},
+		{
+			"line": 1705,
+			"address": "Inverness FL 344533",
+			"orderCount": 1,
+			"reason": "ZIP invalid or missing from reference; not plotted"
+		},
+		{
+			"line": 2279,
+			"address": "MIAMI FL 331666",
+			"orderCount": 1,
+			"reason": "ZIP invalid or missing from reference; not plotted"
+		},
+		{
+			"line": 2997,
+			"address": "Port Huron MI 480606",
+			"orderCount": 1,
+			"reason": "ZIP invalid or missing from reference; not plotted"
+		},
+		{
+			"line": 3436,
+			"address": "Saukville WI 530800",
+			"orderCount": 1,
+			"reason": "ZIP invalid or missing from reference; not plotted"
+		},
+		{
+			"line": 3632,
+			"address": "ST GEORGE  BB1907",
+			"orderCount": 1,
+			"reason": "Destination needs country or address clarification"
+		}
+	]
+}

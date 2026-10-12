@@ -1,44 +1,24 @@
+import featured from '#lib/data/shipments/featured.json';
+import summary from '#lib/data/shipments/summary.json';
+
 export type ShippingLocation = {
+	country: string;
 	id: string;
 	latitude: number;
 	longitude: number;
 	name: string;
-	region: 'United States' | 'International';
+	orderCount: number;
 };
 
-// Illustrative coordinates only. Replace this dataset when shipment information is supplied.
+// The existing approximate origin is illustrative; endpoints come from the supplied report.
 export const shippingOrigin = { latitude: 43, longitude: -78 };
+export const internationalLocations = featured.international;
 export const shippingLocations: ShippingLocation[] = [
-	{ id: 'seattle', latitude: 47.61, longitude: -122.33, name: 'Seattle', region: 'United States' },
-	{
-		id: 'los-angeles',
-		latitude: 34.05,
-		longitude: -118.24,
-		name: 'Los Angeles',
-		region: 'United States'
-	},
-	{ id: 'chicago', latitude: 41.88, longitude: -87.63, name: 'Chicago', region: 'United States' },
-	{ id: 'dallas', latitude: 32.78, longitude: -96.8, name: 'Dallas', region: 'United States' },
-	{ id: 'miami', latitude: 25.76, longitude: -80.19, name: 'Miami', region: 'United States' },
-	{ id: 'toronto', latitude: 43.65, longitude: -79.38, name: 'Toronto', region: 'International' },
-	{
-		id: 'mexico-city',
-		latitude: 19.43,
-		longitude: -99.13,
-		name: 'Mexico City',
-		region: 'International'
-	},
-	{ id: 'london', latitude: 51.51, longitude: -0.13, name: 'London', region: 'International' },
-	{ id: 'berlin', latitude: 52.52, longitude: 13.4, name: 'Berlin', region: 'International' },
-	{
-		id: 'singapore',
-		latitude: 1.35,
-		longitude: 103.82,
-		name: 'Singapore',
-		region: 'International'
-	},
-	{ id: 'sydney', latitude: -33.87, longitude: 151.21, name: 'Sydney', region: 'International' }
+	...featured.domestic,
+	...internationalLocations
 ];
+export const shipmentSummary = summary;
+export const shippedStateCount = Object.keys(summary.stateOrderCounts).length;
 
 // A familiar tile map; Alaska and Hawaii are inset, rather than geographically projected.
 export const stateRows = [

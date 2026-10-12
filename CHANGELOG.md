@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 79d8de6ef6102decbc41835b445c2678e3823185 -->
+<!-- pending-base: 934fc607aca6633c3e27a3095add4704bd2786ef -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: keep theme variants focused on shared styles
+feat: map actual order destinations in shipping visuals
 
-Move one-off layout, control and illustration styling into owning components; remove unused variants and rename shared selection and dialog-close styles.
-Document variant reuse requirements in AGENTS.md and reconcile changelog history.
+Import and reconcile shipments.csv, plot volume-weighted destinations with batched markers and bounded animated arcs, and replace demo destination controls and copy.
+Add a repeatable importer, address review, coordinate attribution, regression coverage and changelog history.
 ```
 
 ## 2026-10-12
+
+- **refactor: keep theme variants focused on shared styles** (`934fc60`)
+  Move one-off layout, control and illustration styling into owning components; remove unused variants and rename shared selection and dialog-close styles. Document variant reuse requirements in AGENTS.md and reconcile changelog history.
 
 - **fix: scale bento gradient orbs with tile width** (`79d8de6`)
   Size backdrop orbs proportionally for one-third, two-thirds and full-width tiles while preserving their centers, subtle opacity and title fade. Reconcile changelog history.

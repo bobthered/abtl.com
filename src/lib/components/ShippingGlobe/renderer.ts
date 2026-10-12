@@ -1,3 +1,4 @@
+import shipmentPoints from '#lib/data/shipments/points.json';
 import * as THREE from 'three';
 import { globePosition } from './geometry';
 import land from './land.json';
@@ -64,6 +65,58 @@ export const createShippingGlobe = (
 		);
 		globe.add(new THREE.Line(keep(new THREE.BufferGeometry().setFromPoints(points)), gridMaterial));
 	}
+	// Thousands of destinations share one draw call instead of individual meshes/arcs.
+	const destinationGeometry = keep(new THREE.BufferGeometry());
+	destinationGeometry.setAttribute(
+		'position',
+		new THREE.Float32BufferAttribute(
+			shipmentPoints.flatMap(([latitude, longitude]) => [
+				...globePosition(latitude, longitude, 1.018)
+			]),
+			3
+		)
+	);
+	destinationGeometry.setAttribute(
+		'color',
+		new THREE.Float32BufferAttribute(new Float32Array(shipmentPoints.length * 3), 3)
+	);
+	destinationGeometry.setAttribute(
+		'weight',
+		new THREE.Float32BufferAttribute(
+			shipmentPoints.map(([, , orders]) => 1 + Math.min(2, Math.log10(orders + 1) * 0.65)),
+			1
+		)
+	);
+	const destinationMaterial = keep(
+		new THREE.ShaderMaterial({
+			transparent: true,
+			depthWrite: false,
+			uniforms: { pixelRatio: { value: renderer.getPixelRatio() } },
+			vertexShader: `
+            attribute vec3 color;
+            attribute float weight;
+            uniform float pixelRatio;
+            varying vec3 pointColor;
+            void main() {
+                pointColor = color;
+                vec4 positionInView = modelViewMatrix * vec4(position, 1.0);
+                gl_Position = projectionMatrix * positionInView;
+                gl_PointSize = pixelRatio * weight * 7.0 / -positionInView.z;
+            }
+        `,
+			fragmentShader: `
+            varying vec3 pointColor;
+            void main() {
+                float alpha = 1.0 - smoothstep(0.3, 0.5, length(gl_PointCoord - 0.5));
+                if (alpha < 0.01) discard;
+                gl_FragColor = vec4(pointColor, alpha * 0.85);
+                #include <tonemapping_fragment>
+                #include <colorspace_fragment>
+            }
+        `
+		})
+	);
+	globe.add(new THREE.Points(destinationGeometry, destinationMaterial));
 	const origin = new THREE.Vector3(
 		...globePosition(shippingOrigin.latitude, shippingOrigin.longitude)
 	);
@@ -81,7 +134,7 @@ export const createShippingGlobe = (
 		});
 		const color = north.clone();
 		const lineMaterial = keep(
-			new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.28 })
+			new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.18 })
 		);
 		const line = new THREE.Line(
 			keep(new THREE.BufferGeometry().setFromPoints(points)),
@@ -93,7 +146,8 @@ export const createShippingGlobe = (
 		const light = new THREE.Mesh(markerGeometry, markerMaterial);
 		light.scale.setScalar(0.6);
 		globe.add(line, marker, light);
-		return { location, index, points, lineMaterial, markerMaterial, marker, light };
+		const weight = 1 + Math.min(0.8, Math.log10(location.orderCount + 1) * 0.2);
+		return { location, index, points, lineMaterial, markerMaterial, marker, light, weight };
 	});
 	let activeId: string | undefined;
 	let frame = 0;
@@ -118,11 +172,17 @@ export const createShippingGlobe = (
 			attribute.setXYZ(i, color.r, color.g, color.b);
 		});
 		attribute.needsUpdate = true;
+		const destinationColors = destinationGeometry.getAttribute('color');
+		shipmentPoints.forEach(([latitude], index) => {
+			const color = north.clone().lerp(south, (90 - latitude) / 180);
+			destinationColors.setXYZ(index, color.r, color.g, color.b);
+		});
+		destinationColors.needsUpdate = true;
 		routes.forEach((route) => {
 			const color = north.clone().lerp(south, (90 - route.location.latitude) / 180);
 			route.lineMaterial.color.copy(color);
 			route.lineMaterial.opacity =
-				route.location.id === activeId ? 0.95 : activeId ? 0.1 : colors.isDark ? 0.28 : 0.5;
+				route.location.id === activeId ? 0.95 : activeId ? 0.1 : colors.isDark ? 0.18 : 0.3;
 			route.markerMaterial.color.copy(color);
 		});
 		draw();
@@ -141,12 +201,12 @@ export const createShippingGlobe = (
 			globe.rotation.y += (targetRotation - globe.rotation.y) * Math.min(1, delta * 3);
 		else globe.rotation.y += delta * (isHovered ? 0.14 : 0.045);
 		routes.forEach((route) => {
-			const progress = (elapsed * 0.11 + route.index / 11) % 1;
+			const progress = (elapsed * (0.08 + route.weight * 0.03) + route.index / routes.length) % 1;
 			const exact = progress * 80;
 			route.light.position
 				.copy(route.points[Math.floor(exact)])
 				.lerp(route.points[Math.min(80, Math.floor(exact) + 1)], exact % 1);
-			route.marker.scale.setScalar(1 + 0.18 * Math.sin(elapsed * 2 + route.index));
+			route.marker.scale.setScalar(route.weight * (1 + 0.12 * Math.sin(elapsed * 2 + route.index)));
 		});
 		draw();
 		frame = requestAnimationFrame(render);
@@ -206,7 +266,7 @@ export const createShippingGlobe = (
 			}
 			routes.forEach((route) => {
 				const isActive = route.location.id === id;
-				route.lineMaterial.opacity = isActive ? 0.95 : id ? 0.1 : palette().isDark ? 0.28 : 0.5;
+				route.lineMaterial.opacity = isActive ? 0.95 : id ? 0.1 : palette().isDark ? 0.18 : 0.3;
 				route.light.visible = !id || isActive;
 			});
 			draw();

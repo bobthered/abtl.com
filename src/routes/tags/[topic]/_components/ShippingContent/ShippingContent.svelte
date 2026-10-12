@@ -18,15 +18,14 @@
 	} from '#lib/components';
 	import { ArrowRight, Globe2, MapPin, PackageCheck } from '#lib/icons';
 	import {
-		shippingLocations,
+		internationalLocations,
+		shipmentSummary,
+		shippedStateCount,
 		stateRows
 	} from '../../../../../lib/components/ShippingGlobe/shippingLocations';
 	import type { Snippet } from 'svelte';
 
 	// consts
-	const internationalLocations = shippingLocations.filter(
-		(location) => location.region === 'International'
-	);
 	const shippingArtworkClass =
 		'overflow-hidden rounded-sm bg-gradient-to-br from-primary-50 via-gray-100 to-secondary-50 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950';
 
@@ -34,7 +33,7 @@
 	let { isStandalone = false }: { isStandalone?: boolean } = $props();
 
 	// $state
-	let selectedLocationId = $state('london');
+	let selectedLocationId = $state(internationalLocations[0].id);
 
 	// $derived
 	const selectedLocation = $derived(
@@ -66,8 +65,8 @@
 					><Span
 						class="text-8xl font-semibold tracking-tight text-primary-500 tabular-nums dark:text-primary-400"
 						aria-hidden="true"
-						data-count-up={50}
-						data-shipping-state-count>{50}</Span
+						data-count-up={shippedStateCount}
+						data-shipping-state-count>{shippedStateCount}</Span
 					><P class="max-w-36">states.<Br />One place to start.</P><Span class="sr-only"
 						>Shipping to all 50 states.</Span
 					></Div
@@ -110,7 +109,8 @@
 					{/each}
 				</Svg>
 				<P class="mt-5 text-sm text-gray-600 dark:text-gray-300"
-					>Coast to coast, and beyond the lower 48.</P
+					>{shipmentSummary.orderCount.toLocaleString('en-US')} orders. All {shippedStateCount} states.
+					<Span class="mt-1 block">Based on the supplied order report.</Span></P
 				>
 			</Div>
 		</Div>
@@ -128,9 +128,11 @@
 				><Div class={[shippingArtworkClass, 'relative'].join(' ')}
 					><ShippingGlobe activeLocationId={selectedLocationId} /><Div
 						class="absolute right-6 bottom-6 left-6 rounded-sm bg-white/90 p-4 backdrop-blur-sm dark:bg-gray-950/90"
-						><P class="text-sm font-medium" aria-live="polite"
-							>{selectedLocation.name}
-							<Span class="ml-2 text-xs text-gray-500 dark:text-gray-400">Demo destination</Span></P
+						><P class="text-sm font-medium" aria-live="polite" data-shipping-destination
+							>{selectedLocation.countryName}
+							<Span class="ml-2 text-xs text-gray-500 dark:text-gray-400"
+								>{selectedLocation.countryOrderCount.toLocaleString('en-US')} orders in supplied report</Span
+							></P
 						></Div
 					></Div
 				></Div
@@ -146,20 +148,27 @@
 					>A different country shouldn't mean starting over with your tags. We ship internationally.
 					Tell us where your order needs to go, and let's plan the details together.</P
 				>
-				<P class="mt-8 mb-3 text-sm font-medium">Explore an illustrative destination</P>
-				<Div class="flex flex-wrap gap-2" role="group" aria-label="Demo shipping destinations">
+				<P class="mt-8 mb-3 text-sm font-medium">Explore actual destinations</P>
+				<Div
+					class="flex flex-wrap gap-2"
+					role="group"
+					aria-label="Actual international destinations"
+				>
 					{#each internationalLocations as location (location.id)}
 						<Button
 							variants={['neutral', ...(selectedLocationId === location.id ? ['selected'] : [])]}
 							aria-pressed={selectedLocationId === location.id}
 							onclick={() => (selectedLocationId = location.id)}
-							><MapPin class="size-4" aria-hidden="true" />{location.name}</Button
+							><MapPin class="size-4" aria-hidden="true" />{location.countryName}</Button
 						>
 					{/each}
 				</Div>
 				<P class="mt-5 text-xs leading-relaxed text-gray-500 dark:text-gray-400"
-					>Demo visualization. Locations and connecting arcs are illustrative, not actual shipments,
-					carrier routes, or transit times.</P
+					>Based on {shipmentSummary.orderCount.toLocaleString('en-US')} orders in our supplied report.
+					Locations are approximate; arcs illustrate connections, not carrier routes or transit times.
+					<A href="https://www.geonames.org/" target="_blank" rel="noreferrer"
+						>Map coordinates: GeoNames</A
+					>.</P
 				>
 			</Div>
 		</Div>

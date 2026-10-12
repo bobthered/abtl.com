@@ -11,9 +11,9 @@
 		Stop,
 		Svg
 	} from '#lib/components';
-	import { globeFallbackPath } from './geometry';
-	import { onMount } from 'svelte';
 	import type { createShippingGlobe } from './renderer';
+	import { globeFallbackPath, shipmentFallbackPath } from './geometry';
+	import { onMount } from 'svelte';
 
 	// consts
 	const gradientId = $props.id();
@@ -73,7 +73,7 @@
 <Div
 	class={`relative aspect-square w-full ${className}`}
 	role="img"
-	aria-label="Illustrative shipping globe with demo destinations"
+	aria-label="Shipping globe showing destinations from our order report"
 	data-shipping-globe
 	data-globe-ready={isReady}
 >
@@ -116,8 +116,8 @@
 		/>
 		<Path d={globeFallbackPath} fill={`url(#${gradientId})`} />
 		<Path
-			d="M58 112Q135 22 205 90M58 112Q145 52 244 180M58 112Q98 85 130 170"
-			fill="none"
+			d={shipmentFallbackPath}
+			fill={`url(#${gradientId})`}
 			stroke={`url(#${gradientId})`}
 			stroke-width="1"
 			opacity="0.6"

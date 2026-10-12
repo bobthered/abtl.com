@@ -1,4 +1,5 @@
 import land from './land.json';
+import { shippingLocations } from './shippingLocations';
 
 export const globePosition = (latitude: number, longitude: number, radius = 1) => {
 	const lat = (latitude * Math.PI) / 180;
@@ -16,5 +17,17 @@ export const globeFallbackPath = land
 		const [x, y, z] = globePosition(lat, lon + 65);
 		if (z < 0) return [];
 		return [`M${(150 + x * 124).toFixed(1)},${(150 - y * 124).toFixed(1)}h.2a.8,.8 0 1,0 0,.1`];
+	})
+	.join('');
+
+// The lightweight fallback marks a representative subset from the same actual report.
+export const shipmentFallbackPath = shippingLocations
+	.flatMap((location) => {
+		const [x, y, z] = globePosition(location.latitude, location.longitude + 65);
+		if (z < 0) return [];
+		const radius = 1 + Math.min(2, Math.log10(location.orderCount + 1));
+		return [
+			`M${(150 + x * 126 - radius).toFixed(1)},${(150 - y * 126).toFixed(1)}a${radius},${radius} 0 1,0 ${radius * 2},0a${radius},${radius} 0 1,0 ${-radius * 2},0`
+		];
 	})
 	.join('');

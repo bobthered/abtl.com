@@ -345,7 +345,7 @@ test('mobile sample picker keeps selections compact and its request action visib
 	await expect(trigger).toBeFocused();
 });
 
-test('shipping opens as a route-backed dialog, selects demo destinations, and refreshes standalone', async ({
+test('shipping opens as a route-backed dialog, selects actual destinations, and refreshes standalone', async ({
 	page
 }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -359,13 +359,14 @@ test('shipping opens as a route-backed dialog, selects demo destinations, and re
 	await expect(dialog).toBeVisible();
 	await expect(dialog.locator('[data-shipping-state]')).toHaveCount(50);
 	await expect(dialog.locator('[data-shipping-state-count]')).toHaveText('50');
-	await dialog.getByRole('button', { name: 'Sydney', exact: true }).click();
-	await expect(dialog.getByRole('button', { name: 'Sydney', exact: true })).toHaveAttribute(
+	await dialog.getByRole('button', { name: 'Switzerland', exact: true }).click();
+	await expect(dialog.getByRole('button', { name: 'Switzerland', exact: true })).toHaveAttribute(
 		'aria-pressed',
 		'true'
 	);
-	await expect(dialog.getByText('Sydney Demo destination', { exact: false })).toBeVisible();
-	await expect(dialog.getByText('Demo visualization.', { exact: false })).toBeVisible();
+	await expect(dialog.locator('[data-shipping-destination]')).toContainText('Switzerland');
+	await expect(dialog.locator('[data-shipping-destination]')).toContainText('2 orders');
+	await expect(dialog.getByText('Locations are approximate;', { exact: false })).toBeVisible();
 	await page.keyboard.press('Escape');
 	await expect(page).toHaveURL(/\/$/);
 	await expect(trigger).toBeFocused();
