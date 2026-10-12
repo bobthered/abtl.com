@@ -166,8 +166,10 @@
 	<Div
 		{@attach dragMarquee}
 		bind:element
-		variants={['marquee']}
-		class={`${className} ${isReady ? '' : 'opacity-0'} ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+		class={[
+			'flex w-full min-w-0 touch-pan-y overflow-hidden rounded-sm py-3 select-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:focus-visible:outline-primary-300',
+			`${className} ${isReady ? '' : 'opacity-0'} ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`
+		].join(' ')}
 		role="region"
 		tabindex={0}
 		aria-label={ariaLabel}
@@ -187,11 +189,14 @@
 			>Hover or focus to pause. Drag horizontally or use the left and right arrow keys to browse
 			items.</Span
 		>
-		<Div bind:element={track} variants={['marqueeTrack']} class={gapClass} data-marquee-track>
+		<Div
+			bind:element={track}
+			class={['relative flex w-max shrink-0 will-change-transform', gapClass].join(' ')}
+			data-marquee-track
+		>
 			{#each Array.from({ length: copyCount }, (_, index) => index) as copy (copy)}
 				<Div
-					variants={['marqueeCopy']}
-					class={gapClass}
+					class={['relative flex shrink-0', gapClass].join(' ')}
 					aria-hidden={copy > 0 && !isCopiesInteractive ? 'true' : undefined}
 					inert={copy > 0 && !isCopiesInteractive}
 					data-marquee-copy

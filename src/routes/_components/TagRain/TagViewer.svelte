@@ -42,7 +42,7 @@
 <Dialog
 	data-scroll-reveal="off"
 	bind:isVisible
-	variants={['tagViewer']}
+	class="w-full max-w-2xl bg-gray-50 p-6 text-gray-950 backdrop:bg-gray-950/60 dark:bg-gray-950 dark:text-gray-50"
 	aria-labelledby="tag-viewer-title"
 	data-tag-viewer
 >
@@ -67,7 +67,7 @@
 	</Div>
 	<Canvas
 		bind:element={canvas}
-		variants={['tagViewer']}
+		class="my-4 block h-128 max-h-[65svh] w-full sm:h-160"
 		role="img"
 		aria-label={`${selection.name}, ${isBack ? 'back' : 'front'}`}
 		data-tag-preview

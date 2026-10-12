@@ -172,7 +172,7 @@
 					{ y: viewportHeight, duration: isReducedMotion ? 0 : 250, easing: cubicIn }
 				]}
 			>
-				<Div variants={['bentoDialogHeader']}>
+				<Div variants={['dialogClose']}>
 					<Button
 						type="button"
 						variants={['neutral', 'icon']}

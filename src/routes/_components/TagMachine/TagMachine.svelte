@@ -7,7 +7,15 @@
 	import { theme } from 'sveltewind/theme';
 
 	// consts
-	const faces = ['machineFront', 'machineSide', 'machineTop'];
+	const faces = [
+		'fill-gray-200 stroke-gray-300 stroke-1 dark:fill-gray-700 dark:stroke-gray-600',
+		'fill-gray-300 stroke-gray-400 stroke-1 dark:fill-gray-800 dark:stroke-gray-600',
+		'fill-white stroke-gray-300 stroke-1 dark:fill-gray-600 dark:stroke-gray-500'
+	];
+	const machineInkClass = 'fill-abtl-blue-700';
+	const machinePaperClass = 'fill-tag-manila stroke-tag-brown stroke-1';
+	const machinePatchClass = 'fill-tag-buff stroke-tag-brown stroke-1';
+	const machineRollFaceClass = 'fill-tag-manila stroke-tag-brown stroke-1';
 	const stations = [
 		{ label: 'Print', x: 150 },
 		{ label: 'Patch', x: 280 },
@@ -105,14 +113,17 @@
 	isAccent = false
 )}
 	{#each box(x, y, z, width, depth, height) as face, index (index)}
-		<Path d={face} variants={[isAccent ? 'machineAccent' : faces[index]]} />
+		<Path
+			d={face}
+			class={isAccent ? 'fill-abtl-red-600 stroke-abtl-red-700 stroke-1' : faces[index]}
+		/>
 	{/each}
 {/snippet}
 
 {#snippet finishedTag(x: number, y: number, z: number)}
-	<Path d={tag(x, y, z)} variants={['machinePaper']} />
-	<Path d={disc(x + 15, y + 10, z, 6)} variants={['machinePatch']} />
-	<Path d={disc(x + 15, y + 10, z + 0.1, 2)} variants={['machineInk']} />
+	<Path d={tag(x, y, z)} class={machinePaperClass} />
+	<Path d={disc(x + 15, y + 10, z, 6)} class={machinePatchClass} />
+	<Path d={disc(x + 15, y + 10, z + 0.1, 2)} class={machineInkClass} />
 	<Path
 		d={polygon([
 			[x + 6, y + 25, z + 0.2],
@@ -120,7 +131,7 @@
 			[x + 24, y + 28, z + 0.2],
 			[x + 6, y + 28, z + 0.2]
 		])}
-		variants={['machineInk']}
+		class={machineInkClass}
 	/>
 	<Path
 		d={polygon([
@@ -129,7 +140,7 @@
 			[x + 18, y + 35, z + 0.2],
 			[x + 6, y + 35, z + 0.2]
 		])}
-		variants={['machineInk']}
+		class={machineInkClass}
 	/>
 {/snippet}
 
@@ -156,7 +167,7 @@
 		viewBox="0 0 660 440"
 		role="img"
 		aria-label="Isometric tag production line: rolled material is printed, reinforced with patches, clipped, guillotine cut, and stacked on a conveyor."
-		variants={['machine']}
+		class="block h-auto w-full overflow-visible"
 	>
 		<Path
 			d={polygon([
@@ -165,7 +176,7 @@
 				[625, 140, -55],
 				[-35, 140, -55]
 			])}
-			variants={['machineShadow']}
+			class="fill-gray-200/50 dark:fill-gray-800/50"
 		/>
 		{#each [80, 250, 425, 565] as x (x)}
 			{@render block(x, 10, -45, 12, 12, 70)}
@@ -181,7 +192,7 @@
 					[x + 3, 100, 32],
 					[x, 100, 32]
 				])}
-				variants={['machineBelt']}
+				class="fill-abtl-red-400"
 			/>
 		{/each}
 		<!-- Continuous stock travels through the stations until the guillotine. -->
@@ -194,7 +205,7 @@
 				[110, 85, 35],
 				[30, 85, 55]
 			])}
-			variants={['machinePaper']}
+			class={machinePaperClass}
 		/>
 		<G data-feed>
 			{#each [190, 235, 280, 325, 370, 415] as x (x)}
@@ -205,7 +216,7 @@
 						[x + 18, 51, 36],
 						[x, 51, 36]
 					])}
-					variants={['machineInk']}
+					class={machineInkClass}
 				/>
 				<Path
 					d={polygon([
@@ -214,7 +225,7 @@
 						[x + 12, 59, 36],
 						[x, 59, 36]
 					])}
-					variants={['machineInk']}
+					class={machineInkClass}
 				/>
 				{#if x >= 325}<Path
 						d={polygon([
@@ -223,20 +234,20 @@
 							[x + 17, 38, 36],
 							[x + 5, 38, 36]
 						])}
-						variants={['machinePatch']}
+						class={machinePatchClass}
 					/>{/if}
 			{/each}
 		</G>
 		<!-- Closed rear cap and tangent-connected side wall form a solid cylinder. -->
-		<Path d={ring(30, 20, 78, 48)} variants={['machineRollFace']} />
-		<Path d={cylinderSide(30, 20, 78, 48, 70)} variants={['machineRoll']} />
+		<Path d={ring(30, 20, 78, 48)} class={machineRollFaceClass} />
+		<Path d={cylinderSide(30, 20, 78, 48, 70)} class="fill-tag-buff stroke-tag-brown stroke-1" />
 		{#each [48, 39, 30, 21] as radius (radius)}<Path
 				d={ring(30, 90, 78, radius)}
-				variants={['machineRollFace']}
+				class={machineRollFaceClass}
 			/>{/each}
-		<Path d={ring(30, 90, 78, 10)} variants={['machineInk']} />
+		<Path d={ring(30, 90, 78, 10)} class={machineInkClass} />
 		<G transform={`translate(${project([30, 90, 78]).join(' ')})`}
-			><G data-roll><Path d="M-7 -2H7V2H-7Z M-2 -7H2V7H-2Z" variants={['machineSpindle']} /></G></G
+			><G data-roll><Path d="M-7 -2H7V2H-7Z M-2 -7H2V7H-2Z" class="fill-white" /></G></G
 		>
 		{#each stations as station (station.label)}
 			<!-- Open gantries expose the moving stock between each stage. -->

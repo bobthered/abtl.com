@@ -7,6 +7,7 @@
 	import { theme } from 'sveltewind/theme';
 
 	// consts
+	const depthClasses = { far: 'w-10 sm:w-14', middle: 'w-16 sm:w-24', near: 'w-28 sm:w-40' };
 	const isDevelopment = import.meta.env.DEV;
 
 	// helpers
@@ -90,7 +91,11 @@
 	{#each visibleTags as tag (tag.id)}
 		<Div
 			data-floating-tag={tag.id}
-			class={theme.resolve('floatingTag', [tag.depth], `${tag.className} ${tag.color}`)}
+			class={theme.resolve(
+				'floatingTag',
+				[],
+				`${depthClasses[tag.depth]} ${tag.className} ${tag.color}`
+			)}
 		>
 			<Svg viewBox="0 0 100 200" aria-hidden="true" focusable="false" class={theme.resolve('tag')}>
 				<Path
@@ -101,7 +106,7 @@
 				<Path
 					d="M66 28a16 16 0 1 1-32 0a16 16 0 1 1 32 0Z M55 28a5 5 0 1 1-10 0a5 5 0 1 1 10 0Z"
 					fill-rule="evenodd"
-					variants={['tagPatch']}
+					class="fill-tag-buff stroke-tag-brown stroke-1"
 				/>
 			</Svg>
 		</Div>

@@ -107,7 +107,7 @@
 	})}
 	bind:element={dialogElement}
 	bind:isVisible
-	variants={['imageLightbox']}
+	class="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-y-auto rounded-none border-0 bg-transparent p-0 shadow-none inset-ring-0 backdrop:bg-gray-950/70 backdrop:backdrop-blur-md"
 	aria-label={caption || alt}
 	inTransition={[fade, { duration: motionDuration() }]}
 	outTransition={[exitDialog, {}]}

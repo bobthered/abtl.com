@@ -164,17 +164,22 @@
 
 <Div
 	bind:element
-	variants={['stockColumns']}
-	class={isReady ? 'opacity-100' : 'opacity-0'}
+	class={[
+		'pointer-events-none absolute inset-0 mask-t-from-70% mask-t-to-100%',
+		isReady ? 'opacity-100' : 'opacity-0'
+	].join(' ')}
 	aria-hidden="true"
 	data-stock-columns
 >
-	<Div variants={['stockColumnGrid']} data-stock-column-grid>
+	<Div
+		class="grid h-full w-full origin-center grid-cols-4 gap-4 px-4 motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out motion-safe:group-hover:scale-105 motion-safe:group-focus-visible:scale-105 sm:grid-cols-6 sm:gap-6 sm:px-6"
+		data-stock-column-grid
+	>
 		{#each columns as colors, index (index)}
 			<Div class={index > 3 ? 'hidden min-w-0 sm:block' : 'min-w-0'} data-stock-column={index + 1}>
-				<Div variants={['stockColumnTrack']} data-stock-column-track>
+				<Div class="flex w-full flex-col motion-safe:will-change-transform" data-stock-column-track>
 					{#each [0, 1] as copy (copy)}
-						<Div variants={['stockColumnCopy']} data-stock-column-copy={copy}>
+						<Div class="flex shrink-0 flex-col gap-6 pb-6" data-stock-column-copy={copy}>
 							{#each colors as color (color.id)}
 								<StockTag class={color.className} />
 							{/each}

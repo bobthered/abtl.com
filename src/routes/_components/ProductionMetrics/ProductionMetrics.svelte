@@ -11,6 +11,8 @@
 		'left-0 top-1/2 lg:left-1/2 lg:top-0',
 		'left-1/2 top-1/2 lg:left-3/4 lg:top-0'
 	];
+	const metricRuleClass =
+		'absolute inset-x-0 h-px bg-linear-to-r from-primary-500 via-secondary-500 to-primary-500 mask-x-from-70% mask-x-to-100% dark:from-primary-400 dark:via-secondary-400 dark:to-primary-400';
 	const metrics = [
 		{
 			description: 'tags produced last year',
@@ -58,23 +60,29 @@
 				forward.
 			</P>
 		</Div>
-		<Div variants={['metricGrid']} data-metric-grid>
+		<Div
+			class="relative isolate grid grid-cols-2 border-y border-gray-200 lg:grid-cols-4 dark:border-gray-800"
+			data-metric-grid
+		>
 			<Div
-				variants={['metricHighlight']}
-				class={indicatorPositions[activeIndex]}
+				class={[
+					'pointer-events-none absolute -z-10 h-1/2 w-1/2 transition-all duration-500 ease-out motion-reduce:transition-none lg:h-full lg:w-1/4',
+					indicatorPositions[activeIndex]
+				].join(' ')}
 				aria-hidden="true"
 				data-scroll-reveal="off"
 				data-metric-highlight
 			>
-				<Span variants={['metricRule']} class="top-0" />
-				<Span variants={['metricRule']} class="bottom-0" />
+				<Span class={[metricRuleClass, 'top-0'].join(' ')} />
+				<Span class={[metricRuleClass, 'bottom-0'].join(' ')} />
 			</Div>
 			{#each metrics as metric, index (metric.label)}
 				<Button
 					type="button"
 					aria-controls="metric-animation-panel"
 					aria-pressed={selectedIndex === index}
-					variants={['ghost', 'metric']}
+					variants={['ghost']}
+					class="relative flex min-w-0 flex-col items-center justify-start gap-4 rounded-sm bg-transparent px-4 py-10 text-center font-normal text-gray-600 no-underline transition-colors duration-500 hover:bg-transparent hover:text-gray-950 focus:bg-transparent focus:text-gray-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 data-[active=true]:text-gray-950 motion-reduce:transition-none sm:px-6 lg:py-12 dark:bg-transparent dark:text-gray-400 dark:hover:bg-transparent dark:hover:text-gray-50 dark:focus:bg-transparent dark:focus:text-gray-50 dark:focus-visible:outline-primary-300 dark:data-[active=true]:text-gray-50"
 					aria-label={metric.label}
 					data-metric-index={index}
 					data-active={activeIndex === index}
@@ -90,12 +98,16 @@
 						activeIndex = index;
 					}}
 				>
-					<Span variants={['metricValue']}>
+					<Span
+						class="block text-5xl leading-none font-light tracking-tight whitespace-nowrap tabular-nums sm:text-6xl"
+					>
 						{#if metric.prefix}<Span class="mr-2 text-sm font-medium tracking-normal sm:text-base"
 								>{metric.prefix}</Span
 							>{/if}<Span data-count-up={metric.value}>{metric.value}</Span>{metric.suffix}
 					</Span>
-					<Span variants={['metricDescription']}>{metric.description}</Span>
+					<Span class="block max-w-56 text-sm leading-relaxed sm:text-base"
+						>{metric.description}</Span
+					>
 				</Button>
 			{/each}
 		</Div>

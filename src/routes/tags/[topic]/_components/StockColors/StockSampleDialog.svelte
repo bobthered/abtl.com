@@ -69,7 +69,7 @@
 	data-scroll-reveal="off"
 	bind:element={dialogElement}
 	bind:isVisible
-	variants={['stockSamples']}
+	class="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-y-auto rounded-none border-0 bg-transparent p-0 shadow-none inset-ring-0 backdrop:bg-gray-950/50 backdrop:backdrop-blur-md"
 	aria-labelledby="stock-sample-title"
 	aria-describedby="stock-sample-description"
 	inTransition={[fade, { duration: motionDuration() }]}
@@ -80,7 +80,10 @@
 	})}
 >
 	<Div class="flex min-h-full items-center justify-center p-4 sm:p-8">
-		<Card variants={['samplePicker']} data-sample-picker-card>
+		<Card
+			class="flex max-h-[calc(100dvh-2rem)] w-full max-w-3xl flex-col gap-4 overflow-hidden p-5 sm:max-h-[calc(100dvh-4rem)] sm:p-8"
+			data-sample-picker-card
+		>
 			<Div class="flex shrink-0 items-start justify-between gap-4">
 				<Div>
 					<H2 id="stock-sample-title" class="text-2xl font-semibold">Request Samples</H2>
@@ -109,10 +112,13 @@
 						<Div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
 							{#each group.colors as color (color.id)}
 								<Button
-									variants={[
-										'sampleColor',
-										...(selectedColorIds.includes(color.id) ? ['stockSwatchSelected'] : [])
-									]}
+									variants={[...(selectedColorIds.includes(color.id) ? ['selected'] : [])]}
+									class={[
+										selectedColorIds.includes(color.id)
+											? ''
+											: 'inset-ring-1 inset-ring-gray-200 dark:inset-ring-gray-800',
+										'flex min-h-11 items-center justify-start gap-2 bg-gray-50 px-3 py-2 text-left text-xs whitespace-normal text-gray-950 hover:bg-gray-100 hover:text-gray-950 focus:bg-gray-100 focus:text-gray-950 sm:text-sm dark:bg-gray-950 dark:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50'
+									].join(' ')}
 									aria-pressed={selectedColorIds.includes(color.id)}
 									aria-label={`Select ${color.name} for samples`}
 									onclick={() => toggleColor(color.id)}

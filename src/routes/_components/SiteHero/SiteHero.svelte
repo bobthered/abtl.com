@@ -9,6 +9,8 @@
 
 	// consts
 	const formatter = new Intl.NumberFormat('en-US');
+	const heroTextClass =
+		'relative -left-3 box-decoration-clone rounded-sm bg-gray-50/70 px-3 py-1 dark:bg-gray-950/70 backdrop-blur';
 	const words = ['Identify.', 'Organize.', 'Inform.', 'Connect.'];
 
 	// helpers
@@ -62,34 +64,52 @@
 	});
 </script>
 
-<Section bind:element variants={['hero', 'surface']} aria-labelledby="hero-heading" data-tag-hero>
+<Section
+	bind:element
+	variants={['surface']}
+	class="relative isolate overflow-hidden"
+	aria-labelledby="hero-heading"
+	data-tag-hero
+>
 	<TagRain isActive={isMotionActive} />
-	<Container variants={['hero']}>
+	<Container
+		class="pointer-events-none flex min-h-[max(40rem,calc(100svh-var(--site-header-height)-5rem))] items-stretch lg:min-h-[max(45rem,calc(100svh-var(--site-header-height)-5rem))]"
+	>
 		<Div
 			data-tag-drop-zone
 			aria-hidden="true"
 			inert
 			class="absolute inset-y-0 right-6 w-2/5 sm:right-8 lg:right-16 lg:w-1/3"
 		/>
-		<Div variants={['heroCopy']} data-hero-copy>
+		<Div
+			class="pointer-events-auto relative flex w-full max-w-3xl flex-col justify-center py-20 sm:py-24 lg:w-3/5 lg:py-28"
+			data-hero-copy
+		>
 			<Div>
 				<P
-					variants={['heroMetric']}
+					class="mb-8 flex items-baseline gap-2 text-sm font-medium whitespace-nowrap text-gray-600 dark:text-gray-300"
 					title="Estimated at a steady pace toward 90 million tags by the end of 2026."
 				>
-					<Span variants={['heroText']}>
+					<Span class={heroTextClass}>
 						Customer tags this year:
-						<Span variants={['productionTotal']} data-production-counter aria-live="off">
+						<Span
+							class="font-semibold text-abtl-blue-700 tabular-nums dark:text-primary-300"
+							data-production-counter
+							aria-live="off"
+						>
 							{estimatedTotal === null ? 'Calculating...' : formatter.format(estimatedTotal)}
 						</Span>
 					</Span>
 				</P>
-				<H1 id="hero-heading" variants={['hero']}>
-					<Span class="block"><Span variants={['heroText']}>Built for</Span></Span>
-					<Span class="block"><Span variants={['heroText']}>Endless possibilities.</Span></Span>
+				<H1
+					id="hero-heading"
+					class="text-5xl leading-tight font-light tracking-tight text-gray-950 sm:text-6xl lg:text-7xl dark:text-gray-50"
+				>
+					<Span class="block"><Span class={heroTextClass}>Built for</Span></Span>
+					<Span class="block"><Span class={heroTextClass}>Endless possibilities.</Span></Span>
 				</H1>
-				<P variants={['heroLead']}>
-					<Span variants={['heroText']}>
+				<P class="mt-6 max-w-xl text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+					<Span class={heroTextClass}>
 						Every tag has a job to do. We produced over 90 million in the last year, helping
 						businesses identify, organize, and keep things moving. What can we make for yours?
 					</Span>
@@ -102,8 +122,8 @@
 						Find your tags <ArrowRight aria-hidden="true" class="size-4" />
 					</A>
 				</Div>
-				<P variants={['heroFootnote']}>
-					<Span variants={['heroText']}>Stock tags. Custom tags. A place for every detail.</Span>
+				<P class="mt-6 text-xs leading-relaxed text-gray-500 sm:text-sm dark:text-gray-400">
+					<Span class={heroTextClass}>Stock tags. Custom tags. A place for every detail.</Span>
 				</P>
 			</Div>
 		</Div>
@@ -111,7 +131,8 @@
 </Section>
 
 <Section
-	variants={['heroMarquee', 'surfaceAlternate']}
+	variants={['surfaceAlternate']}
+	class="relative"
 	data-hero-marquee
 	aria-label="Allen-Bailey brand"
 >

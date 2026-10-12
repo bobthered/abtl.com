@@ -31,6 +31,7 @@
 	type ColorMode = 'dark' | 'light';
 
 	// consts
+	const footerClass = 'text-sm leading-relaxed text-gray-600 dark:text-gray-300';
 	// Capture request state during component initialization for async server rendering.
 	const initialPathname = page.url.pathname;
 	const navigation = [
@@ -39,6 +40,8 @@
 		{ label: 'Capabilities' },
 		{ label: 'Resources' }
 	];
+	const siteFrameClass =
+		'[--site-header-height:calc(var(--spacing)*24+1px)] sm:[--site-header-height:calc(var(--spacing)*26+1px)] lg:[--site-header-height:calc(var(--spacing)*34+1px)]';
 
 	// helpers
 	const applyColorMode = (mode: ColorMode) => {
@@ -156,15 +159,27 @@
 	<link rel="icon" type="image/svg+xml" sizes="any" href={faviconHref} />
 </svelte:head>
 
-<A href="#main-content" variants={['ghost', 'skip']}>Skip to content</A>
+<A
+	href="#main-content"
+	variants={['ghost']}
+	class="fixed top-3 left-3 z-30 -translate-y-24 rounded-sm bg-gray-50 px-5 py-3 text-primary-600 focus:translate-y-0 dark:bg-gray-950 dark:text-primary-300"
+	>Skip to content</A
+>
 <Div
 	{@attach scrollReveal}
-	variants={isScrolled ? ['siteFrame', 'siteFrameScrolled'] : ['siteFrame']}
+	class={[
+		siteFrameClass,
+		isScrolled ? 'lg:[--site-header-height:calc(var(--spacing)*22+1px)]' : ''
+	].join(' ')}
 >
-	<Header variants={['site']}>
+	<Header
+		class="sticky top-0 z-20 border-0 border-b border-gray-200 bg-white backdrop-blur-none dark:border-gray-800 dark:bg-gray-950"
+	>
 		<Container
-			variants={['siteHeader']}
-			class={`relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none ${isScrolled ? 'lg:py-4' : 'lg:py-10'}`}
+			class={[
+				'min-h-[calc(var(--site-header-height)-1px)]',
+				`relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none ${isScrolled ? 'lg:py-4' : 'lg:py-10'}`
+			].join(' ')}
 		>
 			<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}
 				><Logo aria-hidden="true" variants={['onSurface', 'site']} /></A
@@ -198,7 +213,7 @@
 					bind:isVisible={isMenuVisible}
 					trigger={mobileMenuTrigger}
 					transition={[fade, { duration: isReducedMotion ? 0 : 200 }]}
-					variants={['navigation']}
+					class="inset-0! m-0! h-dvh max-h-none w-full max-w-none rounded-none bg-white p-0 shadow-none inset-ring-0 data-anchored:[position-anchor:auto] data-anchored:[position-area:none] lg:hidden dark:bg-gray-950"
 				>
 					<Container class="flex items-center justify-between gap-6 py-6">
 						<A
@@ -248,7 +263,10 @@
 
 	{@render children()}
 
-	<Footer variants={['bordered', 'site']}>
+	<Footer
+		variants={['bordered']}
+		class="relative z-10 border-0 bg-primary-500 pt-0 text-white dark:bg-primary-500 [&_a]:rounded-sm [&_a]:text-white dark:[&_a]:text-white [&_a:focus]:text-white dark:[&_a:focus]:text-white [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4 [&_a:focus-visible]:outline-white dark:[&_a:focus-visible]:outline-white [&_a:hover]:text-white dark:[&_a:hover]:text-white [&_p]:text-white dark:[&_p]:text-white"
+	>
 		<Container class="space-y-10 py-12 lg:py-16">
 			<Div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				<Div class="space-y-4">
@@ -265,7 +283,7 @@
 							variants={['site']}
 						/>
 					</A>
-					<P variants={['footer']}>Stock and custom tags and labels.</P>
+					<P class={footerClass}>Stock and custom tags and labels.</P>
 				</Div>
 				<Div>
 					<Nav aria-label="Footer navigation" class="grid grid-cols-2 gap-4">
@@ -284,7 +302,7 @@
 					<A href="mailto:sales@abtl.com" variants={['ghost', 'accent']}>sales@abtl.com</A>
 				</Div>
 			</Div>
-			<P variants={['footer']}>© {new Date().getFullYear()} Allen-Bailey Tag & Label.</P>
+			<P class={footerClass}>© {new Date().getFullYear()} Allen-Bailey Tag & Label.</P>
 		</Container>
 	</Footer>
 </Div>

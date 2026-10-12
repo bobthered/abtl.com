@@ -128,7 +128,9 @@
 >
 	<Div class="pb-12 sm:pb-16" data-topic-introduction>{@render constrained(introduction)}</Div>
 	{#if !isDetailedTopic}
-		<Div variants={['dialogArtwork']}><BentoPreview kind={topic.preview} isDialogPreview /></Div>
+		<Div class="group my-12 rounded-sm bg-gray-100 p-8 sm:p-12 dark:bg-gray-950"
+			><BentoPreview kind={topic.preview} isDialogPreview /></Div
+		>
 	{/if}
 	{#if topic.id === 'colors'}
 		<Section
@@ -138,7 +140,12 @@
 			class="border-t-0 pt-0 sm:pt-0"
 		>
 			{@render constrained(examplesIntroduction)}
-			<Div variants={isStandalone ? [] : ['dialogBleed']} class="mt-8 flex min-w-0">
+			<Div
+				class={[
+					isStandalone ? [] : ['-mx-6 flex min-w-0 sm:-mx-8 lg:-mx-16'],
+					'mt-8 flex min-w-0'
+				].join(' ')}
+			>
 				<StockTagExamples />
 			</Div>
 		</Section>

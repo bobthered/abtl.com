@@ -83,7 +83,7 @@
 				<Div class="mt-8 grid grid-cols-2 gap-4" role="group" aria-label="Process ink channels">
 					{#each inks as ink, index (ink.code)}
 						<Button
-							variants={['neutral', ...(channels[index] === '1' ? ['stockSwatchSelected'] : [])]}
+							variants={['neutral', ...(channels[index] === '1' ? ['selected'] : [])]}
 							class="justify-start gap-3"
 							aria-pressed={channels[index] === '1'}
 							onclick={() => toggleInk(index)}

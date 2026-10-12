@@ -15,28 +15,53 @@
 	import { stockColors } from '#lib/data/stockColors.js';
 	import type { Topic } from '#lib/data/topics.js';
 
+	// consts
+	const artworkOrbClass =
+		'absolute aspect-5/4 w-3/4 rounded-full bg-radial to-transparent blur-2xl';
+	const bentoLayerClass =
+		'absolute h-32 w-48 animate-none sm:h-40 sm:w-60 rounded-sm bg-gray-200 inset-ring-1 inset-ring-gray-300 dark:bg-gray-700 dark:inset-ring-gray-600 motion-safe:transition-transform motion-safe:duration-500';
+	const bentoTagClass =
+		'absolute h-48 w-24 animate-none sm:h-56 sm:w-28 rounded-sm bg-gray-200 inset-ring-1 inset-ring-gray-300 dark:bg-gray-700 dark:inset-ring-gray-600 motion-safe:transition-transform motion-safe:duration-500';
+
 	// $props()
 	let { isDialogPreview = false, kind }: { isDialogPreview?: boolean; kind: Topic['preview'] } =
 		$props();
 </script>
 
-<Div variants={[isDialogPreview ? 'bentoDialogPreview' : 'bentoPreview']} aria-hidden="true">
+<Div
+	class={isDialogPreview
+		? 'relative flex h-56 w-full items-center justify-center overflow-visible sm:h-72 lg:h-80'
+		: 'relative flex h-72 w-full items-center justify-center overflow-clip [clip-path:inset(0_round_0_0_var(--radius-sm)_var(--radius-sm))] [overflow-clip-margin:var(--spacing)] motion-safe:transition-[clip-path] motion-safe:duration-300 motion-safe:group-hover:[clip-path:inset(0_calc(-1*var(--spacing))_calc(-1*var(--spacing))_round_0_0_var(--radius-sm)_var(--radius-sm))] motion-safe:group-focus-visible:[clip-path:inset(0_calc(-1*var(--spacing))_calc(-1*var(--spacing))_round_0_0_var(--radius-sm)_var(--radius-sm))] sm:h-80 lg:h-96'}
+	aria-hidden="true"
+>
 	{#if ['globe', 'weather', 'process'].includes(kind)}
-		<Div variants={['artworkGlow']} data-artwork-glow>
+		<Div
+			class="pointer-events-none absolute inset-0 overflow-hidden mask-t-from-50% mask-t-to-95%"
+			data-artwork-glow
+		>
 			<Div
-				variants={['artworkOrb', 'artworkPrimary']}
-				class={kind === 'weather'
-					? 'top-2/3 right-0 -translate-y-1/2'
-					: 'top-2/3 left-0 -translate-y-1/2'}
+				class={[
+					[artworkOrbClass, 'from-primary-400/20 dark:from-primary-500/15'].join(' '),
+					kind === 'weather'
+						? 'top-2/3 right-0 -translate-y-1/2'
+						: 'top-2/3 left-0 -translate-y-1/2'
+				].join(' ')}
 			/>
 			<Div
-				variants={['artworkOrb', 'artworkSecondary']}
-				class={kind === 'weather'
-					? 'top-1/3 left-0 -translate-y-1/2'
-					: 'top-1/3 right-0 -translate-y-1/2'}
+				class={[
+					[artworkOrbClass, 'from-secondary-400/20 dark:from-secondary-500/15'].join(' '),
+					kind === 'weather'
+						? 'top-1/3 left-0 -translate-y-1/2'
+						: 'top-1/3 right-0 -translate-y-1/2'
+				].join(' ')}
 			/>
 			{#if kind === 'process'}
-				<Div variants={['artworkOrb', 'artworkNeutral']} class="top-1/2 left-1/2 -translate-1/2" />
+				<Div
+					class={[
+						[artworkOrbClass, 'from-gray-400/15 dark:from-gray-200/20'].join(' '),
+						'top-1/2 left-1/2 -translate-1/2'
+					].join(' ')}
+				/>
 			{/if}
 		</Div>
 	{/if}
@@ -52,9 +77,15 @@
 		<StockTagColumns />
 	{:else if kind === 'fan'}
 		<!-- Retained as an alternate preview for future use. -->
-		<Div variants={['stockFan']} data-stock-fan>
+		<Div class="relative flex h-full w-full items-end justify-center" data-stock-fan>
 			{#each stockColors as color (color.id)}
-				<Div variants={['stockFanTag']} class={color.fanClass} data-stock-color={color.id}>
+				<Div
+					class={[
+						'absolute top-1/2 -mt-3 w-24 origin-bottom -translate-y-1/2 motion-safe:transition-all motion-safe:duration-700 motion-safe:ease-out motion-safe:group-hover:-mt-6 motion-safe:group-focus-visible:-mt-6 sm:w-32 lg:w-36',
+						color.fanClass
+					].join(' ')}
+					data-stock-color={color.id}
+				>
 					<StockTag class={color.className} />
 				</Div>
 			{/each}
@@ -76,7 +107,7 @@
 			></Div
 		>
 	{:else if kind === 'print'}
-		<Skeleton variants={['bentoTag']}>
+		<Skeleton class={bentoTagClass}>
 			<Div
 				class="absolute inset-x-4 top-16 space-y-4 motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:-translate-y-1"
 			>
@@ -86,14 +117,26 @@
 			</Div>
 		</Skeleton>
 	{:else if kind === 'layers'}
-		<Skeleton variants={['bentoLayer', 'layerBack']} />
-		<Skeleton variants={['bentoLayer', 'layerMiddle']} />
-		<Skeleton variants={['bentoLayer']} />
+		<Skeleton
+			class={[
+				bentoLayerClass,
+				'translate-y-6 rotate-12 bg-gray-300 motion-safe:group-hover:translate-y-8 motion-safe:group-hover:rotate-16 motion-safe:group-focus-visible:translate-y-8 motion-safe:group-focus-visible:rotate-16 dark:bg-gray-600'
+			].join(' ')}
+		/>
+		<Skeleton
+			class={[
+				bentoLayerClass,
+				'translate-y-3 -rotate-6 bg-gray-100 motion-safe:group-hover:-translate-y-1.5 motion-safe:group-hover:-rotate-9 motion-safe:group-focus-visible:-translate-y-1.5 motion-safe:group-focus-visible:-rotate-9 dark:bg-gray-800'
+			].join(' ')}
+		/>
+		<Skeleton class={bentoLayerClass} />
 	{:else if kind === 'shape'}
 		<Div class="rounded-sm p-6 inset-ring-1 inset-ring-gray-300 dark:inset-ring-gray-600">
 			<Skeleton
-				variants={['bentoTag']}
-				class="relative motion-safe:group-hover:rotate-3 motion-safe:group-focus-visible:rotate-3"
+				class={[
+					bentoTagClass,
+					'relative motion-safe:group-hover:rotate-3 motion-safe:group-focus-visible:rotate-3'
+				].join(' ')}
 			/>
 		</Div>
 	{:else if kind === 'feed'}
@@ -101,7 +144,7 @@
 			class="flex gap-4 motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:translate-x-4 motion-safe:group-focus-visible:translate-x-4"
 		>
 			{#each [0, 1, 2, 3] as tag (tag)}
-				<Skeleton variants={['bentoTag']} class="relative shrink-0" />
+				<Skeleton class={[bentoTagClass, 'relative shrink-0'].join(' ')} />
 			{/each}
 		</Div>
 	{:else}

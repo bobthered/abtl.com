@@ -9,6 +9,8 @@
 	import { variableExamples } from './examples';
 
 	// consts
+	const dataArtworkClass =
+		'rounded-sm bg-gradient-to-br from-primary-100 via-gray-100 to-secondary-100 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950';
 	const motionPreference = new MediaQuery('(prefers-reduced-motion: reduce)', true);
 
 	// helpers
@@ -56,7 +58,8 @@
 				<Div class="mt-6 space-y-2" role="group" aria-label="Sample data records">
 					{#each variableExamples as record, index (record.id)}
 						<Button
-							variants={['dataRecord', ...(selectedIndex === index ? ['stockSwatchSelected'] : [])]}
+							variants={[...(selectedIndex === index ? ['selected'] : [])]}
+							class="flex w-full items-center justify-between gap-3 rounded-sm bg-white px-4 py-4 text-left text-gray-950 inset-ring-1 inset-ring-gray-200 hover:bg-primary-50 hover:text-gray-950 focus:bg-primary-50 focus:text-gray-950 dark:bg-gray-900 dark:text-gray-50 dark:inset-ring-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50"
 							aria-pressed={selectedIndex === index}
 							onclick={() => (selectedIndex = index)}
 						>
@@ -71,17 +74,19 @@
 				</Div>
 			</Div>
 			<Div
-				variants={['dataArtwork']}
-				class="flex min-h-128 flex-col items-center justify-center gap-8 p-6 sm:p-10"
+				class={[
+					dataArtworkClass,
+					'flex min-h-128 flex-col items-center justify-center gap-8 p-6 sm:p-10'
+				].join(' ')}
 			>
 				<Div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Printed format">
 					<Button
-						variants={['neutral', ...(!isLabel ? ['stockSwatchSelected'] : [])]}
+						variants={['neutral', ...(!isLabel ? ['selected'] : [])]}
 						aria-pressed={!isLabel}
 						onclick={() => (isLabel = false)}>Tag</Button
 					>
 					<Button
-						variants={['neutral', ...(isLabel ? ['stockSwatchSelected'] : [])]}
+						variants={['neutral', ...(isLabel ? ['selected'] : [])]}
 						aria-pressed={isLabel}
 						onclick={() => (isLabel = true)}>Label</Button
 					>
@@ -117,7 +122,7 @@
 		aria-labelledby="variable-sequence-heading"
 	>
 		<Div class="grid items-center gap-4 lg:grid-cols-2">
-			<Div variants={['dataArtwork']} class="order-2 overflow-hidden p-6 sm:p-10 lg:order-1">
+			<Div class={[dataArtworkClass, 'order-2 overflow-hidden p-6 sm:p-10 lg:order-1'].join(' ')}>
 				<Div class="mb-8 flex items-center justify-between text-primary-600 dark:text-primary-300"
 					><Database class="size-6" aria-hidden="true" /><Span class="font-mono text-xs"
 						>RECORD → PRINTED PIECE</Span
@@ -199,8 +204,10 @@
 				>
 			</Div>
 			<Div
-				variants={['dataArtwork']}
-				class="relative flex min-h-112 items-center justify-center overflow-hidden p-6 sm:p-12 lg:col-span-3"
+				class={[
+					dataArtworkClass,
+					'relative flex min-h-112 items-center justify-center overflow-hidden p-6 sm:p-12 lg:col-span-3'
+				].join(' ')}
 			>
 				<Div
 					class="absolute inset-x-6 top-12 bottom-12 rotate-6 rounded-sm bg-secondary-200/70 sm:inset-x-12 dark:bg-secondary-900/60"

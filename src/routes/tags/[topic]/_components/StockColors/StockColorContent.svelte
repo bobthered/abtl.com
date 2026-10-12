@@ -22,6 +22,10 @@
 	import serviceSecondFront from '#lib/assets/tags/fronts/service-tag-02.svg';
 	import { stockColors } from '#lib/data/stockColors.js';
 
+	// consts
+	const colorStudioSideClass =
+		'absolute top-1/2 w-28 -translate-y-1/2 transition-transform duration-700 ease-out sm:w-36 motion-reduce:transition-none';
+
 	// $props()
 	let {
 		isStandalone = false,
@@ -152,17 +156,23 @@
 				</Div>
 			</Div>
 			<Figure>
-				<Div variants={['colorStudio']}>
+				<Div
+					class="group relative flex flex-col items-center overflow-hidden rounded-sm bg-gradient-to-br from-primary-100 via-gray-100 to-secondary-100 p-6 perspective-distant sm:p-8 dark:from-primary-950 dark:via-gray-800 dark:to-secondary-950"
+				>
 					<Div bind:element={illustrationElement} class="relative h-96 w-full sm:h-112">
 						<Div
-							variants={['colorStudioSide']}
-							class="left-1/2 -translate-x-full -rotate-12 group-focus-within:-rotate-18 group-hover:-translate-x-5/4 group-hover:-rotate-18"
+							class={[
+								colorStudioSideClass,
+								'left-1/2 -translate-x-full -rotate-12 group-focus-within:-rotate-18 group-hover:-translate-x-5/4 group-hover:-rotate-18'
+							].join(' ')}
 						>
 							{@render tagImage('white', serviceFront)}
 						</Div>
 						<Div
-							variants={['colorStudioSide']}
-							class="right-1/2 translate-x-full rotate-12 group-focus-within:rotate-18 group-hover:translate-x-5/4 group-hover:rotate-18"
+							class={[
+								colorStudioSideClass,
+								'right-1/2 translate-x-full rotate-12 group-focus-within:rotate-18 group-hover:translate-x-5/4 group-hover:rotate-18'
+							].join(' ')}
 						>
 							{@render tagImage('fluorescent-orange', serviceSecondFront)}
 						</Div>
@@ -195,7 +205,7 @@
 						>
 					</Div>
 				</Div>
-				<Figcaption variants={['dialogCaption']}
+				<Figcaption class="mt-4 text-sm text-gray-600 dark:text-gray-300"
 					>Your stock is part of the design. Explore our supplied tag artwork on each color;
 					physical samples are the best way to choose.</Figcaption
 				>

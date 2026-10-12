@@ -27,6 +27,8 @@
 	const internationalLocations = shippingLocations.filter(
 		(location) => location.region === 'International'
 	);
+	const shippingArtworkClass =
+		'overflow-hidden rounded-sm bg-gradient-to-br from-primary-50 via-gray-100 to-secondary-50 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950';
 
 	// $props()
 	let { isStandalone = false }: { isStandalone?: boolean } = $props();
@@ -71,7 +73,7 @@
 					></Div
 				>
 			</Div>
-			<Div variants={['shippingArtwork']} class="group p-6 sm:p-8">
+			<Div class={[shippingArtworkClass, 'group p-6 sm:p-8'].join(' ')}>
 				<Svg
 					data-scroll-stagger
 					viewBox="0 0 600 410"
@@ -123,7 +125,7 @@
 	>
 		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div class="order-2 lg:order-1"
-				><Div variants={['shippingArtwork']} class="relative"
+				><Div class={[shippingArtworkClass, 'relative'].join(' ')}
 					><ShippingGlobe activeLocationId={selectedLocationId} /><Div
 						class="absolute right-6 bottom-6 left-6 rounded-sm bg-white/90 p-4 backdrop-blur-sm dark:bg-gray-950/90"
 						><P class="text-sm font-medium" aria-live="polite"
@@ -148,10 +150,7 @@
 				<Div class="flex flex-wrap gap-2" role="group" aria-label="Demo shipping destinations">
 					{#each internationalLocations as location (location.id)}
 						<Button
-							variants={[
-								'neutral',
-								...(selectedLocationId === location.id ? ['stockSwatchSelected'] : [])
-							]}
+							variants={['neutral', ...(selectedLocationId === location.id ? ['selected'] : [])]}
 							aria-pressed={selectedLocationId === location.id}
 							onclick={() => (selectedLocationId = location.id)}
 							><MapPin class="size-4" aria-hidden="true" />{location.name}</Button

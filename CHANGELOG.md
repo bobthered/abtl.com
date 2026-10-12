@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 69e04926f78a5fd30cce47dea823898fcd5430f5 -->
+<!-- pending-base: 79d8de6ef6102decbc41835b445c2678e3823185 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: scale bento gradient orbs with tile width
+refactor: keep theme variants focused on shared styles
 
-Size backdrop orbs proportionally for one-third, two-thirds and full-width tiles while preserving their centers, subtle opacity and title fade.
-Reconcile changelog history.
+Move one-off layout, control and illustration styling into owning components; remove unused variants and rename shared selection and dialog-close styles.
+Document variant reuse requirements in AGENTS.md and reconcile changelog history.
 ```
 
 ## 2026-10-12
+
+- **fix: scale bento gradient orbs with tile width** (`79d8de6`)
+  Size backdrop orbs proportionally for one-third, two-thirds and full-width tiles while preserving their centers, subtle opacity and title fade. Reconcile changelog history.
 
 - **fix: soften bento artwork backdrops and improve light-mode contrast** (`69e0492`)
   Add shared blurred gradient orbs with a top fade for shipping, synthetic-materials and printing previews. Remove the globe's solid fill, strengthen light-mode globe and weather details and particle visibility, retain dark-mode particle styling, and reconcile changelog history.

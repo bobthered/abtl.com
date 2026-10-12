@@ -71,7 +71,7 @@
 <Div class={theme.resolve('tagRain')} data-scroll-reveal="off">
 	<Canvas
 		bind:element={canvas}
-		variants={['tagRain']}
+		class="block h-full w-full opacity-80 dark:opacity-60"
 		role="button"
 		tabindex={0}
 		aria-label="Explore tags. Click a tag or press Enter to inspect one."

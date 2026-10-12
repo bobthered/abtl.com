@@ -140,7 +140,7 @@
 						aria-label="Demo release quantity"
 					>
 						{#each allocations as amount (amount)}<Button
-								variants={['neutral', ...(quantity === amount ? ['stockSwatchSelected'] : [])]}
+								variants={['neutral', ...(quantity === amount ? ['selected'] : [])]}
 								aria-pressed={quantity === amount}
 								onclick={() => (quantity = amount)}>{amount} cartons</Button
 							>{/each}
@@ -188,11 +188,11 @@
 			<Div class="rounded-sm bg-gray-100 p-6 sm:p-10 dark:bg-gray-900">
 				<Div class="flex flex-wrap gap-2" role="group" aria-label="Compare order workflows"
 					><Button
-						variants={['neutral', ...(!isStocked ? ['stockSwatchSelected'] : [])]}
+						variants={['neutral', ...(!isStocked ? ['selected'] : [])]}
 						aria-pressed={!isStocked}
 						onclick={() => (isStocked = false)}>New production</Button
 					><Button
-						variants={['neutral', ...(isStocked ? ['stockSwatchSelected'] : [])]}
+						variants={['neutral', ...(isStocked ? ['selected'] : [])]}
 						aria-pressed={isStocked}
 						onclick={() => (isStocked = true)}>Warehoused stock</Button
 					></Div
