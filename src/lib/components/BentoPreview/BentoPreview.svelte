@@ -67,10 +67,12 @@
 	{/if}
 	{#if kind === 'globe'}
 		<Div class="relative h-full w-full"
-			><ShippingGlobe class="absolute inset-0 aspect-auto h-full w-full" /><Span
+			><ShippingGlobe class="absolute inset-0 aspect-auto h-full w-full" />
+			<!-- <Span
 				class="absolute right-4 bottom-4 text-xs text-gray-500 dark:text-gray-400"
 				>Actual destinations</Span
-			></Div
+			> -->
+			</Div
 		>
 	{:else if kind === 'columns'}
 		<StockTagColumns />

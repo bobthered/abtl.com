@@ -103,7 +103,7 @@
 			fill="none"
 			stroke={`url(#${gradientId})`}
 			stroke-width="1"
-			opacity="0.6"
+			opacity="0.45"
 		/>
 	</Svg>
 	<Canvas

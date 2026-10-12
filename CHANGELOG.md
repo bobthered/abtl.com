@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 81f73bc68c9bfe4f92c3ebc9c1fe7bae842c7908 -->
+<!-- pending-base: b2877f3d18fc58aecd9585a41827719333400b9f -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: refine the close-up shipping globe artwork
+fix: soften shipment markers and zoom the globe on hover
 
-Match tile and dialog zoom while retaining a full-width canvas; remove latitude/longitude lines and render destinations as hollow rings.
-Generate ten times as many smaller, noise-offset continent dots, preserve batched rendering, add geometry coverage, and reconcile changelog history.
+Add lower-opacity rings with primary-to-secondary halos and smooth tile hover/focus zoom, preserving reduced motion and batched rendering.
+Hide the preview destination caption and reconcile changelog history.
 ```
 
 ## 2026-10-12
+
+- **fix: refine the close-up shipping globe artwork** (`b2877f3`)
+  Match tile and dialog zoom while retaining a full-width canvas, remove latitude/longitude lines, and render destinations as hollow rings. Generate ten times as many smaller continent dots with fixed noise, preserve batched rendering, and add geometry tests and changelog history.
 
 - **fix: fit the shipping globe and smooth its animation** (`81f73bc`)
   Fill the tile canvas, fit the preview globe, batch routes and markers, remove the frame-skipping limiter, and reduce pixel density. Add responsive sizing coverage, hide shipping map overlays and notes, and reconcile changelog history.

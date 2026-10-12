@@ -22,7 +22,9 @@ export const createShippingGlobe = (
 	const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 20);
 	camera.position.set(0, 0.45, 3.85);
 	camera.lookAt(0, 0.45, 0);
-	camera.zoom = 2.1;
+	const baseZoom = 2.1;
+	const bentoHost = canvas.closest('[data-bento-topic]');
+	camera.zoom = baseZoom;
 	camera.updateProjectionMatrix();
 	const resources: Array<{ dispose: () => void }> = [];
 	const keep = <T extends { dispose: () => void }>(resource: T) => {
@@ -71,7 +73,12 @@ export const createShippingGlobe = (
 		new THREE.ShaderMaterial({
 			transparent: true,
 			depthWrite: false,
-			uniforms: { pixelRatio: { value: renderer.getPixelRatio() } },
+			uniforms: {
+				pixelRatio: { value: renderer.getPixelRatio() },
+				gradientNorth: { value: north },
+				gradientSouth: { value: south },
+				strokeOpacity: { value: 0.42 }
+			},
 			vertexShader: `
             attribute vec3 color;
             uniform float pixelRatio;
@@ -80,18 +87,28 @@ export const createShippingGlobe = (
                 pointColor = color;
                 vec4 positionInView = modelViewMatrix * vec4(position, 1.0);
                 gl_Position = projectionMatrix * positionInView;
-                gl_PointSize = pixelRatio * max(6.0, 12.0 / -positionInView.z);
+                gl_PointSize = pixelRatio * max(10.0, 20.0 / -positionInView.z);
             }
         `,
 			fragmentShader: `
+            uniform vec3 gradientNorth;
+            uniform vec3 gradientSouth;
+            uniform float strokeOpacity;
             varying vec3 pointColor;
             void main() {
-                float radius = length(gl_PointCoord - 0.5);
-                float edge = clamp(fwidth(radius), 0.025, 0.08);
-                float alpha = smoothstep(0.28 - edge, 0.28 + edge, radius)
-                    * (1.0 - smoothstep(0.46 - edge, 0.46 + edge, radius));
+                vec2 offset = gl_PointCoord - 0.5;
+                float radius = length(offset);
+                float edge = clamp(fwidth(radius), 0.015, 0.045);
+                float ring = 1.0 - smoothstep(0.025, 0.025 + edge, abs(radius - 0.3));
+                // A radial halo fades around the ring, keeping its center transparent.
+                float halo = exp(-pow((radius - 0.3) / 0.1, 2.0))
+                    * smoothstep(0.18, 0.23, radius)
+                    * (1.0 - smoothstep(0.44, 0.5, radius));
+                float alpha = ring * strokeOpacity + halo * 0.18;
                 if (alpha < 0.01) discard;
-                gl_FragColor = vec4(pointColor, alpha * 0.85);
+                vec3 gradient = mix(gradientNorth, gradientSouth,
+                    clamp(0.5 + offset.x - offset.y, 0.0, 1.0));
+                gl_FragColor = vec4(mix(pointColor, gradient, 0.65), alpha);
                 #include <tonemapping_fragment>
                 #include <colorspace_fragment>
             }
@@ -187,6 +204,9 @@ export const createShippingGlobe = (
 		const colors = palette();
 		north = readColor(colors.north);
 		south = readColor(colors.south);
+		destinationMaterial.uniforms.gradientNorth.value.copy(north);
+		destinationMaterial.uniforms.gradientSouth.value.copy(south);
+		destinationMaterial.uniforms.strokeOpacity.value = colors.isDark ? 0.5 : 0.42;
 		dotMaterial.size = colors.isDark ? 0.0017 : 0.0023;
 		const attribute = geometry.getAttribute('color');
 		continentPoints.forEach(([lat], i) => {
@@ -220,6 +240,12 @@ export const createShippingGlobe = (
 		if (isDisposed || !isInView || document.hidden || motion.matches) return;
 		const delta = previous ? Math.min((time - previous) / 1000, 0.05) : 0;
 		previous = time;
+		const targetZoom = bentoHost && isHovered ? baseZoom * 1.18 : baseZoom;
+		const nextZoom = THREE.MathUtils.lerp(camera.zoom, targetZoom, 1 - Math.exp(-delta * 7));
+		if (Math.abs(nextZoom - camera.zoom) > 0.0001) {
+			camera.zoom = nextZoom;
+			camera.updateProjectionMatrix();
+		}
 		elapsed += delta * (isHovered ? 2 : 1);
 		if (targetRotation !== undefined)
 			globe.rotation.y += (targetRotation - globe.rotation.y) * Math.min(1, delta * 3);
@@ -232,6 +258,10 @@ export const createShippingGlobe = (
 		cancelAnimationFrame(frame);
 		frame = 0;
 		previous = 0;
+		if (motion.matches) {
+			camera.zoom = baseZoom;
+			camera.updateProjectionMatrix();
+		}
 		if (isInView && !document.hidden && !motion.matches && !isDisposed)
 			frame = requestAnimationFrame(render);
 		else draw();
@@ -256,7 +286,7 @@ export const createShippingGlobe = (
 		attributes: true,
 		attributeFilter: ['data-theme', 'class']
 	});
-	const host = canvas.closest('[data-bento-topic]') ?? canvas.parentElement!;
+	const host = bentoHost ?? canvas.parentElement!;
 	const enter = () => {
 		isHovered = true;
 	};
