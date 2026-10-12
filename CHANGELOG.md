@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: b2877f3d18fc58aecd9585a41827719333400b9f -->
+<!-- pending-base: de1890b9aae19a944ef44418e63d698890ab16e0 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: soften shipment markers and zoom the globe on hover
+fix: emphasize selected shipping connections
 
-Add lower-opacity rings with primary-to-secondary halos and smooth tile hover/focus zoom, preserving reduced motion and batched rendering.
-Hide the preview destination caption and reconcile changelog history.
+Draw a thicker selected arc and brighter origin/destination rings while fading other shipment routes and markers.
+Avoid recoloring continents when switching destinations and reconcile changelog history.
 ```
 
 ## 2026-10-12
+
+- **fix: soften shipment markers and zoom the globe on hover** (`de1890b`)
+  Add lower-opacity rings with primary-to-secondary halos, smooth tile hover/focus zoom with reduced-motion support, and preserve batched rendering. Hide the preview destination caption and reconcile changelog history.
 
 - **fix: refine the close-up shipping globe artwork** (`b2877f3`)
   Match tile and dialog zoom while retaining a full-width canvas, remove latitude/longitude lines, and render destinations as hollow rings. Generate ten times as many smaller continent dots with fixed noise, preserve batched rendering, and add geometry tests and changelog history.

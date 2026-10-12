@@ -77,34 +77,42 @@ export const createShippingGlobe = (
 				pixelRatio: { value: renderer.getPixelRatio() },
 				gradientNorth: { value: north },
 				gradientSouth: { value: south },
-				strokeOpacity: { value: 0.42 }
+				strokeOpacity: { value: 0.42 },
+				pointScale: { value: 1 },
+				layerOpacity: { value: 1 },
+				ringWidth: { value: 0.025 },
+				haloOpacity: { value: 0.18 }
 			},
 			vertexShader: `
             attribute vec3 color;
             uniform float pixelRatio;
+            uniform float pointScale;
             varying vec3 pointColor;
             void main() {
                 pointColor = color;
                 vec4 positionInView = modelViewMatrix * vec4(position, 1.0);
                 gl_Position = projectionMatrix * positionInView;
-                gl_PointSize = pixelRatio * max(10.0, 20.0 / -positionInView.z);
+                gl_PointSize = pointScale * pixelRatio * max(10.0, 20.0 / -positionInView.z);
             }
         `,
 			fragmentShader: `
             uniform vec3 gradientNorth;
             uniform vec3 gradientSouth;
             uniform float strokeOpacity;
+            uniform float layerOpacity;
+            uniform float ringWidth;
+            uniform float haloOpacity;
             varying vec3 pointColor;
             void main() {
                 vec2 offset = gl_PointCoord - 0.5;
                 float radius = length(offset);
                 float edge = clamp(fwidth(radius), 0.015, 0.045);
-                float ring = 1.0 - smoothstep(0.025, 0.025 + edge, abs(radius - 0.3));
+                float ring = 1.0 - smoothstep(ringWidth, ringWidth + edge, abs(radius - 0.3));
                 // A radial halo fades around the ring, keeping its center transparent.
                 float halo = exp(-pow((radius - 0.3) / 0.1, 2.0))
                     * smoothstep(0.18, 0.23, radius)
                     * (1.0 - smoothstep(0.44, 0.5, radius));
-                float alpha = ring * strokeOpacity + halo * 0.18;
+                float alpha = (ring * strokeOpacity + halo * haloOpacity) * layerOpacity;
                 if (alpha < 0.01) discard;
                 vec3 gradient = mix(gradientNorth, gradientSouth,
                     clamp(0.5 + offset.x - offset.y, 0.0, 1.0));
@@ -163,15 +171,43 @@ export const createShippingGlobe = (
 	const markerColors = new THREE.Float32BufferAttribute(new Float32Array(routes.length * 6), 3);
 	markerGeometry.setAttribute('position', markerPositions);
 	markerGeometry.setAttribute('color', markerColors);
-	const markers = new THREE.Points(markerGeometry, destinationMaterial);
+	const markerMaterial = keep(destinationMaterial.clone());
+	const markers = new THREE.Points(markerGeometry, markerMaterial);
 	markers.frustumCulled = false;
 	globe.add(markers);
+	// A mesh tube gives the selected arc a reliable width on WebGL implementations
+	// that clamp native line widths to one pixel. Only one selected tube is rendered.
+	const selectedRouteMaterial = keep(
+		new THREE.MeshBasicMaterial({
+			transparent: true,
+			opacity: 0.95,
+			depthWrite: false
+		})
+	);
+	const selectedRoute = new THREE.Mesh(new THREE.BufferGeometry(), selectedRouteMaterial);
+	selectedRoute.visible = false;
+	globe.add(selectedRoute);
+	const endpointGeometry = keep(new THREE.BufferGeometry());
+	const endpointPositions = new THREE.Float32BufferAttribute(new Float32Array(6), 3);
+	const endpointColors = new THREE.Float32BufferAttribute(new Float32Array(6), 3);
+	endpointGeometry.setAttribute('position', endpointPositions);
+	endpointGeometry.setAttribute('color', endpointColors);
+	const endpointMaterial = keep(destinationMaterial.clone());
+	endpointMaterial.uniforms.pointScale.value = 2.4;
+	endpointMaterial.uniforms.strokeOpacity.value = 0.95;
+	endpointMaterial.uniforms.ringWidth.value = 0.045;
+	endpointMaterial.uniforms.haloOpacity.value = 0.26;
+	const endpoints = new THREE.Points(endpointGeometry, endpointMaterial);
+	endpoints.frustumCulled = false;
+	endpoints.visible = false;
+	globe.add(endpoints);
 	const movingPosition = new THREE.Vector3();
 	let activeId: string | undefined;
 	let frame = 0;
 	let isInView = false;
 	let isDisposed = false;
 	let isHovered = false;
+	let isDark = false;
 	let previous = 0;
 	let elapsed = 0;
 	let targetRotation: number | undefined;
@@ -200,13 +236,44 @@ export const createShippingGlobe = (
 		});
 		markerPositions.needsUpdate = true;
 	};
+	const updateSelection = () => {
+		const active = routes.find((route) => route.location.id === activeId);
+		destinationMaterial.uniforms.layerOpacity.value = active ? 0.1 : 1;
+		markerMaterial.uniforms.layerOpacity.value = active ? 0.12 : 1;
+		endpoints.visible = !!active;
+		selectedRoute.visible = !!active;
+		routes.forEach((route) => {
+			const color = north.clone().lerp(south, (90 - route.location.latitude) / 180);
+			// The active arc is drawn by the thicker tube; other arcs become background context.
+			const opacity = active ? (route === active ? 0 : 0.035) : isDark ? 0.18 : 0.3;
+			for (let i = route.index * 160; i < (route.index + 1) * 160; i++) {
+				routeColors.setXYZW(i, color.r, color.g, color.b, opacity);
+			}
+		});
+		routeColors.needsUpdate = true;
+		if (active) {
+			const destinationColor = north.clone().lerp(south, (90 - active.location.latitude) / 180);
+			const originColor = north.clone().lerp(south, (90 - shippingOrigin.latitude) / 180);
+			selectedRouteMaterial.color.copy(destinationColor);
+			endpointPositions.setXYZ(0, origin.x * 1.025, origin.y * 1.025, origin.z * 1.025);
+			endpointPositions.setXYZ(1, active.destination.x, active.destination.y, active.destination.z);
+			endpointPositions.needsUpdate = true;
+			endpointColors.setXYZ(0, originColor.r, originColor.g, originColor.b);
+			endpointColors.setXYZ(1, destinationColor.r, destinationColor.g, destinationColor.b);
+			endpointColors.needsUpdate = true;
+		}
+	};
 	const recolor = () => {
 		const colors = palette();
+		isDark = colors.isDark;
 		north = readColor(colors.north);
 		south = readColor(colors.south);
-		destinationMaterial.uniforms.gradientNorth.value.copy(north);
-		destinationMaterial.uniforms.gradientSouth.value.copy(south);
+		for (const ringMaterial of [destinationMaterial, markerMaterial, endpointMaterial]) {
+			ringMaterial.uniforms.gradientNorth.value.copy(north);
+			ringMaterial.uniforms.gradientSouth.value.copy(south);
+		}
 		destinationMaterial.uniforms.strokeOpacity.value = colors.isDark ? 0.5 : 0.42;
+		markerMaterial.uniforms.strokeOpacity.value = destinationMaterial.uniforms.strokeOpacity.value;
 		dotMaterial.size = colors.isDark ? 0.0017 : 0.0023;
 		const attribute = geometry.getAttribute('color');
 		continentPoints.forEach(([lat], i) => {
@@ -222,15 +289,10 @@ export const createShippingGlobe = (
 		destinationColors.needsUpdate = true;
 		routes.forEach((route) => {
 			const color = north.clone().lerp(south, (90 - route.location.latitude) / 180);
-			const opacity =
-				route.location.id === activeId ? 0.95 : activeId ? 0.1 : colors.isDark ? 0.18 : 0.3;
-			for (let i = route.index * 160; i < (route.index + 1) * 160; i++) {
-				routeColors.setXYZW(i, color.r, color.g, color.b, opacity);
-			}
 			markerColors.setXYZ(route.index, color.r, color.g, color.b);
 			markerColors.setXYZ(route.index + routes.length, color.r, color.g, color.b);
 		});
-		routeColors.needsUpdate = true;
+		updateSelection();
 		markerColors.needsUpdate = true;
 		updateMarkers();
 		draw();
@@ -304,14 +366,20 @@ export const createShippingGlobe = (
 		select: (id: string | undefined) => {
 			if (activeId === id) return;
 			activeId = id;
-			const active = shippingLocations.find((location) => location.id === id);
-			targetRotation = active ? (-active.longitude * Math.PI) / 180 : undefined;
+			const active = routes.find((route) => route.location.id === id);
+			selectedRoute.geometry.dispose();
+			selectedRoute.geometry = active
+				? new THREE.TubeGeometry(new THREE.CatmullRomCurve3(active.points), 80, 0.006, 6, false)
+				: new THREE.BufferGeometry();
+			targetRotation = active ? (-active.location.longitude * Math.PI) / 180 : undefined;
 			if (targetRotation !== undefined) {
 				while (targetRotation - globe.rotation.y > Math.PI) targetRotation -= Math.PI * 2;
 				while (targetRotation - globe.rotation.y < -Math.PI) targetRotation += Math.PI * 2;
 				if (motion.matches) globe.rotation.y = targetRotation;
 			}
-			recolor();
+			updateSelection();
+			updateMarkers();
+			draw();
 		},
 		dispose: () => {
 			isDisposed = true;
@@ -325,6 +393,7 @@ export const createShippingGlobe = (
 			host.removeEventListener('focusout', leave);
 			document.removeEventListener('visibilitychange', updatePlayback);
 			motion.removeEventListener('change', updatePlayback);
+			selectedRoute.geometry.dispose();
 			resources.forEach((resource) => resource.dispose());
 			renderer.dispose();
 			renderer.forceContextLoss();
