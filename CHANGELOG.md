@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 78ea175dead1deeb06cc9c8a9830d1b7306d76da -->
+<!-- pending-base: d6b3de17d812805d8c3591017dab3105a27f6254 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: keep shipment volumes private and clarify shipping visuals
+fix: fit the shipping globe and smooth its animation
 
-Remove public order totals and volume-based effects; keep reference counts server-only and export sanitized geography with privacy regression coverage.
-Zoom the globe, darken light-mode state tiles, repair the export command, and update project guidance and changelog history.
+Fill the bento artwork container, fit the complete preview globe, batch routes and markers, and remove the frame-skipping limiter.
+Reduce pixel density, add responsive sizing coverage, hide shipping map overlays and notes, and reconcile changelog history.
 ```
 
 ## 2026-10-12
+
+- **fix: keep shipment volumes private and clarify shipping visuals** (`d6b3de1`)
+  Remove public order totals and volume-weighted effects, retain internal reference data server-side, export sanitized geography with privacy tests, zoom the globe, and darken light-mode state tiles. Repair the export command and document data privacy and changelog history.
 
 - **feat: map actual order destinations in shipping visuals** (`78ea175`)
   Import actual destination data, add batched volume-weighted markers and bounded animated connections, update international controls and copy, and add reconciliation and route regression coverage. Record coordinate sources and unresolved addresses.

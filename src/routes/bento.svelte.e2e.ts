@@ -496,3 +496,25 @@ test('animated bento artwork stays within the page on mobile and desktop', async
 		)
 		.toBe(true);
 });
+
+test('shipping globe preview fills its artwork container at mobile and desktop widths', async ({
+	page
+}) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/');
+	await expect(page.locator('[data-bento-section]')).toHaveAttribute('data-bento-ready', 'true');
+	const tile = page.locator('[data-bento-topic="shipping"]');
+	for (const width of [390, 1440]) {
+		await page.setViewportSize({ width, height: 900 });
+		await tile.scrollIntoViewIfNeeded();
+		const globe = tile.locator('[data-shipping-globe]');
+		await expect(globe).toBeVisible();
+		const dimensions = await globe.evaluate((element) => ({
+			canvas: element.querySelector('canvas')!.getBoundingClientRect().width,
+			container: element.parentElement!.getBoundingClientRect().width,
+			globe: element.getBoundingClientRect().width
+		}));
+		expect(dimensions.globe).toBeCloseTo(dimensions.container, 0);
+		expect(dimensions.canvas).toBeCloseTo(dimensions.container, 0);
+	}
+});

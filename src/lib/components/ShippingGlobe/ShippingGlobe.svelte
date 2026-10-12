@@ -19,8 +19,11 @@
 	const gradientId = $props.id();
 
 	// $props()
-	let { activeLocationId, class: className = '' }: { activeLocationId?: string; class?: string } =
-		$props();
+	let {
+		activeLocationId,
+		class: className = '',
+		isPreview = false
+	}: { activeLocationId?: string; class?: string; isPreview?: boolean } = $props();
 
 	// $state
 	let canvas = $state<HTMLCanvasElement | null>(null);
@@ -41,11 +44,15 @@
 				try {
 					const { createShippingGlobe } = await import('./renderer');
 					if (isDisposed) return;
-					const next = createShippingGlobe(target, () => ({
-						north: getComputedStyle(northElement!).color,
-						south: getComputedStyle(southElement!).color,
-						isDark: document.documentElement.dataset.theme === 'dark'
-					}));
+					const next = createShippingGlobe(
+						target,
+						() => ({
+							north: getComputedStyle(northElement!).color,
+							south: getComputedStyle(southElement!).color,
+							isDark: document.documentElement.dataset.theme === 'dark'
+						}),
+						isPreview
+					);
 					if (isDisposed) next.dispose();
 					else {
 						surface = next;
@@ -89,7 +96,7 @@
 	/>
 
 	<Svg
-		viewBox="75 0 150 150"
+		viewBox={isPreview ? '0 0 300 300' : '75 0 150 150'}
 		class={`absolute inset-0 h-full w-full ${isReady ? 'invisible' : ''}`}
 		aria-hidden="true"
 		focusable="false"

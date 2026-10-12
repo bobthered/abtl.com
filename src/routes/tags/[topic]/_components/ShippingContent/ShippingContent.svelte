@@ -124,12 +124,15 @@
 		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div class="order-2 lg:order-1"
 				><Div class={[shippingArtworkClass, 'relative'].join(' ')}
-					><ShippingGlobe activeLocationId={selectedLocationId} /><Div
+					><ShippingGlobe activeLocationId={selectedLocationId} />
+					<!-- <Div
 						class="absolute right-6 bottom-6 left-6 rounded-sm bg-white/90 p-4 backdrop-blur-sm dark:bg-gray-950/90"
-						><P class="text-sm font-medium" aria-live="polite" data-shipping-destination
+						>
+						<P class="text-sm font-medium" aria-live="polite" data-shipping-destination
 							>{selectedLocation.countryName}</P
-						></Div
-					></Div
+						>
+						</Div> -->
+					</Div
 				></Div
 			>
 			<Div class="order-1 lg:order-2">
@@ -158,13 +161,13 @@
 						>
 					{/each}
 				</Div>
-				<P class="mt-5 text-xs leading-relaxed text-gray-500 dark:text-gray-400"
+				<!-- <P class="mt-5 text-xs leading-relaxed text-gray-500 dark:text-gray-400"
 					>Locations are approximate; arcs illustrate connections, not carrier routes or transit
 					times.
 					<A href="https://www.geonames.org/" target="_blank" rel="noreferrer"
 						>Map coordinates: GeoNames</A
 					>.</P
-				>
+				> -->
 			</Div>
 		</Div>
 	</Section>

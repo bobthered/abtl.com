@@ -6,23 +6,24 @@ import { shippingLocations, shippingOrigin } from './shippingLocations';
 
 export const createShippingGlobe = (
 	canvas: HTMLCanvasElement,
-	palette: () => { north: string; south: string; isDark: boolean }
+	palette: () => { north: string; south: string; isDark: boolean },
+	isPreview = false
 ) => {
 	const renderer = new THREE.WebGLRenderer({
 		canvas,
 		alpha: true,
 		antialias: true,
-		powerPreference: 'low-power'
+		powerPreference: 'high-performance'
 	});
-	renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+	renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
 	const scene = new THREE.Scene();
 	const globe = new THREE.Group();
 	globe.rotation.y = (65 * Math.PI) / 180;
 	globe.rotation.z = -0.12;
 	scene.add(globe);
 	const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 20);
-	camera.position.set(0, 0.45, 3.85);
-	camera.lookAt(0, 0.45, 0);
+	camera.position.set(0, isPreview ? 0 : 0.45, 3.85);
+	camera.lookAt(0, isPreview ? 0 : 0.45, 0);
 	camera.zoom = 2.1;
 	camera.updateProjectionMatrix();
 	const resources: Array<{ dispose: () => void }> = [];
@@ -54,20 +55,29 @@ export const createShippingGlobe = (
 	);
 	globe.add(new THREE.Points(geometry, dotMaterial));
 	const gridMaterial = keep(new THREE.LineBasicMaterial({ transparent: true, opacity: 0.09 }));
+	const gridPositions: number[] = [];
+	const appendGrid = (points: THREE.Vector3[]) => {
+		for (let i = 1; i < points.length; i++) {
+			gridPositions.push(...points[i - 1].toArray(), ...points[i].toArray());
+		}
+	};
 	for (let latitude = -60; latitude <= 60; latitude += 30) {
 		const points = Array.from(
 			{ length: 145 },
 			(_, i) => new THREE.Vector3(...globePosition(latitude, i * 2.5, 1.001))
 		);
-		globe.add(new THREE.Line(keep(new THREE.BufferGeometry().setFromPoints(points)), gridMaterial));
+		appendGrid(points);
 	}
 	for (let longitude = 0; longitude < 180; longitude += 30) {
 		const points = Array.from(
 			{ length: 145 },
 			(_, i) => new THREE.Vector3(...globePosition(i * 2.5, longitude, 1.001))
 		);
-		globe.add(new THREE.Line(keep(new THREE.BufferGeometry().setFromPoints(points)), gridMaterial));
+		appendGrid(points);
 	}
+	const gridGeometry = keep(new THREE.BufferGeometry());
+	gridGeometry.setAttribute('position', new THREE.Float32BufferAttribute(gridPositions, 3));
+	globe.add(new THREE.LineSegments(gridGeometry, gridMaterial));
 	// Thousands of destinations share one draw call instead of individual meshes/arcs.
 	const destinationGeometry = keep(new THREE.BufferGeometry());
 	destinationGeometry.setAttribute(
@@ -115,7 +125,7 @@ export const createShippingGlobe = (
 	const origin = new THREE.Vector3(
 		...globePosition(shippingOrigin.latitude, shippingOrigin.longitude)
 	);
-	const markerGeometry = keep(new THREE.SphereGeometry(0.018, 10, 8));
+	const routePositions: number[] = [];
 	const routes = shippingLocations.map((location, index) => {
 		const destination = new THREE.Vector3(...globePosition(location.latitude, location.longitude));
 		const distance = origin.angleTo(destination);
@@ -127,22 +137,41 @@ export const createShippingGlobe = (
 				.normalize()
 				.multiplyScalar(1.015 + Math.sin(t * Math.PI) * Math.min(0.48, distance * 0.24));
 		});
-		const color = north.clone();
-		const lineMaterial = keep(
-			new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.18 })
-		);
-		const line = new THREE.Line(
-			keep(new THREE.BufferGeometry().setFromPoints(points)),
-			lineMaterial
-		);
-		const markerMaterial = keep(new THREE.MeshBasicMaterial({ color }));
-		const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-		marker.position.copy(destination.multiplyScalar(1.014));
-		const light = new THREE.Mesh(markerGeometry, markerMaterial);
-		light.scale.setScalar(0.6);
-		globe.add(line, marker, light);
-		return { location, index, points, lineMaterial, markerMaterial, marker, light };
+		for (let i = 1; i < points.length; i++) {
+			routePositions.push(...points[i - 1].toArray(), ...points[i].toArray());
+		}
+		return { location, index, points, destination: destination.multiplyScalar(1.014) };
 	});
+	// RGBA vertex colors preserve route highlighting in a single draw call.
+	const routeGeometry = keep(new THREE.BufferGeometry());
+	routeGeometry.setAttribute('position', new THREE.Float32BufferAttribute(routePositions, 3));
+	const routeColors = new THREE.Float32BufferAttribute(
+		new Float32Array((routePositions.length / 3) * 4),
+		4
+	);
+	routeGeometry.setAttribute('color', routeColors);
+	globe.add(
+		new THREE.LineSegments(
+			routeGeometry,
+			keep(
+				new THREE.LineBasicMaterial({
+					vertexColors: true,
+					transparent: true,
+					depthWrite: false
+				})
+			)
+		)
+	);
+	// All destination markers and traveling lights share geometry and material.
+	const markers = new THREE.InstancedMesh(
+		keep(new THREE.SphereGeometry(0.018, 8, 6)),
+		keep(new THREE.MeshBasicMaterial()),
+		routes.length * 2
+	);
+	markers.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+	markers.frustumCulled = false;
+	globe.add(markers);
+	const markerTransform = new THREE.Object3D();
 	let activeId: string | undefined;
 	let frame = 0;
 	let isInView = false;
@@ -153,6 +182,22 @@ export const createShippingGlobe = (
 	let targetRotation: number | undefined;
 	const motion = matchMedia('(prefers-reduced-motion: reduce)');
 	const draw = () => renderer.render(scene, camera);
+	const updateMarkers = () => {
+		routes.forEach((route) => {
+			markerTransform.position.copy(route.destination);
+			markerTransform.scale.setScalar(1 + 0.12 * Math.sin(elapsed * 2 + route.index));
+			markerTransform.updateMatrix();
+			markers.setMatrixAt(route.index, markerTransform.matrix);
+			const exact = ((elapsed * 0.11 + route.index / routes.length) % 1) * 80;
+			markerTransform.position
+				.copy(route.points[Math.floor(exact)])
+				.lerp(route.points[Math.min(80, Math.floor(exact) + 1)], exact % 1);
+			markerTransform.scale.setScalar(!activeId || activeId === route.location.id ? 0.6 : 0);
+			markerTransform.updateMatrix();
+			markers.setMatrixAt(route.index + routes.length, markerTransform.matrix);
+		});
+		markers.instanceMatrix.needsUpdate = true;
+	};
 	const recolor = () => {
 		const colors = palette();
 		north = readColor(colors.north);
@@ -174,34 +219,29 @@ export const createShippingGlobe = (
 		destinationColors.needsUpdate = true;
 		routes.forEach((route) => {
 			const color = north.clone().lerp(south, (90 - route.location.latitude) / 180);
-			route.lineMaterial.color.copy(color);
-			route.lineMaterial.opacity =
+			const opacity =
 				route.location.id === activeId ? 0.95 : activeId ? 0.1 : colors.isDark ? 0.18 : 0.3;
-			route.markerMaterial.color.copy(color);
+			for (let i = route.index * 160; i < (route.index + 1) * 160; i++) {
+				routeColors.setXYZW(i, color.r, color.g, color.b, opacity);
+			}
+			markers.setColorAt(route.index, color);
+			markers.setColorAt(route.index + routes.length, color);
 		});
+		routeColors.needsUpdate = true;
+		if (markers.instanceColor) markers.instanceColor.needsUpdate = true;
+		updateMarkers();
 		draw();
 	};
 	const render = (time: number) => {
 		frame = 0;
 		if (isDisposed || !isInView || document.hidden || motion.matches) return;
-		if (previous && time - previous < 1000 / 30) {
-			frame = requestAnimationFrame(render);
-			return;
-		}
 		const delta = previous ? Math.min((time - previous) / 1000, 0.05) : 0;
 		previous = time;
 		elapsed += delta * (isHovered ? 2 : 1);
 		if (targetRotation !== undefined)
 			globe.rotation.y += (targetRotation - globe.rotation.y) * Math.min(1, delta * 3);
 		else globe.rotation.y += delta * (isHovered ? 0.14 : 0.045);
-		routes.forEach((route) => {
-			const progress = (elapsed * 0.11 + route.index / routes.length) % 1;
-			const exact = progress * 80;
-			route.light.position
-				.copy(route.points[Math.floor(exact)])
-				.lerp(route.points[Math.min(80, Math.floor(exact) + 1)], exact % 1);
-			route.marker.scale.setScalar(1 + 0.12 * Math.sin(elapsed * 2 + route.index));
-		});
+		updateMarkers();
 		draw();
 		frame = requestAnimationFrame(render);
 	};
@@ -219,6 +259,13 @@ export const createShippingGlobe = (
 		if (!width || !height) return;
 		renderer.setSize(width, height, false);
 		camera.aspect = width / height;
+		if (isPreview) {
+			// Fit the complete sphere and raised arcs into either dimension of a rectangular tile.
+			const halfFov = THREE.MathUtils.degToRad(camera.fov / 2);
+			const limitingFov = Math.min(halfFov, Math.atan(Math.tan(halfFov) * camera.aspect));
+			camera.zoom = 1;
+			camera.position.z = 1.3 / Math.sin(limitingFov);
+		}
 		camera.updateProjectionMatrix();
 		draw();
 	});
@@ -258,12 +305,7 @@ export const createShippingGlobe = (
 				while (targetRotation - globe.rotation.y < -Math.PI) targetRotation += Math.PI * 2;
 				if (motion.matches) globe.rotation.y = targetRotation;
 			}
-			routes.forEach((route) => {
-				const isActive = route.location.id === id;
-				route.lineMaterial.opacity = isActive ? 0.95 : id ? 0.1 : palette().isDark ? 0.18 : 0.3;
-				route.light.visible = !id || isActive;
-			});
-			draw();
+			recolor();
 		},
 		dispose: () => {
 			isDisposed = true;
@@ -277,6 +319,7 @@ export const createShippingGlobe = (
 			host.removeEventListener('focusout', leave);
 			document.removeEventListener('visibilitychange', updatePlayback);
 			motion.removeEventListener('change', updatePlayback);
+			markers.dispose();
 			resources.forEach((resource) => resource.dispose());
 			renderer.dispose();
 			renderer.forceContextLoss();
