@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 0e193ae4316ee4954bca4538b721fb976204058c -->
+<!-- pending-base: fb264f333bc30b52c8867c1eb3ada8911ba6b453 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: stabilize news carousel transitions and use a primary article CTA
+fix: soften bento artwork backdrops and improve light-mode contrast
 
-Hold hover widths while artwork decodes and suppress resizing during focus restoration.
-Use the primary Read article button, add delayed-loading regression coverage, and reconcile changelog history.
+Add subtle blurred gradient orbs with a top fade for shipping, synthetic-materials and printing previews, and remove the globe's solid fill.
+Strengthen light-mode globe and weather details and particle visibility, preserve dark-mode particle styling, and reconcile changelog history.
 ```
 
 ## 2026-10-11
+
+- **fix: stabilize news carousel transitions and use a primary article CTA** (`fb264f3`)
+  Hold hover widths while artwork decodes, suppress resizing during focus restoration, and use the primary Read article button. Add delayed-loading regression coverage, tighten transition polling, and reconcile changelog history.
 
 - **fix: smooth news carousel wrapping and highlight the active image** (`0e193ae`)
   Restore the bento outline and expand icon on the active news image. Animate wrapped incoming images during multi-slide selections, decode artwork before movement, preserve hover widths and keyboard focus, and add transition continuity coverage and changelog history.

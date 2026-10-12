@@ -28,7 +28,6 @@
 	let northElement = $state<HTMLSpanElement | null>(null);
 	let southElement = $state<HTMLSpanElement | null>(null);
 	let surface = $state.raw<ReturnType<typeof createShippingGlobe> | null>(null);
-	let surfaceElement = $state<HTMLSpanElement | null>(null);
 
 	// $effects
 	onMount(() => {
@@ -45,7 +44,7 @@
 					const next = createShippingGlobe(target, () => ({
 						north: getComputedStyle(northElement!).color,
 						south: getComputedStyle(southElement!).color,
-						surface: getComputedStyle(surfaceElement!).color
+						isDark: document.documentElement.dataset.theme === 'dark'
 					}));
 					if (isDisposed) next.dispose();
 					else {
@@ -80,19 +79,15 @@
 >
 	<Span
 		bind:element={northElement}
-		class="hidden text-primary-500 dark:text-primary-400"
+		class="hidden text-primary-600 dark:text-primary-400"
 		aria-hidden="true"
 	/>
 	<Span
 		bind:element={southElement}
-		class="hidden text-secondary-500 dark:text-secondary-400"
+		class="hidden text-secondary-600 dark:text-secondary-400"
 		aria-hidden="true"
 	/>
-	<Span
-		bind:element={surfaceElement}
-		class="hidden text-primary-50 dark:text-gray-950"
-		aria-hidden="true"
-	/>
+
 	<Svg
 		viewBox="0 0 300 300"
 		class={`absolute inset-0 h-full w-full ${isReady ? 'invisible' : ''}`}
@@ -104,11 +99,11 @@
 				><Stop
 					offset="0"
 					stop-color="currentColor"
-					class="text-primary-500 dark:text-primary-400"
+					class="text-primary-600 dark:text-primary-400"
 				/><Stop
 					offset="1"
 					stop-color="currentColor"
-					class="text-secondary-500 dark:text-secondary-400"
+					class="text-secondary-600 dark:text-secondary-400"
 				/></LinearGradient
 			></Defs
 		>
@@ -116,7 +111,8 @@
 			cx="150"
 			cy="150"
 			r="125"
-			class="fill-primary-50 stroke-primary-200 stroke-1 dark:fill-gray-950 dark:stroke-primary-900"
+			fill="none"
+			class="stroke-primary-300 stroke-1 dark:stroke-primary-900"
 		/>
 		<Path d={globeFallbackPath} fill={`url(#${gradientId})`} />
 		<Path

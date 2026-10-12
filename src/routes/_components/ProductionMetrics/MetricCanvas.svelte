@@ -60,9 +60,9 @@
 			/>
 		</Div>
 		<Container class="h-full">
-			<Span class="hidden text-primary-500 dark:text-primary-400" data-scene-color="primary" />
+			<Span class="hidden text-primary-600 dark:text-primary-400" data-scene-color="primary" />
 			<Span
-				class="hidden text-secondary-500 dark:text-secondary-400"
+				class="hidden text-secondary-600 dark:text-secondary-400"
 				data-scene-color="secondary"
 			/>
 			<Canvas

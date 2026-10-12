@@ -5,7 +5,7 @@ import { shippingLocations, shippingOrigin } from './shippingLocations';
 
 export const createShippingGlobe = (
 	canvas: HTMLCanvasElement,
-	palette: () => { north: string; south: string; surface: string }
+	palette: () => { north: string; south: string; isDark: boolean }
 ) => {
 	const renderer = new THREE.WebGLRenderer({
 		canvas,
@@ -35,7 +35,8 @@ export const createShippingGlobe = (
 	};
 	let north = new THREE.Color();
 	let south = new THREE.Color();
-	const material = keep(new THREE.MeshBasicMaterial());
+	// Depth-only occlusion hides the far hemisphere without painting an opaque globe.
+	const material = keep(new THREE.MeshBasicMaterial({ colorWrite: false }));
 	globe.add(new THREE.Mesh(keep(new THREE.SphereGeometry(0.995, 48, 32)), material));
 	const geometry = keep(new THREE.BufferGeometry());
 	const positions = land.flatMap(([lat, lon]) => [...globePosition(lat, lon, 1.002)]);
@@ -108,8 +109,9 @@ export const createShippingGlobe = (
 		const colors = palette();
 		north = readColor(colors.north);
 		south = readColor(colors.south);
-		material.color.copy(readColor(colors.surface));
 		gridMaterial.color.copy(north);
+		gridMaterial.opacity = colors.isDark ? 0.09 : 0.24;
+		dotMaterial.size = colors.isDark ? 0.017 : 0.023;
 		const attribute = geometry.getAttribute('color');
 		land.forEach(([lat], i) => {
 			const color = north.clone().lerp(south, (90 - lat) / 180);
@@ -119,6 +121,8 @@ export const createShippingGlobe = (
 		routes.forEach((route) => {
 			const color = north.clone().lerp(south, (90 - route.location.latitude) / 180);
 			route.lineMaterial.color.copy(color);
+			route.lineMaterial.opacity =
+				route.location.id === activeId ? 0.95 : activeId ? 0.1 : colors.isDark ? 0.28 : 0.5;
 			route.markerMaterial.color.copy(color);
 		});
 		draw();
@@ -202,7 +206,7 @@ export const createShippingGlobe = (
 			}
 			routes.forEach((route) => {
 				const isActive = route.location.id === id;
-				route.lineMaterial.opacity = isActive ? 0.95 : id ? 0.1 : 0.28;
+				route.lineMaterial.opacity = isActive ? 0.95 : id ? 0.1 : palette().isDark ? 0.28 : 0.5;
 				route.light.visible = !id || isActive;
 			});
 			draw();

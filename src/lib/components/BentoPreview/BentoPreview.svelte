@@ -21,6 +21,21 @@
 </script>
 
 <Div variants={[isDialogPreview ? 'bentoDialogPreview' : 'bentoPreview']} aria-hidden="true">
+	{#if ['globe', 'weather', 'process'].includes(kind)}
+		<Div variants={['artworkGlow']} data-artwork-glow>
+			<Div
+				variants={['artworkOrb', 'artworkPrimary']}
+				class={kind === 'weather' ? 'right-0 bottom-0' : 'bottom-0 left-0'}
+			/>
+			<Div
+				variants={['artworkOrb', 'artworkSecondary']}
+				class={kind === 'weather' ? 'top-1/3 left-0' : 'top-1/3 right-0'}
+			/>
+			{#if kind === 'process'}
+				<Div variants={['artworkOrb', 'artworkNeutral']} class="top-1/2 left-1/2 -translate-1/2" />
+			{/if}
+		</Div>
+	{/if}
 	{#if kind === 'globe'}
 		<Div class="relative h-full w-full"
 			><ShippingGlobe

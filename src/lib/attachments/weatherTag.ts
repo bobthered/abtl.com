@@ -18,6 +18,7 @@ export const weatherTag = (element: HTMLElement) => {
 	let elapsed = 0;
 	let frame = 0;
 	let height = 0;
+	let isDark = false;
 	let isHovered = false;
 	let isInView = false;
 	let lastFrame = 0;
@@ -106,7 +107,7 @@ export const weatherTag = (element: HTMLElement) => {
 		for (let i = 0; i < 7; i++) {
 			const x = ((t * (35 + intensity * 130) + i * 83) % (width + 180)) - 120;
 			const y = height * (0.2 + i * 0.105);
-			context.globalAlpha = 0.04 + intensity * 0.08;
+			context.globalAlpha = (isDark ? 0.04 : 0.12) + intensity * 0.08;
 			context.beginPath();
 			context.moveTo(x, y);
 			context.bezierCurveTo(x + 28, y - 12, x + 78, y + 12, x + 115, y - 6);
@@ -173,7 +174,7 @@ export const weatherTag = (element: HTMLElement) => {
 			const y = ((i * 0.618033 + phase) % 1) * (height + 70) - 35;
 			const x = ((i * 0.754877 + phase * 0.65) % 1) * (width + 140) - 70;
 			const length = 9 + intensity * 14 + (i % 4) * 2;
-			context.globalAlpha = 0.1 + (i % 4) * 0.035 + intensity * 0.04;
+			context.globalAlpha = (isDark ? 0.1 : 0.24) + (i % 4) * 0.035 + intensity * 0.04;
 			context.beginPath();
 			context.moveTo(x, y);
 			context.lineTo(x + length * (0.3 + intensity * 1.7), y + length);
@@ -221,6 +222,7 @@ export const weatherTag = (element: HTMLElement) => {
 		if (isMoving) frame = requestAnimationFrame(animate);
 	};
 	const resize = () => {
+		isDark = document.documentElement.dataset.theme === 'dark';
 		const bounds = element.getBoundingClientRect();
 		width = bounds.width;
 		height = bounds.height;

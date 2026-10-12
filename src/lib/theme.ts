@@ -480,6 +480,20 @@ export const initializeTheme = () => {
 		'arrow',
 		'size-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transform-none motion-reduce:transition-none'
 	);
+	// Fade only the backdrop, keeping artwork crisp and the title boundary seamless.
+	theme.set.variant(
+		'div',
+		'artworkGlow',
+		'pointer-events-none absolute inset-0 overflow-hidden mask-t-from-50% mask-t-to-95%'
+	);
+	theme.set.variant(
+		'div',
+		'artworkOrb',
+		'absolute h-64 w-80 max-w-full rounded-full bg-radial to-transparent blur-2xl'
+	);
+	theme.set.variant('div', 'artworkPrimary', 'from-primary-400/20 dark:from-primary-500/15');
+	theme.set.variant('div', 'artworkSecondary', 'from-secondary-400/20 dark:from-secondary-500/15');
+	theme.set.variant('div', 'artworkNeutral', 'from-gray-400/15 dark:from-gray-200/20');
 	theme.set.variant(
 		'div',
 		'colorStudio',

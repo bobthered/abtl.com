@@ -31,10 +31,12 @@
 	data-print-channels={channels}
 	aria-hidden="true"
 >
-	<Div
-		data-print-backdrop
-		class="pointer-events-none absolute inset-0 hidden bg-radial from-gray-50/95 via-gray-100/70 via-40% to-transparent to-75% mask-y-from-60% mask-y-to-100% mask-x-from-60% mask-x-to-100% dark:block"
-	/>
+	{#if !isPreview}
+		<Div
+			data-print-backdrop
+			class="pointer-events-none absolute inset-0 bg-radial from-gray-500/80 via-gray-400/60 via-40% to-transparent to-75% mask-y-from-60% mask-y-to-100% mask-x-from-60% mask-x-to-100% dark:from-gray-50/95 dark:via-gray-100/70"
+		/>
+	{/if}
 	<StockTag class="w-32 text-white group-data-[print-ready=true]/print:invisible" />
 	<Canvas class="absolute inset-0 h-full w-full" />
 </Div>

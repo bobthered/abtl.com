@@ -53,6 +53,7 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 	let colors = ['#4851a3', '#a348a0'];
 	let elapsed = 0;
 	let frame = 0;
+	let isDark = false;
 	let isDragging = false;
 	let isInitialized = false;
 	let isInView = false;
@@ -159,7 +160,9 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 			context.fillStyle = colors[index % colors.length];
 			// Positive z is closer to the camera. Smoothly fade distant points into the backdrop.
 			const depth = Math.max(0, Math.min(1, (particle.z + 100) / 200));
-			context.globalAlpha = 0.015 + Math.pow(depth * depth * (3 - 2 * depth), 1.5) * 0.985;
+			const fade = depth * depth * (3 - 2 * depth);
+			// Pale surfaces need a higher visibility floor without flattening the depth cue.
+			context.globalAlpha = isDark ? 0.015 + Math.pow(fade, 1.5) * 0.985 : 0.12 + fade * 0.88;
 			// Independent 5?10 second cycles; effects do not jump this animation clock.
 			const sizePulse = preference.matches
 				? 1
@@ -259,6 +262,7 @@ export const abstractScene: Attachment<HTMLCanvasElement> = (canvas) => {
 			frame = requestAnimationFrame(tick);
 	};
 	const resize = () => {
+		isDark = document.documentElement.dataset.theme === 'dark';
 		const bounds = canvas.getBoundingClientRect();
 		const ratio = Math.min(devicePixelRatio || 1, 1.75);
 		canvas.width = Math.max(1, Math.round(bounds.width * ratio));

@@ -29,13 +29,17 @@
 	data-weather-storm={isStorm}
 	aria-hidden="true"
 >
-	<Div
-		class="pointer-events-none absolute inset-0 bg-radial from-primary-200/50 via-primary-100/10 to-transparent dark:from-primary-600/20 dark:via-primary-900/10"
-	/>
+	{#if !isPreview}
+		<Div
+			class="pointer-events-none absolute inset-0 bg-radial from-primary-300/70 via-primary-200/30 to-transparent dark:from-primary-600/20 dark:via-primary-900/10"
+		/>
+	{/if}
 	<Div
 		class="absolute inset-0 flex items-center justify-center group-data-[weather-ready=true]/weather:invisible"
 		><StockTag class="w-28 text-white" /></Div
 	>
-	<Canvas class="absolute inset-0 h-full w-full text-primary-600 dark:text-primary-300" />
+	<Canvas
+		class="absolute inset-0 h-full w-full text-primary-700 drop-shadow-sm dark:text-primary-300 dark:drop-shadow-none"
+	/>
 	<Span class="hidden text-secondary-500 dark:text-secondary-300" data-weather-accent />
 </Div>
