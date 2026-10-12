@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: d34b6cf3b403144c0bf1ac62e259b076c51e50c4 -->
+<!-- pending-base: 77653d00276886fda1b29015c6a8c18642d37b5e -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: zoom closer for nearby shipping destinations
+fix: apply color mode before the first paint
 
-Remove the fixed zoom cap so Canada's connection fills the canvas while keeping both endpoints visible.
-Extend responsive framing tests and reconcile changelog history.
+Initialize saved or system color preference in the document head and remove delayed layout initialization.
+Preserve storage fallback and favicon updates, add browser regression coverage, and reconcile changelog history.
 ```
 
 ## 2026-10-12
+
+- **fix: zoom closer for nearby shipping destinations** (`77653d0`)
+  Remove the fixed zoom cap so Canada's connection fills the canvas while keeping both endpoints visible. Extend responsive framing tests and reconcile changelog history.
 
 - **fix: fit selected shipping routes within the globe canvas** (`d34b6cf`)
   Restore background destination visibility, keep selected arcs thin at fitted zoom levels, and frame both endpoints and the connecting arc responsively. Preserve smooth and reduced motion, add framing regression tests, and reconcile changelog history.

@@ -44,31 +44,6 @@
 		'[--site-header-height:calc(var(--spacing)*24+1px)] sm:[--site-header-height:calc(var(--spacing)*26+1px)] lg:[--site-header-height:calc(var(--spacing)*34+1px)]';
 
 	// helpers
-	const applyColorMode = (mode: ColorMode) => {
-		document.documentElement.dataset.theme = mode;
-		try {
-			localStorage.setItem('theme', mode);
-		} catch {
-			// The theme still applies when browser storage is unavailable.
-		}
-	};
-
-	const initializeColorMode = () => {
-		let savedMode: string | null = null;
-		try {
-			savedMode = localStorage.getItem('theme');
-		} catch {
-			// Fall back to the system preference when browser storage is unavailable.
-		}
-		applyColorMode(
-			savedMode === 'dark' || savedMode === 'light'
-				? savedMode
-				: window.matchMedia('(prefers-color-scheme: dark)').matches
-					? 'dark'
-					: 'light'
-		);
-	};
-
 	const initializeFaviconTheme = () => {
 		const updateFaviconTheme = () => {
 			colorMode = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
@@ -102,7 +77,6 @@
 	};
 
 	initializeTheme();
-	onMount(initializeColorMode);
 	onMount(initializeFaviconTheme);
 	onMount(initializeMenuBreakpoint);
 	onMount(initializeMotionPreference);

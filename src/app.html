@@ -8,6 +8,29 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="text-scale" content="scale" />
+		<!-- Apply the preference before styles and page content can paint. -->
+		<script nonce="%sveltekit.nonce%">
+			(() => {
+				let savedMode = null;
+				try {
+					savedMode = localStorage.getItem('theme');
+				} catch {
+					// System preference still works when storage is unavailable.
+				}
+				const mode =
+					savedMode === 'dark' || savedMode === 'light'
+						? savedMode
+						: window.matchMedia('(prefers-color-scheme: dark)').matches
+							? 'dark'
+							: 'light';
+				document.documentElement.dataset.theme = mode;
+				try {
+					localStorage.setItem('theme', mode);
+				} catch {
+					// The selected mode is already applied without storage.
+				}
+			})();
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
