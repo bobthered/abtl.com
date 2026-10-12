@@ -32,6 +32,25 @@ test.each([
 		camera.updateMatrixWorld();
 		camera.updateProjectionMatrix();
 		expect(framing.zoom).toBeGreaterThan(0);
+		if (location.country === 'CA') {
+			const projectedOrigin = origin
+				.clone()
+				.multiplyScalar(1.025)
+				.applyQuaternion(framing.rotation)
+				.project(camera);
+			const projectedDestination = destination
+				.clone()
+				.multiplyScalar(1.014)
+				.applyQuaternion(framing.rotation)
+				.project(camera);
+			// A nearby connection should use the available space, not hit a global zoom cap.
+			expect(
+				Math.max(
+					Math.abs(projectedOrigin.x - projectedDestination.x),
+					Math.abs(projectedOrigin.y - projectedDestination.y)
+				)
+			).toBeGreaterThan(1.2);
+		}
 		for (const point of [
 			...points,
 			origin.clone().multiplyScalar(1.025),

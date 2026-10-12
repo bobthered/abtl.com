@@ -35,8 +35,9 @@ export const frameShippingRoute = (
 			(Math.abs(point.y - position.y) * focalLength) / depth
 		);
 	}
+	// Let nearby destinations fill the view too; a fixed zoom cap makes short
+	// connections such as Canada look distant despite ample space in the canvas.
 	const zoom = Math.min(
-		4.5,
 		horizontalLimit / Math.max(horizontalExtent, 0.001),
 		verticalLimit / Math.max(verticalExtent, 0.001)
 	);

@@ -6,19 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: d2f267e874a467bb02c8a5c7ed772b1ed7b4fa5a -->
+<!-- pending-base: d34b6cf3b403144c0bf1ac62e259b076c51e50c4 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: fit selected shipping routes within the globe canvas
+fix: zoom closer for nearby shipping destinations
 
-Restore visibility of background destinations and keep selected arcs thin as zoom changes.
-Frame both endpoints and the connecting arc responsively, preserving smooth motion and reduced-motion support.
-Add framing regression tests and reconcile changelog history.
+Remove the fixed zoom cap so Canada's connection fills the canvas while keeping both endpoints visible.
+Extend responsive framing tests and reconcile changelog history.
 ```
 
 ## 2026-10-12
+
+- **fix: fit selected shipping routes within the globe canvas** (`d34b6cf`)
+  Restore background destination visibility, keep selected arcs thin at fitted zoom levels, and frame both endpoints and the connecting arc responsively. Preserve smooth and reduced motion, add framing regression tests, and reconcile changelog history.
 
 - **fix: emphasize selected shipping connections** (`d2f267e`)
   Draw a thicker selected arc and brighter origin/destination rings while fading other routes and markers. Avoid recoloring continents when switching destinations and reconcile changelog history.
