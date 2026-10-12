@@ -1,6 +1,7 @@
 import shipmentPoints from '#lib/data/shipments/points.json';
 import * as THREE from 'three';
 import { continentPoints, globePosition } from './geometry';
+import { frameShippingRoute } from './framing';
 import { shippingLocations, shippingOrigin } from './shippingLocations';
 
 export const createShippingGlobe = (
@@ -210,9 +211,58 @@ export const createShippingGlobe = (
 	let isDark = false;
 	let previous = 0;
 	let elapsed = 0;
-	let targetRotation: number | undefined;
+	let targetRotation: THREE.Quaternion | undefined;
+	let targetZoom = baseZoom;
+	const targetCameraPosition = camera.position.clone();
 	const motion = matchMedia('(prefers-reduced-motion: reduce)');
 	const draw = () => renderer.render(scene, camera);
+	const updateCamera = (amount: number) => {
+		if (targetRotation) globe.quaternion.slerp(targetRotation, amount);
+		camera.position.lerp(targetCameraPosition, amount);
+		camera.lookAt(camera.position.x, camera.position.y, 0);
+		const zoom = targetZoom * (!activeId && bentoHost && isHovered && !motion.matches ? 1.18 : 1);
+		const nextZoom = THREE.MathUtils.lerp(camera.zoom, zoom, amount);
+		if (Math.abs(nextZoom - camera.zoom) > 0.0001) {
+			camera.zoom = nextZoom;
+			camera.updateProjectionMatrix();
+		}
+	};
+	const fitSelectedRoute = () => {
+		const active = routes.find((route) => route.location.id === activeId);
+		if (active) {
+			const framing = frameShippingRoute(
+				active.points,
+				origin,
+				active.destination,
+				Math.max(1, canvas.clientWidth),
+				Math.max(1, canvas.clientHeight),
+				camera.fov
+			);
+			targetRotation = framing.rotation;
+			targetCameraPosition.copy(framing.position);
+			targetZoom = framing.zoom;
+			// Keep the arc near two screen pixels even when short connections zoom in.
+			const midpoint = active.points[40].clone().applyQuaternion(framing.rotation);
+			const radius =
+				((framing.position.z - midpoint.z) *
+					Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) *
+					2) /
+				(Math.max(1, canvas.clientHeight) * framing.zoom);
+			selectedRoute.geometry.dispose();
+			selectedRoute.geometry = new THREE.TubeGeometry(
+				new THREE.CatmullRomCurve3(active.points),
+				80,
+				radius,
+				6,
+				false
+			);
+		} else {
+			targetRotation = undefined;
+			targetCameraPosition.set(0, 0.45, 3.85);
+			targetZoom = baseZoom;
+		}
+		if (motion.matches) updateCamera(1);
+	};
 	const updateMarkers = () => {
 		routes.forEach((route) => {
 			markerPositions.setXYZ(
@@ -238,14 +288,14 @@ export const createShippingGlobe = (
 	};
 	const updateSelection = () => {
 		const active = routes.find((route) => route.location.id === activeId);
-		destinationMaterial.uniforms.layerOpacity.value = active ? 0.1 : 1;
-		markerMaterial.uniforms.layerOpacity.value = active ? 0.12 : 1;
+		destinationMaterial.uniforms.layerOpacity.value = active ? 0.4 : 1;
+		markerMaterial.uniforms.layerOpacity.value = active ? 0.45 : 1;
 		endpoints.visible = !!active;
 		selectedRoute.visible = !!active;
 		routes.forEach((route) => {
 			const color = north.clone().lerp(south, (90 - route.location.latitude) / 180);
 			// The active arc is drawn by the thicker tube; other arcs become background context.
-			const opacity = active ? (route === active ? 0 : 0.035) : isDark ? 0.18 : 0.3;
+			const opacity = active ? (route === active ? 0 : isDark ? 0.09 : 0.14) : isDark ? 0.18 : 0.3;
 			for (let i = route.index * 160; i < (route.index + 1) * 160; i++) {
 				routeColors.setXYZW(i, color.r, color.g, color.b, opacity);
 			}
@@ -302,16 +352,9 @@ export const createShippingGlobe = (
 		if (isDisposed || !isInView || document.hidden || motion.matches) return;
 		const delta = previous ? Math.min((time - previous) / 1000, 0.05) : 0;
 		previous = time;
-		const targetZoom = bentoHost && isHovered ? baseZoom * 1.18 : baseZoom;
-		const nextZoom = THREE.MathUtils.lerp(camera.zoom, targetZoom, 1 - Math.exp(-delta * 7));
-		if (Math.abs(nextZoom - camera.zoom) > 0.0001) {
-			camera.zoom = nextZoom;
-			camera.updateProjectionMatrix();
-		}
+		updateCamera(1 - Math.exp(-delta * 7));
 		elapsed += delta * (isHovered ? 2 : 1);
-		if (targetRotation !== undefined)
-			globe.rotation.y += (targetRotation - globe.rotation.y) * Math.min(1, delta * 3);
-		else globe.rotation.y += delta * (isHovered ? 0.14 : 0.045);
+		if (!targetRotation) globe.rotation.y += delta * (isHovered ? 0.14 : 0.045);
 		updateMarkers();
 		draw();
 		frame = requestAnimationFrame(render);
@@ -320,10 +363,7 @@ export const createShippingGlobe = (
 		cancelAnimationFrame(frame);
 		frame = 0;
 		previous = 0;
-		if (motion.matches) {
-			camera.zoom = baseZoom;
-			camera.updateProjectionMatrix();
-		}
+		if (motion.matches) updateCamera(1);
 		if (isInView && !document.hidden && !motion.matches && !isDisposed)
 			frame = requestAnimationFrame(render);
 		else draw();
@@ -334,6 +374,7 @@ export const createShippingGlobe = (
 		if (!width || !height) return;
 		renderer.setSize(width, height, false);
 		camera.aspect = width / height;
+		fitSelectedRoute();
 		camera.updateProjectionMatrix();
 		draw();
 	});
@@ -366,17 +407,7 @@ export const createShippingGlobe = (
 		select: (id: string | undefined) => {
 			if (activeId === id) return;
 			activeId = id;
-			const active = routes.find((route) => route.location.id === id);
-			selectedRoute.geometry.dispose();
-			selectedRoute.geometry = active
-				? new THREE.TubeGeometry(new THREE.CatmullRomCurve3(active.points), 80, 0.006, 6, false)
-				: new THREE.BufferGeometry();
-			targetRotation = active ? (-active.location.longitude * Math.PI) / 180 : undefined;
-			if (targetRotation !== undefined) {
-				while (targetRotation - globe.rotation.y > Math.PI) targetRotation -= Math.PI * 2;
-				while (targetRotation - globe.rotation.y < -Math.PI) targetRotation += Math.PI * 2;
-				if (motion.matches) globe.rotation.y = targetRotation;
-			}
+			fitSelectedRoute();
 			updateSelection();
 			updateMarkers();
 			draw();

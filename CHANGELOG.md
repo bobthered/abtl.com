@@ -6,18 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: de1890b9aae19a944ef44418e63d698890ab16e0 -->
+<!-- pending-base: d2f267e874a467bb02c8a5c7ed772b1ed7b4fa5a -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: emphasize selected shipping connections
+fix: fit selected shipping routes within the globe canvas
 
-Draw a thicker selected arc and brighter origin/destination rings while fading other shipment routes and markers.
-Avoid recoloring continents when switching destinations and reconcile changelog history.
+Restore visibility of background destinations and keep selected arcs thin as zoom changes.
+Frame both endpoints and the connecting arc responsively, preserving smooth motion and reduced-motion support.
+Add framing regression tests and reconcile changelog history.
 ```
 
 ## 2026-10-12
+
+- **fix: emphasize selected shipping connections** (`d2f267e`)
+  Draw a thicker selected arc and brighter origin/destination rings while fading other routes and markers. Avoid recoloring continents when switching destinations and reconcile changelog history.
 
 - **fix: soften shipment markers and zoom the globe on hover** (`de1890b`)
   Add lower-opacity rings with primary-to-secondary halos, smooth tile hover/focus zoom with reduced-motion support, and preserve batched rendering. Hide the preview destination caption and reconcile changelog history.
