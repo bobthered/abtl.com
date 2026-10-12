@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: d6b3de17d812805d8c3591017dab3105a27f6254 -->
+<!-- pending-base: 81f73bc68c9bfe4f92c3ebc9c1fe7bae842c7908 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: fit the shipping globe and smooth its animation
+fix: refine the close-up shipping globe artwork
 
-Fill the bento artwork container, fit the complete preview globe, batch routes and markers, and remove the frame-skipping limiter.
-Reduce pixel density, add responsive sizing coverage, hide shipping map overlays and notes, and reconcile changelog history.
+Match tile and dialog zoom while retaining a full-width canvas; remove latitude/longitude lines and render destinations as hollow rings.
+Generate ten times as many smaller, noise-offset continent dots, preserve batched rendering, add geometry coverage, and reconcile changelog history.
 ```
 
 ## 2026-10-12
+
+- **fix: fit the shipping globe and smooth its animation** (`81f73bc`)
+  Fill the tile canvas, fit the preview globe, batch routes and markers, remove the frame-skipping limiter, and reduce pixel density. Add responsive sizing coverage, hide shipping map overlays and notes, and reconcile changelog history.
 
 - **fix: keep shipment volumes private and clarify shipping visuals** (`d6b3de1`)
   Remove public order totals and volume-weighted effects, retain internal reference data server-side, export sanitized geography with privacy tests, zoom the globe, and darken light-mode state tiles. Repair the export command and document data privacy and changelog history.

@@ -1,13 +1,11 @@
 import shipmentPoints from '#lib/data/shipments/points.json';
 import * as THREE from 'three';
-import { globePosition } from './geometry';
-import land from './land.json';
+import { continentPoints, globePosition } from './geometry';
 import { shippingLocations, shippingOrigin } from './shippingLocations';
 
 export const createShippingGlobe = (
 	canvas: HTMLCanvasElement,
-	palette: () => { north: string; south: string; isDark: boolean },
-	isPreview = false
+	palette: () => { north: string; south: string; isDark: boolean }
 ) => {
 	const renderer = new THREE.WebGLRenderer({
 		canvas,
@@ -22,8 +20,8 @@ export const createShippingGlobe = (
 	globe.rotation.z = -0.12;
 	scene.add(globe);
 	const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 20);
-	camera.position.set(0, isPreview ? 0 : 0.45, 3.85);
-	camera.lookAt(0, isPreview ? 0 : 0.45, 0);
+	camera.position.set(0, 0.45, 3.85);
+	camera.lookAt(0, 0.45, 0);
 	camera.zoom = 2.1;
 	camera.updateProjectionMatrix();
 	const resources: Array<{ dispose: () => void }> = [];
@@ -44,40 +42,16 @@ export const createShippingGlobe = (
 	const material = keep(new THREE.MeshBasicMaterial({ colorWrite: false }));
 	globe.add(new THREE.Mesh(keep(new THREE.SphereGeometry(0.995, 48, 32)), material));
 	const geometry = keep(new THREE.BufferGeometry());
-	const positions = land.flatMap(([lat, lon]) => [...globePosition(lat, lon, 1.002)]);
+	const positions = continentPoints.flatMap(([lat, lon]) => [...globePosition(lat, lon, 1.002)]);
 	geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
 	geometry.setAttribute(
 		'color',
 		new THREE.Float32BufferAttribute(new Float32Array(positions.length), 3)
 	);
 	const dotMaterial = keep(
-		new THREE.PointsMaterial({ size: 0.017, vertexColors: true, sizeAttenuation: true })
+		new THREE.PointsMaterial({ size: 0.0017, vertexColors: true, sizeAttenuation: true })
 	);
 	globe.add(new THREE.Points(geometry, dotMaterial));
-	const gridMaterial = keep(new THREE.LineBasicMaterial({ transparent: true, opacity: 0.09 }));
-	const gridPositions: number[] = [];
-	const appendGrid = (points: THREE.Vector3[]) => {
-		for (let i = 1; i < points.length; i++) {
-			gridPositions.push(...points[i - 1].toArray(), ...points[i].toArray());
-		}
-	};
-	for (let latitude = -60; latitude <= 60; latitude += 30) {
-		const points = Array.from(
-			{ length: 145 },
-			(_, i) => new THREE.Vector3(...globePosition(latitude, i * 2.5, 1.001))
-		);
-		appendGrid(points);
-	}
-	for (let longitude = 0; longitude < 180; longitude += 30) {
-		const points = Array.from(
-			{ length: 145 },
-			(_, i) => new THREE.Vector3(...globePosition(i * 2.5, longitude, 1.001))
-		);
-		appendGrid(points);
-	}
-	const gridGeometry = keep(new THREE.BufferGeometry());
-	gridGeometry.setAttribute('position', new THREE.Float32BufferAttribute(gridPositions, 3));
-	globe.add(new THREE.LineSegments(gridGeometry, gridMaterial));
 	// Thousands of destinations share one draw call instead of individual meshes/arcs.
 	const destinationGeometry = keep(new THREE.BufferGeometry());
 	destinationGeometry.setAttribute(
@@ -106,13 +80,16 @@ export const createShippingGlobe = (
                 pointColor = color;
                 vec4 positionInView = modelViewMatrix * vec4(position, 1.0);
                 gl_Position = projectionMatrix * positionInView;
-                gl_PointSize = pixelRatio * 7.0 / -positionInView.z;
+                gl_PointSize = pixelRatio * max(6.0, 12.0 / -positionInView.z);
             }
         `,
 			fragmentShader: `
             varying vec3 pointColor;
             void main() {
-                float alpha = 1.0 - smoothstep(0.3, 0.5, length(gl_PointCoord - 0.5));
+                float radius = length(gl_PointCoord - 0.5);
+                float edge = clamp(fwidth(radius), 0.025, 0.08);
+                float alpha = smoothstep(0.28 - edge, 0.28 + edge, radius)
+                    * (1.0 - smoothstep(0.46 - edge, 0.46 + edge, radius));
                 if (alpha < 0.01) discard;
                 gl_FragColor = vec4(pointColor, alpha * 0.85);
                 #include <tonemapping_fragment>
@@ -162,16 +139,17 @@ export const createShippingGlobe = (
 			)
 		)
 	);
-	// All destination markers and traveling lights share geometry and material.
-	const markers = new THREE.InstancedMesh(
-		keep(new THREE.SphereGeometry(0.018, 8, 6)),
-		keep(new THREE.MeshBasicMaterial()),
-		routes.length * 2
-	);
-	markers.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+	// Featured destinations and traveling lights use the same hollow ring shader.
+	const markerGeometry = keep(new THREE.BufferGeometry());
+	const markerPositions = new THREE.Float32BufferAttribute(new Float32Array(routes.length * 6), 3);
+	markerPositions.setUsage(THREE.DynamicDrawUsage);
+	const markerColors = new THREE.Float32BufferAttribute(new Float32Array(routes.length * 6), 3);
+	markerGeometry.setAttribute('position', markerPositions);
+	markerGeometry.setAttribute('color', markerColors);
+	const markers = new THREE.Points(markerGeometry, destinationMaterial);
 	markers.frustumCulled = false;
 	globe.add(markers);
-	const markerTransform = new THREE.Object3D();
+	const movingPosition = new THREE.Vector3();
 	let activeId: string | undefined;
 	let frame = 0;
 	let isInView = false;
@@ -184,29 +162,34 @@ export const createShippingGlobe = (
 	const draw = () => renderer.render(scene, camera);
 	const updateMarkers = () => {
 		routes.forEach((route) => {
-			markerTransform.position.copy(route.destination);
-			markerTransform.scale.setScalar(1 + 0.12 * Math.sin(elapsed * 2 + route.index));
-			markerTransform.updateMatrix();
-			markers.setMatrixAt(route.index, markerTransform.matrix);
+			markerPositions.setXYZ(
+				route.index,
+				route.destination.x,
+				route.destination.y,
+				route.destination.z
+			);
 			const exact = ((elapsed * 0.11 + route.index / routes.length) % 1) * 80;
-			markerTransform.position
+			movingPosition
 				.copy(route.points[Math.floor(exact)])
 				.lerp(route.points[Math.min(80, Math.floor(exact) + 1)], exact % 1);
-			markerTransform.scale.setScalar(!activeId || activeId === route.location.id ? 0.6 : 0);
-			markerTransform.updateMatrix();
-			markers.setMatrixAt(route.index + routes.length, markerTransform.matrix);
+			// Hide inactive traveling lights behind the depth-only globe.
+			if (activeId && activeId !== route.location.id) movingPosition.set(0, 0, 0);
+			markerPositions.setXYZ(
+				route.index + routes.length,
+				movingPosition.x,
+				movingPosition.y,
+				movingPosition.z
+			);
 		});
-		markers.instanceMatrix.needsUpdate = true;
+		markerPositions.needsUpdate = true;
 	};
 	const recolor = () => {
 		const colors = palette();
 		north = readColor(colors.north);
 		south = readColor(colors.south);
-		gridMaterial.color.copy(north);
-		gridMaterial.opacity = colors.isDark ? 0.09 : 0.24;
-		dotMaterial.size = colors.isDark ? 0.017 : 0.023;
+		dotMaterial.size = colors.isDark ? 0.0017 : 0.0023;
 		const attribute = geometry.getAttribute('color');
-		land.forEach(([lat], i) => {
+		continentPoints.forEach(([lat], i) => {
 			const color = north.clone().lerp(south, (90 - lat) / 180);
 			attribute.setXYZ(i, color.r, color.g, color.b);
 		});
@@ -224,11 +207,11 @@ export const createShippingGlobe = (
 			for (let i = route.index * 160; i < (route.index + 1) * 160; i++) {
 				routeColors.setXYZW(i, color.r, color.g, color.b, opacity);
 			}
-			markers.setColorAt(route.index, color);
-			markers.setColorAt(route.index + routes.length, color);
+			markerColors.setXYZ(route.index, color.r, color.g, color.b);
+			markerColors.setXYZ(route.index + routes.length, color.r, color.g, color.b);
 		});
 		routeColors.needsUpdate = true;
-		if (markers.instanceColor) markers.instanceColor.needsUpdate = true;
+		markerColors.needsUpdate = true;
 		updateMarkers();
 		draw();
 	};
@@ -259,13 +242,6 @@ export const createShippingGlobe = (
 		if (!width || !height) return;
 		renderer.setSize(width, height, false);
 		camera.aspect = width / height;
-		if (isPreview) {
-			// Fit the complete sphere and raised arcs into either dimension of a rectangular tile.
-			const halfFov = THREE.MathUtils.degToRad(camera.fov / 2);
-			const limitingFov = Math.min(halfFov, Math.atan(Math.tan(halfFov) * camera.aspect));
-			camera.zoom = 1;
-			camera.position.z = 1.3 / Math.sin(limitingFov);
-		}
 		camera.updateProjectionMatrix();
 		draw();
 	});
@@ -319,7 +295,6 @@ export const createShippingGlobe = (
 			host.removeEventListener('focusout', leave);
 			document.removeEventListener('visibilitychange', updatePlayback);
 			motion.removeEventListener('change', updatePlayback);
-			markers.dispose();
 			resources.forEach((resource) => resource.dispose());
 			renderer.dispose();
 			renderer.forceContextLoss();

@@ -1,16 +1,6 @@
 <script lang="ts">
 	// Imports
-	import {
-		Canvas,
-		Circle,
-		Defs,
-		Div,
-		LinearGradient,
-		Path,
-		Span,
-		Stop,
-		Svg
-	} from '#lib/components';
+	import { Canvas, Defs, Div, LinearGradient, Path, Span, Stop, Svg } from '#lib/components';
 	import type { createShippingGlobe } from './renderer';
 	import { globeFallbackPath, shipmentFallbackPath } from './geometry';
 	import { onMount } from 'svelte';
@@ -19,11 +9,8 @@
 	const gradientId = $props.id();
 
 	// $props()
-	let {
-		activeLocationId,
-		class: className = '',
-		isPreview = false
-	}: { activeLocationId?: string; class?: string; isPreview?: boolean } = $props();
+	let { activeLocationId, class: className = '' }: { activeLocationId?: string; class?: string } =
+		$props();
 
 	// $state
 	let canvas = $state<HTMLCanvasElement | null>(null);
@@ -44,15 +31,11 @@
 				try {
 					const { createShippingGlobe } = await import('./renderer');
 					if (isDisposed) return;
-					const next = createShippingGlobe(
-						target,
-						() => ({
-							north: getComputedStyle(northElement!).color,
-							south: getComputedStyle(southElement!).color,
-							isDark: document.documentElement.dataset.theme === 'dark'
-						}),
-						isPreview
-					);
+					const next = createShippingGlobe(target, () => ({
+						north: getComputedStyle(northElement!).color,
+						south: getComputedStyle(southElement!).color,
+						isDark: document.documentElement.dataset.theme === 'dark'
+					}));
 					if (isDisposed) next.dispose();
 					else {
 						surface = next;
@@ -96,7 +79,7 @@
 	/>
 
 	<Svg
-		viewBox={isPreview ? '0 0 300 300' : '75 0 150 150'}
+		viewBox="75 0 150 150"
 		class={`absolute inset-0 h-full w-full ${isReady ? 'invisible' : ''}`}
 		aria-hidden="true"
 		focusable="false"
@@ -114,17 +97,10 @@
 				/></LinearGradient
 			></Defs
 		>
-		<Circle
-			cx="150"
-			cy="150"
-			r="125"
-			fill="none"
-			class="stroke-primary-300 stroke-1 dark:stroke-primary-900"
-		/>
 		<Path d={globeFallbackPath} fill={`url(#${gradientId})`} />
 		<Path
 			d={shipmentFallbackPath}
-			fill={`url(#${gradientId})`}
+			fill="none"
 			stroke={`url(#${gradientId})`}
 			stroke-width="1"
 			opacity="0.6"
