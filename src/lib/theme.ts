@@ -486,10 +486,11 @@ export const initializeTheme = () => {
 		'artworkGlow',
 		'pointer-events-none absolute inset-0 overflow-hidden mask-t-from-50% mask-t-to-95%'
 	);
+	// Size against the actual tile width, including randomized 1/3, 2/3 and full-width slots.
 	theme.set.variant(
 		'div',
 		'artworkOrb',
-		'absolute h-64 w-80 max-w-full rounded-full bg-radial to-transparent blur-2xl'
+		'absolute aspect-5/4 w-3/4 rounded-full bg-radial to-transparent blur-2xl'
 	);
 	theme.set.variant('div', 'artworkPrimary', 'from-primary-400/20 dark:from-primary-500/15');
 	theme.set.variant('div', 'artworkSecondary', 'from-secondary-400/20 dark:from-secondary-500/15');

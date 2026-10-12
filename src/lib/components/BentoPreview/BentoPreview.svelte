@@ -25,11 +25,15 @@
 		<Div variants={['artworkGlow']} data-artwork-glow>
 			<Div
 				variants={['artworkOrb', 'artworkPrimary']}
-				class={kind === 'weather' ? 'right-0 bottom-0' : 'bottom-0 left-0'}
+				class={kind === 'weather'
+					? 'top-2/3 right-0 -translate-y-1/2'
+					: 'top-2/3 left-0 -translate-y-1/2'}
 			/>
 			<Div
 				variants={['artworkOrb', 'artworkSecondary']}
-				class={kind === 'weather' ? 'top-1/3 left-0' : 'top-1/3 right-0'}
+				class={kind === 'weather'
+					? 'top-1/3 left-0 -translate-y-1/2'
+					: 'top-1/3 right-0 -translate-y-1/2'}
 			/>
 			{#if kind === 'process'}
 				<Div variants={['artworkOrb', 'artworkNeutral']} class="top-1/2 left-1/2 -translate-1/2" />

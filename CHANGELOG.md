@@ -6,16 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: fb264f333bc30b52c8867c1eb3ada8911ba6b453 -->
+<!-- pending-base: 69e04926f78a5fd30cce47dea823898fcd5430f5 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: soften bento artwork backdrops and improve light-mode contrast
+fix: scale bento gradient orbs with tile width
 
-Add subtle blurred gradient orbs with a top fade for shipping, synthetic-materials and printing previews, and remove the globe's solid fill.
-Strengthen light-mode globe and weather details and particle visibility, preserve dark-mode particle styling, and reconcile changelog history.
+Size backdrop orbs proportionally for one-third, two-thirds and full-width tiles while preserving their centers, subtle opacity and title fade.
+Reconcile changelog history.
 ```
+
+## 2026-10-12
+
+- **fix: soften bento artwork backdrops and improve light-mode contrast** (`69e0492`)
+  Add shared blurred gradient orbs with a top fade for shipping, synthetic-materials and printing previews. Remove the globe's solid fill, strengthen light-mode globe and weather details and particle visibility, retain dark-mode particle styling, and reconcile changelog history.
 
 ## 2026-10-11
 
