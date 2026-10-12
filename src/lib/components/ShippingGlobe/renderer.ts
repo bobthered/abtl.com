@@ -21,7 +21,10 @@ export const createShippingGlobe = (
 	globe.rotation.z = -0.12;
 	scene.add(globe);
 	const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 20);
-	camera.position.z = 3.85;
+	camera.position.set(0, 0.45, 3.85);
+	camera.lookAt(0, 0.45, 0);
+	camera.zoom = 2.1;
+	camera.updateProjectionMatrix();
 	const resources: Array<{ dispose: () => void }> = [];
 	const keep = <T extends { dispose: () => void }>(resource: T) => {
 		resources.push(resource);
@@ -80,13 +83,6 @@ export const createShippingGlobe = (
 		'color',
 		new THREE.Float32BufferAttribute(new Float32Array(shipmentPoints.length * 3), 3)
 	);
-	destinationGeometry.setAttribute(
-		'weight',
-		new THREE.Float32BufferAttribute(
-			shipmentPoints.map(([, , orders]) => 1 + Math.min(2, Math.log10(orders + 1) * 0.65)),
-			1
-		)
-	);
 	const destinationMaterial = keep(
 		new THREE.ShaderMaterial({
 			transparent: true,
@@ -94,14 +90,13 @@ export const createShippingGlobe = (
 			uniforms: { pixelRatio: { value: renderer.getPixelRatio() } },
 			vertexShader: `
             attribute vec3 color;
-            attribute float weight;
             uniform float pixelRatio;
             varying vec3 pointColor;
             void main() {
                 pointColor = color;
                 vec4 positionInView = modelViewMatrix * vec4(position, 1.0);
                 gl_Position = projectionMatrix * positionInView;
-                gl_PointSize = pixelRatio * weight * 7.0 / -positionInView.z;
+                gl_PointSize = pixelRatio * 7.0 / -positionInView.z;
             }
         `,
 			fragmentShader: `
@@ -146,8 +141,7 @@ export const createShippingGlobe = (
 		const light = new THREE.Mesh(markerGeometry, markerMaterial);
 		light.scale.setScalar(0.6);
 		globe.add(line, marker, light);
-		const weight = 1 + Math.min(0.8, Math.log10(location.orderCount + 1) * 0.2);
-		return { location, index, points, lineMaterial, markerMaterial, marker, light, weight };
+		return { location, index, points, lineMaterial, markerMaterial, marker, light };
 	});
 	let activeId: string | undefined;
 	let frame = 0;
@@ -201,12 +195,12 @@ export const createShippingGlobe = (
 			globe.rotation.y += (targetRotation - globe.rotation.y) * Math.min(1, delta * 3);
 		else globe.rotation.y += delta * (isHovered ? 0.14 : 0.045);
 		routes.forEach((route) => {
-			const progress = (elapsed * (0.08 + route.weight * 0.03) + route.index / routes.length) % 1;
+			const progress = (elapsed * 0.11 + route.index / routes.length) % 1;
 			const exact = progress * 80;
 			route.light.position
 				.copy(route.points[Math.floor(exact)])
 				.lerp(route.points[Math.min(80, Math.floor(exact) + 1)], exact % 1);
-			route.marker.scale.setScalar(route.weight * (1 + 0.12 * Math.sin(elapsed * 2 + route.index)));
+			route.marker.scale.setScalar(1 + 0.12 * Math.sin(elapsed * 2 + route.index));
 		});
 		draw();
 		frame = requestAnimationFrame(render);

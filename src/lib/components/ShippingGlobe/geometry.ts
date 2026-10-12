@@ -25,7 +25,7 @@ export const shipmentFallbackPath = shippingLocations
 	.flatMap((location) => {
 		const [x, y, z] = globePosition(location.latitude, location.longitude + 65);
 		if (z < 0) return [];
-		const radius = 1 + Math.min(2, Math.log10(location.orderCount + 1));
+		const radius = 1.5;
 		return [
 			`M${(150 + x * 126 - radius).toFixed(1)},${(150 - y * 126).toFixed(1)}a${radius},${radius} 0 1,0 ${radius * 2},0a${radius},${radius} 0 1,0 ${-radius * 2},0`
 		];

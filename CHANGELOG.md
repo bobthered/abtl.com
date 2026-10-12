@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 934fc607aca6633c3e27a3095add4704bd2786ef -->
+<!-- pending-base: 78ea175dead1deeb06cc9c8a9830d1b7306d76da -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: map actual order destinations in shipping visuals
+fix: keep shipment volumes private and clarify shipping visuals
 
-Import and reconcile shipments.csv, plot volume-weighted destinations with batched markers and bounded animated arcs, and replace demo destination controls and copy.
-Add a repeatable importer, address review, coordinate attribution, regression coverage and changelog history.
+Remove public order totals and volume-based effects; keep reference counts server-only and export sanitized geography with privacy regression coverage.
+Zoom the globe, darken light-mode state tiles, repair the export command, and update project guidance and changelog history.
 ```
 
 ## 2026-10-12
+
+- **feat: map actual order destinations in shipping visuals** (`78ea175`)
+  Import actual destination data, add batched volume-weighted markers and bounded animated connections, update international controls and copy, and add reconciliation and route regression coverage. Record coordinate sources and unresolved addresses.
 
 - **refactor: keep theme variants focused on shared styles** (`934fc60`)
   Move one-off layout, control and illustration styling into owning components; remove unused variants and rename shared selection and dialog-close styles. Document variant reuse requirements in AGENTS.md and reconcile changelog history.

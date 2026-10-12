@@ -71,9 +71,9 @@
 </script>
 
 <Div
-	class={`relative aspect-square w-full ${className}`}
+	class={`relative aspect-square w-full overflow-hidden ${className}`}
 	role="img"
-	aria-label="Shipping globe showing destinations from our order report"
+	aria-label="Shipping destinations around the world"
 	data-shipping-globe
 	data-globe-ready={isReady}
 >
@@ -89,7 +89,7 @@
 	/>
 
 	<Svg
-		viewBox="0 0 300 300"
+		viewBox="75 0 150 150"
 		class={`absolute inset-0 h-full w-full ${isReady ? 'invisible' : ''}`}
 		aria-hidden="true"
 		focusable="false"

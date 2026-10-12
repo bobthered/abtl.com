@@ -19,7 +19,6 @@
 	import { ArrowRight, Globe2, MapPin, PackageCheck } from '#lib/icons';
 	import {
 		internationalLocations,
-		shipmentSummary,
 		shippedStateCount,
 		stateRows
 	} from '../../../../../lib/components/ShippingGlobe/shippingLocations';
@@ -94,8 +93,8 @@
 										height="42"
 										rx="4"
 										class={y < 4
-											? 'fill-primary-100 stroke-primary-300 stroke-1 dark:fill-primary-900 dark:stroke-primary-700'
-											: 'fill-secondary-100 stroke-secondary-300 stroke-1 dark:fill-secondary-950 dark:stroke-secondary-700'}
+											? 'fill-primary-300 stroke-primary-400 stroke-1 dark:fill-primary-900 dark:stroke-primary-700'
+											: 'fill-secondary-300 stroke-secondary-400 stroke-1 dark:fill-secondary-950 dark:stroke-secondary-700'}
 									/>
 									<Text
 										x={x * 48 + 25}
@@ -109,8 +108,7 @@
 					{/each}
 				</Svg>
 				<P class="mt-5 text-sm text-gray-600 dark:text-gray-300"
-					>{shipmentSummary.orderCount.toLocaleString('en-US')} orders. All {shippedStateCount} states.
-					<Span class="mt-1 block">Based on the supplied order report.</Span></P
+					>Coast to coast, and beyond the lower 48.</P
 				>
 			</Div>
 		</Div>
@@ -129,10 +127,7 @@
 					><ShippingGlobe activeLocationId={selectedLocationId} /><Div
 						class="absolute right-6 bottom-6 left-6 rounded-sm bg-white/90 p-4 backdrop-blur-sm dark:bg-gray-950/90"
 						><P class="text-sm font-medium" aria-live="polite" data-shipping-destination
-							>{selectedLocation.countryName}
-							<Span class="ml-2 text-xs text-gray-500 dark:text-gray-400"
-								>{selectedLocation.countryOrderCount.toLocaleString('en-US')} orders in supplied report</Span
-							></P
+							>{selectedLocation.countryName}</P
 						></Div
 					></Div
 				></Div
@@ -164,8 +159,8 @@
 					{/each}
 				</Div>
 				<P class="mt-5 text-xs leading-relaxed text-gray-500 dark:text-gray-400"
-					>Based on {shipmentSummary.orderCount.toLocaleString('en-US')} orders in our supplied report.
-					Locations are approximate; arcs illustrate connections, not carrier routes or transit times.
+					>Locations are approximate; arcs illustrate connections, not carrier routes or transit
+					times.
 					<A href="https://www.geonames.org/" target="_blank" rel="noreferrer"
 						>Map coordinates: GeoNames</A
 					>.</P

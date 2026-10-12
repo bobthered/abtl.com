@@ -104,3 +104,4 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 - Company-facing content management and internal administration belong to a separate project.
 - Prioritize fast loading, responsive layouts, accessibility, and purposeful animation.
 - Do not invent product specifications, certifications, customer endorsements, or company claims.
+- Keep shipment/order volumes private, including overall and destination-specific totals. Store internal shipment counts and reconciliation data under `src/lib/server`; public geographic exports may include destinations and coordinates only. Do not disclose volumes in copy, browser-loaded data, public endpoints, or volume-based marker sizing/animation.

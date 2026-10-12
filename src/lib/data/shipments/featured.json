@@ -1,274 +1,238 @@
 {
 	"domestic": [
 		{
+			"country": "US",
 			"id": "US-HI-honolulu",
-			"name": "Honolulu, HI",
-			"country": "US",
-			"state": "HI",
-			"orderCount": 106,
 			"latitude": 21.3214,
-			"longitude": -157.8532
+			"longitude": -157.8532,
+			"name": "Honolulu, HI",
+			"state": "HI"
 		},
 		{
+			"country": "US",
 			"id": "US-WA-seattle",
-			"name": "Seattle, WA",
-			"country": "US",
-			"state": "WA",
-			"orderCount": 114,
 			"latitude": 47.5849,
-			"longitude": -122.3277
+			"longitude": -122.3277,
+			"name": "Seattle, WA",
+			"state": "WA"
 		},
 		{
+			"country": "US",
 			"id": "US-NV-las-vegas",
-			"name": "Las Vegas, NV",
-			"country": "US",
-			"state": "NV",
-			"orderCount": 465,
 			"latitude": 36.1212,
-			"longitude": -115.157
+			"longitude": -115.157,
+			"name": "Las Vegas, NV",
+			"state": "NV"
 		},
 		{
+			"country": "US",
 			"id": "US-AZ-tempe",
-			"name": "Tempe, AZ",
-			"country": "US",
-			"state": "AZ",
-			"orderCount": 82,
 			"latitude": 33.3844,
-			"longitude": -111.924
+			"longitude": -111.924,
+			"name": "Tempe, AZ",
+			"state": "AZ"
 		},
 		{
+			"country": "US",
 			"id": "US-CO-vail",
-			"name": "Vail, CO",
-			"country": "US",
-			"state": "CO",
-			"orderCount": 70,
 			"latitude": 39.6512,
-			"longitude": -106.3234
+			"longitude": -106.3234,
+			"name": "Vail, CO",
+			"state": "CO"
 		},
 		{
+			"country": "US",
 			"id": "US-ND-dickinson",
-			"name": "Dickinson, ND",
-			"country": "US",
-			"state": "ND",
-			"orderCount": 27,
 			"latitude": 46.8057,
-			"longitude": -102.7565
+			"longitude": -102.7565,
+			"name": "Dickinson, ND",
+			"state": "ND"
 		},
 		{
+			"country": "US",
 			"id": "US-OK-tulsa",
-			"name": "Tulsa, OK",
-			"country": "US",
-			"state": "OK",
-			"orderCount": 107,
 			"latitude": 36.149,
-			"longitude": -95.9473
+			"longitude": -95.9473,
+			"name": "Tulsa, OK",
+			"state": "OK"
 		},
 		{
+			"country": "US",
 			"id": "US-TX-beaumont",
-			"name": "Beaumont, TX",
-			"country": "US",
-			"state": "TX",
-			"orderCount": 300,
 			"latitude": 30.0752,
-			"longitude": -94.1174
+			"longitude": -94.1174,
+			"name": "Beaumont, TX",
+			"state": "TX"
 		},
 		{
+			"country": "US",
 			"id": "US-IA-grinnell",
-			"name": "Grinnell, IA",
-			"country": "US",
-			"state": "IA",
-			"orderCount": 38,
 			"latitude": 41.7421,
-			"longitude": -92.7344
+			"longitude": -92.7344,
+			"name": "Grinnell, IA",
+			"state": "IA"
 		},
 		{
+			"country": "US",
 			"id": "US-TN-memphis",
-			"name": "Memphis, TN",
-			"country": "US",
-			"state": "TN",
-			"orderCount": 92,
 			"latitude": 35.0927,
-			"longitude": -89.8853
+			"longitude": -89.8853,
+			"name": "Memphis, TN",
+			"state": "TN"
 		},
 		{
+			"country": "US",
 			"id": "US-WI-kenosha",
-			"name": "Kenosha, WI",
-			"country": "US",
-			"state": "WI",
-			"orderCount": 108,
 			"latitude": 42.6058,
-			"longitude": -87.8762
+			"longitude": -87.8762,
+			"name": "Kenosha, WI",
+			"state": "WI"
 		},
 		{
+			"country": "US",
 			"id": "US-KY-burlington",
-			"name": "Burlington, KY",
-			"country": "US",
-			"state": "KY",
-			"orderCount": 210,
 			"latitude": 39.015,
-			"longitude": -84.7736
+			"longitude": -84.7736,
+			"name": "Burlington, KY",
+			"state": "KY"
 		},
 		{
+			"country": "US",
 			"id": "US-MI-livonia",
-			"name": "Livonia, MI",
-			"country": "US",
-			"state": "MI",
-			"orderCount": 70,
 			"latitude": 42.3635,
-			"longitude": -83.3646
+			"longitude": -83.3646,
+			"name": "Livonia, MI",
+			"state": "MI"
 		},
 		{
+			"country": "US",
 			"id": "US-NC-charlotte",
-			"name": "Charlotte, NC",
-			"country": "US",
-			"state": "NC",
-			"orderCount": 179,
 			"latitude": 35.1758,
-			"longitude": -80.8991
+			"longitude": -80.8991,
+			"name": "Charlotte, NC",
+			"state": "NC"
 		},
 		{
+			"country": "US",
 			"id": "US-NY-rochester",
-			"name": "Rochester, NY",
-			"country": "US",
-			"state": "NY",
-			"orderCount": 505,
 			"latitude": 43.1217,
-			"longitude": -77.6541
+			"longitude": -77.6541,
+			"name": "Rochester, NY",
+			"state": "NY"
 		},
 		{
+			"country": "US",
 			"id": "US-VA-hampton",
-			"name": "Hampton, VA",
-			"country": "US",
-			"state": "VA",
-			"orderCount": 230,
 			"latitude": 37.0082,
-			"longitude": -76.3797
+			"longitude": -76.3797,
+			"name": "Hampton, VA",
+			"state": "VA"
 		},
 		{
+			"country": "US",
 			"id": "US-NJ-farmingdale",
-			"name": "Farmingdale, NJ",
-			"country": "US",
-			"state": "NJ",
-			"orderCount": 612,
 			"latitude": 40.2043,
-			"longitude": -74.1779
+			"longitude": -74.1779,
+			"name": "Farmingdale, NJ",
+			"state": "NJ"
 		},
 		{
+			"country": "US",
 			"id": "US-RI-cumberland",
-			"name": "Cumberland, RI",
-			"country": "US",
-			"state": "RI",
-			"orderCount": 121,
 			"latitude": 41.9484,
-			"longitude": -71.4154
+			"longitude": -71.4154,
+			"name": "Cumberland, RI",
+			"state": "RI"
 		},
 		{
-			"id": "US-MA-waltham",
-			"name": "Waltham, MA",
 			"country": "US",
-			"state": "MA",
-			"orderCount": 205,
+			"id": "US-MA-waltham",
 			"latitude": 42.3685,
-			"longitude": -71.2329
+			"longitude": -71.2329,
+			"name": "Waltham, MA",
+			"state": "MA"
 		},
 		{
-			"id": "VI-VI-saint-thomas",
-			"name": "Saint Thomas, VI, U.S. Virgin Islands",
 			"country": "VI",
-			"state": "VI",
-			"orderCount": 5,
+			"id": "VI-VI-saint-thomas",
 			"latitude": 18.3484,
-			"longitude": -64.974
+			"longitude": -64.974,
+			"name": "Saint Thomas, VI, U.S. Virgin Islands",
+			"state": "VI"
 		}
 	],
 	"international": [
 		{
-			"id": "BM--paget",
-			"name": "Paget, Bermuda",
 			"country": "BM",
-			"state": "",
-			"orderCount": 8,
+			"countryName": "Bermuda",
+			"id": "BM--paget",
 			"latitude": 32.2783,
 			"longitude": -64.7817,
-			"countryName": "Bermuda",
-			"countryOrderCount": 8
+			"name": "Paget, Bermuda",
+			"state": ""
 		},
 		{
-			"id": "CA-ON-st-catharines",
-			"name": "St Catharines, ON, Canada",
 			"country": "CA",
-			"state": "ON",
-			"orderCount": 12,
+			"countryName": "Canada",
+			"id": "CA-ON-st-catharines",
 			"latitude": 43.1735,
 			"longitude": -79.2496,
-			"countryName": "Canada",
-			"countryOrderCount": 145
+			"name": "St Catharines, ON, Canada",
+			"state": "ON"
 		},
 		{
-			"id": "CH--geneva",
-			"name": "Geneva, Switzerland",
 			"country": "CH",
-			"state": "",
-			"orderCount": 2,
+			"countryName": "Switzerland",
+			"id": "CH--geneva",
 			"latitude": 46.2107,
 			"longitude": 6.1469,
-			"countryName": "Switzerland",
-			"countryOrderCount": 2
+			"name": "Geneva, Switzerland",
+			"state": ""
 		},
 		{
-			"id": "HK--yuen-long",
-			"name": "Yuen Long, Hong Kong",
 			"country": "HK",
-			"state": "",
-			"orderCount": 3,
+			"countryName": "Hong Kong",
+			"id": "HK--yuen-long",
 			"latitude": 22.4333,
 			"longitude": 114.0333,
-			"countryName": "Hong Kong",
-			"countryOrderCount": 3
+			"name": "Yuen Long, Hong Kong",
+			"state": ""
 		},
 		{
-			"id": "KY--george-town",
-			"name": "George Town, Cayman Islands",
 			"country": "KY",
-			"state": "",
-			"orderCount": 4,
+			"countryName": "Cayman Islands",
+			"id": "KY--george-town",
 			"latitude": 19.2866,
 			"longitude": -81.3744,
-			"countryName": "Cayman Islands",
-			"countryOrderCount": 4
+			"name": "George Town, Cayman Islands",
+			"state": ""
 		},
 		{
-			"id": "NL--lelystad",
-			"name": "Lelystad, Netherlands",
 			"country": "NL",
-			"state": "",
-			"orderCount": 1,
+			"countryName": "Netherlands",
+			"id": "NL--lelystad",
 			"latitude": 52.5083,
 			"longitude": 5.475,
-			"countryName": "Netherlands",
-			"countryOrderCount": 1
+			"name": "Lelystad, Netherlands",
+			"state": ""
 		},
 		{
-			"id": "TC--providenciales",
-			"name": "Providenciales, Turks and Caicos Islands",
 			"country": "TC",
-			"state": "",
-			"orderCount": 1,
+			"countryName": "Turks and Caicos Islands",
+			"id": "TC--providenciales",
 			"latitude": 21.7825,
 			"longitude": -72.2521,
-			"countryName": "Turks and Caicos Islands",
-			"countryOrderCount": 1
+			"name": "Providenciales, Turks and Caicos Islands",
+			"state": ""
 		},
 		{
-			"id": "TT--port-of-spain",
-			"name": "Port Of Spain, Trinidad and Tobago",
 			"country": "TT",
-			"state": "",
-			"orderCount": 1,
+			"countryName": "Trinidad and Tobago",
+			"id": "TT--port-of-spain",
 			"latitude": 10.6667,
 			"longitude": -61.5189,
-			"countryName": "Trinidad and Tobago",
-			"countryOrderCount": 1
+			"name": "Port Of Spain, Trinidad and Tobago",
+			"state": ""
 		}
 	]
 }

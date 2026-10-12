@@ -365,7 +365,9 @@ test('shipping opens as a route-backed dialog, selects actual destinations, and 
 		'true'
 	);
 	await expect(dialog.locator('[data-shipping-destination]')).toContainText('Switzerland');
-	await expect(dialog.locator('[data-shipping-destination]')).toContainText('2 orders');
+	await expect(dialog.locator('[data-shipping-content]')).not.toContainText(
+		/\borders\b|supplied report|42,932/i
+	);
 	await expect(dialog.getByText('Locations are approximate;', { exact: false })).toBeVisible();
 	await page.keyboard.press('Escape');
 	await expect(page).toHaveURL(/\/$/);

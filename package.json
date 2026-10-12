@@ -17,7 +17,7 @@
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright install && playwright test",
 		"images:variable-data": "node scripts/build-variable-data.mjs",
-		"shipments:build": "python scripts/build-shipping-data.py && prettier --write src/lib/data/shipments/*.json"
+		"shipments:build": "node scripts/build-shipping-data.mjs && prettier --write src/lib/data/shipments/*.json"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
