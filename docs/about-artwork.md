@@ -13,11 +13,21 @@ Replace these files with approved photographs and update their alt text and the 
 - press-today-placeholder.webp: current production/team (currently used twice).
 - rural-landscape-placeholder.webp: actual Caledonia-area countryside.
 
-## Landscape scope
+## New York-focused land globe
 
-CaledoniaLandscape uses Sveltewind SVG primitives with a small deterministic contour model and an isometric projection. Rotation buttons work with keyboard and pointer input; gentle floating uses the existing reduced-motion/offscreen-aware attachment. No LayerChart or additional dependencies were installed.
+CaledoniaLandscape projects the Earth's land onto a sphere, zoomed to New York with Caledonia as its center. Approximately 16,000 New York points use primary; surrounding and worldwide land uses secondary. Six batched SVG paths separate colors and depth opacity. Offscreen points and the far hemisphere are culled. It uses our Sveltewind SVG primitives, with the shipping globe's primary-600/secondary-600 light palette and primary-400/secondary-400 dark palette. No additional dependencies or LayerChart.
 
-The terrain, roads and pin position are illustrative, not surveyed or geographically accurate. Do not present this as actual Caledonia elevation data. A future accurate version should substitute preprocessed public terrain and geographic coordinates for the procedural contour model, keeping the lightweight SVG renderer. The actual street address is separate, verified copy.
+Caledonia village center (-77.8528, 42.9731) is the projection/rotation origin and remains at the exact viewport center. This is the village location, not a surveyed facility location. Vertical elevation is exaggerated for legibility; geographic point positions have deterministic bounded jitter, not randomly invented terrain heights. The gentle float attachment respects reduced motion, page visibility and offscreen pausing.
+
+Regenerate with `node scripts/build-new-york-terrain.mjs`. Generation downloads data; runtime uses the checked-in local JSON and makes no map-service requests. The generator clips state boundaries against land and lakes, samples zoom-8 Terrarium tiles, and validates count and high-elevation coverage before writing. Elevation is sampled at raster resolution rather than a ground survey. Circles are batched into six color/depth paths; there is no animation-frame geometry rebuild or WebGL context. Camera scale fits all New York points on each rotation while preserving Caledonia's centered location. Surrounding regional elevation is sampled over longitude -85 to -68, latitude 38 to 48; distant worldwide land uses the sea-level sphere, not fabricated elevation. Worldwide coarse samples reuse the shipping globe's local Natural Earth land asset with deterministic jitter.
+
+Sources accessed 2026-10-13:
+
+- [New York State GIS civil boundaries](https://gis.ny.gov/civil-boundaries), generalized at 0.005 degrees through the public FeatureServer.
+- [Mapzen Terrain Tiles on AWS](https://registry.opendata.aws/terrain-tiles/), USGS elevation data. [Encoding](https://github.com/tilezen/joerd/blob/master/docs/formats.md): elevation in meters = R * 256 + G + B / 256 - 32768.
+- [Terrain attribution](https://github.com/tilezen/joerd/blob/master/docs/attribution.md): USGS 3DEP and global GMTED2010/SRTM data courtesy of the U.S. Geological Survey. Heights are modified only by visual exaggeration in the renderer.
+- [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/) public-domain 1:10m land and lake masks.
+- [GeoNames Caledonia](https://www.geonames.org/5111073/caledonia.html), village coordinates, [CC BY 4.0](https://www.geonames.org/about.html).
 
 ## Generation prompt
 

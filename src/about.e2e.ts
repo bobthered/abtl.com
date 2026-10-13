@@ -51,15 +51,20 @@ test('about story remains readable without JavaScript', async ({ browser, baseUR
 test('about landscape rotates and placeholder photography is explicit', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/about');
-	const landscape = page.getByRole('img', { name: /Illustrative isometric landscape/ });
+	const landscape = page.getByRole('img', { name: /Three-dimensional land globe/ });
 	const pin = landscape.locator('g');
 	const initial = await pin.getAttribute('transform');
+	await expect(landscape.locator('[data-terrain-region=world]')).toHaveCount(3);
+	await expect(landscape.locator('[data-terrain-region=new-york]')).toHaveCount(3);
+	const dots = landscape.locator('[data-terrain-region=new-york]').last();
+	const initialPoints = await dots.getAttribute('d');
 	// Wait for client enhancement before exercising the SSR-rendered controls.
 	await page.waitForFunction(() =>
 		document.getAnimations().some((animation) => animation.id === 'illustration-float')
 	);
 	await page.getByRole('button', { name: 'Rotate landscape right' }).click();
-	await expect(pin).not.toHaveAttribute('transform', initial!);
+	await expect(dots).not.toHaveAttribute('d', initialPoints!);
+	await expect(pin).toHaveAttribute('transform', initial!);
 	await page.getByRole('button', { name: 'Rotate landscape left' }).click();
 	await expect(pin).toHaveAttribute('transform', initial!);
 	await expect(page.locator('main img')).toHaveCount(7);

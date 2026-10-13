@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 7499a1f6c1fdf13cd26f59e15a76dc3599a9cce4 -->
+<!-- pending-base: f24e4cae34a95f4e0c487c65f7fd305e592a1080 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: expand the About page with Caledonia roots and company milestones
+feat: add a New York-focused land globe to the About page
 
-Build seven story sections with a rotating SVG landscape, a four-part timeline, rural setting, manufacturing capabilities, market applications, and contact links.
-Add labeled generated photo placeholders and replacement notes, extend responsive and landscape interaction coverage, and reconcile the changelog.
+Render a spherical land point map centered on Caledonia and framed to New York, using primary for New York and secondary for the world. Include real regional elevation, noisy points, fitted rotation controls, and efficient SVG batching.
+Add a reproducible local terrain generator, source attribution, updated interaction coverage and artwork notes, and reconcile the changelog.
 ```
 
 ## 2026-10-13
+
+- **feat: expand the About page with Caledonia roots and company milestones** (`f24e4ca`)
+  Build seven story sections, rotating illustrative landscape, four-part timeline, rural setting, capabilities, applications and contact links. Add six labeled generated photo placeholders and replacement notes; extend responsive, no-JavaScript and map interaction coverage.
 
 - **feat: tell Allen-Bailey's story on a dedicated about page** (`7499a1f`)
   Replace the generic About template with researched company history, Caledonia roots, market applications, manufacturing details, and a branded floating-tag illustration. Record primary sources, preserve approved metrics, and add responsive and no-JavaScript coverage.
