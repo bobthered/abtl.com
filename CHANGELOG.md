@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 9eac8c9b632b432cdab485241581eef3a3dd1bff -->
+<!-- pending-base: 7499a1f6c1fdf13cd26f59e15a76dc3599a9cce4 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: tell Allen-Bailey's story on a dedicated about page
+feat: expand the About page with Caledonia roots and company milestones
 
-Replace the generic About template with researched company history, Caledonia roots, market applications, manufacturing details, and a branded floating-tag illustration.
-Record primary sources, preserve approved production and shipping-reach metrics, remove obsolete About copy, add responsive and no-JavaScript coverage, and reconcile changelog history.
+Build seven story sections with a rotating SVG landscape, a four-part timeline, rural setting, manufacturing capabilities, market applications, and contact links.
+Add labeled generated photo placeholders and replacement notes, extend responsive and landscape interaction coverage, and reconcile the changelog.
 ```
 
 ## 2026-10-13
+
+- **feat: tell Allen-Bailey's story on a dedicated about page** (`7499a1f`)
+  Replace the generic About template with researched company history, Caledonia roots, market applications, manufacturing details, and a branded floating-tag illustration. Record primary sources, preserve approved metrics, and add responsive and no-JavaScript coverage.
 
 - **refactor: alphabetize grouped site navigation** (`9eac8c9`)
   Sort submenu sections before direct links, alphabetically within each group. Include Contact in sorted mobile and footer links while retaining its desktop placement, update directional navigation coverage, and reconcile changelog history.

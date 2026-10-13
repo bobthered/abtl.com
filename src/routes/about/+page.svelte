@@ -1,47 +1,36 @@
 <script lang="ts">
 	// Imports
-	import {
-		A,
-		Card,
-		Container,
-		Div,
-		H1,
-		H2,
-		H3,
-		Logo,
-		Main,
-		P,
-		Section,
-		Span,
-		StockTag
-	} from '#lib/components';
+	import { A, Br, Container, Div, H1, H2, H3, Main, P, Section, Span } from '#lib/components';
 	import { applications, milestones, processSteps } from './_data/about.js';
-	import { ArrowRight, Factory, Flame, MapPin, Store } from '#lib/icons';
-	import { floatIllustration } from '#lib/attachments';
+	import { ArrowRight, MapPin } from '#lib/icons';
+	import CaledoniaLandscape from './_components/CaledoniaLandscape.svelte';
+	import StoryPhoto from './_components/StoryPhoto.svelte';
 </script>
 
 <svelte:head>
 	<meta
 		name="description"
-		content="Get to know Allen-Bailey Tag & Label: tag and label manufacturing since 1911, based in Caledonia, New York. Quality driven. Customer focused."
+		content="Small-town roots. Far-reaching possibilities. Meet Allen-Bailey Tag & Label: manufacturing since 1911, at home in Caledonia, New York, and serving customers across all 50 states and internationally."
 	/>
 </svelte:head>
 <Main id="main-content" tabindex={-1}>
 	<Section variants={['surface']}>
 		<Container variants={['section']}>
-			<Div class="grid items-center gap-4 lg:grid-cols-2">
-				<Div class="py-8 lg:pr-10">
+			<Div class="grid items-end gap-4 lg:grid-cols-3">
+				<Div class="py-8 lg:col-span-2 lg:pr-12">
 					<P variants={['eyebrow']} class="text-primary-600 dark:text-primary-300">
-						Allen-Bailey Tag & Label / Since 1911
+						Caledonia, New York / Since 1911
 					</P>
-					<H1 class="max-w-3xl text-5xl sm:text-6xl lg:text-7xl">Made to carry what matters.</H1>
-					<P variants={['description']}>
-						An inspection record. A product identity. The next step in a working day. Our tags and
-						labels carry the information businesses depend on.
-					</P>
-					<P class="max-w-xl text-lg text-gray-600 dark:text-gray-300">
-						We are Allen-Bailey Tag & Label. Based in Caledonia, New York, we have been making our
-						mark for more than a century.
+					<H1 class="max-w-4xl text-5xl sm:text-6xl lg:text-7xl">
+						Small-town roots.
+						<Br />
+						Far-reaching possibilities.
+					</H1>
+				</Div>
+				<Div class="pb-8">
+					<P class="text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+						A village in western New York. More than a century of making. Tags and labels that find
+						their way into working days across the country and around the world.
 					</P>
 					<Div class="mt-8 flex flex-wrap gap-4">
 						<A href="/contact" variants={['button.base']}>
@@ -52,43 +41,15 @@
 						</A>
 					</Div>
 				</Div>
-				<Div
-					variants={['illustration']}
-					class="flex min-h-112 items-center justify-center p-10 sm:min-h-136"
-					aria-hidden="true"
-				>
-					<Div
-						{@attach floatIllustration}
-						class="relative flex w-full items-center justify-center py-8"
-					>
-						<StockTag
-							class="absolute left-0 w-36 -rotate-12 text-primary-200 sm:left-8 sm:w-44 dark:text-primary-700"
-						/>
-						<StockTag
-							class="absolute right-0 w-36 rotate-12 text-secondary-200 sm:right-8 sm:w-44 dark:text-secondary-700"
-						/>
-						<Div class="relative w-48 rotate-3 sm:w-56">
-							<StockTag class="text-white" />
-							<Div
-								class="absolute inset-x-8 top-16 bottom-8 flex flex-col items-start justify-between text-gray-950"
-							>
-								<Logo class="w-24" />
-								<Div>
-									<Span class="text-xs font-semibold tracking-widest uppercase">
-										Making our mark since
-									</Span>
-									<Span class="block text-5xl font-light tracking-tight sm:text-6xl">1911</Span>
-								</Div>
-								<Span class="border-t border-gray-200 pt-4 text-xs font-medium">
-									Caledonia, New York
-								</Span>
-							</Div>
-						</Div>
-					</Div>
-				</Div>
 			</Div>
+			<StoryPhoto
+				src="/images/about/rural-factory-placeholder.webp"
+				alt="Generated placeholder: an imagined rural manufacturing facility surrounded by fields and trees; not the actual Allen-Bailey facility"
+				isPriority
+				class="mt-8 h-80 sm:h-112 lg:h-136"
+			/>
 			<Div
-				class="mt-16 grid gap-4 border-t border-gray-200 pt-8 sm:grid-cols-3 dark:border-gray-800"
+				class="mt-12 grid gap-4 border-t border-gray-200 pt-8 sm:grid-cols-3 dark:border-gray-800"
 				aria-label="Allen-Bailey at a glance"
 			>
 				<Div>
@@ -116,134 +77,202 @@
 			</Div>
 		</Container>
 	</Section>
-	<Section variants={['surfaceAlternate']} id="our-story" class="scroll-mt-36">
+
+	<Section variants={['surfaceAlternate']}>
 		<Container variants={['section']}>
-			<Div class="grid gap-4 lg:grid-cols-2">
-				<Div>
-					<P variants={['eyebrow']} class="text-primary-600 dark:text-primary-300">Our story</P><H2
-						variants={['section']}
-						class="max-w-xl"
-					>
-						A long history. A clear purpose.
-					</H2>
-				</Div>
-				<P class="max-w-xl text-lg leading-relaxed text-gray-600 dark:text-gray-300">
-					The applications have expanded. The ways we print have evolved. What a tag needs to do is
-					still wonderfully direct: keep the right information with the right thing.
-				</P>
-			</Div>
-			<Div class="mt-12 grid gap-4 lg:grid-cols-3">
-				{#each milestones as milestone (milestone.year)}
-					<Div class="border-t border-gray-200 pt-6 dark:border-gray-700">
-						<P
-							class="mb-8 text-5xl font-light tracking-tight text-primary-600 dark:text-primary-300"
-						>
-							{milestone.year}
-						</P>
-						<H3 class="text-2xl">{milestone.title}</H3>
-						<P class="mt-4 max-w-md leading-relaxed text-gray-600 dark:text-gray-300">
-							{milestone.description}
+			<Div class="grid items-center gap-4 lg:grid-cols-3">
+				<Div class="py-6 lg:pr-10">
+					<P variants={['eyebrow']} class="text-primary-600 dark:text-primary-300">
+						A sense of place
+					</P>
+					<H2 variants={['section']}>This is where we make our mark.</H2>
+					<P class="mt-6 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+						Caledonia is more than an address on a shipping label. It is the place we call home, and
+						the place your next tag or label begins.
+					</P>
+					<P class="mt-4 leading-relaxed text-gray-600 dark:text-gray-300">
+						Our rural setting is part of our story. Our customers give that story its reach.
+					</P>
+					<Div class="mt-8 flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
+						<MapPin class="size-5 shrink-0" aria-hidden="true" /><P>
+							3177 Lehigh Street
+							<Br />
+							Caledonia, NY 14423
 						</P>
 					</Div>
-				{/each}
-			</Div>
-			<Div class="mt-12 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-				<MapPin class="size-4 shrink-0" aria-hidden="true" /><P>
-					3177 Lehigh Street, Caledonia, NY 14423
-				</P>
+				</Div>
+				<Div class="min-w-0 lg:col-span-2"><CaledoniaLandscape /></Div>
 			</Div>
 		</Container>
 	</Section>
+
+	<Section variants={['surface']} id="our-story" class="scroll-mt-36">
+		<Container variants={['section']}>
+			<Div class="grid items-end gap-4 lg:grid-cols-2">
+				<Div>
+					<P variants={['eyebrow']} class="text-primary-600 dark:text-primary-300">
+						Our story, still unfolding
+					</P><H2 variants={['section']} class="max-w-2xl">More than a century in the making.</H2>
+				</Div>
+				<P class="max-w-xl text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+					Methods evolve. Applications change. The purpose carries on: keeping the right information
+					with the right thing. Since 1911, Allen-Bailey has been part of that everyday work.
+				</P>
+			</Div>
+			<Div class="mt-12 grid gap-4 md:grid-cols-2">
+				{#each milestones as milestone (milestone.year)}
+					<Div class="overflow-hidden rounded-sm bg-white dark:bg-gray-900">
+						<StoryPhoto src={milestone.image} alt={milestone.alt} class="h-64 sm:h-80" />
+						<Div class="p-6 sm:p-8">
+							<P
+								class="mb-4 text-4xl font-light tracking-tight text-primary-600 dark:text-primary-300"
+							>
+								{milestone.year}
+							</P>
+							<H3 class="text-2xl">{milestone.title}</H3>
+							<P class="mt-4 max-w-xl leading-relaxed text-gray-600 dark:text-gray-300">
+								{milestone.description}
+							</P>
+						</Div>
+					</Div>
+				{/each}
+			</Div>
+		</Container>
+	</Section>
+
+	<Section variants={['surfaceAlternate']}>
+		<Container variants={['section']}>
+			<Div class="grid items-center gap-4 lg:grid-cols-5">
+				<StoryPhoto
+					src="/images/about/rural-landscape-placeholder.webp"
+					alt="Generated placeholder: an imagined western New York rural landscape with fields, tree lines and a country road"
+					class="h-96 lg:col-span-3 lg:h-136"
+				/>
+				<Div class="py-8 lg:col-span-2 lg:pl-12">
+					<P variants={['eyebrow']} class="text-primary-600 dark:text-primary-300">
+						Room to think bigger
+					</P>
+					<H2 variants={['section']}>A small-town address. An expansive outlook.</H2>
+					<P class="mt-6 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+						You do not have to be in a big city to be part of something big. From Caledonia, our
+						tags and labels reach all 50 states and international destinations.
+					</P>
+					<P class="mt-4 leading-relaxed text-gray-600 dark:text-gray-300">
+						Whether your business is close to home or far beyond it, the starting point is the same:
+						what do you need your tag or label to do?
+					</P>
+					<A
+						href="/about/shipping"
+						variants={['button.base', 'button.variant.neutral-outline']}
+						class="mt-8"
+					>
+						See how far we go<ArrowRight class="size-4" aria-hidden="true" />
+					</A>
+				</Div>
+			</Div>
+		</Container>
+	</Section>
+
 	<Section variants={['surface']}>
+		<Container variants={['section']}>
+			<Div class="grid items-center gap-4 lg:grid-cols-2">
+				<Div class="py-8 lg:pr-16">
+					<P variants={['eyebrow']} class="text-primary-600 dark:text-primary-300">
+						Experience that keeps moving
+					</P>
+					<H2 variants={['section']}>Rooted here. Ready for what is next.</H2>
+					<P class="mt-6 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+						A long history matters most when it helps with the work ahead. Full-color printing.
+						Variable data. Synthetic materials. Inventory held for later release. More ways to make
+						a tag or label work for your business.
+					</P>
+					<P class="mt-4 leading-relaxed text-gray-600 dark:text-gray-300">
+						An established customer with a new challenge, or a new customer with a first idea: there
+						is room for your next chapter in our story.
+					</P>
+					<A href="/capabilities" variants={['button.base']} class="mt-8">
+						Explore what is possible<ArrowRight class="size-4" aria-hidden="true" />
+					</A>
+				</Div>
+				<StoryPhoto
+					src="/images/about/press-today-placeholder.webp"
+					alt="Generated placeholder: a modern printing press and paper web, not actual Allen-Bailey machinery"
+					class="h-96 lg:h-136"
+				/>
+			</Div>
+			<Div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+				{#each processSteps as step, index (step.title)}
+					<Div class="border-t border-gray-200 pt-6 dark:border-gray-800">
+						<Span class="mb-6 block text-sm font-semibold text-primary-600 dark:text-primary-300">
+							0{index + 1}
+						</Span>
+						<H3 class="text-2xl">{step.title}</H3><P
+							class="mt-4 mb-6 leading-relaxed text-gray-600 dark:text-gray-300"
+						>
+							{step.description}
+						</P>
+						<A
+							href={step.href}
+							variants={['ghost', 'accent']}
+							class="inline-flex items-center gap-2 px-0"
+						>
+							{step.label}<ArrowRight class="size-4 shrink-0" aria-hidden="true" />
+						</A>
+					</Div>
+				{/each}
+			</Div>
+		</Container>
+	</Section>
+
+	<Section variants={['surfaceAlternate']}>
 		<Container variants={['section']}>
 			<Div class="max-w-3xl">
 				<P variants={['eyebrow']} class="text-primary-600 dark:text-primary-300">
 					The work behind the work
-				</P><H2 variants={['section']}>A tag can be part of something much bigger.</H2><P
+				</P><H2 variants={['section']}>Made here. At work everywhere.</H2><P
 					class="mt-6 text-lg text-gray-600 dark:text-gray-300"
 				>
-					Our work reaches industrial and agricultural businesses, fire-service teams, and the
-					retail, hospitality, and service markets. Different settings. Different information. A
-					shared need for identification that works.
+					A service record on equipment. An identity on a product. Information that stays with
+					materials in the field. Different businesses, connected by a need to make every detail
+					count.
 				</P>
 			</Div>
-			<Div class="mt-10 grid gap-4 lg:grid-cols-3">
+			<Div class="mt-12 grid gap-4 lg:grid-cols-3">
 				{#each applications as application (application.title)}
-					<Card class="flex flex-col shadow-none" variants={['neutral']}>
-						{#if application.icon === 'fire'}<Flame
-								class="mb-8 size-8 text-primary-600 dark:text-primary-300"
-								aria-hidden="true"
-							/>{:else if application.icon === 'industry'}<Factory
-								class="mb-8 size-8 text-primary-600 dark:text-primary-300"
-								aria-hidden="true"
-							/>{:else}<Store
-								class="mb-8 size-8 text-primary-600 dark:text-primary-300"
-								aria-hidden="true"
-							/>{/if}
+					<Div class="flex flex-col rounded-sm bg-gray-50 p-6 sm:p-8 dark:bg-gray-950">
 						<H3 class="text-2xl">{application.title}</H3><P
 							class="mt-4 mb-8 leading-relaxed text-gray-600 dark:text-gray-300"
 						>
 							{application.description}
-						</P><A
+						</P>
+						<A
 							href={application.href}
 							variants={['ghost', 'accent']}
 							class="mt-auto inline-flex items-center gap-2 self-start px-0"
 						>
 							Explore the application<ArrowRight class="size-4" aria-hidden="true" />
 						</A>
-					</Card>
+					</Div>
 				{/each}
 			</Div>
 		</Container>
 	</Section>
-	<Section variants={['surfaceAlternate']}>
-		<Container variants={['section']}>
-			<Div class="grid gap-4 lg:grid-cols-3">
-				<Div class="lg:pr-12">
-					<P variants={['eyebrow']} class="text-primary-600 dark:text-primary-300">
-						Built one detail at a time
-					</P><H2 variants={['section']}>From a roll of stock to a ready-to-work tag.</H2><P
-						class="mt-6 leading-relaxed text-gray-600 dark:text-gray-300"
-					>
-						The finished piece is the result of a sequence of decisions. Material, ink, patch, cut,
-						and attachment all play a part.
-					</P>
-				</Div>
-				<Div class="grid gap-4 sm:grid-cols-2 lg:col-span-2">
-					{#each processSteps as step, index (step.title)}
-						<Div class="rounded-sm bg-gray-50 p-6 dark:bg-gray-950">
-							<Span class="mb-6 block text-sm font-semibold text-primary-600 dark:text-primary-300">
-								0{index + 1}
-							</Span><H3 class="text-2xl">{step.title}</H3><P
-								class="mt-4 mb-6 leading-relaxed text-gray-600 dark:text-gray-300"
-							>
-								{step.description}
-							</P><A
-								href={step.href}
-								variants={['ghost', 'accent']}
-								class="inline-flex items-center gap-2 px-0"
-							>
-								{step.label}<ArrowRight class="size-4" aria-hidden="true" />
-							</A>
-						</Div>
-					{/each}
-				</Div>
-			</Div>
-		</Container>
-	</Section>
+
 	<Section variants={['sampleInvitation']}>
 		<Container class="flex flex-col items-center gap-4 text-center">
 			<P variants={['eyebrow']} class="text-gray-50 dark:text-gray-950">
-				Quality driven. Customer focused.
-			</P><H2 class="max-w-3xl text-4xl sm:text-5xl">
-				Our next chapter starts with what you need.
-			</H2><P class="max-w-2xl text-lg text-gray-300 dark:text-gray-700">
-				An existing product to improve. A new application to figure out. A supply plan that needs to
-				work harder. Bring us the details, and let us help you make your mark.
-			</P><Div class="mt-6 flex flex-wrap justify-center gap-4">
+				More than a century behind us. Your next idea ahead.
+			</P>
+			<H2 class="max-w-3xl text-4xl sm:text-5xl">Let us make your next chapter.</H2>
+			<P class="max-w-2xl text-lg text-gray-300 dark:text-gray-700">
+				Bring us the application, the challenge, or the idea you have been turning over. We will
+				help you find the next step.
+			</P>
+			<Div class="mt-6 flex flex-wrap justify-center gap-4">
 				<A href="/contact" variants={['button.base', 'button.variant.large']}>
 					Start a conversation<ArrowRight class="size-5" aria-hidden="true" />
-				</A><A
+				</A>
+				<A
 					href="/careers"
 					variants={['button.base', 'button.variant.neutral-outline', 'button.variant.large']}
 				>

@@ -35,19 +35,33 @@ export const milestones = [
 		year: '1911',
 		title: 'A company takes shape.',
 		description:
-			'Allen-Bailey begins a story in tag and label manufacturing that now spans more than a century.'
+			'Allen-Bailey begins a story in tag and label manufacturing that now spans more than a century.',
+		image: '/images/about/workshop-1911-placeholder.webp',
+		alt: 'Generated historical placeholder: an imagined early printing workshop, not an archival Allen-Bailey photograph'
+	},
+	{
+		year: '2011',
+		title: 'A century of making our mark.',
+		description:
+			'One hundred years after 1911: a milestone in a continuing manufacturing story. A moment to look back, and keep looking forward.',
+		image: '/images/about/centenary-2011-placeholder.webp',
+		alt: 'Generated anniversary placeholder: an imagined workplace celebration, not a record of an actual Allen-Bailey anniversary event'
 	},
 	{
 		year: '2018',
 		title: 'A new chapter with Ennis.',
 		description:
-			'Allen-Bailey joins the Ennis family of print businesses, bringing its tag and label expertise to a broader manufacturing network.'
+			'On April 30, Allen-Bailey joins the Ennis family of print businesses, bringing its tag and label expertise to a broader manufacturing network.',
+		image: '/images/about/ennis-2018-placeholder.webp',
+		alt: 'Generated placeholder: an imagined industrial building, not the actual facility or acquisition event'
 	},
 	{
 		year: 'Today',
 		title: 'The next mark is yours.',
 		description:
-			'From our home in Caledonia, New York, we produce stock and custom tags and labels for the way businesses identify, organize, and communicate.'
+			'From our home in Caledonia, New York, we produce stock and custom tags and labels for the way businesses identify, organize, and communicate.',
+		image: '/images/about/press-today-placeholder.webp',
+		alt: 'Generated placeholder: a modern printing press, not actual Allen-Bailey equipment'
 	}
 ] as const;
 
