@@ -5,7 +5,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
 		await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' });
 		for (const width of [1440, 390]) {
 			await page.setViewportSize({ width, height: 1000 });
-			const response = await page.goto('/about');
+			const response = width === 1440 ? await page.goto('/about') : await page.reload();
 			expect(response?.status()).toBe(200);
 			await expect(page).toHaveTitle('About | Allen-Bailey Tag & Label');
 			await expect(page.locator('html')).toHaveAttribute('data-theme', colorScheme);
@@ -57,11 +57,11 @@ test('about landscape fades without controls and placeholder photography is expl
 	await expect(landscape.locator('[data-terrain-region=world]').first()).toBeAttached();
 	await expect(landscape.locator('[data-terrain-region=new-york]').first()).toBeAttached();
 	await expect(page.getByRole('group', { name: 'Rotate landscape' })).toHaveCount(0);
-	const opacities = await landscape
-		.locator('[data-terrain-points]')
-		.evaluateAll((paths) => paths.map((path) => Number(path.getAttribute('opacity'))));
-	expect(Math.min(...opacities)).toBeLessThan(0.05);
-	expect(Math.max(...opacities)).toBeGreaterThan(0.8);
+	for (const name of ['world', 'new-york']) {
+		const response = await page.request.get(`/images/about/terrain-${name}.svg`);
+		expect(response.ok()).toBe(true);
+		expect(await response.text()).toContain('opacity="0.');
+	}
 	await expect(page.locator('main img')).toHaveCount(7);
 	for (const photo of await page.locator('main img').all()) {
 		await photo.scrollIntoViewIfNeeded();
@@ -73,4 +73,16 @@ test('about landscape fades without controls and placeholder photography is expl
 			.toBe(true);
 	}
 	await expect(page.locator('main')).toContainText('2011');
+});
+test('About SSR stays small across repeated requests', async ({ request }) => {
+	for (let index = 0; index < 20; index++) {
+		const response = await request.get('/about');
+		expect(response.ok()).toBe(true);
+		const html = await response.text();
+		// Terrain geometry must remain external, rather than allocating megabyte SSR strings.
+		expect(Buffer.byteLength(html)).toBeLessThan(500000);
+		expect(html).toContain('/images/about/terrain-world.svg');
+		expect(html).not.toContain('new-york-terrain.json');
+		await response.dispose();
+	}
 });

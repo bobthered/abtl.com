@@ -1,11 +1,23 @@
 <script lang="ts">
 	// Imports
-	import { A, Br, Circle, Div, G, Path, Svg, Text } from '#lib/components';
+	import {
+		A,
+		Br,
+		Circle,
+		Defs,
+		Div,
+		G,
+		Mask,
+		Path,
+		Rect,
+		Svg,
+		SvgImage,
+		Text
+	} from '#lib/components';
 	import { floatIllustration } from '#lib/attachments';
-	import { terrainPaths } from './terrain.js';
 
 	// consts
-	const layers = terrainPaths(-18);
+	const maskId = $props.id();
 </script>
 
 <Div variants={['illustration']} class="relative overflow-hidden py-6 sm:py-8">
@@ -16,17 +28,42 @@
 			role="img"
 			aria-label="Three-dimensional land globe centered on Caledonia and zoomed to New York State"
 		>
-			{#each layers as layer, index (index)}
-				<Path
-					d={layer.path}
-					class={!layer.isNewYork
-						? 'fill-secondary-600 dark:fill-secondary-400'
-						: 'fill-primary-600 dark:fill-primary-400'}
-					data-terrain-region={layer.isNewYork ? 'new-york' : 'world'}
-					opacity={layer.opacity}
-					data-terrain-points
-				/>
-			{/each}
+			<Defs>
+				<Mask
+					id={`${maskId}-world`}
+					x="0"
+					y="0"
+					width="720"
+					height="520"
+					maskUnits="userSpaceOnUse"
+				>
+					<SvgImage href="/images/about/terrain-world.svg" width="720" height="520" />
+				</Mask>
+				<Mask
+					id={`${maskId}-new-york`}
+					x="0"
+					y="0"
+					width="720"
+					height="520"
+					maskUnits="userSpaceOnUse"
+				>
+					<SvgImage href="/images/about/terrain-new-york.svg" width="720" height="520" />
+				</Mask>
+			</Defs>
+			<Rect
+				width="720"
+				height="520"
+				mask={`url(#${maskId}-world)`}
+				class="fill-secondary-600 dark:fill-secondary-400"
+				data-terrain-region="world"
+			/>
+			<Rect
+				width="720"
+				height="520"
+				mask={`url(#${maskId}-new-york)`}
+				class="fill-primary-600 dark:fill-primary-400"
+				data-terrain-region="new-york"
+			/>
 			<G transform="translate(360 260)">
 				<Circle
 					r="15"

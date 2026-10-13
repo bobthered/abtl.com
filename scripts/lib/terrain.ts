@@ -1,4 +1,4 @@
-import terrain from '../_data/new-york-terrain.json';
+import terrain from '../data/new-york-terrain.json' with { type: 'json' };
 
 export type TerrainPoint = { x: number; y: number; elevation: number; radius: number };
 

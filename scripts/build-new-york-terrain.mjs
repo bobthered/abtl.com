@@ -141,8 +141,10 @@ const output = {
 };
 if (output.points.length < 10000 || Math.max(...output.points.map((p) => p[2])) < 1200)
 	throw new Error('Terrain validation failed');
-await mkdir('src/routes/about/_data', { recursive: true });
-await writeFile('src/routes/about/_data/new-york-terrain.json', JSON.stringify(output) + '\n');
+await mkdir('scripts/data', { recursive: true });
+await writeFile('scripts/data/new-york-terrain.json', JSON.stringify(output) + '\n');
 console.log(
 	`${points.length} terrain points from ${tiles.size} elevation tiles; Caledonia ${output.origin[2]}m`
 );
+
+await import('./render-new-york-terrain.mjs');

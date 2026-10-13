@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 36b0c4c85f558ca10aa5dafa86d74f7af730d713 -->
+<!-- pending-base: 6999d4b5841b56874fc58347a8c3dd3beb8167f5 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: soften the Caledonia globe fade and remove rotation controls
+fix: move terrain generation out of the application runtime
 
-Fade land points by geographic distance from Caledonia before the detailed terrain boundary, preserving separate New York and world colors with batched SVG paths.
-Remove rotation controls, update terrain and browser coverage and artwork notes, and reconcile the changelog.
+Pre-generate cacheable SVG terrain masks and move raw elevation data and projection helpers outside the Vite application graph, eliminating per-render geometry construction and large SSR payloads while preserving theme colors and distance fading.
+Update generation scripts, regression coverage, memory incident notes, and changelog history.
 ```
 
 ## 2026-10-13
+
+- **fix: soften the Caledonia globe fade and remove rotation controls** (`6999d4b`)
+  Fade points geographically before the detailed terrain boundary, preserve separate New York and world colors, remove rotation controls, and update regression coverage and artwork notes.
 
 - **feat: add a New York-focused land globe to the About page** (`36b0c4c`)
   Replace the contour illustration with a spherical point map using real regional elevation and New York boundaries. Center Caledonia, frame New York, color it primary against secondary worldwide land, and add a reproducible generator, attribution and regression coverage.

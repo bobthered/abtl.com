@@ -6,7 +6,7 @@ import {
 	terrainPaths,
 	terrainPoints,
 	terrainScale
-} from './terrain.js';
+} from '../../../../scripts/lib/terrain.js';
 
 describe('New York terrain projection', () => {
 	it('keeps Caledonia centered for every rotation', () => {
