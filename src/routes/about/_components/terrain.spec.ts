@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import sharp from 'sharp';
 import {
 	projectTerrain,
 	surroundingPoints,
@@ -21,7 +22,8 @@ describe('New York terrain projection', () => {
 		expect(Math.max(...terrainPoints.map((point) => point.elevation))).toBeGreaterThan(1000);
 		const flat = projectTerrain({ x: 100, y: 100, elevation: 0, radius: 1 }, 0);
 		const peak = projectTerrain({ x: 100, y: 100, elevation: 1000, radius: 1 }, 0);
-		expect(peak.y).toBeLessThan(flat.y);
+		// Relief should be obvious, not merely a subpixel displacement.
+		expect(flat.y - peak.y).toBeGreaterThan(100);
 	});
 
 	it('fits all New York points while culling the far hemisphere', () => {
@@ -29,10 +31,10 @@ describe('New York terrain projection', () => {
 			const scale = terrainScale(rotation);
 			for (const point of terrainPoints) {
 				const projected = projectTerrain(point, rotation, scale);
-				expect(projected.x).toBeGreaterThanOrEqual(24);
-				expect(projected.x).toBeLessThanOrEqual(696);
-				expect(projected.y).toBeGreaterThanOrEqual(36);
-				expect(projected.y).toBeLessThanOrEqual(484);
+				expect(projected.x).toBeGreaterThanOrEqual(24 - 1e-8);
+				expect(projected.x).toBeLessThanOrEqual(696 + 1e-8);
+				expect(projected.y).toBeGreaterThanOrEqual(36 - 1e-8);
+				expect(projected.y).toBeLessThanOrEqual(484 + 1e-8);
 			}
 		}
 		expect(surroundingPoints.some((point) => !projectTerrain(point, 0).isVisible)).toBe(true);
@@ -54,3 +56,25 @@ describe('New York terrain projection', () => {
 		expect(terrainPaths(-18)).toEqual(paths);
 	});
 });
+
+it.each(['world', 'new-york'])(
+	'%s point asset is completely transparent around every edge',
+	async (name) => {
+		const { data, info } = await sharp(`static/images/about/terrain-${name}.svg`)
+			.ensureAlpha()
+			.raw()
+			.toBuffer({ resolveWithObject: true });
+		let edgeAlpha = 0;
+		let centerAlpha = 0;
+		for (let y = 0; y < info.height; y++) {
+			for (let x = 0; x < info.width; x++) {
+				const alpha = data[(y * info.width + x) * info.channels + 3];
+				if (x < 12 || x >= info.width - 12 || y < 12 || y >= info.height - 12)
+					edgeAlpha = Math.max(edgeAlpha, alpha);
+				else centerAlpha = Math.max(centerAlpha, alpha);
+			}
+		}
+		expect(edgeAlpha).toBe(0);
+		expect(centerAlpha).toBeGreaterThan(100);
+	}
+);

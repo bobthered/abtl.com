@@ -19,7 +19,8 @@ export const projectTerrain = (point: TerrainPoint, rotation: number, scale = 1)
 	const latitude = ((terrain.origin[1] - point.y / latitudeScale) * Math.PI) / 180;
 	const longitude = ((point.x / longitudeScale) * Math.PI) / 180;
 	const centerLatitude = (terrain.origin[1] * Math.PI) / 180;
-	const radius = 6371 + point.elevation * 0.03;
+	// 240x vertical exaggeration makes regional ridges legible at this statewide scale.
+	const radius = 6371 + point.elevation * 0.24;
 	const east = radius * Math.cos(latitude) * Math.sin(longitude);
 	const north =
 		radius *

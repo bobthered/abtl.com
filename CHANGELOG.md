@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 6999d4b5841b56874fc58347a8c3dd3beb8167f5 -->
+<!-- pending-base: 6c43ca15568798e24bc565188794bd06bca16045 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: move terrain generation out of the application runtime
+fix: strengthen terrain relief and fade points before the map edges
 
-Pre-generate cacheable SVG terrain masks and move raw elevation data and projection helpers outside the Vite application graph, eliminating per-render geometry construction and large SSR payloads while preserving theme colors and distance fading.
-Update generation scripts, regression coverage, memory incident notes, and changelog history.
+Increase elevation exaggeration eightfold and add continuous elliptical fades to both static point layers, keeping the Caledonia marker clear and all container edges transparent.
+Regenerate SVG assets, verify relief and rasterized edge transparency, update artwork notes, and reconcile the changelog.
 ```
 
 ## 2026-10-13
+
+- **fix: move terrain generation out of the application runtime** (`6c43ca1`)
+  Move raw terrain data and projection code out of the application graph and generate cacheable SVG masks offline. Preserve theme colors and fading, remove large per-render path construction, and add repeated-request coverage and memory incident notes.
 
 - **fix: soften the Caledonia globe fade and remove rotation controls** (`6999d4b`)
   Fade points geographically before the detailed terrain boundary, preserve separate New York and world colors, remove rotation controls, and update regression coverage and artwork notes.
