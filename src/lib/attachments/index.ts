@@ -1,5 +1,6 @@
 export { dismissOutside } from './dismissOutside';
 export { dragScroll, type DragScrollOptions } from './dragScroll';
+export { floatIllustration } from './floatIllustration';
 export { pointerOutline } from './pointerOutline';
 
 export { processPrint } from './processPrint';

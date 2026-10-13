@@ -8,12 +8,14 @@
 	let {
 		attachment = 'wire',
 		class: className = '',
+		isBackdropVisible = true,
 		isPreview = false,
 		isStorm = false,
 		material = 'SYNTHETIC'
 	}: {
 		attachment?: 'wire' | 'string' | 'elastic';
 		class?: string;
+		isBackdropVisible?: boolean;
 		isPreview?: boolean;
 		isStorm?: boolean;
 		material?: string;
@@ -33,7 +35,7 @@
 	data-weather-storm={isStorm}
 	aria-hidden="true"
 >
-	{#if !isPreview}
+	{#if isBackdropVisible && !isPreview}
 		<Div
 			class="pointer-events-none absolute inset-0 bg-radial from-primary-300/70 via-primary-200/30 to-transparent dark:from-primary-600/20 dark:via-primary-900/10"
 		/>

@@ -15,9 +15,9 @@
 		Span,
 		StockTag
 	} from '#lib/components';
+	import { floatIllustration } from '#lib/attachments';
 	import inspectionBack from '#lib/assets/tags/backs/inspection-record-01.svg';
 	import inspectionFront from '#lib/assets/tags/fronts/inspection-record-01.svg';
-	import { onMount } from 'svelte';
 	import serviceFront from '#lib/assets/tags/fronts/service-tag-01.svg';
 	import serviceSecondFront from '#lib/assets/tags/fronts/service-tag-02.svg';
 	import { stockColors } from '#lib/data/stockColors.js';
@@ -34,66 +34,11 @@
 	}: { isStandalone?: boolean; onRequestSamples: () => void } = $props();
 
 	// $state
-	let illustrationElement = $state<HTMLDivElement | null>(null);
 	let isBackVisible = $state(false);
 	let selectedColorId = $state('manila');
 
 	// $derived
 	const selectedColor = $derived(stockColors.find((color) => color.id === selectedColorId)!);
-
-	// $effects
-	onMount(() => {
-		if (!illustrationElement) return;
-		const preference = matchMedia('(prefers-reduced-motion: reduce)');
-		const animation = illustrationElement.animate(
-			[
-				{ transform: 'translateY(0)' },
-				{ transform: 'translateY(-12px)' },
-				{ transform: 'translateY(0)' }
-			],
-			{ duration: 6000, iterations: Infinity, easing: 'ease-in-out' }
-		);
-		let isInView = false;
-		let isInteracting = false;
-		const updatePlayback = () => {
-			if (preference.matches || document.hidden || !isInView || isInteracting) animation.pause();
-			else animation.play();
-		};
-		const pauseForInteraction = () => {
-			isInteracting = true;
-			updatePlayback();
-		};
-		const resumeAfterInteraction = (event: Event) => {
-			isInteracting =
-				illustrationElement!.matches(':hover') ||
-				(event instanceof FocusEvent && event.relatedTarget instanceof Node
-					? illustrationElement!.contains(event.relatedTarget)
-					: illustrationElement!.matches(':focus-within') && event.type !== 'focusout');
-			updatePlayback();
-		};
-		illustrationElement.addEventListener('pointerenter', pauseForInteraction);
-		illustrationElement.addEventListener('pointerleave', resumeAfterInteraction);
-		illustrationElement.addEventListener('focusin', pauseForInteraction);
-		illustrationElement.addEventListener('focusout', resumeAfterInteraction);
-		animation.pause();
-		const observer = new IntersectionObserver(([entry]) => {
-			isInView = entry.isIntersecting;
-			updatePlayback();
-		});
-		observer.observe(illustrationElement);
-		preference.addEventListener('change', updatePlayback);
-		document.addEventListener('visibilitychange', updatePlayback);
-		return () => {
-			illustrationElement?.removeEventListener('pointerenter', pauseForInteraction);
-			illustrationElement?.removeEventListener('pointerleave', resumeAfterInteraction);
-			illustrationElement?.removeEventListener('focusin', pauseForInteraction);
-			illustrationElement?.removeEventListener('focusout', resumeAfterInteraction);
-			animation.cancel();
-			observer.disconnect();
-			preference.removeEventListener('change', updatePlayback);
-			document.removeEventListener('visibilitychange', updatePlayback);
-		};
-	});
 </script>
 
 {#snippet tagImage(id: string, artwork?: string)}
@@ -166,9 +111,11 @@
 			</Div>
 			<Figure>
 				<Div
-					class="group relative flex flex-col items-center overflow-hidden rounded-sm bg-gradient-to-br from-primary-100 via-gray-100 to-secondary-100 p-6 perspective-distant sm:p-8 dark:from-primary-950 dark:via-gray-800 dark:to-secondary-950"
+					variants={['illustration']}
+					data-illustration-surface
+					class="flex flex-col items-center p-6 perspective-distant sm:p-8"
 				>
-					<Div bind:element={illustrationElement} class="relative h-96 w-full sm:h-112">
+					<Div {@attach floatIllustration} class="relative h-96 w-full sm:h-112">
 						<Div
 							class={twMerge(
 								colorStudioSideClass,

@@ -18,3 +18,5 @@ shared UI exports. Shared stock colors and the topic registry live in `src/lib/d
 Move private helpers and tests with their component. Reusable components should
 not import route components. The StockTagColumns integration test imports the
 homepage gallery solely to verify the illustration in its real tile layout.
+
+Product illustration panels share the Div `illustration` theme variant for the stock-color studio gradient and radius. Apply `floatIllustration` from `#lib/attachments` to an inner artwork wrapper, keeping controls/captions stationary and existing rotation or canvas interactions on its children. The shared motion pauses during interaction, offscreen, in hidden tabs, and for reduced motion.

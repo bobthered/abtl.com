@@ -13,6 +13,7 @@
 		Span
 	} from '#lib/components';
 	import { ArrowRight, Check, FlipHorizontal2, Layers, RotateCcw } from '#lib/icons';
+	import { floatIllustration } from '#lib/attachments';
 	import type { Snippet } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
 
@@ -124,8 +125,15 @@
 					</Button>
 				</Div>
 			</Div>
-			<Div class="overflow-hidden rounded-sm bg-gray-100 p-6 lg:col-span-3 dark:bg-gray-900">
-				<ProcessArtwork class="min-h-112 sm:min-h-128" {channels} {isSeparated} />
+			<Div variants={['illustration']} data-illustration-surface class="p-6 sm:p-8 lg:col-span-3">
+				<Div {@attach floatIllustration}>
+					<ProcessArtwork
+						class="min-h-112 sm:min-h-128"
+						isBackdropVisible={false}
+						{channels}
+						{isSeparated}
+					/>
+				</Div>
 				<Div
 					class="flex items-center justify-between gap-4 px-2 pb-2 text-xs text-gray-500 dark:text-gray-400"
 				>
@@ -177,16 +185,21 @@
 					</Div>
 				</Div>
 			</Div>
-			<Div
-				class="overflow-hidden rounded-sm bg-gradient-to-br from-primary-100 via-gray-100 to-secondary-100 p-6 sm:p-8 lg:col-span-3 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950"
-			>
+			<Div variants={['illustration']} data-illustration-surface class="p-6 sm:p-8 lg:col-span-3">
 				<Div class="flex items-center justify-between gap-4">
 					<Span class="text-sm font-medium" aria-live="polite" data-process-side>
 						{isBack ? 'Back / The fragrance story' : 'Face / The botanical collection'}
 					</Span>
 					<Span class="font-mono text-xs text-gray-500 dark:text-gray-400">4 + 4 = 8</Span>
 				</Div>
-				<ProcessArtwork class="min-h-112 sm:min-h-128" {isBack} isDuplex />
+				<Div {@attach floatIllustration}>
+					<ProcessArtwork
+						class="min-h-112 sm:min-h-128"
+						isBackdropVisible={false}
+						{isBack}
+						isDuplex
+					/>
+				</Div>
 				<Div class="flex justify-center">
 					<Button
 						variants={['neutral']}

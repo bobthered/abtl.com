@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 9775fabdc4c75943e626911232aaed7e1004010a -->
+<!-- pending-base: b9437b8ed21b6d5cf9f14632afc2125fed541487 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: move bento topic pages under about
+refactor: unify product illustration styling and motion
 
-Move topic routes and private content to /about, updating links, titles, asset scripts, and documentation.
-Preserve legacy /tags links and aliases with permanent redirects and query parameters; update route coverage and changelog history.
+Share the stock-color gradient surface and gentle floating attachment across stock colors, three synthetic illustrations, and both printing illustrations.
+Preserve artwork controls, reduced motion, and offscreen pausing; document reuse, add responsive theme coverage, and reconcile changelog history.
 ```
 
 ## 2026-10-13
+
+- **refactor: move bento topic pages under about** (`b9437b8`)
+  Move topic routes and private content to /about, updating links, titles, asset scripts, and documentation. Preserve legacy /tags links and aliases with permanent redirects and query parameters; update route coverage and changelog history.
 
 - **fix: extend the metrics background across the section** (`9775fab`)
   Cover the full metrics section with gradient artwork and remove padding below its canvas. Update responsive coverage, preserve outlined shipping destination buttons, and reconcile changelog history.

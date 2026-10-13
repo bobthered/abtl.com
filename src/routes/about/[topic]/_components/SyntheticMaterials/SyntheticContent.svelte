@@ -15,6 +15,7 @@
 		WeatherTag
 	} from '#lib/components';
 	import { ArrowRight, Check, Droplets, Hand, Link, ShieldCheck, Wind } from '#lib/icons';
+	import { floatIllustration } from '#lib/attachments';
 	import type { Snippet } from 'svelte';
 	import { syntheticMaterials } from './materials';
 	import { twMerge } from 'tailwind-merge';
@@ -110,7 +111,7 @@
 					</Div>
 				</Div>
 			</Div>
-			<Div class="relative overflow-hidden rounded-sm bg-gray-100 lg:col-span-3 dark:bg-gray-900">
+			<Div variants={['illustration']} data-illustration-surface class="lg:col-span-3">
 				<Div class="absolute inset-x-6 top-6 z-10 flex items-center justify-between gap-4">
 					<Span class="text-xs font-medium tracking-widest uppercase">Out in the elements</Span>
 					<Span class="flex items-center gap-2 text-xs">
@@ -122,7 +123,9 @@
 						/>{isStorm ? 'Wind + rain' : 'A passing shower'}
 					</Span>
 				</Div>
-				<WeatherTag class="min-h-100 sm:min-h-128" {isStorm} />
+				<Div {@attach floatIllustration}>
+					<WeatherTag class="min-h-100 sm:min-h-128" isBackdropVisible={false} {isStorm} />
+				</Div>
 				<Div class="relative flex flex-wrap items-center justify-between gap-4 px-6 pb-6">
 					<P class="max-w-64 text-xs text-gray-500 dark:text-gray-400">
 						Illustrative motion. Let's match the actual material and print to your conditions.
@@ -178,26 +181,30 @@
 			class="mt-6 grid gap-4 overflow-hidden rounded-sm bg-gray-100 lg:grid-cols-5 dark:bg-gray-900"
 		>
 			<Div
-				class="relative flex min-h-80 items-center justify-center overflow-hidden bg-radial from-primary-200/60 to-transparent p-8 lg:col-span-2 dark:from-primary-800/40"
+				variants={['illustration']}
+				data-illustration-surface
+				class="flex min-h-80 items-center justify-center p-8 lg:col-span-2"
 			>
 				<Span class="absolute top-5 left-6 text-xs font-medium tracking-widest uppercase">
 					Material / 0{syntheticMaterials.indexOf(material) + 1}
 				</Span>
-				<Div
-					class="relative w-36 -rotate-6 drop-shadow-lg hover:rotate-0 motion-safe:transition-transform motion-safe:duration-500"
-				>
-					<StockTag class="w-full text-white" />
-					<Div class="absolute inset-x-4 top-1/3 text-gray-950">
-						<Span class="text-xs font-medium text-gray-950 dark:text-gray-950">
-							SYNTHETIC STOCK
-						</Span>
-						<P class="mt-3 text-2xl font-semibold text-gray-950 dark:text-gray-950">
-							{material.name}
-						</P>
-						<Span class="mt-4 block h-1 w-12 bg-primary-500" />
-						<P class="mt-4 text-xs text-gray-950 dark:text-gray-950">
-							Made for life<Br />out in the open.
-						</P>
+				<Div {@attach floatIllustration} class="relative w-36">
+					<Div
+						class="relative w-full -rotate-6 drop-shadow-lg hover:rotate-0 motion-safe:transition-transform motion-safe:duration-500"
+					>
+						<StockTag class="w-full text-white" />
+						<Div class="absolute inset-x-4 top-1/3 text-gray-950">
+							<Span class="text-xs font-medium text-gray-950 dark:text-gray-950">
+								SYNTHETIC STOCK
+							</Span>
+							<P class="mt-3 text-2xl font-semibold text-gray-950 dark:text-gray-950">
+								{material.name}
+							</P>
+							<Span class="mt-4 block h-1 w-12 bg-primary-500" />
+							<P class="mt-4 text-xs text-gray-950 dark:text-gray-950">
+								Made for life<Br />out in the open.
+							</P>
+						</Div>
 					</Div>
 				</Div>
 				<Span class="absolute right-6 bottom-5 text-xs text-gray-500 dark:text-gray-400">
@@ -262,8 +269,15 @@
 		aria-labelledby="synthetic-attachment-heading"
 	>
 		<Div class="grid items-center gap-4 lg:grid-cols-2">
-			<Div class="relative overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-900">
-				<WeatherTag class="min-h-88 sm:min-h-100" {attachment} material="THE CONNECTION MATTERS" />
+			<Div variants={['illustration']} data-illustration-surface>
+				<Div {@attach floatIllustration}>
+					<WeatherTag
+						class="min-h-88 sm:min-h-100"
+						isBackdropVisible={false}
+						{attachment}
+						material="THE CONNECTION MATTERS"
+					/>
+				</Div>
 				<Span class="absolute bottom-6 left-6 text-sm font-medium">
 					{currentAttachment.name} attachment
 				</Span>

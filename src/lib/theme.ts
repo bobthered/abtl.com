@@ -24,6 +24,11 @@ export const initializeTheme = () => {
 	);
 	theme.set.variant('div', 'dialogClose', 'flex justify-end py-4');
 	theme.set.variant(
+		'div',
+		'illustration',
+		'group relative overflow-hidden rounded-sm bg-gradient-to-br from-primary-100 via-gray-100 to-secondary-100 dark:from-primary-950 dark:via-gray-800 dark:to-secondary-950'
+	);
+	theme.set.variant(
 		'section',
 		'dialogSection',
 		'border-t border-gray-200 py-12 sm:py-16 dark:border-gray-800'
