@@ -5,7 +5,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 const directory = new URL('../src/lib/assets/variable-data/', import.meta.url);
 const examples = JSON.parse(
 	await readFile(
-		new URL('../src/routes/tags/[topic]/_components/VariableData/examples.json', import.meta.url),
+		new URL('../src/routes/about/[topic]/_components/VariableData/examples.json', import.meta.url),
 		'utf8'
 	)
 );

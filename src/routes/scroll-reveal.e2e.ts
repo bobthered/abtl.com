@@ -50,7 +50,7 @@ test('new content reveals once, staggers a row, and counts up without layout ove
 test('reduced motion finishes active counts and applies to newly opened dialogs', async ({
 	page
 }) => {
-	await page.goto('/tags/stock-colors');
+	await page.goto('/about/stock-colors');
 	const count = page.locator('[data-stock-color-total]');
 	await count.scrollIntoViewIfNeeded();
 	await expect(count).toHaveAttribute('data-scroll-reveal-state', 'complete');
@@ -77,7 +77,7 @@ test('content and final numbers remain available without JavaScript', async ({
 }) => {
 	const context = await browser.newContext({ baseURL, javaScriptEnabled: false });
 	const page = await context.newPage();
-	await page.goto('/tags/stock-colors');
+	await page.goto('/about/stock-colors');
 	await expect(page.locator('main h1')).toBeVisible();
 	await expect(page.locator('[data-stock-color-total]')).toHaveText('21');
 	await context.close();
@@ -201,7 +201,7 @@ test('footer groups enter together with staggering and keep navigation accessibl
 test('stock photo marquee reveals its stationary wrapper without revealing repeated cards', async ({
 	page
 }) => {
-	await page.goto('/tags/stock-colors');
+	await page.goto('/about/stock-colors');
 	const marquee = page.locator('main [data-marquee]').first();
 	const wrapper = marquee.locator('..');
 	await expect(wrapper).not.toHaveAttribute('data-scroll-reveal');
@@ -285,7 +285,7 @@ for (const isDialog of [false, true]) {
 		page
 	}) => {
 		await page.setViewportSize({ width: 1440, height: 900 });
-		await page.goto(isDialog ? '/' : '/tags/stock-colors');
+		await page.goto(isDialog ? '/' : '/about/stock-colors');
 		if (isDialog) {
 			await expect(page.locator('[data-bento-ready="true"]')).toBeVisible();
 			await page.locator('[data-bento-topic="colors"]').click();
@@ -472,7 +472,7 @@ for (const isDialog of [false, true]) {
 		'stock swatches stagger individually in ' + (isDialog ? 'dialog' : 'standalone route'),
 		async ({ page }) => {
 			await page.setViewportSize({ width: 1440, height: 900 });
-			await page.goto(isDialog ? '/' : '/tags/stock-colors');
+			await page.goto(isDialog ? '/' : '/about/stock-colors');
 			if (isDialog) {
 				await expect(page.locator('[data-bento-ready="true"]')).toBeVisible();
 				await page.locator('[data-bento-topic="colors"]').click();

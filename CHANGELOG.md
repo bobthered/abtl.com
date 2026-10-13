@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: e699a6a41d7030cc5c55c1003c9d2b0be55b6ed5 -->
+<!-- pending-base: 9775fabdc4c75943e626911232aaed7e1004010a -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: extend the metrics background across the section
+refactor: move bento topic pages under about
 
-Cover the full metrics section with gradient artwork and remove padding below its canvas.
-Update responsive coverage, preserve outlined shipping destination buttons, and reconcile changelog history.
+Move topic routes and private content to /about, updating links, titles, asset scripts, and documentation.
+Preserve legacy /tags links and aliases with permanent redirects and query parameters; update route coverage and changelog history.
 ```
 
 ## 2026-10-13
+
+- **fix: extend the metrics background across the section** (`9775fab`)
+  Cover the full metrics section with gradient artwork and remove padding below its canvas. Update responsive coverage, preserve outlined shipping destination buttons, and reconcile changelog history.
 
 - **refactor: consolidate Tailwind classes with tailwind-merge** (`e699a6a`)
   Replace class joins and interpolated class lists across shared components, routes, and layouts with twMerge. Add and prebundle the dependency, configure class sorting, document merging rules, and reconcile changelog history.

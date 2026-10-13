@@ -5,9 +5,9 @@ import ImageLightbox from '../../../lib/components/ImageLightbox/ImageLightbox.s
 import { initializeTheme } from '#lib/theme.js';
 import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-svelte';
-import StockColorMarquee from '../../tags/[topic]/_components/StockColors/StockColorMarquee.svelte';
-import StockTagExamples from '../../tags/[topic]/_components/StockColors/StockTagExamples.svelte';
-import { stockPhotoExamples } from '../../tags/[topic]/_components/StockColors/stockPhotoExamples';
+import StockColorMarquee from '../../about/[topic]/_components/StockColors/StockColorMarquee.svelte';
+import StockTagExamples from '../../about/[topic]/_components/StockColors/StockTagExamples.svelte';
+import { stockPhotoExamples } from '../../about/[topic]/_components/StockColors/stockPhotoExamples';
 
 it('scrolls a constrained card through a full-screen backdrop and restores focus on Escape', async () => {
 	initializeTheme();

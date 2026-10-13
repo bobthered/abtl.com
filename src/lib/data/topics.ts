@@ -62,4 +62,11 @@ export const topics: Topic[] = [
 	}
 ];
 
-export const topicHref = (topic: Topic) => `/tags/${topic.slug ?? topic.id}`;
+export const findTopic = (slug: string) => {
+	const canonicalSlug = slug === 'printing' ? 'variable-data' : slug;
+	return topics.find(
+		(topic) => (topic.slug ?? topic.id) === canonicalSlug || topic.id === canonicalSlug
+	);
+};
+
+export const topicHref = (topic: Topic) => `/about/${topic.slug ?? topic.id}`;

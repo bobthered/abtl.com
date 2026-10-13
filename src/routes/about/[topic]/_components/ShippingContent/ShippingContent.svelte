@@ -149,7 +149,10 @@
 				>
 					{#each internationalLocations as location (location.id)}
 						<Button
-							variants={['neutral-outline', ...(selectedLocationId === location.id ? ['selected'] : [])]}
+							variants={[
+								'neutral-outline',
+								...(selectedLocationId === location.id ? ['selected'] : [])
+							]}
 							aria-pressed={selectedLocationId === location.id}
 							onclick={() => (selectedLocationId = location.id)}
 						>

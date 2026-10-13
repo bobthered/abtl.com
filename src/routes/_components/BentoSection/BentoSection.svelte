@@ -10,7 +10,7 @@
 		Div,
 		Section
 	} from '#lib/components';
-	import BentoTopicContent from '../../tags/[topic]/_components/BentoTopicContent.svelte';
+	import BentoTopicContent from '../../about/[topic]/_components/BentoTopicContent.svelte';
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { dismissOutside } from '#lib/attachments';
 	import { fade, fly } from 'svelte/transition';
