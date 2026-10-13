@@ -17,7 +17,7 @@
 	import { browser } from '$app/env';
 	import { ChevronDown, Menu, X } from '#lib/icons';
 	import type { ComponentProps } from 'svelte';
-	import { contactNavigation, navigation } from '#lib/data/navigation.js';
+	import { allNavigation, contactNavigation } from '#lib/data/navigation.js';
 	import { createPageTitle } from '#lib/pageTitle.js';
 	import { fade, slide } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
@@ -211,7 +211,7 @@
 							isVisible={isNavigationVisible}
 							transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
 						>
-							{#each navigation as item (item.href)}
+							{#each allNavigation as item (item.href)}
 								{#if item.children.length}
 									<Div class="border-b border-gray-200 dark:border-gray-800">
 										<Button
@@ -270,14 +270,6 @@
 									</A>
 								{/if}
 							{/each}
-							<A
-								href="/contact"
-								variants={['ghost', 'navigation']}
-								class={mobileLinkClass}
-								onclick={() => (isMenuVisible = false)}
-							>
-								Contact
-							</A>
 							<Button
 								type="button"
 								disabled
@@ -320,7 +312,7 @@
 				</Div>
 				<Div>
 					<Nav aria-label="Footer navigation" class="grid grid-cols-2 gap-4">
-						{#each [...navigation, contactNavigation] as item (item.label)}
+						{#each allNavigation as item (item.label)}
 							<A href={item.href} variants={['ghost', 'navigation']} class="justify-start">
 								{item.label}
 							</A>

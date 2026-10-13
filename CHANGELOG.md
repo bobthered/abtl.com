@@ -6,18 +6,20 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 9458629daa2bf62e5807f17bbe7c2de18b7b42fe -->
+<!-- pending-base: 094e8adfc6799070e23cfdb42633059e17936497 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: simplify mobile header and animate submenu expansion
+refactor: alphabetize grouped site navigation
 
-Move mobile Contact and Sign In into navigation, match submenu triggers to regular link sizing, and slide submenu content open and closed with reduced-motion support.
-Reset expanded sections when the menu closes, extend mobile navigation regression coverage, and reconcile changelog history.
+Sort submenu sections before direct links, alphabetically within each group. Include Contact in the sorted mobile and footer links while preserving its desktop placement; update directional navigation coverage and reconcile changelog history.
 ```
 
 ## 2026-10-13
+
+- **fix: simplify mobile header and animate submenu expansion** (`094e8ad`)
+  Move mobile Contact and Sign In inside navigation, align submenu trigger sizing with regular links, and slide submenu content open and closed. Reset expanded sections on close and extend mobile navigation coverage.
 
 - **fix: animate mega menu reveal and directional submenu slides** (`9458629`)
   Use Sveltewind subtleReveal for menu entrance and exit, trigger local fly transitions on mounted panels, and preserve outgoing content during directional slides. Add checks for actual animation transforms and reconcile changelog history.

@@ -93,18 +93,20 @@ test('mega menu transitions directionally and supports keyboard dismissal', asyn
 		document.getAnimations().some((animation) => animation.id === 'illustration-float')
 	);
 	const mainNavigation = page.getByRole('navigation', { name: 'Main navigation', exact: true });
-	await mainNavigation.getByRole('button', { name: 'Products', exact: true }).hover();
-	await expect(page.locator('[data-nav-panel]:not([inert])')).toHaveAttribute(
-		'data-direction',
-		'1'
-	);
 	await mainNavigation.getByRole('button', { name: 'About', exact: true }).hover();
 	await expect(page.locator('[data-nav-panel]:not([inert])')).toHaveAttribute(
 		'data-direction',
 		'1'
 	);
+	await mainNavigation.getByRole('button', { name: 'Products', exact: true }).hover();
+	await expect(page.locator('[data-nav-panel]:not([inert])')).toHaveAttribute(
+		'data-direction',
+		'1'
+	);
 	await expect(
-		page.locator('[data-nav-panel]:not([inert])').getByRole('link', { name: /Stock colors/ })
+		page
+			.locator('[data-nav-panel]:not([inert])')
+			.getByRole('link', { name: /Paper and synthetic tags/ })
 	).toBeVisible();
 	await mainNavigation.getByRole('button', { name: 'Markets', exact: true }).hover();
 	await expect(page.locator('[data-nav-panel]:not([inert])')).toHaveAttribute(
@@ -142,7 +144,7 @@ test('mega menu runs reveal and real horizontal panel transitions', async ({ pag
 		document.getAnimations().some((animation) => animation.id === 'illustration-float')
 	);
 	const navigation = page.getByRole('navigation', { name: 'Main navigation', exact: true });
-	await navigation.getByRole('button', { name: 'Products', exact: true }).hover();
+	await navigation.getByRole('button', { name: 'Markets', exact: true }).hover();
 	const menu = page.locator('#desktop-subnavigation');
 	await expect(menu).toBeVisible();
 	expect(
@@ -161,7 +163,7 @@ test('mega menu runs reveal and real horizontal panel transitions', async ({ pag
 	await menu.evaluate(async (node) => {
 		await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
 	});
-	await navigation.getByRole('button', { name: 'Markets', exact: true }).hover();
+	await navigation.getByRole('button', { name: 'Products', exact: true }).hover();
 	const incoming = page.locator('[data-nav-panel]:not([inert])');
 	const getTravel = async () =>
 		incoming.evaluate((node) => {
@@ -176,11 +178,11 @@ test('mega menu runs reveal and real horizontal panel transitions', async ({ pag
 			};
 		});
 	await expect.poll(getTravel).toEqual({ start: 96, end: 0 });
-	await expect(page.locator('[data-nav-panel][inert]')).toContainText('Explore Products');
+	await expect(page.locator('[data-nav-panel][inert]')).toContainText('Explore Markets');
 	await menu.evaluate(async (node) => {
 		await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
 	});
-	await navigation.getByRole('button', { name: 'Products', exact: true }).hover();
+	await navigation.getByRole('button', { name: 'Markets', exact: true }).hover();
 	await expect.poll(getTravel).toEqual({ start: -96, end: 0 });
 	await menu.evaluate(async (node) => {
 		await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));

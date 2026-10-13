@@ -3,72 +3,6 @@ export type NavigationSection = NavigationLink & { children: NavigationLink[] };
 
 export const navigation: NavigationSection[] = [
 	{
-		href: '/products',
-		label: 'Products',
-		description: 'Start with the product. Build in the details.',
-		children: [
-			{
-				href: '/products/tags',
-				label: 'Tags',
-				description: 'Paper and synthetic tags, stock colors, and attachments.'
-			},
-			{
-				href: '/products/labels',
-				label: 'Labels',
-				description: 'Printed identification for your products and workflow.'
-			},
-			{
-				href: '/products/attachments',
-				label: 'Tag attachments',
-				description: 'Wire, string, and elastic options.'
-			}
-		]
-	},
-	{
-		href: '/markets',
-		label: 'Markets',
-		description: 'Start with the way you will use it.',
-		children: [
-			{
-				href: '/markets/equipment-service',
-				label: 'Equipment & service',
-				description: 'Keep identification and inspection records with equipment.'
-			},
-			{
-				href: '/markets/retail',
-				label: 'Retail & brand presentation',
-				description: 'Give your product a considered finishing touch.'
-			},
-			{
-				href: '/markets/outdoor',
-				label: 'Outdoor identification',
-				description: 'Explore materials for wet and exposed environments.'
-			}
-		]
-	},
-	{
-		href: '/capabilities',
-		label: 'Capabilities',
-		description: 'Bring material, artwork, and information together.',
-		children: [
-			{
-				href: '/capabilities/printing',
-				label: 'Printing',
-				description: 'Plan face and back artwork with four-color process.'
-			},
-			{
-				href: '/capabilities/variable-data',
-				label: 'Variable data',
-				description: 'Barcodes, QR codes, numbering, and personalization.'
-			},
-			{
-				href: '/capabilities/fulfillment',
-				label: 'Warehousing & fulfillment',
-				description: 'Produce in volume and plan later releases.'
-			}
-		]
-	},
-	{
 		href: '/about',
 		label: 'About',
 		description: 'Explore the details behind our tags and labels.',
@@ -106,6 +40,72 @@ export const navigation: NavigationSection[] = [
 		]
 	},
 	{
+		href: '/capabilities',
+		label: 'Capabilities',
+		description: 'Bring material, artwork, and information together.',
+		children: [
+			{
+				href: '/capabilities/printing',
+				label: 'Printing',
+				description: 'Plan face and back artwork with four-color process.'
+			},
+			{
+				href: '/capabilities/variable-data',
+				label: 'Variable data',
+				description: 'Barcodes, QR codes, numbering, and personalization.'
+			},
+			{
+				href: '/capabilities/fulfillment',
+				label: 'Warehousing & fulfillment',
+				description: 'Produce in volume and plan later releases.'
+			}
+		]
+	},
+	{
+		href: '/markets',
+		label: 'Markets',
+		description: 'Start with the way you will use it.',
+		children: [
+			{
+				href: '/markets/equipment-service',
+				label: 'Equipment & service',
+				description: 'Keep identification and inspection records with equipment.'
+			},
+			{
+				href: '/markets/retail',
+				label: 'Retail & brand presentation',
+				description: 'Give your product a considered finishing touch.'
+			},
+			{
+				href: '/markets/outdoor',
+				label: 'Outdoor identification',
+				description: 'Explore materials for wet and exposed environments.'
+			}
+		]
+	},
+	{
+		href: '/products',
+		label: 'Products',
+		description: 'Start with the product. Build in the details.',
+		children: [
+			{
+				href: '/products/tags',
+				label: 'Tags',
+				description: 'Paper and synthetic tags, stock colors, and attachments.'
+			},
+			{
+				href: '/products/labels',
+				label: 'Labels',
+				description: 'Printed identification for your products and workflow.'
+			},
+			{
+				href: '/products/attachments',
+				label: 'Tag attachments',
+				description: 'Wire, string, and elastic options.'
+			}
+		]
+	},
+	{
 		href: '/resources',
 		label: 'Resources',
 		description: 'Make your next project easier to plan.',
@@ -128,17 +128,27 @@ export const navigation: NavigationSection[] = [
 		]
 	},
 	{
-		href: '/news',
-		label: 'News',
+		href: '/careers',
+		label: 'Careers',
 		description: '',
 		children: []
 	},
 	{
-		href: '/careers',
-		label: 'Careers',
+		href: '/news',
+		label: 'News',
 		description: '',
 		children: []
 	}
 ];
 
 export const contactNavigation = { href: '/contact', label: 'Contact' };
+
+// Contact stays separate on desktop and joins the direct links on mobile and in the footer.
+export const allNavigation = [
+	...navigation,
+	{ ...contactNavigation, description: '', children: [] }
+].sort(
+	(first, second) =>
+		Number(second.children.length > 0) - Number(first.children.length > 0) ||
+		first.label.localeCompare(second.label)
+);
