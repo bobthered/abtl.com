@@ -140,41 +140,6 @@ export const landingPages: Record<string, LandingPageContent> = {
 		cta: "Let's put the pieces together.",
 		ctaText: "Tell us your goals. We'll help you plan a product and a production approach."
 	},
-	about: {
-		eyebrow: 'Allen-Bailey Tag & Label',
-		title: 'Built for endless possibilities.',
-		description:
-			'We manufacture tags and labels that help businesses identify, organize, and communicate. From the stock you choose to the information you print, every detail has a purpose.',
-		heading: 'More than a printed piece.',
-		cards: [
-			[
-				'Made to communicate',
-				'Stock colors, full-color artwork, and variable information bring your message to the product.',
-				'/capabilities',
-				'Explore our capabilities'
-			],
-			[
-				'Made for your environment',
-				'Paper and waterproof synthetic options let you start with the conditions where the tag will be used.',
-				'/products',
-				'Explore our products'
-			],
-			[
-				'Made for your schedule',
-				'Production in volume, warehousing, and later releases connect manufacturing to the way you order.',
-				'/about/warehousing',
-				'Explore warehousing'
-			]
-		],
-		detailTitle: 'Over 90 million tags produced last year.',
-		detail:
-			'That scale begins with individual details: material, artwork, data, and finishing. We bring those decisions together for the tags and labels your business needs.',
-		detailHref: '/about/shipping',
-		detailLabel: 'See where we ship',
-		cta: "Let's make something that works.",
-		ctaText:
-			'Bring your idea, an existing product, or a new application. Start a conversation with our team.'
-	},
 	contact: {
 		eyebrow: 'Start a conversation',
 		title: 'What can we help you make?',

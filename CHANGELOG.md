@@ -6,17 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 094e8adfc6799070e23cfdb42633059e17936497 -->
+<!-- pending-base: 9eac8c9b632b432cdab485241581eef3a3dd1bff -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: alphabetize grouped site navigation
+feat: tell Allen-Bailey's story on a dedicated about page
 
-Sort submenu sections before direct links, alphabetically within each group. Include Contact in the sorted mobile and footer links while preserving its desktop placement; update directional navigation coverage and reconcile changelog history.
+Replace the generic About template with researched company history, Caledonia roots, market applications, manufacturing details, and a branded floating-tag illustration.
+Record primary sources, preserve approved production and shipping-reach metrics, remove obsolete About copy, add responsive and no-JavaScript coverage, and reconcile changelog history.
 ```
 
 ## 2026-10-13
+
+- **refactor: alphabetize grouped site navigation** (`9eac8c9`)
+  Sort submenu sections before direct links, alphabetically within each group. Include Contact in sorted mobile and footer links while retaining its desktop placement, update directional navigation coverage, and reconcile changelog history.
 
 - **fix: simplify mobile header and animate submenu expansion** (`094e8ad`)
   Move mobile Contact and Sign In inside navigation, align submenu trigger sizing with regular links, and slide submenu content open and closed. Reset expanded sections on close and extend mobile navigation coverage.
