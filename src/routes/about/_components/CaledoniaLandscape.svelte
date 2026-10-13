@@ -1,20 +1,11 @@
 <script lang="ts">
 	// Imports
-	import { A, Br, Button, Circle, Div, G, Path, Svg, Text } from '#lib/components';
+	import { A, Br, Circle, Div, G, Path, Svg, Text } from '#lib/components';
 	import { floatIllustration } from '#lib/attachments';
-	import { RotateCcw, RotateCw } from '#lib/icons';
 	import { terrainPaths } from './terrain.js';
 
-	// helpers
-	const rotate = (amount: number) => {
-		rotation += amount;
-	};
-
-	// $state
-	let rotation = $state(-18);
-
-	// $derived
-	const layers = $derived(terrainPaths(rotation));
+	// consts
+	const layers = terrainPaths(-18);
 </script>
 
 <Div variants={['illustration']} class="relative overflow-hidden py-6 sm:py-8">
@@ -24,16 +15,15 @@
 			class="h-auto w-full"
 			role="img"
 			aria-label="Three-dimensional land globe centered on Caledonia and zoomed to New York State"
-			data-terrain-rotation={rotation}
 		>
-			{#each layers as path, index (index)}
+			{#each layers as layer, index (index)}
 				<Path
-					d={path}
-					class={index < 3
+					d={layer.path}
+					class={!layer.isNewYork
 						? 'fill-secondary-600 dark:fill-secondary-400'
 						: 'fill-primary-600 dark:fill-primary-400'}
-					data-terrain-region={index < 3 ? 'world' : 'new-york'}
-					opacity={index % 3 === 0 ? 0.45 : index % 3 === 1 ? 0.65 : 0.85}
+					data-terrain-region={layer.isNewYork ? 'new-york' : 'world'}
+					opacity={layer.opacity}
 					data-terrain-points
 				/>
 			{/each}
@@ -75,22 +65,6 @@
 			<A href="https://www.geonames.org/5111073/caledonia.html" class="ml-2 text-xs">
 				Location: GeoNames
 			</A>
-		</Div>
-		<Div class="flex gap-2" role="group" aria-label="Rotate landscape">
-			<Button
-				variants={['neutral-outline']}
-				onclick={() => rotate(-15)}
-				aria-label="Rotate landscape left"
-			>
-				<RotateCcw class="size-4" aria-hidden="true" />
-			</Button>
-			<Button
-				variants={['neutral-outline']}
-				onclick={() => rotate(15)}
-				aria-label="Rotate landscape right"
-			>
-				<RotateCw class="size-4" aria-hidden="true" />
-			</Button>
 		</Div>
 	</Div>
 </Div>

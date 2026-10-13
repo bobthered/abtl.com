@@ -54,21 +54,43 @@ export const terrainScale = (rotation: number) => {
 	return Math.min(336 / maxX, 224 / maxY);
 };
 
+// Great-circle distance keeps the fade geographic rather than tied to a screen rectangle.
+export const terrainOpacity = (point: TerrainPoint) => {
+	const latitude = ((terrain.origin[1] - point.y / latitudeScale) * Math.PI) / 180;
+	const centerLatitude = (terrain.origin[1] * Math.PI) / 180;
+	const longitude = ((point.x / longitudeScale) * Math.PI) / 180;
+	const cosine =
+		Math.sin(latitude) * Math.sin(centerLatitude) +
+		Math.cos(latitude) * Math.cos(centerLatitude) * Math.cos(longitude);
+	const distance = 6371 * Math.acos(Math.max(-1, Math.min(1, cosine)));
+	const t = Math.min(1, distance / 550);
+	return 1 - t * t * (3 - 2 * t);
+};
+
 export const terrainPaths = (rotation: number) => {
 	const scale = terrainScale(rotation);
-	const buckets: string[][] = [[], [], [], [], [], []];
+	// Quantize to 32 faint opacity steps to retain batching instead of one SVG node per dot.
+	const buckets: string[][] = Array.from({ length: 64 }, () => []);
 	const append = (points: TerrainPoint[], offset: number) => {
 		for (const point of points) {
-			const { x, y, depth, isVisible, radius } = projectTerrain(point, rotation, scale);
+			const opacity = terrainOpacity(point);
+			if (opacity < 0.015) continue;
+			const { x, y, isVisible, radius } = projectTerrain(point, rotation, scale);
 			if (!isVisible || x < -1 || x > 721 || y < -1 || y > 521) continue;
 			const r = radius.toFixed(2);
-			const bucket = depth < 4900 ? 0 : depth < 5200 ? 1 : 2;
+			const bucket = Math.min(31, Math.floor(opacity * 32));
 			buckets[offset + bucket].push(
 				`M${(x - radius).toFixed(2)} ${y.toFixed(2)}a${r} ${r} 0 1 0 ${(radius * 2).toFixed(2)} 0a${r} ${r} 0 1 0 ${(-radius * 2).toFixed(2)} 0`
 			);
 		}
 	};
 	append(surroundingPoints, 0);
-	append(terrainPoints, 3);
-	return buckets.map((paths) => paths.join(''));
+	append(terrainPoints, 32);
+	return buckets
+		.map((paths, index) => ({
+			path: paths.join(''),
+			opacity: (((index % 32) + 0.5) / 32) * 0.85,
+			isNewYork: index >= 32
+		}))
+		.filter((layer) => layer.path.length > 0);
 };

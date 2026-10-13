@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: f24e4cae34a95f4e0c487c65f7fd305e592a1080 -->
+<!-- pending-base: 36b0c4c85f558ca10aa5dafa86d74f7af730d713 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add a New York-focused land globe to the About page
+fix: soften the Caledonia globe fade and remove rotation controls
 
-Render a spherical land point map centered on Caledonia and framed to New York, using primary for New York and secondary for the world. Include real regional elevation, noisy points, fitted rotation controls, and efficient SVG batching.
-Add a reproducible local terrain generator, source attribution, updated interaction coverage and artwork notes, and reconcile the changelog.
+Fade land points by geographic distance from Caledonia before the detailed terrain boundary, preserving separate New York and world colors with batched SVG paths.
+Remove rotation controls, update terrain and browser coverage and artwork notes, and reconcile the changelog.
 ```
 
 ## 2026-10-13
+
+- **feat: add a New York-focused land globe to the About page** (`36b0c4c`)
+  Replace the contour illustration with a spherical point map using real regional elevation and New York boundaries. Center Caledonia, frame New York, color it primary against secondary worldwide land, and add a reproducible generator, attribution and regression coverage.
 
 - **feat: expand the About page with Caledonia roots and company milestones** (`f24e4ca`)
   Build seven story sections, rotating illustrative landscape, four-part timeline, rural setting, capabilities, applications and contact links. Add six labeled generated photo placeholders and replacement notes; extend responsive, no-JavaScript and map interaction coverage.

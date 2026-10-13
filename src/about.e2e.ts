@@ -48,25 +48,20 @@ test('about story remains readable without JavaScript', async ({ browser, baseUR
 	await context.close();
 });
 
-test('about landscape rotates and placeholder photography is explicit', async ({ page }) => {
+test('about landscape fades without controls and placeholder photography is explicit', async ({
+	page
+}) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/about');
 	const landscape = page.getByRole('img', { name: /Three-dimensional land globe/ });
-	const pin = landscape.locator('g');
-	const initial = await pin.getAttribute('transform');
-	await expect(landscape.locator('[data-terrain-region=world]')).toHaveCount(3);
-	await expect(landscape.locator('[data-terrain-region=new-york]')).toHaveCount(3);
-	const dots = landscape.locator('[data-terrain-region=new-york]').last();
-	const initialPoints = await dots.getAttribute('d');
-	// Wait for client enhancement before exercising the SSR-rendered controls.
-	await page.waitForFunction(() =>
-		document.getAnimations().some((animation) => animation.id === 'illustration-float')
-	);
-	await page.getByRole('button', { name: 'Rotate landscape right' }).click();
-	await expect(dots).not.toHaveAttribute('d', initialPoints!);
-	await expect(pin).toHaveAttribute('transform', initial!);
-	await page.getByRole('button', { name: 'Rotate landscape left' }).click();
-	await expect(pin).toHaveAttribute('transform', initial!);
+	await expect(landscape.locator('[data-terrain-region=world]').first()).toBeAttached();
+	await expect(landscape.locator('[data-terrain-region=new-york]').first()).toBeAttached();
+	await expect(page.getByRole('group', { name: 'Rotate landscape' })).toHaveCount(0);
+	const opacities = await landscape
+		.locator('[data-terrain-points]')
+		.evaluateAll((paths) => paths.map((path) => Number(path.getAttribute('opacity'))));
+	expect(Math.min(...opacities)).toBeLessThan(0.05);
+	expect(Math.max(...opacities)).toBeGreaterThan(0.8);
 	await expect(page.locator('main img')).toHaveCount(7);
 	for (const photo of await page.locator('main img').all()) {
 		await photo.scrollIntoViewIfNeeded();

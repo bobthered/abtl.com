@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	projectTerrain,
 	surroundingPoints,
+	terrainOpacity,
 	terrainPaths,
 	terrainPoints,
 	terrainScale
@@ -36,14 +37,20 @@ describe('New York terrain projection', () => {
 		}
 		expect(surroundingPoints.some((point) => !projectTerrain(point, 0).isVisible)).toBe(true);
 	});
-	it('batches world and New York into separate deterministic color paths', () => {
+
+	it('fades monotonically with geographic distance and vanishes before the regional seam', () => {
+		const opacity = (x: number) => terrainOpacity({ x, y: 0, elevation: 0, radius: 1 });
+		expect(opacity(0)).toBeCloseTo(1);
+		expect(opacity(100)).toBeGreaterThan(opacity(300));
+		expect(opacity(300)).toBeGreaterThan(opacity(500));
+		expect(opacity(600)).toBe(0);
+	});
+	it('batches both colors into deterministic distance-opacity paths', () => {
 		const paths = terrainPaths(-18);
-		expect(paths).toHaveLength(6);
-		expect(paths.slice(0, 3).join('')).not.toBe('');
-		expect(paths.slice(3).reduce((total, path) => total + (path.match(/M/g)?.length ?? 0), 0)).toBe(
-			terrainPoints.length
-		);
+		expect(paths.some((layer) => layer.isNewYork)).toBe(true);
+		expect(paths.some((layer) => !layer.isNewYork)).toBe(true);
+		expect(Math.min(...paths.map((layer) => layer.opacity))).toBeLessThan(0.05);
+		expect(Math.max(...paths.map((layer) => layer.opacity))).toBeGreaterThan(0.8);
 		expect(terrainPaths(-18)).toEqual(paths);
-		expect(terrainPaths(0)).not.toEqual(paths);
 	});
 });
