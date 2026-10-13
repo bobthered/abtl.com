@@ -3,10 +3,23 @@
 	import { A, Button, Card, Div, H2, Nav, P, Span } from '#lib/components';
 	import { afterNavigate } from '$app/navigation';
 	import { ArrowUpRight, ChevronDown } from '#lib/icons';
-	import { fade, fly } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 	import { navigation } from '#lib/data/navigation.js';
 	import { onMount, tick } from 'svelte';
+	import { SvelteSet } from 'svelte/reactivity';
+	import { subtleReveal } from 'sveltewind/transitions';
 	import { twMerge } from 'tailwind-merge';
+
+	// Types
+	type SubmenuPanel = {
+		id: number;
+		index: number;
+		isVisible: boolean;
+		section: (typeof navigation)[number];
+	};
+
+	// consts
+	const cleanupTimers = new SvelteSet<ReturnType<typeof setTimeout>>();
 
 	// helpers
 	const cancelClose = () => {
@@ -15,6 +28,7 @@
 	const close = () => {
 		cancelClose();
 		activeIndex = -1;
+		for (const panel of panels) panel.isVisible = false;
 	};
 	const handleFocusOut = () => {
 		queueMicrotask(() => {
@@ -40,12 +54,29 @@
 			else close();
 		}
 	};
-	const open = (index: number) => {
+	const open = async (index: number) => {
 		cancelClose();
 		if (index === activeIndex) return;
 		direction = activeIndex < 0 || index > activeIndex ? 1 : -1;
 		activeIndex = index;
+		const departingIds = new Set(panels.map((panel) => panel.id));
+		for (const panel of panels) panel.isVisible = false;
+		const id = ++panelId;
+		panels.push({ id, index, isVisible: false, section: navigation[index] });
+		// Toggle the primitive's own visibility after mount so its local Svelte transition runs.
+		await tick();
+		const incoming = panels.find((panel) => panel.id === id);
+		if (incoming && activeIndex === index && panelId === id) incoming.isVisible = true;
+		const timer = setTimeout(
+			() => {
+				panels = panels.filter((panel) => !departingIds.has(panel.id));
+				cleanupTimers.delete(timer);
+			},
+			isReducedMotion ? 0 : 400
+		);
+		cleanupTimers.add(timer);
 	};
+
 	const scheduleClose = () => {
 		cancelClose();
 		closeTimer = setTimeout(() => {
@@ -62,6 +93,7 @@
 		desktop.addEventListener('change', handleBreakpoint);
 		return () => {
 			cancelClose();
+			for (const timer of cleanupTimers) clearTimeout(timer);
 			desktop.removeEventListener('change', handleBreakpoint);
 		};
 	});
@@ -73,10 +105,12 @@
 	let activeIndex = $state(-1);
 	let closeTimer = $state<ReturnType<typeof setTimeout> | undefined>();
 	let direction = $state(1);
+	let panelId = $state(0);
+	let panels = $state<SubmenuPanel[]>([]);
 	let root = $state<HTMLDivElement | null>(null);
 
 	// $derived
-	const activeSection = $derived(navigation[activeIndex]);
+	const isMegaVisible = $derived(activeIndex >= 0 && navigation[activeIndex].children.length > 0);
 </script>
 
 <svelte:window
@@ -141,55 +175,59 @@
 			{/if}
 		{/each}
 	</Nav>
-	{#if activeSection?.children.length}
+	<Div
+		id="desktop-subnavigation-position"
+		class="absolute top-full left-1/2 w-224 -translate-x-1/2 pt-6"
+	>
 		<Div
 			id="desktop-subnavigation"
-			class="absolute top-full left-1/2 w-224 -translate-x-1/2 pt-6"
-			transition={[fade, { duration: isReducedMotion ? 0 : 160 }]}
+			isVisible={isMegaVisible}
+			transition={[subtleReveal, { duration: isReducedMotion ? 0 : 240 }]}
 		>
 			<Card
 				class="relative overflow-hidden p-0 shadow-xl inset-ring-1 inset-ring-gray-200 dark:inset-ring-gray-800"
 			>
 				<Div class="relative min-h-104">
-					{#key activeSection.href}
+					{#each panels as panel (panel.id)}
 						<Div
 							data-nav-panel
+							isVisible={panel.isVisible}
 							data-direction={direction}
 							class="absolute inset-0 grid grid-cols-3 gap-4 p-8"
 							inTransition={[
 								fly,
-								{ x: isReducedMotion ? 0 : -direction * 48, duration: isReducedMotion ? 0 : 240 }
+								{ x: isReducedMotion ? 0 : direction * 96, duration: isReducedMotion ? 0 : 320 }
 							]}
 							outTransition={[
 								fly,
-								{ x: isReducedMotion ? 0 : direction * 48, duration: isReducedMotion ? 0 : 160 }
+								{ x: isReducedMotion ? 0 : -direction * 96, duration: isReducedMotion ? 0 : 320 }
 							]}
 						>
 							<Div
 								class="flex flex-col items-start gap-4 rounded-sm bg-gray-50 p-6 dark:bg-gray-950"
 							>
 								<P class="text-sm font-semibold text-primary-600 dark:text-primary-300">
-									Explore {activeSection.label}
+									Explore {panel.section.label}
 								</P>
-								<H2 class="text-2xl">{activeSection.description}</H2>
+								<H2 class="text-2xl">{panel.section.description}</H2>
 								<A
-									href={activeSection.href}
+									href={panel.section.href}
 									variants={['ghost', 'accent']}
 									class="mt-auto inline-flex items-center gap-2 px-0"
 									onclick={close}
 								>
-									All {activeSection.label.toLowerCase()}<ArrowUpRight
+									All {panel.section.label.toLowerCase()}<ArrowUpRight
 										class="size-4"
 										aria-hidden="true"
 									/>
 								</A>
 							</Div>
 							<Nav
-								aria-label={`${activeSection.label} pages`}
+								aria-label={`${panel.section.label} pages`}
 								class="col-span-2 grid grid-cols-2 content-start gap-4"
-								aria-labelledby={`nav-trigger-${activeIndex}`}
+								aria-labelledby={`nav-trigger-${panel.index}`}
 							>
-								{#each activeSection.children as child (child.href)}
+								{#each panel.section.children as child (child.href)}
 									<A
 										href={child.href}
 										variants={['ghost']}
@@ -211,9 +249,9 @@
 								{/each}
 							</Nav>
 						</Div>
-					{/key}
+					{/each}
 				</Div>
 			</Card>
 		</Div>
-	{/if}
+	</Div>
 </Div>

@@ -134,3 +134,64 @@ test('all submenu destinations exist and unknown pages return 404', async ({ req
 	for (const route of ['products', 'markets', 'capabilities', 'resources'])
 		expect((await request.get(`/${route}/not-a-page`)).status()).toBe(404);
 });
+
+test('mega menu runs reveal and real horizontal panel transitions', async ({ page }) => {
+	await page.setViewportSize({ width: 1440, height: 1000 });
+	await page.goto('/products');
+	await page.waitForFunction(() =>
+		document.getAnimations().some((animation) => animation.id === 'illustration-float')
+	);
+	const navigation = page.getByRole('navigation', { name: 'Main navigation', exact: true });
+	await navigation.getByRole('button', { name: 'Products', exact: true }).hover();
+	const menu = page.locator('#desktop-subnavigation');
+	await expect(menu).toBeVisible();
+	expect(
+		await menu.evaluate((node) =>
+			node
+				.getAnimations()
+				.some(
+					(animation) =>
+						animation.effect?.getTiming().duration === 240 &&
+						(animation.effect as KeyframeEffect)
+							.getKeyframes()
+							.some((frame) => String(frame.transform).includes('scale'))
+				)
+		)
+	).toBe(true);
+	await menu.evaluate(async (node) => {
+		await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
+	});
+	await navigation.getByRole('button', { name: 'Markets', exact: true }).hover();
+	const incoming = page.locator('[data-nav-panel]:not([inert])');
+	const getTravel = async () =>
+		incoming.evaluate((node) => {
+			const animation = node
+				.getAnimations()
+				.find((animation) => animation.effect?.getTiming().duration === 320);
+			if (!animation) return null;
+			const frames = (animation.effect as KeyframeEffect).getKeyframes();
+			return {
+				start: new DOMMatrix(String(frames[0].transform)).m41,
+				end: new DOMMatrix(String(frames.at(-1)?.transform)).m41
+			};
+		});
+	await expect.poll(getTravel).toEqual({ start: 96, end: 0 });
+	await expect(page.locator('[data-nav-panel][inert]')).toContainText('Explore Products');
+	await menu.evaluate(async (node) => {
+		await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
+	});
+	await navigation.getByRole('button', { name: 'Products', exact: true }).hover();
+	await expect.poll(getTravel).toEqual({ start: -96, end: 0 });
+	await menu.evaluate(async (node) => {
+		await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
+	});
+	await page.mouse.move(20, 700);
+	await expect
+		.poll(() =>
+			menu.evaluate((node) =>
+				node.getAnimations().some((animation) => animation.effect?.getTiming().duration === 240)
+			)
+		)
+		.toBe(true);
+	await expect(menu).not.toBeVisible();
+});

@@ -6,19 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 24db416a60d922ee90ebd9734a4c124781f2e98e -->
+<!-- pending-base: 74d93f4c95cdd31e3eab3b9379abaade0926739d -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add directional mega navigation and submenu pages
+fix: animate mega menu reveal and directional submenu slides
 
-Move Contact beside Sign In and group desktop navigation into a shared sliding mega menu, with directional transitions, chevrons, keyboard access, dismissal, and reduced-motion support.
-Place News and Careers last; add expandable mobile sections and twelve product, market, capability, and resource guides while preserving the six About topic routes.
-Connect overview links, extend navigation and route coverage, and reconcile changelog history.
+Use Sveltewind subtleReveal on menu entrance and exit, and trigger local fly transitions by changing mounted panel visibility.
+Preserve outgoing content while incoming panels slide from the right when moving forward and from the left when moving backward; cover actual animation transforms and reconcile changelog history.
 ```
 
 ## 2026-10-13
+
+- **feat: add directional mega navigation and submenu pages** (`74d93f4`)
+  Move Contact beside Sign In, add a shared desktop mega menu and expandable mobile sections, and put News and Careers last. Add twelve guides, retain six About topic pages, connect overview links, and extend navigation and route coverage.
 
 - **feat: add navigation pages and sign-in placeholder** (`24db416`)
   Add product, market, capability, about, contact, career, and resource pages alongside the existing newsroom. Connect desktop, mobile, and footer navigation; replace header quote and cart controls with a disabled Sign In placeholder. Preserve outlined dialog controls, printing flip-icon changes, and copy simplifications; add route and mobile navigation coverage.
