@@ -134,9 +134,6 @@
 		>
 			<Div class="relative min-w-0 lg:col-span-2">
 				<WarehouseScene class="min-h-80 sm:min-h-112" release={releases} {stock} />
-				<Span class="absolute bottom-5 left-6 text-xs text-gray-500 dark:text-gray-400">
-					Illustrative warehouse & carton counts
-				</Span>
 			</Div>
 			<Div class="flex flex-col justify-center gap-6 p-6 sm:p-8">
 				<Div aria-live="polite" aria-atomic="true">
@@ -167,12 +164,9 @@
 						? 'Choose a quantity and watch it leave the shelf.'
 						: `${24 - stock} cartons released. ${stock} remain for your next request.`}
 				</P>
-				<Button variants={['ghost']} class="self-start" onclick={resetStock}>
+				<Button variants={['neutral-outline']} class="self-start" onclick={resetStock}>
 					<RotateCcw class="size-4" aria-hidden="true" />Reset demo
 				</Button>
-				<P class="text-xs text-gray-500 dark:text-gray-400">
-					This demo does not place an order or request a shipment.
-				</P>
 			</Div>
 		</Div>
 	</Section>

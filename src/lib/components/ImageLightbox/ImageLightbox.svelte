@@ -115,7 +115,7 @@
 >
 	<Div class="relative flex min-h-full flex-col items-center justify-center gap-4 p-6 sm:p-16">
 		<Button
-			variants={['neutral', 'icon']}
+			variants={['neutral-outline', 'icon']}
 			class="fixed top-4 right-4 z-10"
 			aria-label="Close image"
 			onclick={() => (isVisible = false)}

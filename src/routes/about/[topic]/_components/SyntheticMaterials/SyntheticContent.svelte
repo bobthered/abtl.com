@@ -168,7 +168,7 @@
 		<Div class="mt-10 flex flex-wrap gap-2" role="group" aria-label="Explore synthetic materials">
 			{#each syntheticMaterials as option (option.id)}
 				<Button
-					variants={['neutral', 'neutral-selectable']}
+					variants={['neutral-outline', 'neutral-selectable']}
 					aria-pressed={selectedMaterial === option.id}
 					onclick={() => (selectedMaterial = option.id)}
 					data-synthetic-material={option.id}
@@ -207,9 +207,6 @@
 						</Div>
 					</Div>
 				</Div>
-				<Span class="absolute right-6 bottom-5 text-xs text-gray-500 dark:text-gray-400">
-					Illustrative sample
-				</Span>
 			</Div>
 			<Div
 				class="flex flex-col justify-center p-6 sm:p-10 lg:col-span-3"
@@ -255,10 +252,6 @@
 				{/if}
 			</Div>
 		</Div>
-		<P class="mt-5 max-w-3xl text-sm text-gray-500 dark:text-gray-400">
-			The finished tag is a system: stock, ink, thickness, and attachment. We'll help confirm the
-			right grade and printing for the exposure and handling you describe.
-		</P>
 	</Section>
 {/snippet}
 
@@ -294,7 +287,7 @@
 				<Div class="mt-8 flex flex-wrap gap-2" role="group" aria-label="Explore tag attachments">
 					{#each attachments as option (option.id)}
 						<Button
-							variants={['neutral', 'neutral-selectable']}
+							variants={['neutral-outline', 'neutral-selectable']}
 							aria-pressed={attachment === option.id}
 							onclick={() => (attachment = option.id)}
 						>

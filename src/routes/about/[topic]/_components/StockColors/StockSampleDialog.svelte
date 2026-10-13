@@ -93,7 +93,7 @@
 					</P>
 				</Div>
 				<Button
-					variants={['neutral', 'icon']}
+					variants={['neutral-outline', 'icon']}
 					aria-label="Close sample request"
 					onclick={() => (isVisible = false)}
 				>
@@ -101,7 +101,7 @@
 				</Button>
 			</Div>
 			<Div class="flex shrink-0 justify-end">
-				<Button variants={['neutral']} onclick={toggleAllColors}>
+				<Button variants={['neutral-outline']} onclick={toggleAllColors}>
 					{isAllSelected ? 'Clear all' : 'Select all'}
 				</Button>
 			</Div>

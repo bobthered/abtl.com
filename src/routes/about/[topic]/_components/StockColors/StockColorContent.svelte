@@ -159,7 +159,7 @@
 						<P class="text-sm font-medium" aria-live="polite">
 							{selectedColor.name} &middot; {isBackVisible ? 'Back' : 'Front'}
 						</P>
-						<Button variants={['neutral']} onclick={() => (isBackVisible = !isBackVisible)}>
+						<Button variants={['neutral-outline']} onclick={() => (isBackVisible = !isBackVisible)}>
 							<RotateCw class="size-4" aria-hidden="true" />Flip tag
 						</Button>
 					</Div>

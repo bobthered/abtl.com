@@ -4,6 +4,7 @@ export { default as BentoPreview } from './BentoPreview/BentoPreview.svelte';
 export { default as FloatingTagSettings } from './FloatingTags/FloatingTagSettings.svelte';
 export { default as FloatingTags } from './FloatingTags/FloatingTags.svelte';
 export { default as ImageLightbox } from './ImageLightbox/ImageLightbox.svelte';
+export { default as LandingPage } from './LandingPage/LandingPage.svelte';
 export { default as Logo } from './Logo/Logo.svelte';
 export { default as Marquee } from './Marquee/Marquee.svelte';
 export { default as ProcessArtwork } from './ProcessPrinting/ProcessArtwork.svelte';

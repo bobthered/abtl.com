@@ -6,18 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: b9437b8ed21b6d5cf9f14632afc2125fed541487 -->
+<!-- pending-base: 1a5b6c7c525d1ba839b1d23799f0533c04fe5c2e -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: unify product illustration styling and motion
+feat: add navigation pages and sign-in placeholder
 
-Share the stock-color gradient surface and gentle floating attachment across stock colors, three synthetic illustrations, and both printing illustrations.
-Preserve artwork controls, reduced motion, and offscreen pausing; document reuse, add responsive theme coverage, and reconcile changelog history.
+Add product, market, capability, about, contact, career, and resource pages alongside the existing newsroom, with shared layouts and relevant topic links.
+Connect desktop, mobile, and footer navigation; replace quote and cart controls with a disabled Sign In CTA and cover route loading and mobile navigation.
+Preserve outlined dialog and topic controls, printing flip-icon changes, and copy simplifications; reconcile changelog history.
 ```
 
 ## 2026-10-13
+
+- **refactor: unify product illustration styling and motion** (`1a5b6c7`)
+  Share the stock-color gradient surface and gentle floating attachment across stock colors, three synthetic illustrations, and both printing illustrations. Preserve artwork controls, reduced motion, and offscreen pausing; document reuse and add responsive theme coverage.
 
 - **refactor: move bento topic pages under about** (`b9437b8`)
   Move topic routes and private content to /about, updating links, titles, asset scripts, and documentation. Preserve legacy /tags links and aliases with permanent redirects and query parameters; update route coverage and changelog history.

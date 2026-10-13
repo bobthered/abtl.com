@@ -21,7 +21,8 @@
 	import faviconDark from '#lib/assets/favicon-dark.svg';
 	import { initializeTheme } from '#lib/theme.js';
 	import type { LayoutProps } from './$types';
-	import { Menu, ShoppingCart, X } from '#lib/icons';
+	import { Menu, X } from '#lib/icons';
+	import { navigation } from '#lib/data/navigation.js';
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { scrollReveal } from '#lib/attachments';
@@ -35,12 +36,7 @@
 	const footerClass = 'text-sm leading-relaxed text-gray-600 dark:text-gray-300';
 	// Capture request state during component initialization for async server rendering.
 	const initialPathname = page.url.pathname;
-	const navigation = [
-		{ label: 'Products' },
-		{ label: 'Industries' },
-		{ label: 'Capabilities' },
-		{ label: 'Resources' }
-	];
+
 	const siteFrameClass =
 		'[--site-header-height:calc(var(--spacing)*24+1px)] sm:[--site-header-height:calc(var(--spacing)*26+1px)] lg:[--site-header-height:calc(var(--spacing)*34+1px)]';
 
@@ -59,7 +55,7 @@
 	};
 
 	const initializeMenuBreakpoint = () => {
-		const desktop = window.matchMedia('(min-width: 1024px)');
+		const desktop = window.matchMedia('(min-width: 1280px)');
 		const closeDesktopMenu = () => {
 			if (desktop.matches) isMenuVisible = false;
 		};
@@ -161,39 +157,34 @@
 			<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}>
 				<Logo aria-hidden="true" variants={['onSurface', 'site']} />
 			</A>
-			<Nav aria-label="Main navigation" class="hidden items-center gap-6 lg:flex xl:gap-12">
+			<Nav aria-label="Main navigation" class="hidden items-center gap-4 xl:flex">
 				{#each navigation as item (item.label)}
-					<A aria-disabled="true" title="Coming soon" variants={['ghost', 'navigation']}>
+					<A
+						href={item.href}
+						variants={['ghost', 'navigation']}
+						onclick={() => (isMenuVisible = false)}
+					>
 						{item.label}
 					</A>
 				{/each}
 			</Nav>
-			<Div class="hidden items-center gap-8 lg:flex">
-				<A
-					href="mailto:sales@abtl.com?subject=Tag%20and%20label%20quote"
-					variants={['ghost', 'accent']}
-					class="hidden xl:inline-flex"
-				>
-					Request a Quote
-				</A>
+			<Div class="ml-auto flex items-center gap-2 xl:ml-0">
 				<Button
 					type="button"
 					disabled
-					aria-label="Shopping cart — online store coming soon"
-					title="Online store coming soon"
-					variants={['ghost', 'icon']}
-					class="cursor-not-allowed border-l border-gray-200 pl-6 dark:border-gray-800"
+					title="Sign in coming soon"
+					aria-label="Sign In (coming soon)"
 				>
-					<ShoppingCart aria-hidden="true" strokeWidth={1.8} class="size-8" />
+					Sign In
 				</Button>
 			</Div>
-			<Div class="lg:hidden">
+			<Div class="xl:hidden">
 				<Popover
 					id="mobile-navigation"
 					bind:isVisible={isMenuVisible}
 					trigger={mobileMenuTrigger}
 					transition={[fade, { duration: isReducedMotion ? 0 : 200 }]}
-					class="inset-0! m-0! h-dvh max-h-none w-full max-w-none rounded-none bg-white p-0 shadow-none inset-ring-0 data-anchored:[position-anchor:auto] data-anchored:[position-area:none] lg:hidden dark:bg-gray-950"
+					class="inset-0! m-0! h-dvh max-h-none w-full max-w-none overflow-y-auto rounded-none bg-white p-0 shadow-none inset-ring-0 data-anchored:[position-anchor:auto] data-anchored:[position-area:none] xl:hidden dark:bg-gray-950"
 				>
 					<Container class="flex items-center justify-between gap-6 py-6">
 						<A
@@ -222,20 +213,14 @@
 							transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
 						>
 							{#each navigation as item (item.label)}
-								<A aria-disabled="true" title="Coming soon" variants={['ghost', 'navigation']}>
+								<A
+									href={item.href}
+									variants={['ghost', 'navigation']}
+									onclick={() => (isMenuVisible = false)}
+								>
 									{item.label}
 								</A>
 							{/each}
-							<A
-								href="mailto:sales@abtl.com"
-								onclick={() => {
-									isMenuVisible = false;
-								}}
-								variants={['ghost', 'accent']}
-								class="py-4"
-							>
-								Request a Quote
-							</A>
 						</Nav>
 					</Container>
 				</Popover>
@@ -270,12 +255,7 @@
 				<Div>
 					<Nav aria-label="Footer navigation" class="grid grid-cols-2 gap-4">
 						{#each navigation as item (item.label)}
-							<A
-								aria-disabled="true"
-								title="Coming soon"
-								variants={['ghost', 'navigation']}
-								class="justify-start"
-							>
+							<A href={item.href} variants={['ghost', 'navigation']} class="justify-start">
 								{item.label}
 							</A>
 						{/each}

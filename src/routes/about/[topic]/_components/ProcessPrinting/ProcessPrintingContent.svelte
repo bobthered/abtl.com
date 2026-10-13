@@ -202,12 +202,12 @@
 				</Div>
 				<Div class="flex justify-center">
 					<Button
-						variants={['neutral']}
+						variants={['neutral-outline']}
 						onclick={() => (isBack = !isBack)}
 						aria-pressed={isBack}
 						data-process-flip
 					>
-						<FlipHorizontal2 class="size-5" aria-hidden="true" />{isBack
+						<FlipHorizontal2 class="size-5 rotate-90" aria-hidden="true" />{isBack
 							? 'View the face'
 							: 'Turn it over'}
 					</Button>
@@ -217,17 +217,9 @@
 	</Section>
 {/snippet}
 
-{#snippet conceptNote()}
-	<P class="pb-12 text-xs text-gray-500 dark:text-gray-400">
-		Orangerie is a fictional home-fragrance design study, not a customer product. Artwork
-		illustrates a possible hangtag application; screen colors are not a production color proof.
-	</P>
-{/snippet}
-
 <Div data-process-content>
 	{@render constrained(process)}
 	{@render constrained(sides)}
-	{@render constrained(conceptNote)}
 	<Section
 		variants={['sampleInvitation']}
 		class={isStandalone ? '' : '-mx-6 sm:-mx-8 lg:-mx-16'}

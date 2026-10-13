@@ -89,14 +89,14 @@
 			>
 				<Div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Printed format">
 					<Button
-						variants={['neutral', ...(!isLabel ? ['selected'] : [])]}
+						variants={['neutral-outline', ...(!isLabel ? ['selected'] : [])]}
 						aria-pressed={!isLabel}
 						onclick={() => (isLabel = false)}
 					>
 						Tag
 					</Button>
 					<Button
-						variants={['neutral', ...(isLabel ? ['selected'] : [])]}
+						variants={['neutral-outline', ...(isLabel ? ['selected'] : [])]}
 						aria-pressed={isLabel}
 						onclick={() => (isLabel = true)}
 					>
@@ -163,7 +163,7 @@
 						</Div>
 					{/each}
 				</Div>
-				<Button class="mt-8 w-full" variants={['neutral']} onclick={advanceRecord}>
+				<Button class="mt-8 w-full" onclick={advanceRecord}>
 					Print the next record <ArrowRight class="size-4" aria-hidden="true" />
 				</Button>
 			</Div>
@@ -216,7 +216,6 @@
 					personal touch to your mailing with tags and labels printed for each recipient.
 				</P>
 				<Button
-					variants={['neutral']}
 					class="mt-8"
 					onclick={() => (mailingIndex = (mailingIndex + 1) % variableExamples.length)}
 				>

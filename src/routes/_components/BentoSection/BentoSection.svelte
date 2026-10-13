@@ -175,7 +175,7 @@
 				<Div variants={['dialogClose']}>
 					<Button
 						type="button"
-						variants={['neutral', 'icon']}
+						variants={['neutral-outline', 'icon']}
 						aria-label="Close topic"
 						onclick={closeDialog}
 						data-scroll-reveal="off"
