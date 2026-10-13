@@ -4,6 +4,7 @@
 	import type { createShippingGlobe } from './renderer';
 	import { globeFallbackPath, shipmentFallbackPath } from './geometry';
 	import { onMount } from 'svelte';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const gradientId = $props.id();
@@ -61,7 +62,7 @@
 </script>
 
 <Div
-	class={`relative aspect-square w-full overflow-hidden ${className}`}
+	class={twMerge('relative aspect-square w-full overflow-hidden', className)}
 	role="img"
 	aria-label="Shipping destinations around the world"
 	data-shipping-globe
@@ -80,7 +81,7 @@
 
 	<Svg
 		viewBox="75 0 150 150"
-		class={`absolute inset-0 h-full w-full ${isReady ? 'invisible' : ''}`}
+		class={twMerge('absolute inset-0 h-full w-full', isReady ? 'invisible' : '')}
 		aria-hidden="true"
 		focusable="false"
 	>
@@ -105,7 +106,7 @@
 	</Svg>
 	<Canvas
 		bind:element={canvas}
-		class={`absolute inset-0 block h-full w-full ${isReady ? '' : 'invisible'}`}
+		class={twMerge('absolute inset-0 block h-full w-full', isReady ? '' : 'invisible')}
 		aria-hidden="true"
 	/>
 </Div>

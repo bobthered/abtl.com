@@ -3,6 +3,7 @@
 	import { Div, Span } from '#lib/components';
 	import { dragScroll } from '#lib/attachments';
 	import { onMount, type Snippet } from 'svelte';
+	import { twMerge } from 'tailwind-merge';
 
 	// Types
 	type Props = {
@@ -166,10 +167,12 @@
 	<Div
 		{@attach dragMarquee}
 		bind:element
-		class={[
+		class={twMerge(
 			'flex w-full min-w-0 touch-pan-y overflow-hidden rounded-sm py-3 select-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:focus-visible:outline-primary-300',
-			`${className} ${isReady ? '' : 'opacity-0'} ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`
-		].join(' ')}
+			className,
+			isReady ? '' : 'opacity-0',
+			isDragging ? 'cursor-grabbing' : 'cursor-grab'
+		)}
 		role="region"
 		tabindex={0}
 		aria-label={ariaLabel}
@@ -191,12 +194,12 @@
 		</Span>
 		<Div
 			bind:element={track}
-			class={['relative flex w-max shrink-0 will-change-transform', gapClass].join(' ')}
+			class={twMerge('relative flex w-max shrink-0 will-change-transform', gapClass)}
 			data-marquee-track
 		>
 			{#each Array.from({ length: copyCount }, (_, index) => index) as copy (copy)}
 				<Div
-					class={['relative flex shrink-0', gapClass].join(' ')}
+					class={twMerge('relative flex shrink-0', gapClass)}
 					aria-hidden={copy > 0 && !isCopiesInteractive ? 'true' : undefined}
 					inert={copy > 0 && !isCopiesInteractive}
 					data-marquee-copy

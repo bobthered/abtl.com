@@ -5,6 +5,7 @@
 	import { fade } from 'svelte/transition';
 	import { MediaQuery } from 'svelte/reactivity';
 	import type { Snippet } from 'svelte';
+	import { twMerge } from 'tailwind-merge';
 	import VariableDataPiece from './VariableDataPiece.svelte';
 	import { variableExamples } from './examples';
 
@@ -70,7 +71,10 @@
 								{record.item}
 							</Span>
 							<Check
-								class={`size-4 shrink-0 ${selectedIndex === index ? 'opacity-100' : 'opacity-0'}`}
+								class={twMerge(
+									'size-4 shrink-0',
+									selectedIndex === index ? 'opacity-100' : 'opacity-0'
+								)}
 								aria-hidden="true"
 							/>
 						</Button>
@@ -78,10 +82,10 @@
 				</Div>
 			</Div>
 			<Div
-				class={[
+				class={twMerge(
 					dataArtworkClass,
 					'flex min-h-128 flex-col items-center justify-center gap-8 p-6 sm:p-10'
-				].join(' ')}
+				)}
 			>
 				<Div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Printed format">
 					<Button
@@ -130,7 +134,7 @@
 		aria-labelledby="variable-sequence-heading"
 	>
 		<Div class="grid items-center gap-4 lg:grid-cols-2">
-			<Div class={[dataArtworkClass, 'order-2 overflow-hidden p-6 sm:p-10 lg:order-1'].join(' ')}>
+			<Div class={twMerge(dataArtworkClass, 'order-2 overflow-hidden p-6 sm:p-10 lg:order-1')}>
 				<Div class="mb-8 flex items-center justify-between text-primary-600 dark:text-primary-300">
 					<Database class="size-6" aria-hidden="true" />
 					<Span class="font-mono text-xs">RECORD → PRINTED PIECE</Span>
@@ -138,7 +142,12 @@
 				<Div class="space-y-3" aria-hidden="true">
 					{#each variableExamples as record, index (record.id)}
 						<Div
-							class={`flex items-center gap-4 rounded-sm p-4 inset-ring-1 motion-safe:transition-all motion-safe:duration-500 ${selectedIndex === index ? 'translate-x-2 bg-primary-500 text-white inset-ring-primary-500' : 'bg-white/70 text-gray-500 inset-ring-gray-200 dark:bg-gray-950/70 dark:text-gray-400 dark:inset-ring-gray-800'}`}
+							class={twMerge(
+								'flex items-center gap-4 rounded-sm p-4 inset-ring-1 motion-safe:transition-all motion-safe:duration-500',
+								selectedIndex === index
+									? 'translate-x-2 bg-primary-500 text-white inset-ring-primary-500'
+									: 'bg-white/70 text-gray-500 inset-ring-gray-200 dark:bg-gray-950/70 dark:text-gray-400 dark:inset-ring-gray-800'
+							)}
 						>
 							<Span class="font-mono text-xl tabular-nums sm:text-2xl">
 								{record.id.slice(3)}
@@ -215,10 +224,10 @@
 				</Button>
 			</Div>
 			<Div
-				class={[
+				class={twMerge(
 					dataArtworkClass,
 					'relative flex min-h-112 items-center justify-center overflow-hidden p-6 sm:p-12 lg:col-span-3'
-				].join(' ')}
+				)}
 			>
 				<Div
 					class="absolute inset-x-6 top-12 bottom-12 rotate-6 rounded-sm bg-secondary-200/70 sm:inset-x-12 dark:bg-secondary-900/60"

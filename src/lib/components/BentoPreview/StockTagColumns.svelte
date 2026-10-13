@@ -3,6 +3,7 @@
 	import { Div, StockTag } from '#lib/components';
 	import { onMount, tick } from 'svelte';
 	import { stockColors } from '#lib/data/stockColors.js';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const columnCount = 6;
@@ -164,10 +165,10 @@
 
 <Div
 	bind:element
-	class={[
+	class={twMerge(
 		'pointer-events-none absolute inset-0 mask-t-from-70% mask-t-to-100%',
 		isReady ? 'opacity-100' : 'opacity-0'
-	].join(' ')}
+	)}
 	aria-hidden="true"
 	data-stock-columns
 >

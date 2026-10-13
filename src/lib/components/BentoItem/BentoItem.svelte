@@ -4,6 +4,7 @@
 	import type { ComponentProps } from 'svelte';
 	import { Maximize2 } from '#lib/icons';
 	import { pointerOutline } from '#lib/attachments';
+	import { twMerge } from 'tailwind-merge';
 
 	// Types
 	type Props = ComponentProps<typeof Button> & {
@@ -35,16 +36,16 @@
 
 	// $derived
 	const classes = $derived(
-		[neutralTileClass, surface === 'neutral' ? neutralTileMutedClass : '', className].join(' ')
+		twMerge(neutralTileClass, surface === 'neutral' ? neutralTileMutedClass : '', className)
 	);
 </script>
 
 {#snippet content()}
 	<Span
-		class={[
+		class={twMerge(
 			'pointer-events-none absolute inset-0 -z-10 rounded-sm bg-white inset-ring-1 inset-ring-gray-200 motion-safe:transition-[inset] motion-safe:duration-300 motion-safe:group-hover:-inset-1 motion-safe:group-focus-visible:-inset-1 dark:bg-gray-900 dark:inset-ring-gray-800',
 			...(surface === 'neutral' ? ['bg-gray-100 dark:bg-gray-950'] : [])
-		].join(' ')}
+		)}
 		data-bento-surface
 		aria-hidden="true"
 	>

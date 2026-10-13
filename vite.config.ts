@@ -6,8 +6,8 @@ import adapter from '@sveltejs/adapter-vercel';
 import { sveltekit } from '@sveltejs/kit/vite';
 export default defineConfig({
 	optimizeDeps: {
-		// Pre-bundle the lazy-loaded animation dependencies before the browser requests them.
-		include: ['@dimforge/rapier3d-compat', 'sveltewind/attachments', 'three']
+		// Pre-bundle client dependencies before lazy artwork or browser tests request them.
+		include: ['@dimforge/rapier3d-compat', 'sveltewind/attachments', 'tailwind-merge', 'three']
 	},
 	ssr: {
 		// Sveltewind imports Lucide's Svelte source, which must be compiled for SSR.

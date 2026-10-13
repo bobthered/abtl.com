@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import type { TagPlacement, TagSettings } from './scene.js';
 	import { theme } from 'sveltewind/theme';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const depthClasses = { far: 'w-10 sm:w-14', middle: 'w-16 sm:w-24', near: 'w-28 sm:w-40' };
@@ -94,7 +95,7 @@
 			class={theme.resolve(
 				'floatingTag',
 				[],
-				`${depthClasses[tag.depth]} ${tag.className} ${tag.color}`
+				twMerge(depthClasses[tag.depth], tag.className, tag.color)
 			)}
 		>
 			<Svg viewBox="0 0 100 200" aria-hidden="true" focusable="false" class={theme.resolve('tag')}>

@@ -18,6 +18,7 @@
 	import NewsDialog from './NewsDialog.svelte';
 	import { newsHighlights, type NewsPost } from '#lib/data/news.js';
 	import { onDestroy, tick, untrack } from 'svelte';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const imageRatio = 1 + Math.sqrt(5);
@@ -277,7 +278,12 @@
 						{#each renderedStories as entry, index (entry.key)}
 							{@const story = entry.post}
 							<Div
-								class={`flex min-w-0 basis-0 items-center justify-center ${index >= visibleCount && !isAnimating ? 'invisible' : ''} ${proportions[index] ?? 'grow-0'} ${index < visibleCount - 1 ? 'mr-4' : 'mr-0'}`}
+								class={twMerge(
+									'flex min-w-0 basis-0 items-center justify-center',
+									index >= visibleCount && !isAnimating ? 'invisible' : '',
+									proportions[index] ?? 'grow-0',
+									index < visibleCount - 1 ? 'mr-4' : 'mr-0'
+								)}
 								aria-hidden={index >= visibleCount}
 								inert={index >= visibleCount}
 								onpointerenter={(event) => {

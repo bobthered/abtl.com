@@ -23,6 +23,7 @@
 	import StockTagExamples from './StockColors/StockTagExamples.svelte';
 	import SyntheticContent from './SyntheticMaterials/SyntheticContent.svelte';
 	import type { Topic } from '#lib/data/topics.js';
+	import { twMerge } from 'tailwind-merge';
 	import VariableDataContent from './VariableData/VariableDataContent.svelte';
 	import WarehousingContent from './Warehousing/WarehousingContent.svelte';
 
@@ -140,10 +141,10 @@
 		>
 			{@render constrained(examplesIntroduction)}
 			<Div
-				class={[
+				class={twMerge(
 					isStandalone ? [] : ['-mx-6 flex min-w-0 sm:-mx-8 lg:-mx-16'],
 					'mt-8 flex min-w-0'
-				].join(' ')}
+				)}
 			>
 				<StockTagExamples />
 			</Div>

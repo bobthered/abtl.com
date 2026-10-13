@@ -6,16 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 72eb3e6286b0be2c56c93e9e7a0391813a89388c -->
+<!-- pending-base: ddb8d5b2328f6df31c911ae2ba3c70cde781822b -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: standardize Svelte markup formatting
+refactor: consolidate Tailwind classes with tailwind-merge
 
-Configure and document clean tag wrapping, reformat routes and components, and preserve inline spacing.
-Remove an unused shipping value, preserve updated shipping copy, and reconcile changelog history.
+Replace class joins and interpolated class lists across shared components, routes, and layouts with twMerge.
+Add and prebundle the dependency, configure class sorting, document merging rules, and reconcile changelog history.
 ```
+
+## 2026-10-13
+
+- **refactor: standardize Svelte markup formatting** (`ddb8d5b`)
+  Configure and document clean tag wrapping, reformat routes and components, and preserve inline spacing. Remove an unused shipping value, preserve updated shipping copy, and reconcile changelog history.
 
 ## 2026-10-12
 

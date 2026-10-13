@@ -5,6 +5,7 @@
 	import { dismissOutside } from '#lib/attachments';
 	import { fade } from 'svelte/transition';
 	import { stockColorGroups } from '#lib/data/stockColors.js';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const allColorIds = stockColorGroups.flatMap((group) => group.colors.map((color) => color.id));
@@ -117,19 +118,22 @@
 							{#each group.colors as color (color.id)}
 								<Button
 									variants={[...(selectedColorIds.includes(color.id) ? ['selected'] : [])]}
-									class={[
+									class={twMerge(
 										selectedColorIds.includes(color.id)
 											? ''
 											: 'inset-ring-1 inset-ring-gray-200 dark:inset-ring-gray-800',
 										'flex min-h-11 items-center justify-start gap-2 bg-gray-50 px-3 py-2 text-left text-xs whitespace-normal text-gray-950 hover:bg-gray-100 hover:text-gray-950 focus:bg-gray-100 focus:text-gray-950 sm:text-sm dark:bg-gray-950 dark:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50'
-									].join(' ')}
+									)}
 									aria-pressed={selectedColorIds.includes(color.id)}
 									aria-label={`Select ${color.name} for samples`}
 									onclick={() => toggleColor(color.id)}
 									data-stock-swatch={color.id}
 								>
 									<Span
-										class={`${color.className} size-4 shrink-0 rounded-full bg-current inset-ring-1 inset-ring-gray-950/20`}
+										class={twMerge(
+											color.className,
+											'size-4 shrink-0 rounded-full bg-current inset-ring-1 inset-ring-gray-950/20'
+										)}
 										aria-hidden="true"
 										data-color-dot
 									/>

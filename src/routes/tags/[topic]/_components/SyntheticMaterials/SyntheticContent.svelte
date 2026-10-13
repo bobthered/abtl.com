@@ -17,6 +17,7 @@
 	import { ArrowRight, Check, Droplets, Hand, Link, ShieldCheck, Wind } from '#lib/icons';
 	import type { Snippet } from 'svelte';
 	import { syntheticMaterials } from './materials';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const attachments = [
@@ -114,7 +115,10 @@
 					<Span class="text-xs font-medium tracking-widest uppercase">Out in the elements</Span>
 					<Span class="flex items-center gap-2 text-xs">
 						<Span
-							class={`size-1.5 rounded-full ${isStorm ? 'bg-secondary-500' : 'bg-primary-500'}`}
+							class={twMerge(
+								'size-1.5 rounded-full',
+								isStorm ? 'bg-secondary-500' : 'bg-primary-500'
+							)}
 						/>{isStorm ? 'Wind + rain' : 'A passing shower'}
 					</Span>
 				</Div>

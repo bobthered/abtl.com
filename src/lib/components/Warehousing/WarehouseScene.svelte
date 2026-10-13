@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Imports
 	import { Canvas, Div, Span } from '#lib/components';
+	import { twMerge } from 'tailwind-merge';
 	import { warehouseFlow } from '#lib/attachments';
 
 	// $props()
@@ -19,7 +20,7 @@
 
 <Div
 	{@attach warehouseFlow}
-	class={`relative h-full w-full text-gray-950 dark:text-gray-50 ${className}`}
+	class={twMerge('relative h-full w-full text-gray-950 dark:text-gray-50', className)}
 	data-warehouse-preview={isPreview}
 	data-warehouse-release={release}
 	data-warehouse-stock={stock}

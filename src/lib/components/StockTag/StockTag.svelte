@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Imports
 	import { Path, Svg } from '#lib/components';
+	import { twMerge } from 'tailwind-merge';
 
 	// $props()
 	let { class: className = '' }: { class?: string } = $props();
@@ -10,10 +11,10 @@
 	viewBox="0 0 237 474"
 	aria-hidden="true"
 	focusable="false"
-	class={[
+	class={twMerge(
 		'block aspect-1/2 h-auto w-full overflow-visible drop-shadow-md drop-shadow-black/15 dark:drop-shadow-black/40',
 		className
-	].join(' ')}
+	)}
 >
 	<Path
 		d="M236.749 36.6593V473.751H0V36.6593L28.1844 0H208.566L236.749 36.6593ZM117.745 46.8706C123.973 46.8706 129.019 41.8198 129.019 35.5908C129.019 29.3619 123.973 24.311 117.745 24.311C111.518 24.311 106.471 29.3619 106.471 35.5908C106.471 41.8198 111.518 46.8706 117.745 46.8706Z"

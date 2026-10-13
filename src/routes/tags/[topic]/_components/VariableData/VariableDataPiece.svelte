@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Imports
 	import { Div, Img, P, Span, StockTag } from '#lib/components';
+	import { twMerge } from 'tailwind-merge';
 	import type { VariableExample } from './examples';
 
 	// $props()
@@ -20,7 +21,11 @@
 </script>
 
 <Div
-	class={`relative ${isLabel ? 'aspect-square rounded-sm bg-white p-6 shadow-lg' : 'aspect-1/2'} ${className}`}
+	class={twMerge(
+		'relative',
+		isLabel ? 'aspect-square rounded-sm bg-white p-6 shadow-lg' : 'aspect-1/2',
+		className
+	)}
 	data-variable-piece={record.id}
 >
 	{#if !isLabel}
@@ -37,7 +42,9 @@
 			<P class="text-xs font-semibold tracking-widest text-primary-600 uppercase">
 				{isMailing ? 'A message for you' : isCompact ? 'ABTL' : 'Allen-Bailey'}
 			</P>
-			<P class={`leading-tight font-semibold ${isCompact ? 'mt-2 text-sm' : 'mt-3 text-lg'}`}>
+			<P
+				class={twMerge('leading-tight font-semibold', isCompact ? 'mt-2 text-sm' : 'mt-3 text-lg')}
+			>
 				{isMailing ? record.name : record.item}
 			</P>
 			<P class="mt-2 text-xs leading-relaxed">
@@ -46,12 +53,12 @@
 				{/if}
 			</P>
 		</Div>
-		<Div class={`flex items-end justify-between ${isCompact ? 'gap-1' : 'gap-3'}`}>
+		<Div class={twMerge('flex items-end justify-between', isCompact ? 'gap-1' : 'gap-3')}>
 			<Div class="min-w-0 flex-1">
 				<Img
 					src={record.barcode}
 					alt={`Example Code 128 barcode encoding ${record.id}`}
-					class={`w-full object-fill ${isCompact ? 'h-6' : 'h-10'}`}
+					class={twMerge('w-full object-fill', isCompact ? 'h-6' : 'h-10')}
 					width={242}
 					height={100}
 				/>
@@ -60,7 +67,7 @@
 			<Img
 				src={record.qr}
 				alt={`Example QR code encoding ${record.id}`}
-				class={`shrink-0 ${isCompact ? 'size-8' : 'size-12'}`}
+				class={twMerge('shrink-0', isCompact ? 'size-8' : 'size-12')}
 				width={58}
 				height={58}
 			/>

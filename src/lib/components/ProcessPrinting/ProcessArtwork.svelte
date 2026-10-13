@@ -2,6 +2,7 @@
 	// Imports
 	import { Canvas, Div, StockTag } from '#lib/components';
 	import { processPrint } from '#lib/attachments';
+	import { twMerge } from 'tailwind-merge';
 
 	// $props()
 	let {
@@ -23,7 +24,7 @@
 
 <Div
 	{@attach processPrint}
-	class={`group/print relative flex h-full w-full items-center justify-center ${className}`}
+	class={twMerge('group/print relative flex h-full w-full items-center justify-center', className)}
 	data-print-preview={isPreview}
 	data-print-back={isBack}
 	data-print-duplex={isDuplex}

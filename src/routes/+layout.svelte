@@ -26,6 +26,7 @@
 	import { page } from '$app/state';
 	import { scrollReveal } from '#lib/attachments';
 	import { subtleReveal } from 'sveltewind/transitions';
+	import { twMerge } from 'tailwind-merge';
 
 	// Types
 	type ColorMode = 'dark' | 'light';
@@ -142,19 +143,20 @@
 </A>
 <Div
 	{@attach scrollReveal}
-	class={[
+	class={twMerge(
 		siteFrameClass,
 		isScrolled ? 'lg:[--site-header-height:calc(var(--spacing)*22+1px)]' : ''
-	].join(' ')}
+	)}
 >
 	<Header
 		class="sticky top-0 z-20 border-0 border-b border-gray-200 bg-white backdrop-blur-none dark:border-gray-800 dark:bg-gray-950"
 	>
 		<Container
-			class={[
+			class={twMerge(
 				'min-h-[calc(var(--site-header-height)-1px)]',
-				`relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none ${isScrolled ? 'lg:py-4' : 'lg:py-10'}`
-			].join(' ')}
+				'relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none',
+				isScrolled ? 'lg:py-4' : 'lg:py-10'
+			)}
 		>
 			<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}>
 				<Logo aria-hidden="true" variants={['onSurface', 'site']} />

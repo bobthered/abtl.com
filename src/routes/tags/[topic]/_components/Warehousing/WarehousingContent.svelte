@@ -14,6 +14,7 @@
 	} from '#lib/components';
 	import { ArrowRight, Boxes, Check, PackageCheck, RotateCcw, Truck } from '#lib/icons';
 	import type { Snippet } from 'svelte';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const allocations = [2, 4, 6];
@@ -78,7 +79,14 @@
 				<Div class="mt-8 grid grid-cols-12 gap-1.5" aria-hidden="true">
 					{#each Array.from({ length: 36 }, (_, i) => i) as item (item)}
 						<Div
-							class={`aspect-square rounded-sm motion-safe:transition-colors motion-safe:duration-700 ${item < 12 ? 'bg-primary-500' : item < 24 ? 'bg-secondary-500' : 'bg-primary-300 dark:bg-primary-700'}`}
+							class={twMerge(
+								'aspect-square rounded-sm motion-safe:transition-colors motion-safe:duration-700',
+								item < 12
+									? 'bg-primary-500'
+									: item < 24
+										? 'bg-secondary-500'
+										: 'bg-primary-300 dark:bg-primary-700'
+							)}
 						/>
 					{/each}
 				</Div>
@@ -86,7 +94,10 @@
 					{#each ['First release', 'Next release', 'Held for later'] as label, index (label)}
 						<Div class="rounded-sm bg-white p-3 text-center dark:bg-gray-950">
 							<Span
-								class={`mb-3 block h-1 rounded-sm ${index === 1 ? 'bg-secondary-500' : 'bg-primary-500'}`}
+								class={twMerge(
+									'mb-3 block h-1 rounded-sm',
+									index === 1 ? 'bg-secondary-500' : 'bg-primary-500'
+								)}
 							/>
 							<P class="text-xs font-medium sm:text-sm">{label}</P>
 						</Div>
@@ -209,7 +220,12 @@
 				<Div class="mt-8 space-y-4">
 					{#each stages as stage, index (stage)}
 						<Div
-							class={`flex items-center gap-4 rounded-sm p-4 motion-safe:transition-all motion-safe:duration-500 ${isStocked && index < 2 ? 'bg-white/60 text-gray-500 dark:bg-gray-950/50 dark:text-gray-400' : 'bg-primary-500 text-white'}`}
+							class={twMerge(
+								'flex items-center gap-4 rounded-sm p-4 motion-safe:transition-all motion-safe:duration-500',
+								isStocked && index < 2
+									? 'bg-white/60 text-gray-500 dark:bg-gray-950/50 dark:text-gray-400'
+									: 'bg-primary-500 text-white'
+							)}
 						>
 							<Span
 								class="flex size-9 shrink-0 items-center justify-center rounded-sm bg-current/10"

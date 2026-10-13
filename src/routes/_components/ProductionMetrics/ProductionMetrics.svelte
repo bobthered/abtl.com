@@ -3,6 +3,7 @@
 	import { Button, Container, Div, H2, P, Section, Span } from '#lib/components';
 	import MetricCanvas from './MetricCanvas.svelte';
 	import { stockColors } from '#lib/data/stockColors.js';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const indicatorPositions = [
@@ -65,16 +66,16 @@
 			data-metric-grid
 		>
 			<Div
-				class={[
+				class={twMerge(
 					'pointer-events-none absolute -z-10 h-1/2 w-1/2 transition-all duration-500 ease-out motion-reduce:transition-none lg:h-full lg:w-1/4',
 					indicatorPositions[activeIndex]
-				].join(' ')}
+				)}
 				aria-hidden="true"
 				data-scroll-reveal="off"
 				data-metric-highlight
 			>
-				<Span class={[metricRuleClass, 'top-0'].join(' ')} />
-				<Span class={[metricRuleClass, 'bottom-0'].join(' ')} />
+				<Span class={twMerge(metricRuleClass, 'top-0')} />
+				<Span class={twMerge(metricRuleClass, 'bottom-0')} />
 			</Div>
 			{#each metrics as metric, index (metric.label)}
 				<Button

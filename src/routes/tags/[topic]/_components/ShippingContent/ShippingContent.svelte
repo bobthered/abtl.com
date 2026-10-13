@@ -23,6 +23,7 @@
 		stateRows
 	} from '../../../../../lib/components/ShippingGlobe/shippingLocations';
 	import type { Snippet } from 'svelte';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const shippingArtworkClass =
@@ -70,7 +71,7 @@
 					<Span class="sr-only">Shipping to all 50 states.</Span>
 				</Div>
 			</Div>
-			<Div class={[shippingArtworkClass, 'group p-6 sm:p-8'].join(' ')}>
+			<Div class={twMerge(shippingArtworkClass, 'group p-6 sm:p-8')}>
 				<Svg
 					data-scroll-stagger
 					viewBox="0 0 600 410"
@@ -124,7 +125,7 @@
 	>
 		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div class="order-2 lg:order-1">
-				<Div class={[shippingArtworkClass, 'relative'].join(' ')}>
+				<Div class={twMerge(shippingArtworkClass, 'relative')}>
 					<ShippingGlobe activeLocationId={selectedLocationId} />
 				</Div>
 			</Div>

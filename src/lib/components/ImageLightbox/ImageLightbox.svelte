@@ -3,6 +3,7 @@
 	import { Button, Dialog, Div, Img, P } from '#lib/components';
 	import { dismissOutside } from '#lib/attachments';
 	import { fade } from 'svelte/transition';
+	import { twMerge } from 'tailwind-merge';
 	import { X } from '#lib/icons';
 
 	// Types
@@ -130,7 +131,10 @@
 				loading="eager"
 				fetchpriority="high"
 				decoding="async"
-				class={`${isImageReady ? 'visible' : 'invisible'} h-auto max-h-[75dvh] w-auto max-w-full rounded-sm object-contain`}
+				class={twMerge(
+					isImageReady ? 'visible' : 'invisible',
+					'h-auto max-h-[75dvh] w-auto max-w-full rounded-sm object-contain'
+				)}
 				{@attach enterImage}
 			/>
 			{#if !isImageReady}

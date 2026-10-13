@@ -11,6 +11,7 @@ const config = {
 			options: { htmlWhitespaceSensitivity: 'ignore', parser: 'svelte' }
 		}
 	],
+	tailwindFunctions: ['twMerge'],
 	tailwindStylesheet: './src/routes/layout.css'
 };
 

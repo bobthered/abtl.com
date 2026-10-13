@@ -14,6 +14,7 @@
 	} from '#lib/components';
 	import { stockColors } from '#lib/data/stockColors.js';
 	import type { Topic } from '#lib/data/topics.js';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const artworkOrbClass =
@@ -40,27 +41,30 @@
 			data-artwork-glow
 		>
 			<Div
-				class={[
-					[artworkOrbClass, 'from-primary-400/20 dark:from-primary-500/15'].join(' '),
+				class={twMerge(
+					artworkOrbClass,
+					'from-primary-400/20 dark:from-primary-500/15',
 					kind === 'weather'
 						? 'top-2/3 right-0 -translate-y-1/2'
 						: 'top-2/3 left-0 -translate-y-1/2'
-				].join(' ')}
+				)}
 			/>
 			<Div
-				class={[
-					[artworkOrbClass, 'from-secondary-400/20 dark:from-secondary-500/15'].join(' '),
+				class={twMerge(
+					artworkOrbClass,
+					'from-secondary-400/20 dark:from-secondary-500/15',
 					kind === 'weather'
 						? 'top-1/3 left-0 -translate-y-1/2'
 						: 'top-1/3 right-0 -translate-y-1/2'
-				].join(' ')}
+				)}
 			/>
 			{#if kind === 'process'}
 				<Div
-					class={[
-						[artworkOrbClass, 'from-gray-400/15 dark:from-gray-200/20'].join(' '),
+					class={twMerge(
+						artworkOrbClass,
+						'from-gray-400/15 dark:from-gray-200/20',
 						'top-1/2 left-1/2 -translate-1/2'
-					].join(' ')}
+					)}
 				/>
 			{/if}
 		</Div>
@@ -83,10 +87,10 @@
 		<Div class="relative flex h-full w-full items-end justify-center" data-stock-fan>
 			{#each stockColors as color (color.id)}
 				<Div
-					class={[
+					class={twMerge(
 						'absolute top-1/2 -mt-3 w-24 origin-bottom -translate-y-1/2 motion-safe:transition-all motion-safe:duration-700 motion-safe:ease-out motion-safe:group-hover:-mt-6 motion-safe:group-focus-visible:-mt-6 sm:w-32 lg:w-36',
 						color.fanClass
-					].join(' ')}
+					)}
 					data-stock-color={color.id}
 				>
 					<StockTag class={color.className} />
@@ -123,25 +127,25 @@
 		</Skeleton>
 	{:else if kind === 'layers'}
 		<Skeleton
-			class={[
+			class={twMerge(
 				bentoLayerClass,
 				'translate-y-6 rotate-12 bg-gray-300 motion-safe:group-hover:translate-y-8 motion-safe:group-hover:rotate-16 motion-safe:group-focus-visible:translate-y-8 motion-safe:group-focus-visible:rotate-16 dark:bg-gray-600'
-			].join(' ')}
+			)}
 		/>
 		<Skeleton
-			class={[
+			class={twMerge(
 				bentoLayerClass,
 				'translate-y-3 -rotate-6 bg-gray-100 motion-safe:group-hover:-translate-y-1.5 motion-safe:group-hover:-rotate-9 motion-safe:group-focus-visible:-translate-y-1.5 motion-safe:group-focus-visible:-rotate-9 dark:bg-gray-800'
-			].join(' ')}
+			)}
 		/>
 		<Skeleton class={bentoLayerClass} />
 	{:else if kind === 'shape'}
 		<Div class="rounded-sm p-6 inset-ring-1 inset-ring-gray-300 dark:inset-ring-gray-600">
 			<Skeleton
-				class={[
+				class={twMerge(
 					bentoTagClass,
 					'relative motion-safe:group-hover:rotate-3 motion-safe:group-focus-visible:rotate-3'
-				].join(' ')}
+				)}
 			/>
 		</Div>
 	{:else if kind === 'feed'}
@@ -149,7 +153,7 @@
 			class="flex gap-4 motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:translate-x-4 motion-safe:group-focus-visible:translate-x-4"
 		>
 			{#each [0, 1, 2, 3] as tag (tag)}
-				<Skeleton class={[bentoTagClass, 'relative shrink-0'].join(' ')} />
+				<Skeleton class={twMerge(bentoTagClass, 'relative shrink-0')} />
 			{/each}
 		</Div>
 	{:else}

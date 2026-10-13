@@ -14,6 +14,7 @@
 	} from '#lib/components';
 	import { ArrowRight, Check, FlipHorizontal2, Layers, RotateCcw } from '#lib/icons';
 	import type { Snippet } from 'svelte';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const inks = [
@@ -94,12 +95,15 @@
 							data-process-ink={ink.code}
 						>
 							<Span
-								class={`size-6 shrink-0 rounded-full inset-ring-1 inset-ring-gray-950/10 ${ink.color}`}
+								class={twMerge(
+									'size-6 shrink-0 rounded-full inset-ring-1 inset-ring-gray-950/10',
+									ink.color
+								)}
 								aria-hidden="true"
 							/>
 							<Span class="flex-1 text-left">{ink.name}</Span>
 							<Check
-								class={`size-4 ${channels[index] === '1' ? 'opacity-100' : 'opacity-0'}`}
+								class={twMerge('size-4', channels[index] === '1' ? 'opacity-100' : 'opacity-0')}
 								aria-hidden="true"
 							/>
 						</Button>
@@ -158,7 +162,7 @@
 						<P class="mt-3 text-sm font-medium">Face / CMYK</P>
 						<Div class="mt-4 flex gap-1" aria-hidden="true">
 							{#each inks as ink (ink.code)}
-								<Span class={`h-2 flex-1 rounded-sm ${ink.color}`} />
+								<Span class={twMerge('h-2 flex-1 rounded-sm', ink.color)} />
 							{/each}
 						</Div>
 					</Div>
@@ -167,7 +171,7 @@
 						<P class="mt-3 text-sm font-medium">Back / CMYK</P>
 						<Div class="mt-4 flex gap-1" aria-hidden="true">
 							{#each inks as ink (ink.code)}
-								<Span class={`h-2 flex-1 rounded-sm ${ink.color}`} />
+								<Span class={twMerge('h-2 flex-1 rounded-sm', ink.color)} />
 							{/each}
 						</Div>
 					</Div>

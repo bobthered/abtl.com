@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Imports
 	import { Canvas, Div, Span, StockTag } from '#lib/components';
+	import { twMerge } from 'tailwind-merge';
 	import { weatherTag } from '#lib/attachments';
 
 	// $props()
@@ -21,7 +22,10 @@
 
 <Div
 	{@attach weatherTag}
-	class={`group/weather relative h-full w-full overflow-hidden text-gray-950 dark:text-gray-50 ${className}`}
+	class={twMerge(
+		'group/weather relative h-full w-full overflow-hidden text-gray-950 dark:text-gray-50',
+		className
+	)}
 	data-weather-tag
 	data-weather-attachment={attachment}
 	data-weather-material={material}
