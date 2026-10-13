@@ -117,8 +117,10 @@
 			variants={['neutral', 'icon']}
 			class="fixed top-4 right-4 z-10"
 			aria-label="Close image"
-			onclick={() => (isVisible = false)}><X class="size-5" aria-hidden="true" /></Button
+			onclick={() => (isVisible = false)}
 		>
+			<X class="size-5" aria-hidden="true" />
+		</Button>
 		<Div class="relative flex max-w-full flex-col items-center gap-4" data-lightbox-content>
 			<Img
 				{src}
@@ -138,7 +140,9 @@
 						: 'Loading image...'}
 				</P>
 			{/if}
-			{#if caption}<P class="text-center text-white">{caption}</P>{/if}
+			{#if caption}
+				<P class="text-center text-white">{caption}</P>
+			{/if}
 		</Div>
 	</Div>
 </Dialog>

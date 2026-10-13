@@ -12,9 +12,9 @@
 <Main id="main-content" tabindex={-1}>
 	<Section variants={['surface']}>
 		<Container variants={['section']}>
-			<A href="/news" class="mb-12" variants={['button.base', 'button.variant.neutral-outline']}
-				>All news</A
-			>
+			<A href="/news" class="mb-12" variants={['button.base', 'button.variant.neutral-outline']}>
+				All news
+			</A>
 			<NewsPostContent post={data.post} />
 		</Container>
 	</Section>

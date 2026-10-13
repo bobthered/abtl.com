@@ -23,7 +23,9 @@
 	class={`relative ${isLabel ? 'aspect-square rounded-sm bg-white p-6 shadow-lg' : 'aspect-1/2'} ${className}`}
 	data-variable-piece={record.id}
 >
-	{#if !isLabel}<StockTag class="absolute inset-0 h-full w-full text-white drop-shadow-lg" />{/if}
+	{#if !isLabel}
+		<StockTag class="absolute inset-0 h-full w-full text-white drop-shadow-lg" />
+	{/if}
 	<Div
 		class={isLabel
 			? 'flex h-full flex-col justify-between gap-4 text-gray-950'
@@ -32,17 +34,17 @@
 				: 'absolute inset-x-5 top-1/5 bottom-6 flex flex-col justify-between gap-3 text-gray-950'}
 	>
 		<Div>
-			<P class="text-xs font-semibold tracking-widest text-primary-600 uppercase"
-				>{isMailing ? 'A message for you' : isCompact ? 'ABTL' : 'Allen-Bailey'}</P
-			>
-			<P class={`leading-tight font-semibold ${isCompact ? 'mt-2 text-sm' : 'mt-3 text-lg'}`}
-				>{isMailing ? record.name : record.item}</P
-			>
-			<P class="mt-2 text-xs leading-relaxed"
-				>{isMailing ? record.address : record.location}{#if isMailing}<Span class="block"
-						>Sampletown, NY 00000</Span
-					>{/if}</P
-			>
+			<P class="text-xs font-semibold tracking-widest text-primary-600 uppercase">
+				{isMailing ? 'A message for you' : isCompact ? 'ABTL' : 'Allen-Bailey'}
+			</P>
+			<P class={`leading-tight font-semibold ${isCompact ? 'mt-2 text-sm' : 'mt-3 text-lg'}`}>
+				{isMailing ? record.name : record.item}
+			</P>
+			<P class="mt-2 text-xs leading-relaxed">
+				{isMailing ? record.address : record.location}{#if isMailing}
+					<Span class="block">Sampletown, NY 00000</Span>
+				{/if}
+			</P>
 		</Div>
 		<Div class={`flex items-end justify-between ${isCompact ? 'gap-1' : 'gap-3'}`}>
 			<Div class="min-w-0 flex-1">

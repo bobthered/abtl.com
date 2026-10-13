@@ -218,12 +218,12 @@
 		<Container variants={['section']}>
 			<Div class="mb-10 flex flex-wrap items-end justify-between gap-6 sm:mb-12">
 				<Div class="max-w-2xl">
-					<P class="mb-4 text-sm font-semibold text-primary-600 dark:text-primary-300"
-						>From the newsroom</P
-					>
-					<H2 id={`${uid}-heading`} variants={['section']}
-						>The latest, with a little perspective.</H2
-					>
+					<P class="mb-4 text-sm font-semibold text-primary-600 dark:text-primary-300">
+						From the newsroom
+					</P>
+					<H2 id={`${uid}-heading`} variants={['section']}>
+						The latest, with a little perspective.
+					</H2>
 				</Div>
 				<A href="/news" variants={['button.base', 'button.variant.neutral-outline']}>All news</A>
 			</Div>
@@ -243,23 +243,27 @@
 					role="group"
 					aria-label="News highlight controls"
 				>
-					<Span class="mr-3 text-sm text-gray-500 tabular-nums dark:text-gray-400"
-						>{newsHighlights.findIndex((story) => story.id === selected.id) + 1} / {newsHighlights.length}</Span
-					>
+					<Span class="mr-3 text-sm text-gray-500 tabular-nums dark:text-gray-400">
+						{newsHighlights.findIndex((story) => story.id === selected.id) + 1} / {newsHighlights.length}
+					</Span>
 					<Button
 						variants={['neutral-outline', 'icon']}
 						aria-label="Previous article"
 						aria-controls={`${uid}-images ${uid}-story`}
 						aria-disabled={isAnimating || newsHighlights.length < 2}
-						onclick={() => void move(-1)}><ChevronLeft class="size-5" aria-hidden="true" /></Button
+						onclick={() => void move(-1)}
 					>
+						<ChevronLeft class="size-5" aria-hidden="true" />
+					</Button>
 					<Button
 						variants={['neutral-outline', 'icon']}
 						aria-label="Next article"
 						aria-controls={`${uid}-images ${uid}-story`}
 						aria-disabled={isAnimating || newsHighlights.length < 2}
-						onclick={() => void move(1)}><ChevronRight class="size-5" aria-hidden="true" /></Button
+						onclick={() => void move(1)}
 					>
+						<ChevronRight class="size-5" aria-hidden="true" />
+					</Button>
 				</Div>
 				<!-- Reveal the stationary wrapper once; moving images handle their own transitions. -->
 				<Div data-scroll-reveal data-news-images-reveal>
@@ -320,31 +324,34 @@
 						aria-atomic="true"
 						data-news-story
 					>
-						<P class="mb-3 text-sm font-semibold text-primary-600 dark:text-primary-300"
-							>{selected.category}
-							{#if !selected.isPublished}<Span class="font-normal text-gray-500 dark:text-gray-400"
-									>/ Preview</Span
-								>{/if}</P
-						>
-						<H3 class="text-2xl font-semibold tracking-tight sm:text-3xl"
-							><A
+						<P class="mb-3 text-sm font-semibold text-primary-600 dark:text-primary-300">
+							{selected.category}
+							{#if !selected.isPublished}
+								<Span class="font-normal text-gray-500 dark:text-gray-400">/ Preview</Span>
+							{/if}
+						</P>
+						<H3 class="text-2xl font-semibold tracking-tight sm:text-3xl">
+							<A
 								href={`/news/${selected.id}`}
 								onclick={(event) => openPost(event, selected)}
 								aria-haspopup="dialog"
 								class="text-inherit hover:text-primary-600 dark:hover:text-primary-300"
-								>{selected.title}</A
-							></H3
-						>
-						<P class="mt-4 text-base text-gray-600 sm:text-lg dark:text-gray-300"
-							>{selected.description}</P
-						>
+							>
+								{selected.title}
+							</A>
+						</H3>
+						<P class="mt-4 text-base text-gray-600 sm:text-lg dark:text-gray-300">
+							{selected.description}
+						</P>
 						<A
 							href={`/news/${selected.id}`}
 							onclick={(event) => openPost(event, selected)}
 							aria-haspopup="dialog"
 							class="mt-5 inline-flex"
-							variants={['button.base']}>Read article</A
+							variants={['button.base']}
 						>
+							Read article
+						</A>
 					</Div>
 				</Div>
 			</Div>

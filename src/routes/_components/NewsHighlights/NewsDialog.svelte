@@ -121,8 +121,10 @@
 						aria-label="Close article"
 						onclick={closeDialog}
 						data-scroll-reveal="off"
-						data-news-close><X class="size-5" aria-hidden="true" /></Button
+						data-news-close
 					>
+						<X class="size-5" aria-hidden="true" />
+					</Button>
 				</Div>
 				<NewsPostContent post={selectedPost} headingId="news-dialog-heading" />
 			</Card>

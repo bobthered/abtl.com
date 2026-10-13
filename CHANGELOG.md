@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 77653d00276886fda1b29015c6a8c18642d37b5e -->
+<!-- pending-base: 72eb3e6286b0be2c56c93e9e7a0391813a89388c -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: apply color mode before the first paint
+refactor: standardize Svelte markup formatting
 
-Initialize saved or system color preference in the document head and remove delayed layout initialization.
-Preserve storage fallback and favicon updates, add browser regression coverage, and reconcile changelog history.
+Configure and document clean tag wrapping, reformat routes and components, and preserve inline spacing.
+Remove an unused shipping value, preserve updated shipping copy, and reconcile changelog history.
 ```
 
 ## 2026-10-12
+
+- **fix: apply color mode before the first paint** (`72eb3e6`)
+  Initialize the saved or system color preference in the document head, remove delayed layout initialization, and preserve storage fallback and favicon updates. Add browser regression coverage and reconcile changelog history.
 
 - **fix: zoom closer for nearby shipping destinations** (`77653d0`)
   Remove the fixed zoom cap so Canada's connection fills the canvas while keeping both endpoints visible. Extend responsive framing tests and reconcile changelog history.

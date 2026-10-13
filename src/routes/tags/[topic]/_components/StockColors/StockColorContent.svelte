@@ -120,21 +120,23 @@
 		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div>
 				<P variants={['eyebrow']}>Your color. Your message.</P>
-				<H3 id="stock-count-heading" class="text-4xl font-light tracking-tight sm:text-5xl"
-					>Make your message unmistakable.</H3
-				>
-				<P variants={['dialogBody']} class="mt-6"
-					>A color can say &ldquo;check this,&rdquo; &ldquo;keep this,&rdquo; or &ldquo;start
+				<H3 id="stock-count-heading" class="text-4xl font-light tracking-tight sm:text-5xl">
+					Make your message unmistakable.
+				</H3>
+				<P variants={['dialogBody']} class="mt-6">
+					A color can say &ldquo;check this,&rdquo; &ldquo;keep this,&rdquo; or &ldquo;start
 					here&rdquo; before anyone reads a word. Give every step in your workflow a color of its
-					own.</P
-				>
+					own.
+				</P>
 				<Div data-stock-color-counter class="mt-8 flex items-center gap-4">
 					<Span
 						class="text-6xl font-semibold tracking-tight text-primary-500 tabular-nums dark:text-primary-400"
 						aria-hidden="true"
 						data-count-up={stockColors.length}
-						data-stock-color-total>{stockColors.length}</Span
+						data-stock-color-total
 					>
+						{stockColors.length}
+					</Span>
 					<Span class="sr-only">{stockColors.length}</Span>
 					<P class="max-w-40 text-base">stock colors.<Br />One unmistakable impression.</P>
 				</Div>
@@ -187,35 +189,37 @@
 								data-stock-preview-color={selectedColorId}
 								data-stock-preview-side={isBackVisible ? 'back' : 'front'}
 							>
-								<Div class="w-full backface-hidden"
-									>{@render tagImage(selectedColorId, inspectionFront)}</Div
-								>
-								<Div class="absolute inset-0 rotate-y-180 backface-hidden"
-									>{@render tagImage(selectedColorId, inspectionBack)}</Div
-								>
+								<Div class="w-full backface-hidden">
+									{@render tagImage(selectedColorId, inspectionFront)}
+								</Div>
+								<Div class="absolute inset-0 rotate-y-180 backface-hidden">
+									{@render tagImage(selectedColorId, inspectionBack)}
+								</Div>
 							</Div>
 						</Button>
 					</Div>
 					<Div class="relative flex w-full items-center justify-between gap-4">
-						<P class="text-sm font-medium" aria-live="polite"
-							>{selectedColor.name} &middot; {isBackVisible ? 'Back' : 'Front'}</P
-						>
-						<Button variants={['neutral']} onclick={() => (isBackVisible = !isBackVisible)}
-							><RotateCw class="size-4" aria-hidden="true" />Flip tag</Button
-						>
+						<P class="text-sm font-medium" aria-live="polite">
+							{selectedColor.name} &middot; {isBackVisible ? 'Back' : 'Front'}
+						</P>
+						<Button variants={['neutral']} onclick={() => (isBackVisible = !isBackVisible)}>
+							<RotateCw class="size-4" aria-hidden="true" />Flip tag
+						</Button>
 					</Div>
 				</Div>
-				<Figcaption class="mt-4 text-sm text-gray-600 dark:text-gray-300"
-					>Your stock is part of the design. Explore our supplied tag artwork on each color;
-					physical samples are the best way to choose.</Figcaption
-				>
+				<Figcaption class="mt-4 text-sm text-gray-600 dark:text-gray-300">
+					Your stock is part of the design. Explore our supplied tag artwork on each color; physical
+					samples are the best way to choose.
+				</Figcaption>
 			</Figure>
 		</Div>
 	</Section>
 {/snippet}
 
 <Div data-stock-color-content>
-	{#if isStandalone}<Container>{@render studio()}</Container>{:else}{@render studio()}{/if}
+	{#if isStandalone}
+		<Container>{@render studio()}</Container>
+	{:else}{@render studio()}{/if}
 
 	<Section
 		variants={['dialogSection', 'sampleInvitation']}
@@ -224,19 +228,21 @@
 		data-color-section="samples"
 	>
 		<Container class="flex flex-col items-center gap-6">
-			<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600"
-				>From your screen to your hands</P
+			<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
+				From your screen to your hands
+			</P>
+			<H3
+				id="stock-samples-heading"
+				class="max-w-xl text-4xl font-light tracking-tight sm:text-5xl"
 			>
-			<H3 id="stock-samples-heading" class="max-w-xl text-4xl font-light tracking-tight sm:text-5xl"
-				>Meet your next tag color.</H3
-			>
-			<P class="max-w-lg text-lg text-gray-300 dark:text-gray-600"
-				>One favorite or a handful of possibilities. We'll send the stock colors you want to
-				compare.</P
-			>
-			<Button variants={['large', 'neutral']} onclick={onRequestSamples} aria-haspopup="dialog"
-				>Request Samples <ArrowRight class="size-5" aria-hidden="true" /></Button
-			>
+				Meet your next tag color.
+			</H3>
+			<P class="max-w-lg text-lg text-gray-300 dark:text-gray-600">
+				One favorite or a handful of possibilities. We'll send the stock colors you want to compare.
+			</P>
+			<Button variants={['large', 'neutral']} onclick={onRequestSamples} aria-haspopup="dialog">
+				Request Samples <ArrowRight class="size-5" aria-hidden="true" />
+			</Button>
 			<P class="text-sm text-gray-300 dark:text-gray-600">Choose your colors in one quick list.</P>
 		</Container>
 	</Section>

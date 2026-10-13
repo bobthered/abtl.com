@@ -23,6 +23,12 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 - Keep other declarations not explicitly covered by these sections in a suitable location based on their dependencies. Do not change `let` to `const` or alter reactive behavior to satisfy formatting.
 - Follow the project's formatter for indentation and spacing.
 
+## Svelte markup formatting
+
+- Use the shared Prettier Svelte configuration (`htmlWhitespaceSensitivity: 'ignore'`) for all component, route, and layout markup.
+- Keep a single-line opening tag's `>` on that line. If the opening tag or its content spans multiple lines, start the content on the following line and keep the closing tag intact on its own line. Never split a closing tag's `>` onto another line.
+- Indent nested markup consistently and run the project formatter after edits. Preserve intentional inline text spacing with explicit `{' '}` where necessary, especially around inline components and links.
+
 ## Functions
 
 - Use arrow functions for helpers, callbacks, and other function values. Declare named helpers with `const` and keep them in the `// helpers` section in Svelte scripts.

@@ -137,8 +137,9 @@
 	href="#main-content"
 	variants={['ghost']}
 	class="fixed top-3 left-3 z-30 -translate-y-24 rounded-sm bg-gray-50 px-5 py-3 text-primary-600 focus:translate-y-0 dark:bg-gray-950 dark:text-primary-300"
-	>Skip to content</A
 >
+	Skip to content
+</A>
 <Div
 	{@attach scrollReveal}
 	class={[
@@ -155,22 +156,24 @@
 				`relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none ${isScrolled ? 'lg:py-4' : 'lg:py-10'}`
 			].join(' ')}
 		>
-			<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}
-				><Logo aria-hidden="true" variants={['onSurface', 'site']} /></A
-			>
+			<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}>
+				<Logo aria-hidden="true" variants={['onSurface', 'site']} />
+			</A>
 			<Nav aria-label="Main navigation" class="hidden items-center gap-6 lg:flex xl:gap-12">
-				{#each navigation as item (item.label)}<A
-						aria-disabled="true"
-						title="Coming soon"
-						variants={['ghost', 'navigation']}>{item.label}</A
-					>{/each}
+				{#each navigation as item (item.label)}
+					<A aria-disabled="true" title="Coming soon" variants={['ghost', 'navigation']}>
+						{item.label}
+					</A>
+				{/each}
 			</Nav>
 			<Div class="hidden items-center gap-8 lg:flex">
 				<A
 					href="mailto:sales@abtl.com?subject=Tag%20and%20label%20quote"
 					variants={['ghost', 'accent']}
-					class="hidden xl:inline-flex">Request a Quote</A
+					class="hidden xl:inline-flex"
 				>
+					Request a Quote
+				</A>
 				<Button
 					type="button"
 					disabled
@@ -178,8 +181,9 @@
 					title="Online store coming soon"
 					variants={['ghost', 'icon']}
 					class="cursor-not-allowed border-l border-gray-200 pl-6 dark:border-gray-800"
-					><ShoppingCart aria-hidden="true" strokeWidth={1.8} class="size-8" /></Button
 				>
+					<ShoppingCart aria-hidden="true" strokeWidth={1.8} class="size-8" />
+				</Button>
 			</Div>
 			<Div class="lg:hidden">
 				<Popover
@@ -216,9 +220,9 @@
 							transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
 						>
 							{#each navigation as item (item.label)}
-								<A aria-disabled="true" title="Coming soon" variants={['ghost', 'navigation']}
-									>{item.label}</A
-								>
+								<A aria-disabled="true" title="Coming soon" variants={['ghost', 'navigation']}>
+									{item.label}
+								</A>
 							{/each}
 							<A
 								href="mailto:sales@abtl.com"
@@ -226,8 +230,10 @@
 									isMenuVisible = false;
 								}}
 								variants={['ghost', 'accent']}
-								class="py-4">Request a Quote</A
+								class="py-4"
 							>
+								Request a Quote
+							</A>
 						</Nav>
 					</Container>
 				</Popover>
@@ -266,8 +272,10 @@
 								aria-disabled="true"
 								title="Coming soon"
 								variants={['ghost', 'navigation']}
-								class="justify-start">{item.label}</A
+								class="justify-start"
 							>
+								{item.label}
+							</A>
 						{/each}
 					</Nav>
 				</Div>

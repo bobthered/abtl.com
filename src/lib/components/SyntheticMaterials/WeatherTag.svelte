@@ -36,8 +36,9 @@
 	{/if}
 	<Div
 		class="absolute inset-0 flex items-center justify-center group-data-[weather-ready=true]/weather:invisible"
-		><StockTag class="w-28 text-white" /></Div
 	>
+		<StockTag class="w-28 text-white" />
+	</Div>
 	<Canvas
 		class="absolute inset-0 h-full w-full text-primary-700 drop-shadow-sm dark:text-primary-300 dark:drop-shadow-none"
 	/>

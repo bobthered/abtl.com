@@ -157,10 +157,11 @@
 			}}
 			class="text-gray-600 dark:text-gray-300"
 		>
-			{#if isPaused || isReducedMotion}<Play class="size-4" aria-hidden="true" />{:else}<Pause
-					class="size-4"
-					aria-hidden="true"
-				/>{/if}
+			{#if isPaused || isReducedMotion}
+				<Play class="size-4" aria-hidden="true" />
+			{:else}
+				<Pause class="size-4" aria-hidden="true" />
+			{/if}
 		</Button>
 	</Div>
 	<Svg
@@ -227,7 +228,8 @@
 					])}
 					class={machineInkClass}
 				/>
-				{#if x >= 325}<Path
+				{#if x >= 325}
+					<Path
 						d={polygon([
 							[x + 5, 28, 36],
 							[x + 17, 28, 36],
@@ -235,20 +237,20 @@
 							[x + 5, 38, 36]
 						])}
 						class={machinePatchClass}
-					/>{/if}
+					/>
+				{/if}
 			{/each}
 		</G>
 		<!-- Closed rear cap and tangent-connected side wall form a solid cylinder. -->
 		<Path d={ring(30, 20, 78, 48)} class={machineRollFaceClass} />
 		<Path d={cylinderSide(30, 20, 78, 48, 70)} class="fill-tag-buff stroke-tag-brown stroke-1" />
-		{#each [48, 39, 30, 21] as radius (radius)}<Path
-				d={ring(30, 90, 78, radius)}
-				class={machineRollFaceClass}
-			/>{/each}
+		{#each [48, 39, 30, 21] as radius (radius)}
+			<Path d={ring(30, 90, 78, radius)} class={machineRollFaceClass} />
+		{/each}
 		<Path d={ring(30, 90, 78, 10)} class={machineInkClass} />
-		<G transform={`translate(${project([30, 90, 78]).join(' ')})`}
-			><G data-roll><Path d="M-7 -2H7V2H-7Z M-2 -7H2V7H-2Z" class="fill-white" /></G></G
-		>
+		<G transform={`translate(${project([30, 90, 78]).join(' ')})`}>
+			<G data-roll><Path d="M-7 -2H7V2H-7Z M-2 -7H2V7H-2Z" class="fill-white" /></G>
+		</G>
 		{#each stations as station (station.label)}
 			<!-- Open gantries expose the moving stock between each stage. -->
 			{@render block(station.x, 2, 32, 14, 12, 74)}
@@ -271,9 +273,9 @@
 	</Svg>
 	<Div class="flex flex-wrap justify-center gap-x-4 gap-y-2 px-2">
 		{#each ['Roll', 'Print', 'Patch', 'Clip', 'Cut', 'Stack'] as label, index (label)}
-			<Span class="text-xs text-gray-500 dark:text-gray-400"
-				><Span class="mr-1 text-primary-500 dark:text-primary-300">0{index + 1}</Span>{label}</Span
-			>
+			<Span class="text-xs text-gray-500 dark:text-gray-400">
+				<Span class="mr-1 text-primary-500 dark:text-primary-300">0{index + 1}</Span>{label}
+			</Span>
 		{/each}
 	</Div>
 </Div>

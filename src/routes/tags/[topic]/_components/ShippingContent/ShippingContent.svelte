@@ -33,15 +33,12 @@
 
 	// $state
 	let selectedLocationId = $state(internationalLocations[0].id);
-
-	// $derived
-	const selectedLocation = $derived(
-		internationalLocations.find((location) => location.id === selectedLocationId)!
-	);
 </script>
 
 {#snippet constrained(children: Snippet)}
-	{#if isStandalone}<Container>{@render children()}</Container>{:else}{@render children()}{/if}
+	{#if isStandalone}
+		<Container>{@render children()}</Container>
+	{:else}{@render children()}{/if}
 {/snippet}
 
 {#snippet domestic()}
@@ -53,23 +50,25 @@
 		<Div class="grid items-center gap-4 lg:grid-cols-2">
 			<Div>
 				<P variants={['eyebrow']}>Across the country</P>
-				<H3 id="shipping-domestic-heading" class="text-4xl font-light tracking-tight sm:text-5xl"
-					>Every state.<Br />Every possibility.</H3
-				>
-				<P variants={['dialogBody']} class="mt-6"
-					>From a neighborhood workshop to an operation with locations coast to coast. We ship tags
-					and labels to all 50 states, including Alaska and Hawaii.</P
-				>
-				<Div class="mt-8 flex items-center gap-5"
-					><Span
+				<H3 id="shipping-domestic-heading" class="text-4xl font-light tracking-tight sm:text-5xl">
+					Every state.<Br />Every possibility.
+				</H3>
+				<P variants={['dialogBody']} class="mt-6">
+					From a neighborhood workshop to an operation with locations coast to coast. We ship tags
+					and labels to all 50 states, including Alaska and Hawaii.
+				</P>
+				<Div class="mt-8 flex items-center gap-5">
+					<Span
 						class="text-8xl font-semibold tracking-tight text-primary-500 tabular-nums dark:text-primary-400"
 						aria-hidden="true"
 						data-count-up={shippedStateCount}
-						data-shipping-state-count>{shippedStateCount}</Span
-					><P class="max-w-36">states.<Br />One place to start.</P><Span class="sr-only"
-						>Shipping to all 50 states.</Span
-					></Div
-				>
+						data-shipping-state-count
+					>
+						{shippedStateCount}
+					</Span>
+					<P class="max-w-36">states.<Br />One place to start.</P>
+					<Span class="sr-only">Shipping to all 50 states.</Span>
+				</Div>
 			</Div>
 			<Div class={[shippingArtworkClass, 'group p-6 sm:p-8'].join(' ')}>
 				<Svg
@@ -100,16 +99,18 @@
 										x={x * 48 + 25}
 										y={y * 48 + 30}
 										text-anchor="middle"
-										class="fill-gray-950 text-xs font-semibold dark:fill-gray-50">{state}</Text
+										class="fill-gray-950 text-xs font-semibold dark:fill-gray-50"
 									>
+										{state}
+									</Text>
 								</G>
 							{/if}
 						{/each}
 					{/each}
 				</Svg>
-				<P class="mt-5 text-sm text-gray-600 dark:text-gray-300"
-					>Coast to coast, and beyond the lower 48.</P
-				>
+				<P class="mt-5 text-sm text-gray-600 dark:text-gray-300">
+					Coast to coast, and beyond the lower 48.
+				</P>
 			</Div>
 		</Div>
 	</Section>
@@ -122,31 +123,24 @@
 		aria-labelledby="shipping-international-heading"
 	>
 		<Div class="grid items-center gap-4 lg:grid-cols-2">
-			<Div class="order-2 lg:order-1"
-				><Div class={[shippingArtworkClass, 'relative'].join(' ')}
-					><ShippingGlobe activeLocationId={selectedLocationId} />
-					<!-- <Div
-						class="absolute right-6 bottom-6 left-6 rounded-sm bg-white/90 p-4 backdrop-blur-sm dark:bg-gray-950/90"
-						>
-						<P class="text-sm font-medium" aria-live="polite" data-shipping-destination
-							>{selectedLocation.countryName}</P
-						>
-						</Div> -->
-					</Div
-				></Div
-			>
+			<Div class="order-2 lg:order-1">
+				<Div class={[shippingArtworkClass, 'relative'].join(' ')}>
+					<ShippingGlobe activeLocationId={selectedLocationId} />
+				</Div>
+			</Div>
 			<Div class="order-1 lg:order-2">
 				<P variants={['eyebrow']}>Beyond borders</P>
 				<H3
 					id="shipping-international-heading"
 					class="text-4xl font-light tracking-tight sm:text-5xl"
-					>Your work goes places.<Br />Your tags can, too.</H3
 				>
-				<P variants={['dialogBody']} class="mt-6"
-					>A different country shouldn't mean starting over with your tags. We ship internationally.
-					Tell us where your order needs to go, and let's plan the details together.</P
-				>
-				<P class="mt-8 mb-3 text-sm font-medium">Explore actual destinations</P>
+					Your work goes places.<Br />Your tags can, too.
+				</H3>
+				<P variants={['dialogBody']} class="mt-6">
+					Need your product shipped internationally? Tell us where your order needs to go and we'll
+					handle the rest.
+				</P>
+				<P class="mt-8 mb-3 text-sm font-medium">Some of our recent shipments</P>
 				<Div
 					class="flex flex-wrap gap-2"
 					role="group"
@@ -157,17 +151,11 @@
 							variants={['neutral', ...(selectedLocationId === location.id ? ['selected'] : [])]}
 							aria-pressed={selectedLocationId === location.id}
 							onclick={() => (selectedLocationId = location.id)}
-							><MapPin class="size-4" aria-hidden="true" />{location.countryName}</Button
 						>
+							<MapPin class="size-4" aria-hidden="true" />{location.countryName}
+						</Button>
 					{/each}
 				</Div>
-				<!-- <P class="mt-5 text-xs leading-relaxed text-gray-500 dark:text-gray-400"
-					>Locations are approximate; arcs illustrate connections, not carrier routes or transit
-					times.
-					<A href="https://www.geonames.org/" target="_blank" rel="noreferrer"
-						>Map coordinates: GeoNames</A
-					>.</P
-				> -->
 			</Div>
 		</Div>
 	</Section>
@@ -175,29 +163,31 @@
 
 {#snippet invitation()}
 	<Container class="flex flex-col items-center gap-6">
-		<Div class="flex gap-3" aria-hidden="true"
-			><PackageCheck class="size-7" /><Globe2 class="size-7" /></Div
-		>
-		<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600"
-			>Let's put your project on the map</P
-		>
+		<Div class="flex gap-3" aria-hidden="true">
+			<PackageCheck class="size-7" /><Globe2 class="size-7" />
+		</Div>
+		<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
+			Let's put your project on the map
+		</P>
 		<H3
 			id="shipping-contact-heading"
 			class="max-w-2xl text-4xl font-light tracking-tight sm:text-5xl"
-			>Where do your tags need to go?</H3
 		>
-		<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600"
-			>Share your destination, the tags you need, and your timing. We'll help you work through the
-			next steps.</P
-		>
+			Where do your tags need to go?
+		</H3>
+		<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
+			Share your destination, the tags you need, and your timing. We'll help you work through the
+			next steps.
+		</P>
 		<A
 			href="mailto:sales@abtl.com?subject=Shipping%20inquiry&body=Destination%3A%0ATags%20or%20labels%20needed%3A%0AQuantity%3A%0ATiming%3A"
 			variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
-			>Talk about shipping <ArrowRight class="size-5" aria-hidden="true" /></A
 		>
-		<P class="text-sm text-gray-300 dark:text-gray-600"
-			>Your destination. Your project. Let's make a plan.</P
-		>
+			Talk about shipping <ArrowRight class="size-5" aria-hidden="true" />
+		</A>
+		<P class="text-sm text-gray-300 dark:text-gray-600">
+			Your destination. Your project. Let's make a plan.
+		</P>
 	</Container>
 {/snippet}
 
@@ -208,6 +198,8 @@
 		variants={['sampleInvitation']}
 		class={isStandalone ? '' : '-mx-6 sm:-mx-8 lg:-mx-16'}
 		data-shipping-section="contact"
-		aria-labelledby="shipping-contact-heading">{@render invitation()}</Section
+		aria-labelledby="shipping-contact-heading"
 	>
+		{@render invitation()}
+	</Section>
 </Div>

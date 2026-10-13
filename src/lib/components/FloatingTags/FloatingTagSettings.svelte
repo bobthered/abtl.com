@@ -19,9 +19,9 @@
 	</Summary>
 	<Div class="mt-5 space-y-5">
 		<Div class="space-y-2">
-			<Label for="tag-max-distance" class="flex justify-between gap-4"
-				>Max distance <Span>{settings.maxDistance}px</Span></Label
-			>
+			<Label for="tag-max-distance" class="flex justify-between gap-4">
+				Max distance <Span>{settings.maxDistance}px</Span>
+			</Label>
 			<Range
 				id="tag-max-distance"
 				min={Math.max(settingLimits.maxDistance.min, settings.closestDistance)}
@@ -32,9 +32,9 @@
 			/>
 		</Div>
 		<Div class="space-y-2">
-			<Label for="tag-closest-distance" class="flex justify-between gap-4"
-				>Closest distance <Span>{settings.closestDistance}px</Span></Label
-			>
+			<Label for="tag-closest-distance" class="flex justify-between gap-4">
+				Closest distance <Span>{settings.closestDistance}px</Span>
+			</Label>
 			<Range
 				id="tag-closest-distance"
 				min={settingLimits.closestDistance.min}
@@ -46,9 +46,9 @@
 			<P class="text-xs">Negative distances bring tags toward you.</P>
 		</Div>
 		<Div class="space-y-2">
-			<Label for="tag-blur-scale" class="flex justify-between gap-4"
-				>Blur scale <Span>{settings.blurScale.toFixed(1)}×</Span></Label
-			>
+			<Label for="tag-blur-scale" class="flex justify-between gap-4">
+				Blur scale <Span>{settings.blurScale.toFixed(1)}×</Span>
+			</Label>
 			<Range
 				id="tag-blur-scale"
 				min={settingLimits.blurScale.min}
@@ -59,9 +59,9 @@
 			/>
 		</Div>
 		<Div class="space-y-2">
-			<Label for="tag-count" class="flex justify-between gap-4"
-				>Tag count <Span>{settings.tagCount}</Span></Label
-			>
+			<Label for="tag-count" class="flex justify-between gap-4">
+				Tag count <Span>{settings.tagCount}</Span>
+			</Label>
 			<Range
 				id="tag-count"
 				min={settingLimits.tagCount.min}
@@ -72,9 +72,9 @@
 			/>
 		</Div>
 		<Div class="space-y-2">
-			<Label for="tag-parallax-speed" class="flex justify-between gap-4"
-				>Parallax speed <Span>{settings.parallaxSpeed.toFixed(1)}×</Span></Label
-			>
+			<Label for="tag-parallax-speed" class="flex justify-between gap-4">
+				Parallax speed <Span>{settings.parallaxSpeed.toFixed(1)}×</Span>
+			</Label>
 			<Range
 				id="tag-parallax-speed"
 				min={settingLimits.parallaxSpeed.min}
@@ -88,7 +88,9 @@
 			variants={['ghost']}
 			onclick={() => {
 				settings = { ...defaultSettings };
-			}}>Reset defaults</Button
+			}}
 		>
+			Reset defaults
+		</Button>
 	</Div>
 </Details>

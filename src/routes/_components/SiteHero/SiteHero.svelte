@@ -148,13 +148,16 @@
 				<Div class="flex items-center gap-4">
 					<Span
 						class="text-xl font-semibold tracking-tight text-gray-400 sm:text-2xl dark:text-gray-500"
-						>{word}</Span
 					>
+						{word}
+					</Span>
 					<Svg
 						viewBox="0 0 24 14"
 						class="h-auto w-8 shrink-0 fill-abtl-red-500/60"
-						aria-hidden="true"><Path d={redPath} /></Svg
+						aria-hidden="true"
 					>
+						<Path d={redPath} />
+					</Svg>
 				</Div>
 			{/snippet}
 		</Marquee>

@@ -84,7 +84,9 @@
 			variants={['ghost']}
 			onclick={() => {
 				isVisible = false;
-			}}>Dismiss</Button
+			}}
 		>
+			Dismiss
+		</Button>
 	</Div>
 </Dialog>

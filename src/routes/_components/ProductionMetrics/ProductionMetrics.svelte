@@ -101,13 +101,16 @@
 					<Span
 						class="block text-5xl leading-none font-light tracking-tight whitespace-nowrap tabular-nums sm:text-6xl"
 					>
-						{#if metric.prefix}<Span class="mr-2 text-sm font-medium tracking-normal sm:text-base"
-								>{metric.prefix}</Span
-							>{/if}<Span data-count-up={metric.value}>{metric.value}</Span>{metric.suffix}
+						{#if metric.prefix}
+							<Span class="mr-2 text-sm font-medium tracking-normal sm:text-base">
+								{metric.prefix}
+							</Span>
+						{/if}
+						<Span data-count-up={metric.value}>{metric.value}</Span>{metric.suffix}
 					</Span>
-					<Span class="block max-w-56 text-sm leading-relaxed sm:text-base"
-						>{metric.description}</Span
-					>
+					<Span class="block max-w-56 text-sm leading-relaxed sm:text-base">
+						{metric.description}
+					</Span>
 				</Button>
 			{/each}
 		</Div>

@@ -179,8 +179,10 @@
 						aria-label="Close topic"
 						onclick={closeDialog}
 						data-scroll-reveal="off"
-						data-bento-close><X class="size-5" aria-hidden="true" /></Button
+						data-bento-close
 					>
+						<X class="size-5" aria-hidden="true" />
+					</Button>
 				</Div>
 				<BentoTopicContent topic={selectedTopic} onClose={closeDialog} />
 			</Card>

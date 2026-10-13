@@ -185,10 +185,10 @@
 		onkeydown={browseItems}
 		data-marquee
 	>
-		<Span id={helpId} class="sr-only"
-			>Hover or focus to pause. Drag horizontally or use the left and right arrow keys to browse
-			items.</Span
-		>
+		<Span id={helpId} class="sr-only">
+			Hover or focus to pause. Drag horizontally or use the left and right arrow keys to browse
+			items.
+		</Span>
 		<Div
 			bind:element={track}
 			class={['relative flex w-max shrink-0 will-change-transform', gapClass].join(' ')}

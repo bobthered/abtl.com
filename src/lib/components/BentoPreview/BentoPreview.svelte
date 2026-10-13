@@ -66,14 +66,16 @@
 		</Div>
 	{/if}
 	{#if kind === 'globe'}
-		<Div class="relative h-full w-full"
-			><ShippingGlobe class="absolute inset-0 aspect-auto h-full w-full" />
-			<!-- <Span
+		<Div class="relative h-full w-full">
+			<ShippingGlobe class="absolute inset-0 aspect-auto h-full w-full" />
+			<!--
+			<Span
 				class="absolute right-4 bottom-4 text-xs text-gray-500 dark:text-gray-400"
-				>Actual destinations</Span
-			> -->
-			</Div
-		>
+			>
+				Actual destinations
+			</Span>
+			-->
+		</Div>
 	{:else if kind === 'columns'}
 		<StockTagColumns />
 	{:else if kind === 'fan'}
@@ -101,12 +103,14 @@
 	{:else if kind === 'weather'}
 		<WeatherTag isPreview />
 	{:else if kind === 'process'}
-		<Div class="relative h-full w-full"
-			><ProcessArtwork isPreview /><Div
+		<Div class="relative h-full w-full">
+			<ProcessArtwork isPreview />
+			<Div
 				class="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center gap-4 text-xs font-medium text-gray-600 dark:text-gray-300"
-				><Span>C</Span><Span>M</Span><Span>Y</Span><Span>K</Span></Div
-			></Div
-		>
+			>
+				<Span>C</Span><Span>M</Span><Span>Y</Span><Span>K</Span>
+			</Div>
+		</Div>
 	{:else if kind === 'print'}
 		<Skeleton class={bentoTagClass}>
 			<Div

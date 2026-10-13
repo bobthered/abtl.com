@@ -63,8 +63,9 @@
 		>
 			<Span
 				class="flex items-center justify-center [&_path]:transition-transform [&_path]:duration-300 motion-reduce:[&_path]:transition-none motion-safe:group-hover:[&_path:nth-child(-n+2)]:translate-x-0.25 motion-safe:group-hover:[&_path:nth-child(-n+2)]:-translate-y-0.25 motion-safe:group-focus-visible:[&_path:nth-child(-n+2)]:translate-x-0.25 motion-safe:group-focus-visible:[&_path:nth-child(-n+2)]:-translate-y-0.25 motion-safe:group-hover:[&_path:nth-child(n+3)]:-translate-x-0.25 motion-safe:group-hover:[&_path:nth-child(n+3)]:translate-y-0.25 motion-safe:group-focus-visible:[&_path:nth-child(n+3)]:-translate-x-0.25 motion-safe:group-focus-visible:[&_path:nth-child(n+3)]:translate-y-0.25"
-				><Maximize2 class="size-5 overflow-visible" /></Span
 			>
+				<Maximize2 class="size-5 overflow-visible" />
+			</Span>
 		</Span>
 	{/if}
 	{#if title}

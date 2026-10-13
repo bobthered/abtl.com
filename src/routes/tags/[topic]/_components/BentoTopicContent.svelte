@@ -67,8 +67,8 @@
 {/snippet}
 
 {#snippet introduction()}
-	<P variants={['eyebrow']}
-		>{topic.id === 'colors'
+	<P variants={['eyebrow']}>
+		{topic.id === 'colors'
 			? 'Stock tag colors'
 			: topic.id === 'shipping'
 				? 'Shipping & reach'
@@ -80,15 +80,15 @@
 							? 'Four-color process printing'
 							: topic.id === 'synthetic-materials'
 								? 'Synthetic tag materials'
-								: 'Content preview'}</P
-	>
+								: 'Content preview'}
+	</P>
 	{#if isStandalone}
 		<H1 id="bento-dialog-heading" variants={['h2.variant.section']}>{topic.title}</H1>
 	{:else}
 		<H2 id="bento-dialog-heading" variants={['section']}>{topic.title}</H2>
 	{/if}
-	<P id="bento-dialog-description" class="mt-6 max-w-xl text-lg text-gray-600 dark:text-gray-300"
-		>{#if topic.id === 'colors'}
+	<P id="bento-dialog-description" class="mt-6 max-w-xl text-lg text-gray-600 dark:text-gray-300">
+		{#if topic.id === 'colors'}
 			Make the next step easy to spot. Use color to distinguish a process, organize a collection, or
 			give your tags a look of their own.
 		{:else if topic.id === 'shipping'}
@@ -109,17 +109,16 @@
 		{:else}This is a layout preview for {topic.description
 				.toLowerCase()
 				.replace(/^explore /, '')
-				.replace(/\.$/, '')}. Product details, examples, and artwork will be added here.{/if}</P
-	>
+				.replace(/\.$/, '')}. Product details, examples, and artwork will be added here.{/if}
+	</P>
 {/snippet}
 
 {#snippet examplesIntroduction()}
-	<Div class="border-t border-gray-200 pt-12 sm:pt-16 dark:border-gray-800" data-color-divider
-	></Div>
+	<Div class="border-t border-gray-200 pt-12 sm:pt-16 dark:border-gray-800" data-color-divider />
 	<H3 id="stock-examples-heading" class="text-3xl sm:text-4xl">Color, out in the world.</H3>
-	<P variants={['dialogBody']} class="mt-4"
-		>Illustrative examples of stock colors at work, from the parts shelf to the service bench.</P
-	>
+	<P variants={['dialogBody']} class="mt-4">
+		Illustrative examples of stock colors at work, from the parts shelf to the service bench.
+	</P>
 {/snippet}
 
 <Div
@@ -128,9 +127,9 @@
 >
 	<Div class="pb-12 sm:pb-16" data-topic-introduction>{@render constrained(introduction)}</Div>
 	{#if !isDetailedTopic}
-		<Div class="group my-12 rounded-sm bg-gray-100 p-8 sm:p-12 dark:bg-gray-950"
-			><BentoPreview kind={topic.preview} isDialogPreview /></Div
-		>
+		<Div class="group my-12 rounded-sm bg-gray-100 p-8 sm:p-12 dark:bg-gray-950">
+			<BentoPreview kind={topic.preview} isDialogPreview />
+		</Div>
 	{/if}
 	{#if topic.id === 'colors'}
 		<Section
@@ -171,12 +170,11 @@
 				<Div class="space-y-6">
 					<H3 id={`bento-detail-${index}`} class="text-2xl font-medium tracking-tight">{title}</H3>
 					{#each [0, 1, 2] as line (line)}
-						<Div class="space-y-3" aria-hidden="true"
-							><Skeleton variants={['bento']} class="h-3 w-full" /><Skeleton
-								variants={['bento']}
-								class="h-3 w-5/6"
-							/><Skeleton variants={['bento']} class="h-3 w-2/3" /></Div
-						>
+						<Div class="space-y-3" aria-hidden="true">
+							<Skeleton variants={['bento']} class="h-3 w-full" />
+							<Skeleton variants={['bento']} class="h-3 w-5/6" />
+							<Skeleton variants={['bento']} class="h-3 w-2/3" />
+						</Div>
 					{/each}
 				</Div>
 				<Skeleton variants={['bento']} class="min-h-64 rounded-sm" />
@@ -192,18 +190,21 @@
 			<A
 				href={`mailto:sales@abtl.com?subject=${encodeURIComponent(topic.title)}`}
 				variants={['button.base']}
-				>Discuss your project
-				<ArrowRight class="size-4" aria-hidden="true" /></A
 			>
+				Discuss your project
+				<ArrowRight class="size-4" aria-hidden="true" />
+			</A>
 			{#if onClose}
 				<Button variants={['ghost']} onclick={onClose}>Back to possibilities</Button>
 			{:else}
-				<A href="/#possibilities" variants={['button.base', 'button.variant.ghost']}
-					>Back to possibilities</A
-				>
+				<A href="/#possibilities" variants={['button.base', 'button.variant.ghost']}>
+					Back to possibilities
+				</A>
 			{/if}
 		</Section>
 	{/if}
 </Div>
 
-{#if topic.id === 'colors'}<StockSampleDialog bind:isVisible={isSamplesVisible} />{/if}
+{#if topic.id === 'colors'}
+	<StockSampleDialog bind:isVisible={isSamplesVisible} />
+{/if}

@@ -87,28 +87,32 @@
 			<Div class="flex shrink-0 items-start justify-between gap-4">
 				<Div>
 					<H2 id="stock-sample-title" class="text-2xl font-semibold">Request Samples</H2>
-					<P id="stock-sample-description" class="mt-2 text-sm text-gray-600 dark:text-gray-300"
-						>Choose one color or several to compare.</P
-					>
+					<P id="stock-sample-description" class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+						Choose one color or several to compare.
+					</P>
 				</Div>
 				<Button
 					variants={['neutral', 'icon']}
 					aria-label="Close sample request"
-					onclick={() => (isVisible = false)}><X class="size-5" aria-hidden="true" /></Button
+					onclick={() => (isVisible = false)}
 				>
+					<X class="size-5" aria-hidden="true" />
+				</Button>
 			</Div>
 			<Div class="flex shrink-0 justify-end">
-				<Button variants={['neutral']} onclick={toggleAllColors}
-					>{isAllSelected ? 'Clear all' : 'Select all'}</Button
-				>
+				<Button variants={['neutral']} onclick={toggleAllColors}>
+					{isAllSelected ? 'Clear all' : 'Select all'}
+				</Button>
 			</Div>
 			<Div class="min-h-0 overflow-y-auto p-1" data-sample-color-list>
 				{#each stockColorGroups as group (group.id)}
 					<Div class="mb-4 last:mb-0" role="group" aria-labelledby={`sample-group-${group.id}`}>
 						<H3
 							id={`sample-group-${group.id}`}
-							class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-300">{group.name}</H3
+							class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-300"
 						>
+							{group.name}
+						</H3>
 						<Div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
 							{#each group.colors as color (color.id)}
 								<Button
@@ -130,10 +134,9 @@
 										data-color-dot
 									/>
 									<Span class="grow">{color.name}</Span>
-									{#if selectedColorIds.includes(color.id)}<Check
-											class="size-4 shrink-0 text-primary-500"
-											aria-hidden="true"
-										/>{/if}
+									{#if selectedColorIds.includes(color.id)}
+										<Check class="size-4 shrink-0 text-primary-500" aria-hidden="true" />
+									{/if}
 								</Button>
 							{/each}
 						</Div>
@@ -143,21 +146,21 @@
 			<Div
 				class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-gray-200 pt-4 dark:border-gray-800"
 			>
-				<P class="text-sm text-gray-600 dark:text-gray-300" aria-live="polite"
-					>{selectedColors.length
+				<P class="text-sm text-gray-600 dark:text-gray-300" aria-live="polite">
+					{selectedColors.length
 						? `${selectedColors.length} ${selectedColors.length === 1 ? 'color' : 'colors'} selected`
-						: 'Select colors to continue'}</P
-				>
+						: 'Select colors to continue'}
+				</P>
 				{#if selectedColors.length}
-					<A href={sampleHref} variants={['button.base']} data-stock-sample-request
-						>Email sample request</A
-					>
+					<A href={sampleHref} variants={['button.base']} data-stock-sample-request>
+						Email sample request
+					</A>
 				{:else}
 					<Button disabled>Email sample request</Button>
 				{/if}
-				<P class="w-full text-xs text-gray-600 dark:text-gray-300"
-					>Opens your email app. Add your shipping details before sending.</P
-				>
+				<P class="w-full text-xs text-gray-600 dark:text-gray-300">
+					Opens your email app. Add your shipping details before sending.
+				</P>
 			</Div>
 		</Card>
 	</Div>

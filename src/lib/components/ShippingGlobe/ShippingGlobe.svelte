@@ -84,19 +84,16 @@
 		aria-hidden="true"
 		focusable="false"
 	>
-		<Defs
-			><LinearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1"
-				><Stop
-					offset="0"
-					stop-color="currentColor"
-					class="text-primary-600 dark:text-primary-400"
-				/><Stop
+		<Defs>
+			<LinearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+				<Stop offset="0" stop-color="currentColor" class="text-primary-600 dark:text-primary-400" />
+				<Stop
 					offset="1"
 					stop-color="currentColor"
 					class="text-secondary-600 dark:text-secondary-400"
-				/></LinearGradient
-			></Defs
-		>
+				/>
+			</LinearGradient>
+		</Defs>
 		<Path d={globeFallbackPath} fill={`url(#${gradientId})`} />
 		<Path
 			d={shipmentFallbackPath}
