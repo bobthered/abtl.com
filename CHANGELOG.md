@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 1a5b6c7c525d1ba839b1d23799f0533c04fe5c2e -->
+<!-- pending-base: 24db416a60d922ee90ebd9734a4c124781f2e98e -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add navigation pages and sign-in placeholder
+feat: add directional mega navigation and submenu pages
 
-Add product, market, capability, about, contact, career, and resource pages alongside the existing newsroom, with shared layouts and relevant topic links.
-Connect desktop, mobile, and footer navigation; replace quote and cart controls with a disabled Sign In CTA and cover route loading and mobile navigation.
-Preserve outlined dialog and topic controls, printing flip-icon changes, and copy simplifications; reconcile changelog history.
+Move Contact beside Sign In and group desktop navigation into a shared sliding mega menu, with directional transitions, chevrons, keyboard access, dismissal, and reduced-motion support.
+Place News and Careers last; add expandable mobile sections and twelve product, market, capability, and resource guides while preserving the six About topic routes.
+Connect overview links, extend navigation and route coverage, and reconcile changelog history.
 ```
 
 ## 2026-10-13
+
+- **feat: add navigation pages and sign-in placeholder** (`24db416`)
+  Add product, market, capability, about, contact, career, and resource pages alongside the existing newsroom. Connect desktop, mobile, and footer navigation; replace header quote and cart controls with a disabled Sign In placeholder. Preserve outlined dialog controls, printing flip-icon changes, and copy simplifications; add route and mobile navigation coverage.
 
 - **refactor: unify product illustration styling and motion** (`1a5b6c7`)
   Share the stock-color gradient surface and gentle floating attachment across stock colors, three synthetic illustrations, and both printing illustrations. Preserve artwork controls, reduced motion, and offscreen pausing; document reuse and add responsive theme coverage.

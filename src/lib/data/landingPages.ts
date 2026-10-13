@@ -23,14 +23,14 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Tags',
 				'Hang, tie, or attach your message. Explore stock colors, synthetic materials, and wire, string, or elastic attachments.',
-				'/about/stock-colors',
-				'Explore stock colors'
+				'/products/tags',
+				'Explore tags'
 			],
 			[
 				'Labels',
 				'Put your message on the product itself. Combine full-color artwork with barcodes, QR codes, or personalized information.',
-				'/about/variable-data',
-				'Explore variable data'
+				'/products/labels',
+				'Explore labels'
 			],
 			[
 				'Outdoor identification',
@@ -58,7 +58,7 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Equipment & service',
 				'Keep identification and inspection information with the item. Sequential numbering and scannable codes can connect the printed piece to your records.',
-				'/about/variable-data',
+				'/markets/equipment-service',
 				'Explore identification'
 			],
 			[
@@ -70,13 +70,13 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Retail & brand presentation',
 				'Give your product a considered finishing touch with full-color tags and labels, including artwork on both sides.',
-				'/about/full-color-printing',
-				'Explore full-color printing'
+				'/markets/retail',
+				'Explore retail applications'
 			],
 			[
 				'Outdoor use',
 				'Choose a waterproof synthetic tag and an attachment suited to the handling and exposure you describe.',
-				'/about/synthetic-materials',
+				'/markets/outdoor',
 				'Explore outdoor materials'
 			]
 		],
@@ -98,13 +98,13 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Full-color printing',
 				'Four-color process creates full-color artwork. Up to eight total colors allow CMYK on both the face and back.',
-				'/about/full-color-printing',
+				'/capabilities/printing',
 				'See printing in action'
 			],
 			[
 				'Variable data',
 				'Barcodes, QR codes, sequential numbering, and mailing personalization make each printed piece its own.',
-				'/about/variable-data',
+				'/capabilities/variable-data',
 				'Explore variable data'
 			],
 			[
@@ -122,7 +122,7 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Warehousing',
 				'Produce in volume for manufacturing efficiencies. Keep finished goods on our shelves for later shipments.',
-				'/about/warehousing',
+				'/capabilities/fulfillment',
 				'Plan later releases'
 			],
 			[
@@ -259,14 +259,14 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Plan your artwork',
 				'Consider what belongs on the face and back. Explore four-color process and discuss artwork preparation with our team.',
-				'/about/full-color-printing',
-				'Explore printing'
+				'/resources/artwork',
+				'Read the artwork guide'
 			],
 			[
 				'Prepare changing data',
 				'Think through the records, numbering, barcode content, or destination URLs each piece should carry.',
-				'/about/variable-data',
-				'Explore variable data'
+				'/resources/ordering',
+				'Read the ordering guide'
 			],
 			[
 				'Plan your supply',

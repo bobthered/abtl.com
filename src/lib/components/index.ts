@@ -9,6 +9,7 @@ export { default as Logo } from './Logo/Logo.svelte';
 export { default as Marquee } from './Marquee/Marquee.svelte';
 export { default as ProcessArtwork } from './ProcessPrinting/ProcessArtwork.svelte';
 export { default as ShippingGlobe } from './ShippingGlobe/ShippingGlobe.svelte';
+export { default as SiteNavigation } from './SiteNavigation/SiteNavigation.svelte';
 export { default as StockTag } from './StockTag/StockTag.svelte';
 export { default as StockTagColumns } from './BentoPreview/StockTagColumns.svelte';
 export { default as VariableDataPreview } from './VariableData/VariableDataPreview.svelte';

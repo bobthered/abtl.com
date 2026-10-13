@@ -5,24 +5,27 @@
 		A,
 		Button,
 		Container,
+		Details,
 		Div,
 		Footer,
 		Header,
 		Logo,
 		Nav,
 		P,
-		Popover
+		Popover,
+		SiteNavigation,
+		Summary
 	} from '#lib/components';
 	import { browser } from '$app/env';
+	import { ChevronDown, Menu, X } from '#lib/icons';
 	import type { ComponentProps } from 'svelte';
+	import { contactNavigation, navigation } from '#lib/data/navigation.js';
 	import { createPageTitle } from '#lib/pageTitle.js';
 	import { fade } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
 	import faviconDark from '#lib/assets/favicon-dark.svg';
 	import { initializeTheme } from '#lib/theme.js';
 	import type { LayoutProps } from './$types';
-	import { Menu, X } from '#lib/icons';
-	import { navigation } from '#lib/data/navigation.js';
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { scrollReveal } from '#lib/attachments';
@@ -150,25 +153,18 @@
 		<Container
 			class={twMerge(
 				'min-h-[calc(var(--site-header-height)-1px)]',
-				'relative flex items-center justify-between gap-6 py-6 transition-all duration-200 motion-reduce:transition-none',
+				'relative flex items-center justify-between gap-3 py-6 transition-all duration-200 motion-reduce:transition-none sm:gap-6',
 				isScrolled ? 'lg:py-4' : 'lg:py-10'
 			)}
 		>
 			<A href="/" aria-label="Allen-Bailey Tag and Label home" variants={['ghost', 'brand']}>
 				<Logo aria-hidden="true" variants={['onSurface', 'site']} />
 			</A>
-			<Nav aria-label="Main navigation" class="hidden items-center gap-4 xl:flex">
-				{#each navigation as item (item.label)}
-					<A
-						href={item.href}
-						variants={['ghost', 'navigation']}
-						onclick={() => (isMenuVisible = false)}
-					>
-						{item.label}
-					</A>
-				{/each}
-			</Nav>
+			<SiteNavigation {isReducedMotion} />
 			<Div class="ml-auto flex items-center gap-2 xl:ml-0">
+				<A href={contactNavigation.href} variants={['ghost', 'navigation']} class="px-0 sm:px-3">
+					Contact
+				</A>
 				<Button
 					type="button"
 					disabled
@@ -212,15 +208,59 @@
 							isVisible={isNavigationVisible}
 							transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
 						>
-							{#each navigation as item (item.label)}
-								<A
-									href={item.href}
-									variants={['ghost', 'navigation']}
-									onclick={() => (isMenuVisible = false)}
-								>
-									{item.label}
-								</A>
+							{#each navigation as item (item.href)}
+								{#if item.children.length}
+									<Details
+										class="group border-0 border-b border-gray-200 py-2 dark:border-gray-800"
+									>
+										<Summary
+											class="flex min-h-11 cursor-pointer list-none items-center justify-between rounded-sm py-3 text-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:focus-visible:outline-primary-300 [&::-webkit-details-marker]:hidden"
+										>
+											{item.label}<ChevronDown
+												class="size-4 transition-transform group-open:rotate-180 motion-reduce:transition-none"
+												aria-hidden="true"
+											/>
+										</Summary>
+										<Div class="flex flex-col gap-2 pb-4 pl-4">
+											<A
+												href={item.href}
+												variants={['ghost', 'navigation']}
+												class="justify-start"
+												onclick={() => (isMenuVisible = false)}
+											>
+												All {item.label.toLowerCase()}
+											</A>
+											{#each item.children as child (child.href)}
+												<A
+													href={child.href}
+													variants={['ghost', 'navigation']}
+													class="justify-start"
+													onclick={() => (isMenuVisible = false)}
+												>
+													{child.label}
+												</A>
+											{/each}
+										</Div>
+									</Details>
+								{:else}
+									<A
+										href={item.href}
+										variants={['ghost', 'navigation']}
+										class="justify-start py-4"
+										onclick={() => (isMenuVisible = false)}
+									>
+										{item.label}
+									</A>
+								{/if}
 							{/each}
+							<A
+								href="/contact"
+								variants={['ghost', 'navigation']}
+								class="justify-start py-4"
+								onclick={() => (isMenuVisible = false)}
+							>
+								Contact
+							</A>
 						</Nav>
 					</Container>
 				</Popover>
@@ -254,7 +294,7 @@
 				</Div>
 				<Div>
 					<Nav aria-label="Footer navigation" class="grid grid-cols-2 gap-4">
-						{#each navigation as item (item.label)}
+						{#each [...navigation, contactNavigation] as item (item.label)}
 							<A href={item.href} variants={['ghost', 'navigation']} class="justify-start">
 								{item.label}
 							</A>
