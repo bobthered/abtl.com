@@ -54,7 +54,7 @@ test('compact navigation reaches pages and closes after selection', async ({ pag
 	await page.getByRole('button', { name: 'Open navigation menu' }).click();
 	const navigation = page.getByRole('navigation', { name: 'Mobile navigation', exact: true });
 	for (const section of sections.filter((section) => section.children.length)) {
-		await navigation.locator('summary').filter({ hasText: section.label }).click();
+		await navigation.getByRole('button', { name: section.label, exact: true }).click();
 		await expect(
 			navigation.getByRole('link', { name: `All ${section.label.toLowerCase()}`, exact: true })
 		).toBeVisible();
@@ -194,4 +194,60 @@ test('mega menu runs reveal and real horizontal panel transitions', async ({ pag
 		)
 		.toBe(true);
 	await expect(menu).not.toBeVisible();
+});
+
+test('mobile utilities live in the menu and submenus slide with matching link sizing', async ({
+	page
+}) => {
+	await page.setViewportSize({ width: 390, height: 844 });
+	await page.goto('/products');
+	await page.waitForFunction(() =>
+		document.getAnimations().some((animation) => animation.id === 'illustration-float')
+	);
+	const header = page.locator('header');
+	await expect(header.getByRole('link', { name: 'Contact', exact: true })).not.toBeVisible();
+	await expect(
+		header.getByRole('button', { name: 'Sign In (coming soon)', exact: true })
+	).not.toBeVisible();
+	await page.getByRole('button', { name: 'Open navigation menu' }).click();
+	const menu = page.getByRole('navigation', { name: 'Mobile navigation', exact: true });
+	await expect(menu.getByRole('link', { name: 'Contact', exact: true })).toBeVisible();
+	await expect(
+		menu.getByRole('button', { name: 'Sign In (coming soon)', exact: true })
+	).toBeDisabled();
+	const products = menu.getByRole('button', { name: 'Products', exact: true });
+	const sizing = (node: HTMLElement | SVGElement) => {
+		const style = getComputedStyle(node);
+		return [
+			style.fontSize,
+			style.fontWeight,
+			style.paddingTop,
+			style.paddingBottom,
+			style.paddingLeft,
+			style.paddingRight
+		];
+	};
+	expect(await products.evaluate(sizing)).toEqual(
+		await menu.getByRole('link', { name: 'News', exact: true }).evaluate(sizing)
+	);
+	await products.click();
+	const submenu = page.locator('#mobile-submenu-products');
+	await expect(products).toHaveAttribute('aria-expanded', 'true');
+	await expect(submenu).toBeVisible();
+	const hasSlide = () =>
+		submenu.evaluate((node) =>
+			node
+				.getAnimations()
+				.some((animation) =>
+					(animation.effect as KeyframeEffect).getKeyframes().some((frame) => 'height' in frame)
+				)
+		);
+	await expect.poll(hasSlide).toBe(true);
+	await submenu.evaluate(async (node) => {
+		await Promise.all(node.getAnimations().map((animation) => animation.finished));
+	});
+	await products.click();
+	await expect(products).toHaveAttribute('aria-expanded', 'false');
+	await expect.poll(hasSlide).toBe(true);
+	await expect(submenu).not.toBeVisible();
 });

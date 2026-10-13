@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 74d93f4c95cdd31e3eab3b9379abaade0926739d -->
+<!-- pending-base: 9458629daa2bf62e5807f17bbe7c2de18b7b42fe -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: animate mega menu reveal and directional submenu slides
+fix: simplify mobile header and animate submenu expansion
 
-Use Sveltewind subtleReveal on menu entrance and exit, and trigger local fly transitions by changing mounted panel visibility.
-Preserve outgoing content while incoming panels slide from the right when moving forward and from the left when moving backward; cover actual animation transforms and reconcile changelog history.
+Move mobile Contact and Sign In into navigation, match submenu triggers to regular link sizing, and slide submenu content open and closed with reduced-motion support.
+Reset expanded sections when the menu closes, extend mobile navigation regression coverage, and reconcile changelog history.
 ```
 
 ## 2026-10-13
+
+- **fix: animate mega menu reveal and directional submenu slides** (`9458629`)
+  Use Sveltewind subtleReveal for menu entrance and exit, trigger local fly transitions on mounted panels, and preserve outgoing content during directional slides. Add checks for actual animation transforms and reconcile changelog history.
 
 - **feat: add directional mega navigation and submenu pages** (`74d93f4`)
   Move Contact beside Sign In, add a shared desktop mega menu and expandable mobile sections, and put News and Careers last. Add twelve guides, retain six About topic pages, connect overview links, and extend navigation and route coverage.

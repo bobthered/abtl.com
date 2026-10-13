@@ -5,7 +5,6 @@
 		A,
 		Button,
 		Container,
-		Details,
 		Div,
 		Footer,
 		Header,
@@ -13,15 +12,14 @@
 		Nav,
 		P,
 		Popover,
-		SiteNavigation,
-		Summary
+		SiteNavigation
 	} from '#lib/components';
 	import { browser } from '$app/env';
 	import { ChevronDown, Menu, X } from '#lib/icons';
 	import type { ComponentProps } from 'svelte';
 	import { contactNavigation, navigation } from '#lib/data/navigation.js';
 	import { createPageTitle } from '#lib/pageTitle.js';
-	import { fade } from 'svelte/transition';
+	import { fade, slide } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
 	import faviconDark from '#lib/assets/favicon-dark.svg';
 	import { initializeTheme } from '#lib/theme.js';
@@ -39,6 +37,9 @@
 	const footerClass = 'text-sm leading-relaxed text-gray-600 dark:text-gray-300';
 	// Capture request state during component initialization for async server rendering.
 	const initialPathname = page.url.pathname;
+
+	const mobileLinkClass =
+		'flex min-h-11 w-full items-center justify-start px-0 py-3 text-sm font-medium';
 
 	const siteFrameClass =
 		'[--site-header-height:calc(var(--spacing)*24+1px)] sm:[--site-header-height:calc(var(--spacing)*26+1px)] lg:[--site-header-height:calc(var(--spacing)*34+1px)]';
@@ -95,6 +96,7 @@
 	// $state
 	let colorMode = $state<ColorMode>('light');
 	let isMenuVisible = $state(false);
+	let isMobileSubmenuVisible = $state<Record<string, boolean>>({});
 	let isNavigationVisible = $state(false);
 	let isReducedMotion = $state(false);
 	let isScrolled = $state(false);
@@ -109,6 +111,7 @@
 	$effect(() => {
 		if (!isMenuVisible) {
 			isNavigationVisible = false;
+			isMobileSubmenuVisible = {};
 			return;
 		}
 		// Start the nested transition after Popover has mounted its content.
@@ -161,7 +164,7 @@
 				<Logo aria-hidden="true" variants={['onSurface', 'site']} />
 			</A>
 			<SiteNavigation {isReducedMotion} />
-			<Div class="ml-auto flex items-center gap-2 xl:ml-0">
+			<Div class="hidden items-center gap-2 xl:flex">
 				<A href={contactNavigation.href} variants={['ghost', 'navigation']} class="px-0 sm:px-3">
 					Contact
 				</A>
@@ -210,18 +213,32 @@
 						>
 							{#each navigation as item (item.href)}
 								{#if item.children.length}
-									<Details
-										class="group border-0 border-b border-gray-200 py-2 dark:border-gray-800"
-									>
-										<Summary
-											class="flex min-h-11 cursor-pointer list-none items-center justify-between rounded-sm py-3 text-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 dark:focus-visible:outline-primary-300 [&::-webkit-details-marker]:hidden"
+									<Div class="border-b border-gray-200 dark:border-gray-800">
+										<Button
+											type="button"
+											variants={['ghost']}
+											class={twMerge(mobileLinkClass, 'justify-between')}
+											aria-expanded={isMobileSubmenuVisible[item.href] ?? false}
+											aria-controls={isMobileSubmenuVisible[item.href]
+												? `mobile-submenu-${item.label.toLowerCase()}`
+												: undefined}
+											onclick={() =>
+												(isMobileSubmenuVisible[item.href] = !isMobileSubmenuVisible[item.href])}
 										>
 											{item.label}<ChevronDown
-												class="size-4 transition-transform group-open:rotate-180 motion-reduce:transition-none"
+												class={twMerge(
+													'size-4 transition-transform duration-200 motion-reduce:transition-none',
+													isMobileSubmenuVisible[item.href] ? 'rotate-180' : ''
+												)}
 												aria-hidden="true"
 											/>
-										</Summary>
-										<Div class="flex flex-col gap-2 pb-4 pl-4">
+										</Button>
+										<Div
+											id={`mobile-submenu-${item.label.toLowerCase()}`}
+											isVisible={isMobileSubmenuVisible[item.href] ?? false}
+											transition={[slide, { duration: isReducedMotion ? 0 : 240 }]}
+											class="flex flex-col gap-2 pb-4 pl-4"
+										>
 											<A
 												href={item.href}
 												variants={['ghost', 'navigation']}
@@ -241,12 +258,12 @@
 												</A>
 											{/each}
 										</Div>
-									</Details>
+									</Div>
 								{:else}
 									<A
 										href={item.href}
 										variants={['ghost', 'navigation']}
-										class="justify-start py-4"
+										class={mobileLinkClass}
 										onclick={() => (isMenuVisible = false)}
 									>
 										{item.label}
@@ -256,11 +273,20 @@
 							<A
 								href="/contact"
 								variants={['ghost', 'navigation']}
-								class="justify-start py-4"
+								class={mobileLinkClass}
 								onclick={() => (isMenuVisible = false)}
 							>
 								Contact
 							</A>
+							<Button
+								type="button"
+								disabled
+								title="Sign in coming soon"
+								aria-label="Sign In (coming soon)"
+								class="mt-4 w-fit"
+							>
+								Sign In
+							</Button>
 						</Nav>
 					</Container>
 				</Popover>
