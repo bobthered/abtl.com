@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: ddb8d5b2328f6df31c911ae2ba3c70cde781822b -->
+<!-- pending-base: e699a6a41d7030cc5c55c1003c9d2b0be55b6ed5 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: consolidate Tailwind classes with tailwind-merge
+fix: extend the metrics background across the section
 
-Replace class joins and interpolated class lists across shared components, routes, and layouts with twMerge.
-Add and prebundle the dependency, configure class sorting, document merging rules, and reconcile changelog history.
+Cover the full metrics section with gradient artwork and remove padding below its canvas.
+Update responsive coverage, preserve outlined shipping destination buttons, and reconcile changelog history.
 ```
 
 ## 2026-10-13
+
+- **refactor: consolidate Tailwind classes with tailwind-merge** (`e699a6a`)
+  Replace class joins and interpolated class lists across shared components, routes, and layouts with twMerge. Add and prebundle the dependency, configure class sorting, document merging rules, and reconcile changelog history.
 
 - **refactor: standardize Svelte markup formatting** (`ddb8d5b`)
   Configure and document clean tag wrapping, reformat routes and components, and preserve inline spacing. Remove an unused shipping value, preserve updated shipping copy, and reconcile changelog history.

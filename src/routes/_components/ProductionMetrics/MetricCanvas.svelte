@@ -41,24 +41,11 @@
 
 <Div
 	id="metric-animation-panel"
-	class="pb-20 lg:pb-28"
 	role="region"
 	aria-label="Interactive abstract animations"
 	data-metric-animation={scene}
 >
 	<Div class="relative h-80 sm:h-96 lg:h-120" data-scene-surface>
-		<Div
-			class="pointer-events-none absolute inset-0 overflow-hidden"
-			aria-hidden="true"
-			data-scene-background
-		>
-			<Div
-				class="absolute inset-0 bg-radial from-primary-500/10 via-primary-500/5 to-transparent mask-r-from-0% mask-r-to-100% dark:from-primary-400/10 dark:via-primary-400/5"
-			/>
-			<Div
-				class="absolute inset-0 bg-radial from-secondary-500/10 via-secondary-500/5 to-transparent mask-l-from-0% mask-l-to-100% dark:from-secondary-400/10 dark:via-secondary-400/5"
-			/>
-		</Div>
 		<Container class="h-full">
 			<Span class="hidden text-primary-600 dark:text-primary-400" data-scene-color="primary" />
 			<Span

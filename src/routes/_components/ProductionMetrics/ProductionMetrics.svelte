@@ -50,9 +50,23 @@
 
 <Section
 	variants={['surfaceAlternate']}
+	class="relative isolate"
 	aria-labelledby="production-metrics-heading"
 	data-production-metrics
 >
+	<Div
+		class="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+		aria-hidden="true"
+		data-scroll-reveal="off"
+		data-scene-background
+	>
+		<Div
+			class="absolute inset-0 bg-radial from-primary-500/10 via-primary-500/5 to-transparent mask-r-from-0% mask-r-to-100% dark:from-primary-400/10 dark:via-primary-400/5"
+		/>
+		<Div
+			class="absolute inset-0 bg-radial from-secondary-500/10 via-secondary-500/5 to-transparent mask-l-from-0% mask-l-to-100% dark:from-secondary-400/10 dark:via-secondary-400/5"
+		/>
+	</Div>
 	<Container variants={['section']} class="space-y-0 pb-0 lg:pb-0">
 		<Div class="mx-auto mb-14 max-w-2xl text-center sm:mb-16 lg:mb-20">
 			<H2 id="production-metrics-heading" variants={['section']}>The scale behind every detail.</H2>

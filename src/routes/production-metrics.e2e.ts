@@ -74,10 +74,15 @@ for (const width of [390, 1440]) {
 		});
 		const panel = page.locator('[data-metric-animation]');
 		const canvas = panel.locator('canvas');
-		const background = panel.locator('[data-scene-background]');
+		const section = page.locator('[data-production-metrics]');
+		const background = section.locator('[data-scene-background]');
 		const bounds = await background.boundingBox();
 		expect(bounds!.x).toBeCloseTo(0);
 		expect(bounds!.width).toBe(width);
+		const sectionBounds = await section.boundingBox();
+		expect(bounds!.y).toBeCloseTo(sectionBounds!.y);
+		expect(bounds!.height).toBeCloseTo(sectionBounds!.height);
+		await expect(panel).toHaveCSS('padding-bottom', '0px');
 		const images = new Set<string>();
 		for (const [index, name] of [
 			'Flow field',
