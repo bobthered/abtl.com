@@ -15,7 +15,7 @@ test('full-color printing opens a routed dialog, combines ink channels, and flip
 	await expect(trigger).toHaveCSS('grid-column-end', 'span ' + [4, 2, 2, 2, 2, 6][slot]);
 	await trigger.scrollIntoViewIfNeeded();
 	await trigger.click();
-	await expect(page).toHaveURL(/\/about\/full-color-printing$/);
+	await expect(page).toHaveURL(/\/capabilities\/full-color-printing$/);
 	const dialog = page.getByRole('dialog', { name: 'Full color. Both sides.' });
 	await expect(dialog).toBeVisible();
 	const studio = dialog.locator('[data-process-section="process"]');

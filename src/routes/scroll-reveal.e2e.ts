@@ -52,7 +52,7 @@ test('new content reveals once, staggers a row, and counts up without layout ove
 test('reduced motion finishes active counts and applies to newly opened dialogs', async ({
 	page
 }) => {
-	await page.goto('/about/stock-colors');
+	await page.goto('/capabilities/stock-colors');
 	const count = page.locator('[data-stock-color-total]');
 	await expect(count).toHaveAttribute('data-scroll-reveal-state', /pending|complete/, {
 		timeout: 20000
@@ -82,7 +82,7 @@ test('content and final numbers remain available without JavaScript', async ({
 }) => {
 	const context = await browser.newContext({ baseURL, javaScriptEnabled: false });
 	const page = await context.newPage();
-	await page.goto('/about/stock-colors');
+	await page.goto('/capabilities/stock-colors');
 	await expect(page.locator('main h1')).toBeVisible();
 	await expect(page.locator('[data-stock-color-total]')).toHaveText('21');
 	await context.close();
@@ -206,7 +206,7 @@ test('footer groups enter together with staggering and keep navigation accessibl
 test('stock photo marquee reveals its stationary wrapper without revealing repeated cards', async ({
 	page
 }) => {
-	await page.goto('/about/stock-colors');
+	await page.goto('/capabilities/stock-colors');
 	const marquee = page.locator('main [data-marquee]').first();
 	const wrapper = marquee.locator('..');
 	await expect(wrapper).not.toHaveAttribute('data-scroll-reveal');
@@ -290,7 +290,7 @@ for (const isDialog of [false, true]) {
 		page
 	}) => {
 		await page.setViewportSize({ width: 1440, height: 900 });
-		await page.goto(isDialog ? '/' : '/about/stock-colors');
+		await page.goto(isDialog ? '/' : '/capabilities/stock-colors');
 		if (isDialog) {
 			await expect(page.locator('[data-bento-ready="true"]')).toBeVisible();
 			await page.locator('[data-bento-topic="colors"]').click();
@@ -477,7 +477,7 @@ for (const isDialog of [false, true]) {
 		'stock swatches stagger individually in ' + (isDialog ? 'dialog' : 'standalone route'),
 		async ({ page }) => {
 			await page.setViewportSize({ width: 1440, height: 900 });
-			await page.goto(isDialog ? '/' : '/about/stock-colors');
+			await page.goto(isDialog ? '/' : '/capabilities/stock-colors');
 			if (isDialog) {
 				await expect(page.locator('[data-bento-ready="true"]')).toBeVisible();
 				await page.locator('[data-bento-topic="colors"]').click();
@@ -511,14 +511,14 @@ test('navigation smooth scroll does not consume incoming below-fold reveals', as
 	await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete');
 	await page.evaluate(() => {
 		const link = document.createElement('a');
-		link.href = '/about/stock-colors';
+		link.href = '/capabilities/stock-colors';
 		link.textContent = 'Navigation reveal regression';
 		link.dataset.navigationRevealTest = '';
 		document.querySelector('main')!.append(link);
 		window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
 	});
 	await page.locator('[data-navigation-reveal-test]').click();
-	await expect(page).toHaveURL(/\/about\/stock-colors$/);
+	await expect(page).toHaveURL(/\/capabilities\/stock-colors$/);
 	await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 	await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete');
 	const swatches = page.getByRole('group', { name: 'Preview stock colors' }).getByRole('button');

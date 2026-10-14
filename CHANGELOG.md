@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 2b061da6d2635c4039674c1e35d7e8e77cf7f67d -->
+<!-- pending-base: 9f20804a67610d02190faca1167a83b5a6582d47 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: defer scroll reveals until navigation scrolling settles
+refactor: move bento topic pages under capabilities
 
-Coordinate the root navigation lifecycle with the global reveal attachment, pausing viewport and page-end triggers until scroll position and layout stabilize while preserving smooth scrolling, focus access, and reduced motion.
-Add below-fold navigation regression coverage, wait for hydration in cold-start checks, and reconcile the changelog.
+Move all six detailed topic pages and route-owned components to capabilities, update links, shallow dialogs, titles, asset tooling and documentation, and preserve legacy About, Tags and capability-guide redirects.
+Make About a direct navigation link, sort submenu sections before direct links, remove superseded guide copy, extend migration coverage, and reconcile the changelog.
 ```
 
 ## 2026-10-14
+
+- **fix: defer scroll reveals until navigation scrolling settles** (`9f20804`)
+  Coordinate root navigation with the global reveal attachment and defer viewport/page-end triggers until scrolling and layout settle. Preserve focus and reduced motion, add navigation regression coverage, and wait for hydration in cold-start checks.
 
 - **fix: keep shipping globe land points visible at bento widths** (`2b061da`)
   Use small screen-space land dots to preserve visibility across tile widths. Retain shipment rings and About terrain fades and add rendered-pixel checks in both themes across three widths.

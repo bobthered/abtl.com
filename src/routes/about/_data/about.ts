@@ -70,14 +70,14 @@ export const processSteps = [
 		title: 'Start with the stock.',
 		description:
 			'Paper or synthetic. White, manila, or color. The material sets the foundation for how the tag looks and works.',
-		href: '/about/stock-colors',
+		href: '/capabilities/stock-colors',
 		label: 'Explore stock colors'
 	},
 	{
 		title: 'Give it a message.',
 		description:
 			'Ink goes onto the face, the back, or both. Full-color artwork and changing data turn material into useful information.',
-		href: '/about/full-color-printing',
+		href: '/capabilities/full-color-printing',
 		label: 'Explore printing'
 	},
 	{
@@ -91,7 +91,7 @@ export const processSteps = [
 		title: 'Plan what comes next.',
 		description:
 			'Ship the finished product, or warehouse a larger run for later releases. Build the supply plan around your business.',
-		href: '/about/warehousing',
+		href: '/capabilities/warehousing',
 		label: 'Explore warehousing'
 	}
 ] as const;

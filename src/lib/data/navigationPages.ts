@@ -11,13 +11,13 @@ export const navigationPages: Record<string, LandingPageContent> = {
 			[
 				'Stock colors',
 				'White, manila, colored, and fluorescent stocks offer different ways to make identification visible.',
-				'/about/stock-colors',
+				'/capabilities/stock-colors',
 				'Explore stock colors'
 			],
 			[
 				'Waterproof synthetics',
 				'Discuss Tyvek, Valeron, Polyart, Tundra, or V-Max for outdoor use and demanding handling.',
-				'/about/synthetic-materials',
+				'/capabilities/synthetic-materials',
 				'Explore synthetic stocks'
 			],
 			[
@@ -30,7 +30,7 @@ export const navigationPages: Record<string, LandingPageContent> = {
 		detailTitle: 'Plan the whole tag.',
 		detail:
 			'Share dimensions, face and back artwork, changing data, and how the tag will attach. Those decisions work together.',
-		detailHref: '/capabilities/printing',
+		detailHref: '/capabilities/full-color-printing',
 		detailLabel: 'Explore printing',
 		cta: "Let's work through the details.",
 		ctaText:
@@ -46,19 +46,19 @@ export const navigationPages: Record<string, LandingPageContent> = {
 			[
 				'Full-color artwork',
 				'Explore four-color process for brand imagery and printed information.',
-				'/about/full-color-printing',
+				'/capabilities/full-color-printing',
 				'Explore printing'
 			],
 			[
 				'Changing information',
 				'Add barcodes, QR codes, sequential numbering, or personalized information.',
-				'/about/variable-data',
+				'/capabilities/variable-data',
 				'Explore variable data'
 			],
 			[
 				'Planned supply',
 				'Discuss producing in volume and warehousing finished labels for later releases.',
-				'/about/warehousing',
+				'/capabilities/warehousing',
 				'Explore warehousing'
 			]
 		],
@@ -100,7 +100,7 @@ export const navigationPages: Record<string, LandingPageContent> = {
 		detailTitle: 'Material and attachment work together.',
 		detail:
 			'Outdoor exposure and repeated handling affect the whole tag, including the attachment. Discuss the complete application with our team.',
-		detailHref: '/about/synthetic-materials',
+		detailHref: '/capabilities/synthetic-materials',
 		detailLabel: 'Explore synthetic materials',
 		cta: "Let's work through the details.",
 		ctaText:
@@ -116,19 +116,19 @@ export const navigationPages: Record<string, LandingPageContent> = {
 			[
 				'Scannable identifiers',
 				'Use barcode or QR-code content to connect identification to your own records or destination URLs.',
-				'/about/variable-data',
+				'/capabilities/variable-data',
 				'Explore variable data'
 			],
 			[
 				'Clear printed information',
 				'Plan fields, numbering, and face and back content around the information someone needs at the point of use.',
-				'/capabilities/printing',
+				'/capabilities/full-color-printing',
 				'Explore printing'
 			],
 			[
 				'Exposed environments',
 				'Discuss waterproof synthetics and attachments for equipment used outdoors.',
-				'/about/synthetic-materials',
+				'/capabilities/synthetic-materials',
 				'Explore outdoor stocks'
 			]
 		],
@@ -151,26 +151,26 @@ export const navigationPages: Record<string, LandingPageContent> = {
 			[
 				'Full color',
 				'Explore four-color process for product imagery and brand artwork.',
-				'/about/full-color-printing',
+				'/capabilities/full-color-printing',
 				'Explore full-color printing'
 			],
 			[
 				'Stock color',
 				'Choose a stock color that works with your artwork and the way the product is presented.',
-				'/about/stock-colors',
+				'/capabilities/stock-colors',
 				'Explore stock colors'
 			],
 			[
 				'Digital connections',
 				'Use a QR code to link to the destination you choose, or a barcode for your existing workflow.',
-				'/about/variable-data',
+				'/capabilities/variable-data',
 				'Explore scannable data'
 			]
 		],
 		detailTitle: 'Think about both sides.',
 		detail:
 			'A tag can introduce the product on the face and carry supporting details on the back. Eight total print colors allow four-color process on both sides.',
-		detailHref: '/about/full-color-printing',
+		detailHref: '/capabilities/full-color-printing',
 		detailLabel: 'Explore face and back printing',
 		cta: "Let's work through the details.",
 		ctaText:
@@ -186,7 +186,7 @@ export const navigationPages: Record<string, LandingPageContent> = {
 			[
 				'Water exposure',
 				'Explore waterproof synthetic options, including Tyvek, Valeron, Polyart, Tundra, and V-Max.',
-				'/about/synthetic-materials',
+				'/capabilities/synthetic-materials',
 				'Explore synthetic materials'
 			],
 			[
@@ -211,111 +211,6 @@ export const navigationPages: Record<string, LandingPageContent> = {
 		ctaText:
 			'Share your application and the details you know. Our team can help you consider the next steps.'
 	},
-	'capabilities/printing': {
-		eyebrow: 'Printing',
-		title: 'Make the artwork do more.',
-		description:
-			'Four-color process brings full-color imagery to tags and labels. Up to eight total colors make CMYK printing on both the face and back possible.',
-		heading: 'Plan the printed piece.',
-		cards: [
-			[
-				'Full-color artwork',
-				'See how cyan, magenta, yellow, and black work together in four-color process.',
-				'/about/full-color-printing',
-				'Explore four-color process'
-			],
-			[
-				'Variable information',
-				'Combine a shared design with data that changes from one piece to the next.',
-				'/about/variable-data',
-				'Explore changing data'
-			],
-			[
-				'Artwork preparation',
-				'Start with the dimensions, stock, face and back content, and available artwork files.',
-				'/resources/artwork',
-				'Plan your artwork'
-			]
-		],
-		detailTitle: 'Stock is part of the design.',
-		detail:
-			'A colored stock changes the starting point for your artwork. Physical samples and a conversation about ink and stock help you plan the finished appearance.',
-		detailHref: '/about/stock-colors',
-		detailLabel: 'Explore stock colors',
-		cta: "Let's work through the details.",
-		ctaText:
-			'Share your application and the details you know. Our team can help you consider the next steps.'
-	},
-	'capabilities/variable-data': {
-		eyebrow: 'Variable data',
-		title: 'Same design. Individual information.',
-		description:
-			'Produce tags and labels with barcodes, QR codes, sequential numbering, or mailing personalization. Plan the design and the changing records together.',
-		heading: 'What needs to change?',
-		cards: [
-			[
-				'Codes',
-				'Define what each barcode or QR code should contain and how it will be used.',
-				'/about/variable-data',
-				'See variable data in action'
-			],
-			[
-				'Sequences',
-				'Discuss your starting number, sequence, formatting, and any fields that need to correspond.',
-				'/resources/ordering',
-				'Plan the records'
-			],
-			[
-				'Personalization',
-				'Include recipient-specific information for mailing applications. Discuss the data format with our team.',
-				'/contact',
-				'Discuss personalized printing'
-			]
-		],
-		detailTitle: 'Good data starts before printing.',
-		detail:
-			'Confirm the source records, field mapping, intended code content, and how you will review the information. Share a representative sample with our team to discuss requirements.',
-		detailHref: '/about/variable-data',
-		detailLabel: 'Explore variable data',
-		cta: "Let's work through the details.",
-		ctaText:
-			'Share your application and the details you know. Our team can help you consider the next steps.'
-	},
-	'capabilities/fulfillment': {
-		eyebrow: 'Warehousing & fulfillment',
-		title: 'Produce ahead. Release when needed.',
-		description:
-			'A larger production run can create manufacturing efficiencies. Warehouse finished tags and labels for later shipments rather than shipping the entire run at once.',
-		heading: 'Connect production to demand.',
-		cards: [
-			[
-				'Production in volume',
-				'Discuss your total expected usage and how a larger run could affect unit pricing.',
-				'/about/warehousing',
-				'Explore warehousing'
-			],
-			[
-				'Later releases',
-				'Once finished product is made and on the shelf, it is available for immediate release. Discuss quantities and release arrangements.',
-				'/about/warehousing',
-				'Explore release planning'
-			],
-			[
-				'Delivery destinations',
-				'We ship across all 50 states and internationally. Tell us where your products need to go.',
-				'/about/shipping',
-				'Explore shipping'
-			]
-		],
-		detailTitle: 'Plan the details together.',
-		detail:
-			'Share your product, expected usage, release quantities, and destinations. Ask our team to confirm storage and shipping arrangements for your order.',
-		detailHref: '/contact',
-		detailLabel: 'Discuss a supply plan',
-		cta: "Let's work through the details.",
-		ctaText:
-			'Share your application and the details you know. Our team can help you consider the next steps.'
-	},
 	'resources/artwork': {
 		eyebrow: 'Artwork planning',
 		title: 'Give your artwork a useful brief.',
@@ -332,20 +227,20 @@ export const navigationPages: Record<string, LandingPageContent> = {
 			[
 				'Face & back',
 				'Identify what belongs on each side and share the artwork files you have available. Ask our team to confirm production-file requirements.',
-				'/about/full-color-printing',
+				'/capabilities/full-color-printing',
 				'Explore both sides'
 			],
 			[
 				'Changing fields',
 				'Identify which text, numbers, or codes change and which remain part of the shared design.',
-				'/about/variable-data',
+				'/capabilities/variable-data',
 				'Explore variable fields'
 			]
 		],
 		detailTitle: 'Review before production.',
 		detail:
 			'Discuss the proofing process, color expectations, and data review with our team. Screen artwork and physical stock can look different, so request samples when material appearance matters.',
-		detailHref: '/about/stock-colors',
+		detailHref: '/capabilities/stock-colors',
 		detailLabel: 'Explore stock samples',
 		cta: "Let's work through the details.",
 		ctaText:
@@ -361,7 +256,7 @@ export const navigationPages: Record<string, LandingPageContent> = {
 			[
 				'Where will it be used?',
 				'Describe indoor or outdoor use, wet conditions, and the expected duration. Waterproof synthetic options are available for outdoor applications.',
-				'/about/synthetic-materials',
+				'/capabilities/synthetic-materials',
 				'Explore synthetic stocks'
 			],
 			[
@@ -380,7 +275,7 @@ export const navigationPages: Record<string, LandingPageContent> = {
 		detailTitle: 'Get a feel for the real material.',
 		detail:
 			'Physical samples let you assess the stock color and feel. Explore stock colors and ask our team about material samples for your application.',
-		detailHref: '/about/stock-colors',
+		detailHref: '/capabilities/stock-colors',
 		detailLabel: 'Explore colors & samples',
 		cta: "Let's work through the details.",
 		ctaText:
@@ -408,7 +303,7 @@ export const navigationPages: Record<string, LandingPageContent> = {
 			[
 				'Timing & delivery',
 				'Tell us when and where the product is needed. Discuss warehousing if you want to release finished stock over time.',
-				'/capabilities/fulfillment',
+				'/capabilities/warehousing',
 				'Plan fulfillment'
 			]
 		],

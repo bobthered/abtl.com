@@ -162,7 +162,7 @@
 						what do you need your tag or label to do?
 					</P>
 					<A
-						href="/about/shipping"
+						href="/capabilities/shipping"
 						variants={['button.base', 'button.variant.neutral-outline']}
 						class="mt-8"
 					>

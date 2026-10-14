@@ -3,61 +3,39 @@ export type NavigationSection = NavigationLink & { children: NavigationLink[] };
 
 export const navigation: NavigationSection[] = [
 	{
-		href: '/about',
-		label: 'About',
-		description: 'Explore the details behind our tags and labels.',
+		href: '/capabilities',
+		label: 'Capabilities',
+		description: 'Bring material, artwork, information, and delivery together.',
 		children: [
 			{
-				href: '/about/stock-colors',
+				href: '/capabilities/stock-colors',
 				label: 'Stock colors',
 				description: 'Find a stock color that gives your message a purpose.'
 			},
 			{
-				href: '/about/shipping',
+				href: '/capabilities/shipping',
 				label: 'Shipping',
 				description: 'All 50 states and international destinations.'
 			},
 			{
-				href: '/about/variable-data',
+				href: '/capabilities/variable-data',
 				label: 'Variable data',
 				description: 'Give every printed piece its own information.'
 			},
 			{
-				href: '/about/full-color-printing',
+				href: '/capabilities/full-color-printing',
 				label: 'Full-color printing',
 				description: 'Full-color artwork on the face and back.'
 			},
 			{
-				href: '/about/synthetic-materials',
+				href: '/capabilities/synthetic-materials',
 				label: 'Synthetic materials',
 				description: 'Waterproof stocks for outdoor applications.'
 			},
 			{
-				href: '/about/warehousing',
+				href: '/capabilities/warehousing',
 				label: 'Warehousing',
 				description: 'Produce in volume. Release on demand.'
-			}
-		]
-	},
-	{
-		href: '/capabilities',
-		label: 'Capabilities',
-		description: 'Bring material, artwork, and information together.',
-		children: [
-			{
-				href: '/capabilities/printing',
-				label: 'Printing',
-				description: 'Plan face and back artwork with four-color process.'
-			},
-			{
-				href: '/capabilities/variable-data',
-				label: 'Variable data',
-				description: 'Barcodes, QR codes, numbering, and personalization.'
-			},
-			{
-				href: '/capabilities/fulfillment',
-				label: 'Warehousing & fulfillment',
-				description: 'Produce in volume and plan later releases.'
 			}
 		]
 	},
@@ -128,6 +106,12 @@ export const navigation: NavigationSection[] = [
 		]
 	},
 	{
+		href: '/about',
+		label: 'About',
+		description: 'Our Caledonia roots and more than a century of manufacturing.',
+		children: []
+	},
+	{
 		href: '/careers',
 		label: 'Careers',
 		description: '',
@@ -139,7 +123,11 @@ export const navigation: NavigationSection[] = [
 		description: '',
 		children: []
 	}
-];
+].sort(
+	(first, second) =>
+		Number(second.children.length > 0) - Number(first.children.length > 0) ||
+		first.label.localeCompare(second.label)
+);
 
 export const contactNavigation = { href: '/contact', label: 'Contact' };
 

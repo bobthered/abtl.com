@@ -93,7 +93,7 @@ test('mega menu transitions directionally and supports keyboard dismissal', asyn
 		document.getAnimations().some((animation) => animation.id === 'illustration-float')
 	);
 	const mainNavigation = page.getByRole('navigation', { name: 'Main navigation', exact: true });
-	await mainNavigation.getByRole('button', { name: 'About', exact: true }).hover();
+	await mainNavigation.getByRole('button', { name: 'Capabilities', exact: true }).hover();
 	await expect(page.locator('[data-nav-panel]:not([inert])')).toHaveAttribute(
 		'data-direction',
 		'1'

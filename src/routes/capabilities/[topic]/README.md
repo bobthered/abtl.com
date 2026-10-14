@@ -1,6 +1,6 @@
 # Bento topics and routes
 
-Each entry in `src/lib/data/topics.ts` has a standalone `/about/[topic]` page. `_components/BentoTopicContent.svelte`
+Each entry in `src/lib/data/topics.ts` has a standalone `/capabilities/[topic]` page. `_components/BentoTopicContent.svelte`
 provides the route-owned content reused in the homepage dialog; the shared
 `BentoPreview` provides tile and fallback detail previews.
 The standalone page uses an H1, normal section/Container spacing, and no surrounding
@@ -21,4 +21,6 @@ mixing controlled `topicId` with a callback that does not update it.
 Add topics to the shared registry and their content to BentoTopicContent. Unknown
 topic routes return a 404. Placeholder topics remain labeled as content previews.
 
-The former `/tags/[topic]` URLs permanently redirect to their canonical `/about/[topic]` pages, preserving query parameters. The `colors` and `printing` aliases resolve to `stock-colors` and `variable-data` respectively in both namespaces.
+The former `/about/[topic]` and `/tags/[topic]` URLs permanently redirect to their canonical `/capabilities/[topic]` pages, preserving query parameters. The `colors` and `printing` aliases resolve to `stock-colors` and `variable-data` respectively in both namespaces.
+
+The former capability guide URLs `/capabilities/printing` and `/capabilities/fulfillment` redirect to `full-color-printing` and `warehousing`. The old `/about/printing` and `/tags/printing` aliases retain their original `variable-data` destination.

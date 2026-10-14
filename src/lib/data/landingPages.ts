@@ -35,7 +35,7 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Outdoor identification',
 				'Waterproof synthetic tags for exposed environments. Compare Tyvek, Valeron, Polyart, Tundra, and V-Max with our team.',
-				'/about/synthetic-materials',
+				'/capabilities/synthetic-materials',
 				'Explore synthetic materials'
 			]
 		],
@@ -64,7 +64,7 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Inventory & distribution',
 				'Identify products as they move through your workflow. Plan production in volume and release finished stock when you need it.',
-				'/about/warehousing',
+				'/capabilities/warehousing',
 				'Explore warehousing'
 			],
 			[
@@ -98,7 +98,7 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Full-color printing',
 				'Four-color process creates full-color artwork. Up to eight total colors allow CMYK on both the face and back.',
-				'/capabilities/printing',
+				'/capabilities/full-color-printing',
 				'See printing in action'
 			],
 			[
@@ -110,32 +110,32 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Stock colors',
 				'Start with white or manila, introduce a colored stock, or make your message stand out with a fluorescent option.',
-				'/about/stock-colors',
+				'/capabilities/stock-colors',
 				'Explore stock colors'
 			],
 			[
 				'Synthetic materials',
 				'Explore waterproof stocks for outdoor use, with different durability characteristics to discuss for your application.',
-				'/about/synthetic-materials',
+				'/capabilities/synthetic-materials',
 				'Compare materials'
 			],
 			[
 				'Warehousing',
 				'Produce in volume for manufacturing efficiencies. Keep finished goods on our shelves for later shipments.',
-				'/capabilities/fulfillment',
+				'/capabilities/warehousing',
 				'Plan later releases'
 			],
 			[
 				'Shipping',
 				'Reach destinations across all 50 states and internationally. Talk with us about your delivery requirements.',
-				'/about/shipping',
+				'/capabilities/shipping',
 				'Explore our reach'
 			]
 		],
 		detailTitle: "Don't stop at the printed surface.",
 		detail:
 			'Wire, string, and elastic attachments help a tag stay with the item it identifies. Include the attachment and handling requirements in your project brief.',
-		detailHref: '/about/synthetic-materials',
+		detailHref: '/capabilities/synthetic-materials',
 		detailLabel: 'Explore attachments',
 		cta: "Let's put the pieces together.",
 		ctaText: "Tell us your goals. We'll help you plan a product and a production approach."
@@ -156,7 +156,7 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Materials & samples',
 				'See stock colors and request individual colors or a selection of samples from the stock-color page.',
-				'/about/stock-colors',
+				'/capabilities/stock-colors',
 				'Explore colors & samples'
 			],
 			[
@@ -218,7 +218,7 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Choose your stock',
 				'Compare stock colors and explore waterproof synthetic options. Ask for samples to assess the physical material.',
-				'/about/stock-colors',
+				'/capabilities/stock-colors',
 				'Explore colors & samples'
 			],
 			[
@@ -236,7 +236,7 @@ export const landingPages: Record<string, LandingPageContent> = {
 			[
 				'Plan your supply',
 				'Consider your total usage and release schedule. A larger production run with warehousing can support later shipments.',
-				'/about/warehousing',
+				'/capabilities/warehousing',
 				'Explore warehousing'
 			]
 		],

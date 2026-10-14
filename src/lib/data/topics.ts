@@ -69,4 +69,4 @@ export const findTopic = (slug: string) => {
 	);
 };
 
-export const topicHref = (topic: Topic) => `/about/${topic.slug ?? topic.id}`;
+export const topicHref = (topic: Topic) => `/capabilities/${topic.slug ?? topic.id}`;

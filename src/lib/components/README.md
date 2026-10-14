@@ -10,7 +10,7 @@ Homepage sections belong to `src/routes/_components`: SiteHero, its TagRain
 animation/viewer, ProductionMetrics, BentoSection, and NewsHighlights. The preserved TagMachine
 experiment also stays with the homepage.
 
-Topic page content belongs to `src/routes/about/[topic]/_components`, grouped by topic.
+Topic page content belongs to `src/routes/capabilities/[topic]/_components`, grouped by topic.
 BentoTopicContent selects that content for the standalone route and the homepage
 dialog. Its content, sample picker, example marquees, and private data are not
 shared UI exports. Shared stock colors and the topic registry live in `src/lib/data`.

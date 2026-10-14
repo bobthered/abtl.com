@@ -15,7 +15,7 @@ test('warehousing releases demo stock, compares workflows, and refreshes as a st
 		'static'
 	);
 	await trigger.click();
-	await expect(page).toHaveURL(/\/about\/warehousing$/);
+	await expect(page).toHaveURL(/\/capabilities\/warehousing$/);
 	const dialog = page.getByRole('dialog', { name: 'Produce in volume. Release on demand.' });
 	await expect(dialog).toBeVisible();
 	await expect(dialog.locator('[data-warehouse-count]')).toHaveText('24cartons');
@@ -153,7 +153,7 @@ test('variable data keeps records, codes, formats, and mailing recipients in syn
 	);
 	await page.keyboard.press('Escape');
 	await expect(page).toHaveURL(/\/$/);
-	await page.goto('/about/variable-data');
+	await page.goto('/capabilities/variable-data');
 	await expect(page.getByRole('heading', { level: 1 })).toHaveText(
 		'One design. A different story on every piece.'
 	);
@@ -168,7 +168,7 @@ test('variable data keeps records, codes, formats, and mailing recipients in syn
 	await page.getByRole('button', { name: /AB-004202 Valve assembly/ }).click();
 	await expect(page.locator('[data-variable-output]')).toContainText('Valve assembly');
 	await page.goto('/about/printing');
-	await expect(page).toHaveURL(/\/about\/variable-data$/);
+	await expect(page).toHaveURL(/\/capabilities\/variable-data$/);
 });
 
 test('opens route-backed dialogs and preserves the gallery through history navigation', async ({
@@ -181,16 +181,30 @@ test('opens route-backed dialogs and preserves the gallery through history navig
 	});
 	const trigger = page.locator('[data-bento-topic="variable-data"]');
 	await trigger.scrollIntoViewIfNeeded();
-	await expect(trigger).toHaveAttribute('href', '/about/variable-data');
+	await expect(trigger).toHaveAttribute('href', '/capabilities/variable-data');
 	await trigger.click();
-	await expect(page).toHaveURL(/\/about\/variable-data$/);
+	await expect(page).toHaveURL(/\/capabilities\/variable-data$/);
 	await expect(
 		page.getByRole('dialog', { name: 'One design. A different story on every piece.' })
 	).toBeVisible();
 	await expect(page.locator('[data-bento-section]')).toBeAttached();
-	// Playwright may scroll the large tile again before clicking it. Capture the position at opening.
+	// Capture the settled opening position, after smooth scrolling and header resizing.
+	await page.evaluate(
+		() =>
+			new Promise<void>((resolve) => {
+				let previous = scrollY;
+				let stableSince = performance.now();
+				const settle = (time: number) => {
+					if (Math.abs(scrollY - previous) > 0.5) stableSince = time;
+					previous = scrollY;
+					if (time - stableSince >= 200) resolve();
+					else requestAnimationFrame(settle);
+				};
+				requestAnimationFrame(settle);
+			})
+	);
 	const scroll = await page.evaluate(() => window.scrollY);
-	await expect(page).toHaveTitle('Variable Data | About | Allen-Bailey Tag & Label');
+	await expect(page).toHaveTitle('Variable Data | Capabilities | Allen-Bailey Tag & Label');
 	await page.goBack();
 	await expect(page.getByRole('dialog')).toHaveCount(0);
 	await expect(page).toHaveURL(/\/$/);
@@ -200,7 +214,7 @@ test('opens route-backed dialogs and preserves the gallery through history navig
 		.poll(async () => Math.abs((await page.evaluate(() => window.scrollY)) - scroll))
 		.toBeLessThanOrEqual(2);
 	await page.goForward();
-	await expect(page).toHaveURL(/\/about\/variable-data$/);
+	await expect(page).toHaveURL(/\/capabilities\/variable-data$/);
 	await expect(page.getByRole('dialog')).toBeVisible();
 	await page.getByRole('button', { name: 'Close topic', exact: true }).click();
 	await expect(page).toHaveURL(/\/$/);
@@ -223,11 +237,11 @@ test('refreshing an open dialog renders the standalone topic', async ({ page }) 
 	});
 	await expect(page.locator('[data-bento-topic="colors"]')).toHaveAttribute(
 		'href',
-		'/about/stock-colors'
+		'/capabilities/stock-colors'
 	);
 	await page.locator('[data-bento-topic="colors"]').click();
 	await expect(page.getByRole('dialog', { name: 'What color will you choose?' })).toBeVisible();
-	await expect(page).toHaveURL(/\/about\/stock-colors$/);
+	await expect(page).toHaveURL(/\/capabilities\/stock-colors$/);
 	await page.reload();
 	await expect(
 		page.getByRole('heading', { level: 1, name: 'What color will you choose?' })
@@ -248,7 +262,7 @@ test('modified link clicks open standalone content in a new tab', async ({ page,
 	await page.locator('[data-bento-topic="variable-data"]').click({ modifiers: ['ControlOrMeta'] });
 	const standalone = await popup;
 	await standalone.waitForLoadState();
-	await expect(standalone).toHaveURL(/\/about\/variable-data$/);
+	await expect(standalone).toHaveURL(/\/capabilities\/variable-data$/);
 	await expect(
 		standalone.getByRole('heading', {
 			level: 1,
@@ -264,7 +278,7 @@ for (const topic of topics) {
 		const context = await browser.newContext({ baseURL, javaScriptEnabled: false });
 		const page = await context.newPage();
 		try {
-			const response = await page.goto(`/about/${topic}`);
+			const response = await page.goto(`/capabilities/${topic}`);
 			expect(response?.status()).toBe(200);
 			await expect(page.locator('h1')).toBeVisible();
 			await expect(page.getByRole('dialog')).toHaveCount(0);
@@ -275,7 +289,7 @@ for (const topic of topics) {
 }
 
 test('returns a real 404 for unknown topics', async ({ request }) => {
-	const response = await request.get('/about/unknown');
+	const response = await request.get('/capabilities/unknown');
 	expect(response.status()).toBe(404);
 });
 
@@ -289,7 +303,7 @@ test('mobile back navigation dismisses the dialog and forward restores it', asyn
 	});
 	const trigger = page.locator('[data-bento-topic="full-color-printing"]');
 	await trigger.click();
-	await expect(page).toHaveURL(/\/about\/full-color-printing$/);
+	await expect(page).toHaveURL(/\/capabilities\/full-color-printing$/);
 	await expect(page.getByRole('dialog', { name: 'Full color. Both sides.' })).toBeVisible();
 	await page.goBack();
 	await expect(page.getByRole('dialog')).toHaveCount(0);
@@ -304,7 +318,7 @@ test('mobile back navigation dismisses the dialog and forward restores it', asyn
 test('standalone color marquees fill the viewport without horizontal overflow', async ({
 	page
 }) => {
-	await page.goto('/about/stock-colors');
+	await page.goto('/capabilities/stock-colors');
 	await expect(
 		page.getByRole('heading', { level: 1, name: 'What color will you choose?' })
 	).toBeVisible();
@@ -332,9 +346,9 @@ test('standalone color marquees fill the viewport without horizontal overflow', 
 test('redirects the former color route to stock colors and preserves query parameters', async ({
 	request
 }) => {
-	const response = await request.get('/about/colors?source=sample', { maxRedirects: 0 });
+	const response = await request.get('/capabilities/colors?source=sample', { maxRedirects: 0 });
 	expect(response.status()).toBe(308);
-	expect(response.headers().location).toBe('/about/stock-colors?source=sample');
+	expect(response.headers().location).toBe('/capabilities/stock-colors?source=sample');
 });
 
 test('mobile sample picker keeps selections compact and its request action visible', async ({
@@ -342,7 +356,7 @@ test('mobile sample picker keeps selections compact and its request action visib
 }) => {
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.emulateMedia({ reducedMotion: 'reduce' });
-	await page.goto('/about/stock-colors');
+	await page.goto('/capabilities/stock-colors');
 	await expect(page.locator('[data-topic-ready]')).toHaveAttribute('data-topic-ready', 'true');
 	const trigger = page.getByRole('button', { name: 'Request Samples', exact: true }).first();
 	await trigger.click();
@@ -373,7 +387,7 @@ test('shipping opens as a route-backed dialog, selects actual destinations, and 
 	const trigger = page.locator('[data-bento-topic="shipping"]');
 	await trigger.scrollIntoViewIfNeeded();
 	await trigger.click();
-	await expect(page).toHaveURL(/\/about\/shipping$/);
+	await expect(page).toHaveURL(/\/capabilities\/shipping$/);
 	const dialog = page.getByRole('dialog', { name: 'Your tags. A world of possibilities.' });
 	await expect(dialog).toBeVisible();
 	await expect(dialog.locator('[data-shipping-state]')).toHaveCount(50);
@@ -423,7 +437,7 @@ test('synthetic materials opens a storm dialog, explores stock and attachments, 
 	await trigger.focus();
 	await expect(weather).toHaveAttribute('data-weather-intensity', 'storm');
 	await trigger.click();
-	await expect(page).toHaveURL(/\/about\/synthetic-materials$/);
+	await expect(page).toHaveURL(/\/capabilities\/synthetic-materials$/);
 	const dialog = page.getByRole('dialog', { name: 'Built to weather it.' });
 	await expect(dialog).toBeVisible();
 	await expect(dialog.locator('[data-synthetic-material]')).toHaveCount(5);
@@ -553,10 +567,12 @@ for (const [legacy, canonical] of [
 	['full-color-printing', 'full-color-printing'],
 	['synthetic-materials', 'synthetic-materials']
 ]) {
-	test(`redirects legacy tags/${legacy} directly to about/${canonical}`, async ({ request }) => {
+	test(`redirects legacy tags/${legacy} directly to capabilities/${canonical}`, async ({
+		request
+	}) => {
 		const response = await request.get(`/tags/${legacy}?source=legacy`, { maxRedirects: 0 });
 		expect(response.status()).toBe(308);
-		expect(response.headers().location).toBe(`/about/${canonical}?source=legacy`);
+		expect(response.headers().location).toBe(`/capabilities/${canonical}?source=legacy`);
 	});
 }
 

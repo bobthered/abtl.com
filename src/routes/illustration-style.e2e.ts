@@ -6,7 +6,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
 	}, testInfo) => {
 		await page.setViewportSize({ width: 1440, height: 900 });
 		await page.emulateMedia({ colorScheme, reducedMotion: 'no-preference' });
-		await page.goto('/about/stock-colors', { waitUntil: 'domcontentloaded' });
+		await page.goto('/capabilities/stock-colors', { waitUntil: 'domcontentloaded' });
 		const reference = page.locator('[data-illustration-surface]');
 		await reference.scrollIntoViewIfNeeded();
 		const background = await reference.evaluate(
@@ -17,7 +17,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
 			['synthetic-materials', 3],
 			['full-color-printing', 2]
 		] as const) {
-			await page.goto(`/about/${route}`, { waitUntil: 'domcontentloaded' });
+			await page.goto(`/capabilities/${route}`, { waitUntil: 'domcontentloaded' });
 			const surfaces = page.locator('[data-illustration-surface]');
 			await expect(surfaces).toHaveCount(count);
 			for (let index = 0; index < count; index++) {
