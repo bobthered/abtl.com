@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: bed82241f27c8b4a835f211db39722270c909621 -->
+<!-- pending-base: 7ddc6cf5a9c029c924f9cf294d63a386b6c446db -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add animated chevron labels across site actions
+feat: enrich About history with company archive photos
 
-Create a reusable ActionLabel with hover and keyboard-focus chevron-to-arrow motion, an 8px shaft that grows rightward from the initial chevron tip as the chevron moves with its leading end, and reduced-motion support. Replace right-arrow labels across the homepage, About, and capability pages while retaining the static diagram arrow.
-Include larger hero CTA buttons, backdrop blur on the secondary hero CTA, and neutral About CTA styling, and update the changelog.
+Use the supplied history pages to expand the founding, Caledonia move, manufacturing evolution, label production, and acquisition timeline. Retain the source JPGs and extract four perspective-corrected WebP images with a reproducible script. Add wide AI-extended versions and generated 1991 and 2011 illustrations.
+Use object-cover timeline photos without visible caption strips. Keep image provenance in alt text and notes, record generation prompts and historical uncertainties, update About coverage, and reconcile the changelog.
 ```
 
 ## 2026-10-14
+
+- **feat: add animated chevron labels across site actions** (`7ddc6cf`)
+  Add shared ActionLabel with hover/focus chevron-to-arrow motion and reduced-motion support, replace action arrows throughout the site, enlarge hero CTAs, add secondary CTA backdrop blur and refine About CTA styling.
 
 - **feat: refresh About imagery and refine page styling** (`bed8224`)
   Replace the About hero with an optimized owner-provided aerial image, support optional captions, refine neutral-outline buttons and terrain presentation, and add stock-color marquee edge fades. Update image coverage and artwork notes.

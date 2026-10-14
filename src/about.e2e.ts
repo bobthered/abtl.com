@@ -14,6 +14,10 @@ for (const colorScheme of ['light', 'dark'] as const) {
 			);
 			await expect(page.locator('main')).toContainText('1911');
 			await expect(page.locator('main')).toContainText('2018');
+			await expect(page.locator('main')).toContainText('Samuel Allen and James Bailey');
+			await expect(page.locator('main')).toContainText('Dansville');
+			await expect(page.locator('main')).toContainText('four major railroad lines');
+			await expect(page.locator('main')).toContainText('1991');
 			await expect(page.locator('main')).toContainText('Caledonia, New York');
 			await expect(page.getByRole('link', { name: 'Discover ours' })).toHaveAttribute(
 				'href',
@@ -23,11 +27,20 @@ for (const colorScheme of ['light', 'dark'] as const) {
 				page.locator('main').getByRole('link', { name: 'Start a conversation' })
 			).toHaveAttribute('href', '/contact');
 			await expect(
-				page.locator('main').getByRole('link', { name: 'Explore careers' })
-			).toHaveAttribute('href', '/careers');
+				page.locator('main').getByRole('link', { name: 'Explore what is possible' })
+			).toHaveAttribute('href', '/capabilities');
 			expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
 				true
 			);
+			for (const photo of await page.locator('main img').all()) {
+				await photo.scrollIntoViewIfNeeded();
+				await expect
+					.poll(() =>
+						photo.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)
+					)
+					.toBe(true);
+			}
+			await page.evaluate(() => scrollTo(0, 0));
 			await page.screenshot({
 				path: `test-results/about-${colorScheme}-${width}.png`,
 				fullPage: true
@@ -48,7 +61,7 @@ test('about story remains readable without JavaScript', async ({ browser, baseUR
 	await context.close();
 });
 
-test('about landscape fades without controls and placeholder photography is explicit', async ({
+test('about landscape fades and archive photography retains accurate provenance', async ({
 	page
 }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -62,14 +75,23 @@ test('about landscape fades without controls and placeholder photography is expl
 		expect(response.ok()).toBe(true);
 		expect(await response.text()).toContain('opacity="0.');
 	}
-	await expect(page.locator('main img')).toHaveCount(7);
+	await expect(page.locator('main img')).toHaveCount(11);
+	await expect(page.locator('main img[src*="/archive-"]')).toHaveCount(4);
+	await expect(page.locator('#our-story figcaption')).toHaveCount(0);
+	await expect(page.locator('#our-story img')).toHaveCount(8);
+	for (const photo of await page.locator('#our-story img').all()) {
+		expect(await photo.evaluate((image) => getComputedStyle(image).objectFit)).toBe('cover');
+	}
 	await expect(page.locator('main img').first()).toHaveAttribute(
 		'src',
 		'/images/about/golden-hour-industrial-complex-aerial.webp'
 	);
 	for (const photo of await page.locator('main img').all()) {
 		await photo.scrollIntoViewIfNeeded();
-		await expect(photo).toHaveAttribute('alt', /Generated|Golden-hour aerial/);
+		await expect(photo).toHaveAttribute(
+			'alt',
+			/Generated|Golden-hour aerial|AI-extended company archive/
+		);
 		await expect
 			.poll(() =>
 				photo.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)

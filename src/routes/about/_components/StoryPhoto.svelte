@@ -8,23 +8,27 @@
 		alt,
 		caption = 'Generated photo placeholder',
 		class: className = '',
+		height = 533,
 		isPriority = false,
-		src
+		src,
+		width = 1200
 	}: {
 		alt: string;
 		caption?: string | null;
 		class?: string;
+		height?: number;
 		isPriority?: boolean;
 		src: string;
+		width?: number;
 	} = $props();
 </script>
 
-<Figure class={twMerge('relative m-0 overflow-hidden rounded-sm', className)}>
+<Figure class={twMerge('relative m-0 flex flex-col overflow-hidden rounded-sm', className)}>
 	<Img
 		{src}
 		{alt}
-		width={1200}
-		height={533}
+		{width}
+		{height}
 		loading={isPriority ? 'eager' : 'lazy'}
 		fetchpriority={isPriority ? 'high' : 'auto'}
 		class="h-full min-h-64 w-full object-cover"

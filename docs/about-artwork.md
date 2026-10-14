@@ -1,18 +1,41 @@
 # About page photography and landscape
 
-The six WebP files in `static/images/about/` are generated placeholders, produced with the built-in imagegen tool on 2026-10-13. They are fictional scenes, not photographs of Allen-Bailey, its staff, equipment, facility, or historic events. Visible captions and alt text identify them accordingly.
+The six original `*-placeholder.webp` files in `static/images/about/` are generated placeholders, produced with the built-in imagegen tool on 2026-10-13. They are fictional scenes, not photographs of Allen-Bailey, its staff, equipment, facility, or historic events. Alt text identifies them accordingly; visible captions remain outside the timeline.
 
 ## Owner-provided opening image
 
-The opening About image now uses `golden-hour-industrial-complex-aerial.webp`, converted from the owner-provided `Golden-Hour Industrial Complex Aerial.png` at 1200 x 533, WebP quality 85, to match the previous hero asset. The source PNG is retained. Its alt text describes what is visible without claiming provenance or a verified facility identity. The generic generated-placeholder caption is suppressed for this supplied image; other placeholders retain their labels.
+The opening About image now uses `golden-hour-industrial-complex-aerial.webp`, converted from the owner-provided `Golden-Hour Industrial Complex Aerial.png` at 1200 x 533, WebP quality 85, to match the previous hero asset. The source PNG is retained. Its alt text describes what is visible without claiming provenance or a verified facility identity. The generic generated-placeholder caption is suppressed for this supplied image; other placeholders retain their provenance in alt text, with visible labels outside the timeline.
+
+## Extracted company archive
+
+Four original archival assets were extracted from the owner-provided root files `IMG_2260.jpg` and `IMG_2261.jpg`. They contain the wooden nursery tag, horse-drawn wagon, industry handshake, and company gathering reproduced in the centennial history. The sources remain untouched and outside the public static directory.
+
+Run `node scripts/extract-about-archive.mjs` to reproduce the crops. The script respects EXIF rotation, corrects each image's four-corner page perspective with bilinear sampling, exports WebP quality 88, and strips camera metadata. It does not generate or invent image detail, reconstruct missing areas, or identify undated people/events. Printed halftone, page curvature and photographic softness remain. Combined output is approximately 258 KB.
+
+The original crops remain available for comparison. The timeline now uses wider AI-extended derivatives with `object-cover`, correct intrinsic dimensions and no visible caption strips, as requested. The dated timeline text does **not** date its accompanying archival photograph. The wooden tag is an example shown in the booklet, not a verified surviving object from 1911. The gathering is not identified as the 2011 anniversary. Other fictional photos outside the timeline keep their generated-placeholder labels. Timeline provenance remains explicit in image alt text and these notes. See [history source notes](about-history-sources.md).
+
+## Wide timeline images (2026-10-14)
+
+The built-in imagegen tool edited each original archive crop separately into a wide landscape composition. These are AI-extended derivatives, not unaltered historical prints: generated surroundings and incidental details must not be treated as historical evidence. The original JPEG pages and deterministic WebP crops are retained. New fictional 1991 manufacturing and 2011 centennial still-life images fill the previously text-only milestones; they do not document the actual acquisition, facility, people or anniversary event.
+
+All six new assets are optimized at 1200 x 667, WebP quality 85, under `static/images/about/`:
+
+- `archive-wooden-nursery-tag-wide.webp`
+- `archive-horse-drawn-tag-wagon-wide.webp`
+- `archive-industry-handshake-wide.webp`
+- `archive-company-gathering-wide.webp`
+- `industrial-tags-1991-generated.webp`
+- `centenary-2011-generated.webp`
+
+All eight timeline cards suppress visible captions and use `object-cover`. Alt text identifies AI-extended archive images or generated illustrations. Existing 2018 and Today placeholder images remain generated. The complete final prompt for each of the six new images is stored in [about-image-prompts.json](about-image-prompts.json); execution used the built-in tool, not the API/CLI fallback. The extraction script regenerates original crops only, not AI extensions.
 
 ## Replacing the photos
 
-Replace these files with approved photographs and update their alt text and the shared StoryPhoto caption. Keep explicit placeholder labels until each replacement is real. StoryPhoto intentionally centralizes the label for this draft; introduce per-image provenance when replacing only some images. Image cropping is controlled by the owning section. Use optimized WebP/AVIF and correct intrinsic dimensions.
+Replace these files with approved photographs and update their alt text and the shared StoryPhoto caption. Keep alt text and project notes accurate when replacing images. Timeline captions are intentionally hidden; StoryPhoto retains optional visible captions for other sections. Image cropping is controlled by the owning section. Use optimized WebP/AVIF and correct intrinsic dimensions.
 
 - rural-factory-placeholder.webp: current facility / opening landscape.
-- workshop-1911-placeholder.webp: genuine early company archive.
-- centenary-2011-placeholder.webp: actual centennial photograph if available. The year is derived from the verified 1911 founding, not evidence of the imagined celebration shown.
+- workshop-1911-placeholder.webp: retained unused experiment, replaced by supplied archival material.
+- centenary-2011-placeholder.webp: retained unused experiment; the timeline no longer presents an imagined anniversary event.
 - ennis-2018-placeholder.webp: approved acquisition-era photo or facility image. Acquisition date comes from the cited Ennis annual report in about.ts.
 - press-today-placeholder.webp: current production/team (currently used twice).
 - rural-landscape-placeholder.webp: actual Caledonia-area countryside.

@@ -105,7 +105,8 @@
 						the place your next tag or label begins.
 					</P>
 					<P class="mt-4 leading-relaxed text-gray-600 dark:text-gray-300">
-						Our rural setting is part of our story. Our customers give that story its reach.
+						We came here in 1913 for access to four major railroad lines. Today, our rural setting
+						is still part of our story. Our customers give that story its reach.
 					</P>
 					<Div class="mt-8 flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
 						<MapPin class="size-5 shrink-0" aria-hidden="true" /><P>
@@ -129,14 +130,17 @@
 					</P><H2 variants={['section']} class="max-w-2xl">More than a century in the making.</H2>
 				</Div>
 				<P class="max-w-xl text-lg leading-relaxed text-gray-600 dark:text-gray-300">
-					Methods evolve. Applications change. The purpose carries on: keeping the right information
-					with the right thing. Since 1911, Allen-Bailey has been part of that everyday work.
+					Before paper tags and printed labels, there were wooden nursery stakes. Our story began in
+					Dansville with a practical idea: help growers identify their plants. The materials have
+					changed. The purpose has carried on.
 				</P>
 			</Div>
 			<Div class="mt-12 grid gap-4 md:grid-cols-2">
 				{#each milestones as milestone (milestone.year)}
 					<Div class="overflow-hidden rounded-sm bg-white dark:bg-gray-900">
-						<StoryPhoto src={milestone.image} alt={milestone.alt} class="h-64 sm:h-80" />
+						{#if milestone.photo}
+							<StoryPhoto {...milestone.photo} caption={null} class="h-64 sm:h-80" />
+						{/if}
 						<Div class="p-6 sm:p-8">
 							<P
 								class="mb-4 text-4xl font-light tracking-tight text-primary-600 dark:text-primary-300"
