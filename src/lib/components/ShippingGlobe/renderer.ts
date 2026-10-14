@@ -52,7 +52,8 @@ export const createShippingGlobe = (
 		new THREE.Float32BufferAttribute(new Float32Array(positions.length), 3)
 	);
 	const dotMaterial = keep(
-		new THREE.PointsMaterial({ size: 0.0017, vertexColors: true, sizeAttenuation: true })
+		// Screen-space sizing prevents land from disappearing into subpixel coverage in small tiles.
+		new THREE.PointsMaterial({ size: 1.15, vertexColors: true, sizeAttenuation: false })
 	);
 	globe.add(new THREE.Points(geometry, dotMaterial));
 	// Thousands of destinations share one draw call instead of individual meshes/arcs.
@@ -324,7 +325,7 @@ export const createShippingGlobe = (
 		}
 		destinationMaterial.uniforms.strokeOpacity.value = colors.isDark ? 0.5 : 0.42;
 		markerMaterial.uniforms.strokeOpacity.value = destinationMaterial.uniforms.strokeOpacity.value;
-		dotMaterial.size = colors.isDark ? 0.0017 : 0.0023;
+		dotMaterial.size = colors.isDark ? 1.25 : 1.15;
 		const attribute = geometry.getAttribute('color');
 		continentPoints.forEach(([lat], i) => {
 			const color = north.clone().lerp(south, (90 - lat) / 180);

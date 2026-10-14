@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 6c43ca15568798e24bc565188794bd06bca16045 -->
+<!-- pending-base: 0a5d0aab2b09283343dc463e1b2ce2fb05305122 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: strengthen terrain relief and fade points before the map edges
+fix: keep shipping globe land points visible at bento widths
 
-Increase elevation exaggeration eightfold and add continuous elliptical fades to both static point layers, keeping the Caledonia marker clear and all container edges transparent.
-Regenerate SVG assets, verify relief and rasterized edge transparency, update artwork notes, and reconcile the changelog.
+Use small screen-space land dots to avoid subpixel disappearance across responsive tile widths, preserving globe colors, shipment rings and About terrain fades.
+Add rendered-pixel coverage in light and dark themes across all three bento widths and reconcile the changelog.
 ```
 
 ## 2026-10-13
+
+- **fix: strengthen terrain relief and fade points before the map edges** (`0a5d0aa`)
+  Increase About terrain elevation exaggeration eightfold and add continuous elliptical fades to both generated point layers. Preserve the Caledonia marker, test rasterized edge transparency, and update artwork notes.
 
 - **fix: move terrain generation out of the application runtime** (`6c43ca1`)
   Move raw terrain data and projection code out of the application graph and generate cacheable SVG masks offline. Preserve theme colors and fading, remove large per-render path construction, and add repeated-request coverage and memory incident notes.
