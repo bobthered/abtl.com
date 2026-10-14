@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Imports
-	import { ArrowRight, RotateCw } from '#lib/icons';
 	import {
+		ActionLabel,
 		Br,
 		Button,
 		Container,
@@ -18,6 +18,7 @@
 	import { floatIllustration } from '#lib/attachments';
 	import inspectionBack from '#lib/assets/tags/backs/inspection-record-01.svg';
 	import inspectionFront from '#lib/assets/tags/fronts/inspection-record-01.svg';
+	import { RotateCw } from '#lib/icons';
 	import serviceFront from '#lib/assets/tags/fronts/service-tag-01.svg';
 	import serviceSecondFront from '#lib/assets/tags/fronts/service-tag-02.svg';
 	import { stockColors } from '#lib/data/stockColors.js';
@@ -198,7 +199,7 @@
 				One favorite or a handful of possibilities. We'll send the stock colors you want to compare.
 			</P>
 			<Button variants={['large', 'neutral']} onclick={onRequestSamples} aria-haspopup="dialog">
-				Request Samples <ArrowRight class="size-5" aria-hidden="true" />
+				<ActionLabel>Request Samples</ActionLabel>
 			</Button>
 			<P class="text-sm text-gray-300 dark:text-gray-600">Choose your colors in one quick list.</P>
 		</Container>

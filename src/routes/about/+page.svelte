@@ -1,9 +1,22 @@
 <script lang="ts">
 	// Imports
-	import { A, Br, Container, Div, H1, H2, H3, Main, P, Section, Span } from '#lib/components';
+	import {
+		A,
+		ActionLabel,
+		Br,
+		Container,
+		Div,
+		H1,
+		H2,
+		H3,
+		Main,
+		P,
+		Section,
+		Span
+	} from '#lib/components';
 	import { applications, milestones, processSteps } from './_data/about.js';
-	import { ArrowRight, MapPin } from '#lib/icons';
 	import CaledoniaLandscape from './_components/CaledoniaLandscape.svelte';
+	import { MapPin } from '#lib/icons';
 	import StoryPhoto from './_components/StoryPhoto.svelte';
 </script>
 
@@ -34,7 +47,7 @@
 					</P>
 					<Div class="mt-8 flex flex-wrap gap-4">
 						<A href="/contact" variants={['button.base']}>
-							Tell us your story<ArrowRight class="size-4" aria-hidden="true" />
+							<ActionLabel>Tell us your story</ActionLabel>
 						</A>
 						<A href="#our-story" variants={['button.base', 'button.variant.neutral-outline']}>
 							Discover ours
@@ -167,7 +180,7 @@
 						variants={['button.base', 'button.variant.neutral-outline']}
 						class="mt-8"
 					>
-						See how far we go<ArrowRight class="size-4" aria-hidden="true" />
+						<ActionLabel>See how far we go</ActionLabel>
 					</A>
 				</Div>
 			</Div>
@@ -192,7 +205,7 @@
 						is room for your next chapter in our story.
 					</P>
 					<A href="/capabilities" variants={['button.base']} class="mt-8">
-						Explore what is possible<ArrowRight class="size-4" aria-hidden="true" />
+						<ActionLabel>Explore what is possible</ActionLabel>
 					</A>
 				</Div>
 				<StoryPhoto
@@ -217,7 +230,7 @@
 							variants={['ghost', 'accent']}
 							class="inline-flex items-center gap-2 px-0"
 						>
-							{step.label}<ArrowRight class="size-4 shrink-0" aria-hidden="true" />
+							<ActionLabel>{step.label}</ActionLabel>
 						</A>
 					</Div>
 				{/each}
@@ -251,7 +264,7 @@
 							variants={['ghost', 'accent']}
 							class="mt-auto inline-flex items-center gap-2 self-start px-0"
 						>
-							Explore the application<ArrowRight class="size-4" aria-hidden="true" />
+							<ActionLabel>Explore the application</ActionLabel>
 						</A>
 					</Div>
 				{/each}
@@ -270,8 +283,11 @@
 				help you find the next step.
 			</P>
 			<Div class="mt-6 flex flex-wrap justify-center gap-4">
-				<A href="/contact" variants={['button.base', 'button.variant.large']}>
-					Start a conversation<ArrowRight class="size-5" aria-hidden="true" />
+				<A
+					href="/contact"
+					variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
+				>
+					<ActionLabel>Start a conversation</ActionLabel>
 				</A>
 			</Div>
 		</Container>

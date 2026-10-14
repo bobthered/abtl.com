@@ -2,6 +2,7 @@
 	// Imports
 	import {
 		A,
+		ActionLabel,
 		Br,
 		Button,
 		Container,
@@ -12,7 +13,7 @@
 		Section,
 		Span
 	} from '#lib/components';
-	import { ArrowRight, Check, FlipHorizontal2, Layers, RotateCcw } from '#lib/icons';
+	import { Check, FlipHorizontal2, Layers, RotateCcw } from '#lib/icons';
 	import { floatIllustration } from '#lib/attachments';
 	import type { Snippet } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
@@ -251,7 +252,7 @@
 				variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
 				href="mailto:sales@abtl.com?subject=Full-color%20printing%20project&body=Tags%20or%20labels%3A%0AQuantity%3A%0AFace%20artwork%3A%0ABack%20artwork%3A%0AStock%20or%20application%3A"
 			>
-				Plan your full-color project <ArrowRight class="size-5" aria-hidden="true" />
+				<ActionLabel>Plan your full-color project</ActionLabel>
 			</A>
 		</Container>
 	</Section>

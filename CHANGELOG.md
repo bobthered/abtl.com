@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 4ae681c96d132c120f9ce0ca40fa809c0635f489 -->
+<!-- pending-base: bed82241f27c8b4a835f211db39722270c909621 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: refresh About imagery and refine page styling
+feat: add animated chevron labels across site actions
 
-Convert the supplied aerial PNG to a 1200x533 WebP, use it for the About hero, retain its source, and support optional photo captions while preserving other placeholder labels.
-Include transparent neutral-outline button styling with subtle hover and focus fills and the simplified terrain presentation without its caption block. Add horizontal gradient fades to the stock-color photo marquee. Update image coverage and artwork notes, and reconcile the changelog.
+Create a reusable ActionLabel with hover and keyboard-focus chevron-to-arrow motion, an 8px shaft that grows rightward from the initial chevron tip as the chevron moves with its leading end, and reduced-motion support. Replace right-arrow labels across the homepage, About, and capability pages while retaining the static diagram arrow.
+Include larger hero CTA buttons, backdrop blur on the secondary hero CTA, and neutral About CTA styling, and update the changelog.
 ```
 
 ## 2026-10-14
+
+- **feat: refresh About imagery and refine page styling** (`bed8224`)
+  Replace the About hero with an optimized owner-provided aerial image, support optional captions, refine neutral-outline buttons and terrain presentation, and add stock-color marquee edge fades. Update image coverage and artwork notes.
 
 - **refactor: move bento topic pages under capabilities** (`4ae681c`)
   Move six topic routes and their components to Capabilities, update links, dialogs, titles, tooling and notes, preserve legacy redirects, make About a direct sorted navigation link, and extend migration coverage.

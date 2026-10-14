@@ -1,6 +1,18 @@
 <script lang="ts">
 	// Imports
-	import { A, Br, Button, Container, Div, H3, Img, P, Section, Span } from '#lib/components';
+	import {
+		A,
+		ActionLabel,
+		Br,
+		Button,
+		Container,
+		Div,
+		H3,
+		Img,
+		P,
+		Section,
+		Span
+	} from '#lib/components';
 	import { ArrowDown, ArrowRight, Check, Database, Mail, ScanLine } from '#lib/icons';
 	import { fade } from 'svelte/transition';
 	import { MediaQuery } from 'svelte/reactivity';
@@ -152,7 +164,7 @@
 							<Span class="font-mono text-xl tabular-nums sm:text-2xl">
 								{record.id.slice(3)}
 							</Span>
-							<ArrowRight class="size-4 shrink-0" />
+							<ArrowRight class="size-4 shrink-0" aria-hidden="true" />
 							<Img
 								src={record.barcode}
 								alt=""
@@ -164,7 +176,7 @@
 					{/each}
 				</Div>
 				<Button class="mt-8 w-full" onclick={advanceRecord}>
-					Print the next record <ArrowRight class="size-4" aria-hidden="true" />
+					<ActionLabel>Print the next record</ActionLabel>
 				</Button>
 			</Div>
 			<Div class="order-1 lg:order-2">
@@ -219,7 +231,7 @@
 					class="mt-8"
 					onclick={() => (mailingIndex = (mailingIndex + 1) % variableExamples.length)}
 				>
-					Meet the next recipient <ArrowRight class="size-4" aria-hidden="true" />
+					<ActionLabel>Meet the next recipient</ActionLabel>
 				</Button>
 			</Div>
 			<Div
@@ -270,7 +282,7 @@
 				variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
 				href="mailto:sales@abtl.com?subject=Variable%20data%20printing&body=Tags%20or%20labels%3A%0AFields%20that%20change%3A%0ACodes%20or%20numbering%3A%0AQuantity%3A%0AHow%20they%20will%20be%20used%3A"
 			>
-				Plan your variable data project <ArrowRight class="size-5" aria-hidden="true" />
+				<ActionLabel>Plan your variable data project</ActionLabel>
 			</A>
 		</Container>
 	</Section>

@@ -2,6 +2,7 @@
 	// Imports
 	import {
 		A,
+		ActionLabel,
 		Br,
 		Button,
 		Container,
@@ -16,7 +17,7 @@
 		Svg,
 		Text
 	} from '#lib/components';
-	import { ArrowRight, Globe2, MapPin, PackageCheck } from '#lib/icons';
+	import { Globe2, MapPin, PackageCheck } from '#lib/icons';
 	import {
 		internationalLocations,
 		shippedStateCount,
@@ -187,7 +188,7 @@
 			href="mailto:sales@abtl.com?subject=Shipping%20inquiry&body=Destination%3A%0ATags%20or%20labels%20needed%3A%0AQuantity%3A%0ATiming%3A"
 			variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
 		>
-			Talk about shipping <ArrowRight class="size-5" aria-hidden="true" />
+			<ActionLabel>Talk about shipping</ActionLabel>
 		</A>
 		<P class="text-sm text-gray-300 dark:text-gray-600">
 			Your destination. Your project. Let's make a plan.

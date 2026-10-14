@@ -1,7 +1,18 @@
 <script lang="ts">
 	// Imports
-	import { A, Container, Div, H1, Marquee, P, Path, Section, Span, Svg } from '#lib/components';
-	import { ArrowRight } from '#lib/icons';
+	import {
+		A,
+		ActionLabel,
+		Container,
+		Div,
+		H1,
+		Marquee,
+		P,
+		Path,
+		Section,
+		Span,
+		Svg
+	} from '#lib/components';
 	import { estimateAnnualProduction } from '#lib/productionMetric.js';
 	import { onMount } from 'svelte';
 	import { redPath } from '../../../lib/components/Logo/paths';
@@ -115,11 +126,18 @@
 					</Span>
 				</P>
 				<Div class="mt-8 flex flex-wrap items-center gap-4 sm:mt-10 sm:gap-6">
-					<A href="mailto:sales@abtl.com?subject=Tag%20project%20quote" variants={['button.base']}>
-						Get a quote <ArrowRight aria-hidden="true" class="size-4" />
+					<A
+						href="mailto:sales@abtl.com?subject=Tag%20project%20quote"
+						variants={['button.base', 'button.variant.large']}
+					>
+						<ActionLabel>Get a quote</ActionLabel>
 					</A>
-					<A href="#possibilities" variants={['button.base', 'button.variant.neutral-outline']}>
-						Find your tags <ArrowRight aria-hidden="true" class="size-4" />
+					<A
+						class="backdrop-blur"
+						href="#possibilities"
+						variants={['button.base', 'button.variant.large', 'button.variant.neutral-outline']}
+					>
+						<ActionLabel>Find your tags</ActionLabel>
 					</A>
 				</Div>
 				<P class="mt-6 text-xs leading-relaxed text-gray-500 sm:text-sm dark:text-gray-400">

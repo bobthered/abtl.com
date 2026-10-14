@@ -2,6 +2,7 @@
 	// Imports
 	import {
 		A,
+		ActionLabel,
 		Br,
 		Button,
 		Container,
@@ -14,7 +15,7 @@
 		StockTag,
 		WeatherTag
 	} from '#lib/components';
-	import { ArrowRight, Check, Droplets, Hand, Link, ShieldCheck, Wind } from '#lib/icons';
+	import { Check, Droplets, Hand, Link, ShieldCheck, Wind } from '#lib/icons';
 	import { floatIllustration } from '#lib/attachments';
 	import type { Snippet } from 'svelte';
 	import { syntheticMaterials } from './materials';
@@ -247,7 +248,7 @@
 						target="_blank"
 						rel="noreferrer"
 					>
-						{material.sourceName}<ArrowRight class="size-3" aria-hidden="true" />
+						<ActionLabel>{material.sourceName}</ActionLabel>
 					</A>
 				{/if}
 			</Div>
@@ -335,7 +336,7 @@
 				href={sampleHref}
 				data-synthetic-samples
 			>
-				Request Synthetic Samples<ArrowRight class="size-5" aria-hidden="true" />
+				<ActionLabel>Request Synthetic Samples</ActionLabel>
 			</A>
 		</Container>
 	</Section>

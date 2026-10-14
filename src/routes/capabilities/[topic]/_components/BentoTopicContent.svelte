@@ -2,6 +2,7 @@
 	// Imports
 	import {
 		A,
+		ActionLabel,
 		BentoPreview,
 		Button,
 		Container,
@@ -13,7 +14,6 @@
 		Section,
 		Skeleton
 	} from '#lib/components';
-	import { ArrowRight } from '#lib/icons';
 	import { onMount } from 'svelte';
 	import ProcessPrintingContent from './ProcessPrinting/ProcessPrintingContent.svelte';
 	import ShippingContent from './ShippingContent/ShippingContent.svelte';
@@ -192,8 +192,7 @@
 				href={`mailto:sales@abtl.com?subject=${encodeURIComponent(topic.title)}`}
 				variants={['button.base']}
 			>
-				Discuss your project
-				<ArrowRight class="size-4" aria-hidden="true" />
+				<ActionLabel>Discuss your project</ActionLabel>
 			</A>
 			{#if onClose}
 				<Button variants={['ghost']} onclick={onClose}>Back to possibilities</Button>

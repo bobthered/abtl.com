@@ -2,6 +2,7 @@
 	// Imports
 	import {
 		A,
+		ActionLabel,
 		Br,
 		Button,
 		Container,
@@ -12,7 +13,7 @@
 		Span,
 		WarehouseScene
 	} from '#lib/components';
-	import { ArrowRight, Boxes, Check, PackageCheck, RotateCcw, Truck } from '#lib/icons';
+	import { Boxes, Check, PackageCheck, RotateCcw, Truck } from '#lib/icons';
 	import type { Snippet } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
 
@@ -157,7 +158,7 @@
 					</Div>
 				</Div>
 				<Button onclick={releaseStock} disabled={stock < quantity} data-warehouse-release-button>
-					Release from stock <ArrowRight class="size-4" aria-hidden="true" />
+					<ActionLabel>Release from stock</ActionLabel>
 				</Button>
 				<P class="text-sm text-gray-600 dark:text-gray-300" role="status" data-warehouse-status>
 					{releases === 0
@@ -278,7 +279,7 @@
 				variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
 				href="mailto:sales@abtl.com?subject=Warehousing%20%26%20scheduled%20releases&body=Tags%20or%20labels%3A%0AEstimated%20total%20quantity%3A%0ATypical%20release%20quantity%3A%0ARelease%20frequency%3A%0AShip-to%20locations%3A"
 			>
-				Plan your stock & releases <ArrowRight class="size-5" aria-hidden="true" />
+				<ActionLabel>Plan your stock & releases</ActionLabel>
 			</A>
 		</Container>
 	</Section>
