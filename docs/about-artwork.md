@@ -2,6 +2,10 @@
 
 The six WebP files in `static/images/about/` are generated placeholders, produced with the built-in imagegen tool on 2026-10-13. They are fictional scenes, not photographs of Allen-Bailey, its staff, equipment, facility, or historic events. Visible captions and alt text identify them accordingly.
 
+## Owner-provided opening image
+
+The opening About image now uses `golden-hour-industrial-complex-aerial.webp`, converted from the owner-provided `Golden-Hour Industrial Complex Aerial.png` at 1200 x 533, WebP quality 85, to match the previous hero asset. The source PNG is retained. Its alt text describes what is visible without claiming provenance or a verified facility identity. The generic generated-placeholder caption is suppressed for this supplied image; other placeholders retain their labels.
+
 ## Replacing the photos
 
 Replace these files with approved photographs and update their alt text and the shared StoryPhoto caption. Keep explicit placeholder labels until each replacement is real. StoryPhoto intentionally centralizes the label for this draft; introduce per-image provenance when replacing only some images. Image cropping is controlled by the owning section. Use optimized WebP/AVIF and correct intrinsic dimensions.

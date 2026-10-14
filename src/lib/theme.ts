@@ -96,7 +96,7 @@ export const initializeTheme = () => {
 	theme.set.variant(
 		'button',
 		'neutral-outline',
-		'bg-white/70 text-gray-950 inset-ring-1 inset-ring-gray-300 hover:bg-white hover:text-gray-950 focus:bg-white focus:text-gray-950 dark:bg-gray-900/70 dark:text-gray-50 dark:inset-ring-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50'
+		'bg-transparent text-gray-950 inset-ring-1 inset-ring-gray-300 hover:bg-gray-950/10 hover:text-gray-950 focus:bg-gray-950/10 focus:text-gray-950 dark:bg-transparent dark:text-gray-50 dark:inset-ring-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-50 dark:focus:bg-white/5 dark:focus:text-gray-50'
 	);
 	theme.set.base('tagMachine', 'w-full min-w-0 py-6 lg:-mr-8 lg:w-auto');
 	theme.set.base(

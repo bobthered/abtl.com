@@ -92,16 +92,4 @@
 			</G>
 		</Svg>
 	</Div>
-	<Div class="relative flex flex-wrap items-center justify-between gap-4 px-6 sm:px-8">
-		<Div class="text-xs leading-relaxed text-gray-600 dark:text-gray-300">
-			New York in primary / world in secondary<Br />
-			<A href="https://registry.opendata.aws/terrain-tiles/" class="text-xs">
-				Terrain: USGS via Mapzen
-			</A>
-			<A href="https://gis.ny.gov/civil-boundaries" class="ml-2 text-xs">Boundary: NYS GIS</A>
-			<A href="https://www.geonames.org/5111073/caledonia.html" class="ml-2 text-xs">
-				Location: GeoNames
-			</A>
-		</Div>
-	</Div>
 </Div>

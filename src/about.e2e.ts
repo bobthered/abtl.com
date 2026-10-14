@@ -63,9 +63,13 @@ test('about landscape fades without controls and placeholder photography is expl
 		expect(await response.text()).toContain('opacity="0.');
 	}
 	await expect(page.locator('main img')).toHaveCount(7);
+	await expect(page.locator('main img').first()).toHaveAttribute(
+		'src',
+		'/images/about/golden-hour-industrial-complex-aerial.webp'
+	);
 	for (const photo of await page.locator('main img').all()) {
 		await photo.scrollIntoViewIfNeeded();
-		await expect(photo).toHaveAttribute('alt', /Generated/);
+		await expect(photo).toHaveAttribute('alt', /Generated|Golden-hour aerial/);
 		await expect
 			.poll(() =>
 				photo.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)

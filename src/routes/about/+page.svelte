@@ -43,8 +43,9 @@
 				</Div>
 			</Div>
 			<StoryPhoto
-				src="/images/about/rural-factory-placeholder.webp"
-				alt="Generated placeholder: an imagined rural manufacturing facility surrounded by fields and trees; not the actual Allen-Bailey facility"
+				src="/images/about/golden-hour-industrial-complex-aerial.webp"
+				alt="Golden-hour aerial view of industrial buildings surrounded by fields and trees"
+				caption={null}
 				isPriority
 				class="mt-8 h-80 sm:h-112 lg:h-136"
 			/>
@@ -271,12 +272,6 @@
 			<Div class="mt-6 flex flex-wrap justify-center gap-4">
 				<A href="/contact" variants={['button.base', 'button.variant.large']}>
 					Start a conversation<ArrowRight class="size-5" aria-hidden="true" />
-				</A>
-				<A
-					href="/careers"
-					variants={['button.base', 'button.variant.neutral-outline', 'button.variant.large']}
-				>
-					Explore careers
 				</A>
 			</Div>
 		</Container>

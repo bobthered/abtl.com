@@ -45,6 +45,7 @@
 
 <Marquee
 	ariaLabel="Stock tag colors in use"
+	class="mask-x-from-90% mask-x-to-100%"
 	items={stockPhotoExamples}
 	pixelsPerSecond={24}
 	isPaused={isLightboxVisible}
