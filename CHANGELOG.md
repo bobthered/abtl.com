@@ -6,16 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 0a5d0aab2b09283343dc463e1b2ce2fb05305122 -->
+<!-- pending-base: 2b061da6d2635c4039674c1e35d7e8e77cf7f67d -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: keep shipping globe land points visible at bento widths
+fix: defer scroll reveals until navigation scrolling settles
 
-Use small screen-space land dots to avoid subpixel disappearance across responsive tile widths, preserving globe colors, shipment rings and About terrain fades.
-Add rendered-pixel coverage in light and dark themes across all three bento widths and reconcile the changelog.
+Coordinate the root navigation lifecycle with the global reveal attachment, pausing viewport and page-end triggers until scroll position and layout stabilize while preserving smooth scrolling, focus access, and reduced motion.
+Add below-fold navigation regression coverage, wait for hydration in cold-start checks, and reconcile the changelog.
 ```
+
+## 2026-10-14
+
+- **fix: keep shipping globe land points visible at bento widths** (`2b061da`)
+  Use small screen-space land dots to preserve visibility across tile widths. Retain shipment rings and About terrain fades and add rendered-pixel checks in both themes across three widths.
 
 ## 2026-10-13
 

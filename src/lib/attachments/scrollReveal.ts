@@ -26,6 +26,12 @@ const numberFormat = new Intl.NumberFormat('en-US');
 const excluded =
 	'header, main nav, dialog nav, .sr-only, [data-scroll-reveal="off"], [data-stock-columns]';
 
+// The root layout owns SvelteKit lifecycle registration; attachments subscribe per mount.
+const navigationListeners = new Set<(isNavigating: boolean) => void>();
+export const setScrollRevealNavigation = (isNavigating: boolean) => {
+	for (const listener of navigationListeners) listener(isNavigating);
+};
+
 /** Discover content and visual surfaces from rendered DOM, without page-specific opt-ins. */
 const revealTarget = (element: Element): RevealElement | null => {
 	if (element.closest(excluded)) return null;
@@ -82,6 +88,8 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 	let batchFrame = 0;
 	let countFrame = 0;
 	let observer: IntersectionObserver;
+	let isNavigationPaused = false;
+	let scrollFrame = 0;
 
 	const show = (element: RevealElement) => {
 		element.classList.remove(pendingClass);
@@ -109,6 +117,7 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 	};
 	const flush = () => {
 		batchFrame = 0;
+		if (isNavigationPaused) return;
 		const targets = [...pending]
 			.filter((element) => element.isConnected && !completed.has(element))
 			.map((element) => ({ element, top: element.getBoundingClientRect().top }))
@@ -188,6 +197,7 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 		}
 	};
 	const queueReveal = (element: RevealElement) => {
+		if (isNavigationPaused) return;
 		observer.unobserve(element);
 		observed.delete(element);
 		const children = staggerGroups.get(element);
@@ -212,10 +222,11 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 				threshold: 0
 			}
 		);
-		observed.forEach((element) => observer.observe(element));
+		if (!isNavigationPaused) observed.forEach((element) => observer.observe(element));
 	};
 	// At the scroll limit, reveal reachable content that cannot rise to the trigger line.
-	const revealAtEnd = (event: Event) => {
+	const revealAtEnd = (event: Pick<Event, 'target'>) => {
+		if (isNavigationPaused) return;
 		const scroller = event.target === document ? document.scrollingElement : event.target;
 		if (
 			!(scroller instanceof HTMLElement) ||
@@ -283,8 +294,43 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 				prepared.add(target);
 			}
 			observed.add(target);
-			observer.observe(target);
+			if (!isNavigationPaused) observer.observe(target);
 		}
+	};
+	// Smooth scroll may continue after SvelteKit updates the DOM. Re-arm only after
+	// position and document height stay stable, including restored back/forward positions.
+	const navigation = (isNavigating: boolean) => {
+		cancelAnimationFrame(scrollFrame);
+		scrollFrame = 0;
+		if (isNavigating) {
+			isNavigationPaused = true;
+			observer.disconnect();
+			cancelAnimationFrame(batchFrame);
+			batchFrame = 0;
+			for (const element of pending) if (!completed.has(element)) observed.add(element);
+			pending.clear();
+			return;
+		}
+		if (!isNavigationPaused) return;
+		let lastY = window.scrollY;
+		let lastHeight = document.documentElement.scrollHeight;
+		let stableSince = performance.now();
+		const settle = (time: number) => {
+			const height = document.documentElement.scrollHeight;
+			if (Math.abs(window.scrollY - lastY) > 0.5 || height !== lastHeight) stableSince = time;
+			lastY = window.scrollY;
+			lastHeight = height;
+			if (time - stableSince < 160) {
+				scrollFrame = requestAnimationFrame(settle);
+				return;
+			}
+			scrollFrame = 0;
+			isNavigationPaused = false;
+			observeViewport();
+			// Recheck content at the page end when history restores a bottom position.
+			revealAtEnd({ target: document });
+		};
+		scrollFrame = requestAnimationFrame(settle);
 	};
 	const finishMotion = () => {
 		if (!preference.matches && !document.hidden) return;
@@ -353,6 +399,7 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 			}
 		for (const element of counters.keys()) if (!element.isConnected) counters.delete(element);
 	});
+	navigationListeners.add(navigation);
 	observeViewport();
 	register(document.body);
 	window.addEventListener('resize', observeViewport);
@@ -362,6 +409,8 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 	document.addEventListener('visibilitychange', finishMotion);
 	document.addEventListener('focusin', focus);
 	return () => {
+		navigationListeners.delete(navigation);
+		cancelAnimationFrame(scrollFrame);
 		observer.disconnect();
 		prepared.forEach(show);
 		window.removeEventListener('resize', observeViewport);

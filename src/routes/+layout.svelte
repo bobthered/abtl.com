@@ -25,8 +25,9 @@
 	import { initializeTheme } from '#lib/theme.js';
 	import type { LayoutProps } from './$types';
 	import { onMount } from 'svelte';
+	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/state';
-	import { scrollReveal } from '#lib/attachments';
+	import { scrollReveal, setScrollRevealNavigation } from '#lib/attachments';
 	import { subtleReveal } from 'sveltewind/transitions';
 	import { twMerge } from 'tailwind-merge';
 
@@ -76,6 +77,11 @@
 		preference.addEventListener('change', updatePreference);
 		return () => preference.removeEventListener('change', updatePreference);
 	};
+
+	onNavigate(() => {
+		setScrollRevealNavigation(true);
+		return () => setScrollRevealNavigation(false);
+	});
 
 	initializeTheme();
 	onMount(initializeFaviconTheme);

@@ -6,7 +6,9 @@ test('new content reveals once, staggers a row, and counts up without layout ove
 }) => {
 	await page.setViewportSize({ width: 1200, height: 900 });
 	await page.goto('/');
-	await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete');
+	await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete', {
+		timeout: 20000
+	});
 	await page.evaluate(() => {
 		const row = document.createElement('div');
 		row.className = 'grid grid-cols-3 gap-4';
@@ -52,6 +54,9 @@ test('reduced motion finishes active counts and applies to newly opened dialogs'
 }) => {
 	await page.goto('/about/stock-colors');
 	const count = page.locator('[data-stock-color-total]');
+	await expect(count).toHaveAttribute('data-scroll-reveal-state', /pending|complete/, {
+		timeout: 20000
+	});
 	await count.scrollIntoViewIfNeeded();
 	await expect(count).toHaveAttribute('data-scroll-reveal-state', 'complete');
 	await expect.poll(async () => Number(await count.textContent())).toBeLessThan(21);
@@ -500,3 +505,26 @@ for (const isDialog of [false, true]) {
 		}
 	);
 }
+test('navigation smooth scroll does not consume incoming below-fold reveals', async ({ page }) => {
+	await page.setViewportSize({ width: 1200, height: 900 });
+	await page.goto('/about');
+	await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete');
+	await page.evaluate(() => {
+		const link = document.createElement('a');
+		link.href = '/about/stock-colors';
+		link.textContent = 'Navigation reveal regression';
+		link.dataset.navigationRevealTest = '';
+		document.querySelector('main')!.append(link);
+		window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
+	});
+	await page.locator('[data-navigation-reveal-test]').click();
+	await expect(page).toHaveURL(/\/about\/stock-colors$/);
+	await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+	await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete');
+	const swatches = page.getByRole('group', { name: 'Preview stock colors' }).getByRole('button');
+	await expect(swatches).toHaveCount(21);
+	await expect(swatches.first()).toHaveAttribute('data-scroll-reveal-state', 'pending');
+	await expect(swatches.last()).toHaveAttribute('data-scroll-reveal-state', 'pending');
+	await swatches.first().scrollIntoViewIfNeeded();
+	await expect(swatches.first()).toHaveAttribute('data-scroll-reveal-state', 'complete');
+});
