@@ -419,7 +419,7 @@ test('shipping opens as a route-backed dialog, selects actual destinations, and 
 	}
 });
 
-test('synthetic materials opens a storm dialog, explores stock and attachments, and refreshes standalone', async ({
+test('synthetic materials opens a storm dialog, explores stock, and refreshes standalone', async ({
 	page
 }) => {
 	await page.goto('/');
@@ -456,14 +456,14 @@ test('synthetic materials opens a storm dialog, explores stock and attachments, 
 	await expect(dialog.locator('[data-material-detail]')).toContainText(
 		'balance of toughness and value'
 	);
-	await dialog.getByRole('button', { name: 'Elastic', exact: true }).click();
+	await expect(dialog.locator('[data-synthetic-section="attachments"]')).toHaveCount(0);
 	await expect(
-		dialog.locator('[data-synthetic-section="attachments"] [data-weather-tag]')
-	).toHaveAttribute('data-weather-attachment', 'elastic');
+		dialog.getByRole('link', { name: 'Explore reinforcement & attachments' })
+	).toHaveAttribute('href', '/capabilities/attachments');
 	const sampleLink = await dialog.locator('[data-synthetic-samples]').getAttribute('href');
 	const body = new URL(sampleLink!).searchParams.get('body');
 	expect(body).toContain('V-Max');
-	expect(body).toContain('Elastic');
+	expect(body).not.toContain('Elastic');
 	await page.keyboard.press('Escape');
 	await expect(dialog).toHaveCount(0);
 	await expect(page).toHaveURL(/\/$/);

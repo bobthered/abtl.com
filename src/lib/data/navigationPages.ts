@@ -100,8 +100,8 @@ export const navigationPages: Record<string, LandingPageContent> = {
 		detailTitle: 'Material and attachment work together.',
 		detail:
 			'Outdoor exposure and repeated handling affect the whole tag, including the attachment. Discuss the complete application with our team.',
-		detailHref: '/capabilities/synthetic-materials',
-		detailLabel: 'Explore synthetic materials',
+		detailHref: '/capabilities/attachments',
+		detailLabel: 'Explore reinforcement and attachments',
 		cta: "Let's work through the details.",
 		ctaText:
 			'Share your application and the details you know. Our team can help you consider the next steps.'

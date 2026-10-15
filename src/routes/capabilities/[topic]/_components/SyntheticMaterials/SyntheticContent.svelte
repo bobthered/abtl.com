@@ -22,42 +22,18 @@
 	import { syntheticMaterials } from './materials';
 	import { twMerge } from 'tailwind-merge';
 
-	// consts
-	const attachments = [
-		{
-			id: 'wire',
-			name: 'Wire',
-			description:
-				'A secure connection for your tag. Tell us about the item, handling, and environment so we can discuss the right wire option.'
-		},
-		{
-			id: 'string',
-			name: 'String',
-			description:
-				'A familiar way to tie on identification. Discuss the length and application with us to find the right fit.'
-		},
-		{
-			id: 'elastic',
-			name: 'Elastic',
-			description:
-				'A flexible attachment option. Let us know how the tag will be fitted and used so we can help with the selection.'
-		}
-	] as const;
-
 	// $props()
 	let { isStandalone = false }: { isStandalone?: boolean } = $props();
 
 	// $state
-	let attachment = $state<'wire' | 'string' | 'elastic'>('wire');
 	let selectedMaterial = $state<string>('tyvek');
 	let windStrength = $state(0);
 
 	// $derived
-	const currentAttachment = $derived(attachments.find((item) => item.id === attachment)!);
 	const isStorm = $derived(windStrength >= 50);
 	const material = $derived(syntheticMaterials.find((item) => item.id === selectedMaterial)!);
 	const sampleHref = $derived(
-		`mailto:sales@abtl.com?subject=${encodeURIComponent('Synthetic tag samples')}&body=${encodeURIComponent(`I'd like to compare synthetic tag materials.\nMaterial of interest: ${material.name}\nApplication: \nOutdoor exposure and handling: \nAttachment: ${currentAttachment.name}\nQuantity: \nSample shipping address: `)}`
+		`mailto:sales@abtl.com?subject=${encodeURIComponent('Synthetic tag samples')}&body=${encodeURIComponent(`I'd like to compare synthetic tag materials.\nMaterial of interest: ${material.name}\nApplication: \nOutdoor exposure and handling: \nAttachment: \nQuantity: \nSample shipping address: `)}`
 	);
 </script>
 
@@ -266,67 +242,19 @@
 				{/if}
 			</Div>
 		</Div>
-	</Section>
-{/snippet}
-
-{#snippet connections()}
-	<Section
-		variants={['dialogSection']}
-		data-synthetic-section="attachments"
-		aria-labelledby="synthetic-attachment-heading"
-	>
-		<Div class="grid items-center gap-4 lg:grid-cols-2">
-			<Div variants={['illustration']} data-illustration-surface>
-				<Div {@attach floatIllustration}>
-					<WeatherTag
-						class="min-h-88 sm:min-h-100"
-						isBackdropVisible={false}
-						{attachment}
-						material="THE CONNECTION MATTERS"
-					/>
-				</Div>
-				<Span class="absolute bottom-6 left-6 text-sm font-medium">
-					{currentAttachment.name} attachment
-				</Span>
-			</Div>
-			<Div>
-				<P variants={['eyebrow']}>More than the material</P>
-				<H3 id="synthetic-attachment-heading" class="text-4xl sm:text-5xl">
-					The connection<Br />matters.
-				</H3>
-				<P variants={['dialogBody']} class="mt-6">
-					A tough tag still needs the right way to hang on. We offer wire, string, and elastic
-					attachments, so the connection can be considered alongside the stock.
-				</P>
-				<Div class="mt-8 flex flex-wrap gap-2" role="group" aria-label="Explore tag attachments">
-					{#each attachments as option (option.id)}
-						<Button
-							variants={['neutral-outline', 'neutral-selectable']}
-							aria-pressed={attachment === option.id}
-							onclick={() => (attachment = option.id)}
-						>
-							{option.name}
-						</Button>
-					{/each}
-				</Div>
-				<P
-					class="mt-6 min-h-24 leading-relaxed text-gray-600 dark:text-gray-300"
-					aria-live="polite"
-				>
-					{currentAttachment.description}
-				</P>
-				<P class="mt-6 text-sm font-medium">
-					Start with the whole job. We'll help with the details.
-				</P>
-			</Div>
-		</Div>
+		<A
+			href="/capabilities/attachments"
+			variants={['button.base', 'button.variant.neutral-outline']}
+			class="mt-8"
+		>
+			<ActionLabel>Explore reinforcement &amp; attachments</ActionLabel>
+		</A>
 	</Section>
 {/snippet}
 
 <Div data-synthetic-content>
 	{@render constrained(weather)}
 	{@render constrained(explorer)}
-	{@render constrained(connections)}
 	<Section
 		variants={['sampleInvitation']}
 		class={isStandalone ? '' : '-mx-6 sm:-mx-8 lg:-mx-16'}

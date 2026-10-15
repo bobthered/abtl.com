@@ -8,6 +8,11 @@ export const navigation: NavigationSection[] = [
 		description: 'Bring material, artwork, information, and delivery together.',
 		children: [
 			{
+				href: '/capabilities/attachments',
+				label: 'Attachments',
+				description: 'Patches, eyelets, wire, string, and elastic.'
+			},
+			{
 				href: '/capabilities/stock-colors',
 				label: 'Stock colors',
 				description: 'Find a stock color that gives your message a purpose.'

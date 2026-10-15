@@ -96,6 +96,12 @@ export const landingPages: Record<string, LandingPageContent> = {
 		heading: 'Explore the possibilities.',
 		cards: [
 			[
+				'Attachments',
+				'Plan the finishing details together: patches and eyelets at the hole, wire, string, or elastic around the item.',
+				'/capabilities/attachments',
+				'Find your connection'
+			],
+			[
 				'Full-color printing',
 				'Four-color process creates full-color artwork. Up to eight total colors allow CMYK on both the face and back.',
 				'/capabilities/full-color-printing',
@@ -135,7 +141,7 @@ export const landingPages: Record<string, LandingPageContent> = {
 		detailTitle: "Don't stop at the printed surface.",
 		detail:
 			'Wire, string, and elastic attachments help a tag stay with the item it identifies. Include the attachment and handling requirements in your project brief.',
-		detailHref: '/capabilities/synthetic-materials',
+		detailHref: '/capabilities/attachments',
 		detailLabel: 'Explore attachments',
 		cta: "Let's put the pieces together.",
 		ctaText: "Tell us your goals. We'll help you plan a product and a production approach."

@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 3dcf602fcd070472c9a300cff5c0887bd5fc6e43 -->
+<!-- pending-base: ec7b98da6dcd905361044b18853383ebdc567744 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add a continuous wind range to synthetic materials
+feat: create detailed attachment capability sections
 
-Replace the wind toggle with Sveltewind Range at the bottom of the illustration, spanning its width with side padding and an accessible percentage readout. Use a circular primary-colored thumb with a dark ring in light mode and a light ring in dark mode.
+Create /capabilities/attachments with dedicated sections for patches, eyelets, wire, string and elastic. List the supplied brass and zinc eyelet sizes, steel and copper wire gauges, white string and twine options, and white or black elastic. Add route-owned illustrations, application guidance, section links and tailored enquiries, and match the existing capability header sizing and content widths.
 
-Integrate wind, rain, swing and bend motion frame by frame so intensity changes accelerate and decelerate continuously without phase jumps, surges or reversal. Preserve preview hover and reduced motion, avoid rebuilding tag textures on slider input, and add long-runtime physics regressions.
+Remove the connection section and attachment-selection state from Synthetic Materials, retain its weather and material controls, and link to the new page. Add capability navigation and overview links, and connect the existing product attachment overview to the dedicated sections.
 
-Update standalone and dialog control regressions. Hide the About landscape caption and simplify its alt text, remove weather illustration helper copy, and reconcile the committed timeline sizing changes into changelog history.
+Update synthetic-material regressions, verify all attachment specifications and matching header dimensions on desktop and mobile in both themes, cover no-JavaScript content, and reconcile the committed wind-slider work into changelog history.
 ```
 
 ## 2026-10-15
+
+- **feat: add a continuous wind range to synthetic materials** (`ec7b98d`)
+  Replace the wind toggle with a full-width Sveltewind Range and circular primary thumb with contrasting theme rings. Integrate motion phases to avoid reversal and surges, preserve preview and reduced-motion behavior, and add physics and browser regressions. Remove helper copy and simplify the About landscape caption and alt text.
 
 - **fix: use a responsive 12:9 ratio for About timeline images** (`3dcf602`)
   Replace fixed timeline heights with a responsive 4:3 media container, overriding inherited height, minimum-height and flex growth while keeping column widths and lightbox captions.

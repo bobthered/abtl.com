@@ -14,7 +14,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
 		);
 		expect(background).not.toBe('none');
 		for (const [route, count] of [
-			['synthetic-materials', 3],
+			['synthetic-materials', 2],
 			['full-color-printing', 2]
 		] as const) {
 			await page.goto(`/capabilities/${route}`, { waitUntil: 'domcontentloaded' });
@@ -109,8 +109,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
 				await wind.focus();
 				await page.keyboard.press('ArrowRight');
 				await expect(wind).toHaveValue('36');
-				await page.getByRole('button', { name: 'Elastic', exact: true }).click();
-				await expect(page.locator('[data-weather-attachment="elastic"]')).toHaveCount(1);
+				await expect(page.locator('[data-synthetic-section="attachments"]')).toHaveCount(0);
 			} else {
 				await page.locator('[data-process-ink="C"]').click();
 				await expect(page.locator('[data-process-count]')).toContainText('3 of 4');
