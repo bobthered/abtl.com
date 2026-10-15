@@ -90,9 +90,10 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 
 - Routine project inspection, file edits, dependency installation, and local development, formatting, build, and test commands are authorized as needed to complete the user's requests. Do not ask for conversational confirmation for these actions; platform-enforced approvals still apply.
 - Never create Git commits or run `git push`. The user handles all commits and pushes. Read-only Git commands for reviewing status, history, and diffs are allowed.
-- After completing each user request, include a suggested Git commit message in the final response.
+- After completing each user request, include the complete suggested Git commit message in a single fenced `text` code block in the final response, ready to copy and paste. Include both the subject and any body; never show only the subject when the full message has a body, and never substitute a link or reference to `CHANGELOG.md` for the full message.
 - Before suggesting a commit message, review Git status, staged and unstaged diffs, and relevant untracked files. The message must encompass all current uncommitted work, including changes from earlier requests and user edits, rather than only the latest request.
-- Use a concise subject that describes the overall change. When multiple changes need explanation, add a commit message body summarizing them so all uncommitted work is represented.
+- Use a concise subject that describes the overall change, followed by a blank line and a descriptive body whenever pending work includes multiple distinct changes, components, routes, assets, or supporting documentation. Use separate body paragraphs or bullet lines for meaningful groups of changes, explaining what changed and why. A subject-only message is appropriate only for a single small, self-contained change whose subject fully describes the work.
+- Describe concrete behavior and affected areas in the body; do not compress multiple changes into a vague subject or enumerate every file mechanically. Include relevant validation or limitations only when supported by checks actually performed. Concise response preferences must not truncate the commit message body.
 - Every suggested commit message must start with exactly one of `fix: `, `feat: `, or `refactor: `, followed by a concise description of the completed changes.
 - Providing a commit message does not authorize creating a Git commit.
 

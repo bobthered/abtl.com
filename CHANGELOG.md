@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 86ed801466707ea1db63c1fdfc038b00ed7b35af -->
+<!-- pending-base: 5479c9a1bece3d4637699424e6f2395b2993cd83 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: restore supplied photos for the About timeline
+refactor: require complete descriptive commit message suggestions
 
-Clean up, colorize and extend the supplied IMG_2263.jpg hand-finishing photo, then replace the generated 1991 workbench with an optimized 1200 x 667 WebP. Restore the existing color and extend IMG_2265.jpg to replace the generated 2011 cake with a matching wide press-operator photo. Preserve originals, identify AI restoration and unverified photo dates, record prompts and provenance, and reconcile committed changelog history.
-Clean up and extend IMG_6387.jpg for the 2018 milestone, replacing the fictional building with the supplied safety-celebration group photo at matching dimensions; preserve the source and document the selected prompt and image provenance.
-Replace the Today timeline placeholder with a professionally lit, AI-enhanced wide cord-reel and tag detail from IMG_2266.jpg; optimize the image, preserve the original and document the editorial treatment.
+Require final responses to include the full copyable commit message, with a descriptive body covering distinct changes, components, routes, assets and documentation. Reserve subject-only suggestions for small self-contained changes and prevent brevity preferences or changelog references from hiding the body.
+
+Reconcile the committed About timeline photo work into changelog history and track the instruction update as the sole pending entry.
 ```
 
 ## 2026-10-15
+
+- **feat: restore supplied photos for the About timeline** (`5479c9a`)
+  Replace the 1991, 2011, 2018 and Today timeline placeholders with optimized wide derivatives of owner-provided photos. Colorize the hand-finishing image, restore the press operator and safety-celebration photos, apply editorial lighting to the cord-reel detail, and document AI edits, prompts and provenance.
 
 - **feat: add footer landscape artwork and About photo lightboxes** (`86ed801`)
   Add transparent footer landscapes and responsive footer styling with provenance notes. Share LightboxImage across stock-color marquees and About photos, including outline effects, hover zoom, expand icons, preloading and modal behavior; add interaction coverage and milestone captions beneath enlarged timeline images.
