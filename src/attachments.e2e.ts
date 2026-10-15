@@ -13,6 +13,11 @@ for (const colorScheme of ['light', 'dark'] as const) {
 		await page.goto('/capabilities/attachments');
 		await expect(page).toHaveTitle('Attachments | Allen-Bailey Tag & Label');
 		await expect(page.locator('[data-attachment-section]')).toHaveCount(5);
+		await expect(page.locator('[data-attachment-section]').first()).toHaveAttribute(
+			'data-attachment-ready',
+			'true',
+			{ timeout: 60000 }
+		);
 		for (const [id, name] of [
 			['patch', 'Patch'],
 			['eyelets', 'Eyelets'],
@@ -28,6 +33,19 @@ for (const colorScheme of ['light', 'dark'] as const) {
 		for (const [id, labels] of Object.entries(variants)) {
 			const items = page.locator(`[data-attachment-section="${id}"] li`);
 			await expect(items).toHaveText(labels);
+			const section = page.locator(`[data-attachment-section="${id}"]`);
+			for (const label of labels) {
+				const button = section.getByRole('button', { name: label, exact: true });
+				await button.focus();
+				await page.keyboard.press('Enter');
+				await expect(button).toHaveAttribute('aria-pressed', 'true');
+				await expect(section.locator('[data-attachment-artwork]')).toHaveAttribute(
+					'data-attachment-variant',
+					label
+				);
+				const href = await section.locator('[data-attachment-enquiry]').getAttribute('href');
+				expect(new URL(href!).searchParams.get('body')).toContain(`Option of interest: ${label}`);
+			}
 		}
 		for (const width of [1440, 390]) {
 			await page.setViewportSize({ width, height: 1000 });

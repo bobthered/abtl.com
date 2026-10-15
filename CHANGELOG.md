@@ -6,21 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: ec7b98da6dcd905361044b18853383ebdc567744 -->
+<!-- pending-base: f3b7e1894684d64fd27feb7313bead9fa4cb42bd -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: create detailed attachment capability sections
+feat: add visual attachment comparisons and tailored enquiries
 
-Create /capabilities/attachments with dedicated sections for patches, eyelets, wire, string and elastic. List the supplied brass and zinc eyelet sizes, steel and copper wire gauges, white string and twine options, and white or black elastic. Add route-owned illustrations, application guidance, section links and tailored enquiries, and match the existing capability header sizing and content widths.
+Replace plain attachment lists with illustrated option cards for eyelet sizes and metals, wire gauges and materials, white string and twine, and white or black elastic. Update each section's main tag illustration and enquiry link from the selected option, and add a patch close-up with stronger section hierarchy and practical selection guidance.
 
-Remove the connection section and attachment-selection state from Synthetic Materials, retain its weather and material controls, and link to the new page. Add capability navigation and overview links, and connect the existing product attachment overview to the dedicated sections.
-
-Update synthetic-material regressions, verify all attachment specifications and matching header dimensions on desktop and mobile in both themes, cover no-JavaScript content, and reconcile the committed wind-slider work into changelog history.
+Keep all five dedicated sections, confirmed stock options, capability header sizing, responsive layouts and no-JavaScript option visibility. Remove external comparison references from source comments and project notes, extend selection regressions, and reconcile committed attachment-page history.
 ```
 
 ## 2026-10-15
+
+- **feat: create detailed attachment capability sections** (`f3b7e18`)
+  Add a dedicated attachment capability page with five illustrated sections and owner-confirmed eyelet, wire, string and elastic options. Match capability header sizing, link the new page from navigation and overview pages, remove the synthetic-material attachment section, and cover specifications, responsive sizing and no-JavaScript content.
 
 - **feat: add a continuous wind range to synthetic materials** (`ec7b98d`)
   Replace the wind toggle with a full-width Sveltewind Range and circular primary thumb with contrasting theme rings. Integrate motion phases to avoid reversal and surges, preserve preview and reduced-motion behavior, and add physics and browser regressions. Remove helper copy and simplify the About landscape caption and alt text.
@@ -216,7 +217,7 @@ Update synthetic-material regressions, verify all attachment specifications and 
   Add a wire-tethered tag with wind, rain, hover/focus motion, and reduced-motion support. Build a route-backed dialog and standalone page with a five-material explorer, attachment selector, and full-width sample CTA. Use supplied tag geometry, supplier-informed copy, shared selectable button styling, and browser coverage; update progress and changelog history.
 
 - **refactor: remove placeholder bento topics and document new directions** (`7a09353`)
-  Remove shapes, formats, and numbering tiles and their scaffold routes. Update existing dialog/route coverage to retained topics, record competitor-informed proposals, and reconcile the printing commit into changelog history.
+  Remove shapes, formats, and numbering tiles and their scaffold routes. Update existing dialog/route coverage to retained topics, record creative proposals, and reconcile the printing commit into changelog history.
 
 - **feat: add full-color printing bento and interactive page** (`d519626`)
   Replace the materials tile with a third-width printing tile whose perspective CMYK layers register on hover or focus. Add a route-backed dialog and standalone botanical hangtag design study with ink controls, reversible artwork, eight-color printing copy, and a project CTA. Reuse supplied tag/patch shapes, cache transparent ink artwork, add a dark-mode light backdrop and reduced-motion support, and update browser coverage, process-color tokens, progress documentation, and changelog history.

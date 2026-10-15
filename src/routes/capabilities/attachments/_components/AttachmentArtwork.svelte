@@ -4,13 +4,22 @@
 	import { Circle, G, Path, Svg } from '#lib/components';
 	import patchSvg from '#lib/assets/tag-patch.svg?raw';
 	import shapeSvg from '#lib/assets/tag-shape.svg?raw';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const patchPath = patchSvg.match(/\sd="([^"]+)"/)![1];
 	const shapePath = shapeSvg.match(/\sd="([^"]+)"/)![1];
 
 	// $props()
-	let { kind }: { kind: AttachmentKind } = $props();
+	let { kind, variant = '' }: { kind: AttachmentKind; variant?: string } = $props();
+
+	// $derived
+	const isBrass = $derived(variant.includes('brass'));
+	const isCopper = $derived(variant.includes('copper'));
+	const isDark = $derived(variant === 'Black');
+	const isTwine = $derived(variant.includes('twine'));
+	const ringRadius = $derived(variant.startsWith('3/8') ? 26 : variant.startsWith('1/4') ? 21 : 18);
+	const wireWidth = $derived(variant.startsWith('25') ? 1.5 : variant.startsWith('23') ? 2 : 3);
 </script>
 
 <Svg
@@ -24,8 +33,20 @@
 	<G transform="translate(124 108) scale(0.64)" class="drop-shadow-lg">
 		<Path d={shapePath} fill-rule="evenodd" class="fill-white stroke-gray-400/40 stroke-1" />
 		{#if kind === 'eyelets'}
-			<Circle cx="117.745" cy="35.5908" r="18" class="fill-gray-300 stroke-gray-500 stroke-2" />
-			<Circle cx="117.745" cy="35.5908" r="12" class="fill-gray-50 stroke-white stroke-2" />
+			<Circle
+				cx="117.745"
+				cy="35.5908"
+				r={ringRadius}
+				class={isBrass
+					? 'fill-amber-300 stroke-amber-700 stroke-2'
+					: 'fill-gray-300 stroke-gray-500 stroke-2'}
+			/>
+			<Circle
+				cx="117.745"
+				cy="35.5908"
+				r={ringRadius - 6}
+				class="fill-gray-50 stroke-white stroke-2"
+			/>
 		{:else}
 			<Path
 				d={patchPath}
@@ -48,7 +69,8 @@
 	{#if kind === 'wire'}
 		<Path
 			d="M199 132C145 111 140 46 183 40C246 30 272 94 212 131 M199 132L211 109 M199 132L215 119"
-			class="fill-none stroke-gray-500 stroke-2"
+			class={twMerge('fill-none', isCopper ? 'stroke-orange-600' : 'stroke-gray-500')}
+			stroke-width={wireWidth}
 			stroke-linecap="round"
 		/>
 		<Path
@@ -58,12 +80,12 @@
 	{:else if kind === 'string'}
 		<Path
 			d="M199 132C141 107 131 30 183 27C242 23 264 92 203 132 M198 131C180 112 179 153 201 134C225 111 229 147 205 134 M201 134L185 160 M204 134L220 159"
-			class="fill-none stroke-tag-brown stroke-4"
+			class={twMerge('fill-none stroke-4', isTwine ? 'stroke-tag-brown' : 'stroke-gray-300')}
 			stroke-linecap="round"
 		/>
 		<Path
 			d="M199 130C147 102 139 37 184 33C234 29 255 92 204 130"
-			class="fill-none stroke-tag-buff stroke-1"
+			class={twMerge('fill-none stroke-1', isTwine ? 'stroke-tag-buff' : 'stroke-white')}
 		/>
 	{:else if kind === 'elastic'}
 		<Path
@@ -73,7 +95,7 @@
 		/>
 		<Path
 			d="M201 132C145 92 152 21 201 21C250 21 257 92 201 132Z"
-			class="fill-none stroke-white stroke-6"
+			class={isDark ? 'fill-none stroke-gray-950 stroke-6' : 'fill-none stroke-white stroke-6'}
 			stroke-linecap="round"
 		/>
 		<Path

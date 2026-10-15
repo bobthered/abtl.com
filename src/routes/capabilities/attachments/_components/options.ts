@@ -6,9 +6,10 @@ export const attachmentOptions = [
 		category: 'Reinforce the hole',
 		title: 'A small detail at the point of connection.',
 		description:
-			'A patch adds reinforcement around the tag hole. Consider this detail alongside the stock and the attachment, so the connection is part of the design from the start.',
-		question: 'How will the tag be handled once it is attached?',
-		brief: 'Tell us your tag stock, attachment choice, and how often the tag will be handled.'
+			'The tag hole is where the pull of an attachment meets the stock. A patch reinforces the area around that opening, spreading the pull across a larger surface to help reduce tearing at the connection.',
+		guidance:
+			'Consider the tag stock, the fastening method, and how often the tag will be handled. Reinforcement and attachment should be planned together.',
+		question: 'How will the tag be handled once it is attached?'
 	},
 	{
 		id: 'eyelets',
@@ -17,9 +18,10 @@ export const attachmentOptions = [
 		category: 'Reinforce the hole',
 		title: 'Give the opening a considered finish.',
 		description:
-			'An eyelet lines the tag hole with a metal fitting. Bring the stock, fastening method, and intended use into the conversation to explore the right combination.',
-		question: 'What will pass through the tag hole?',
-		brief: 'Share your attachment method and the size and handling requirements of your tag.'
+			'An eyelet forms a metal-lined opening through the tag, helping protect the edge where a wire, string, or other fastening passes through. Choose the size and metal alongside the stock and the attachment.',
+		guidance:
+			'Start with what needs to pass through the opening and the handling the tag will encounter. Compare the brass and zinc options shown here, then discuss the complete tag before choosing.',
+		question: 'What will pass through the tag hole?'
 	},
 	{
 		id: 'wire',
@@ -28,10 +30,10 @@ export const attachmentOptions = [
 		category: 'Make the connection',
 		title: 'Keep identification with the work.',
 		description:
-			'Wire provides a fastening option for tags used on equipment, materials, and other items. Start with the attachment point and the conditions the tag will encounter.',
-		question: 'Where will the wire be fastened?',
-		brief:
-			'Describe the item, attachment point, exposure, and how the tag will be fitted or removed.'
+			'Wire can be wrapped around an attachment point and twisted to fasten a tag to equipment, materials, or other items. The wire material and gauge affect how the connection feels and handles during fitting.',
+		guidance:
+			'A higher gauge number means thinner wire. Of our steel options, 21 gauge is the thickest and 25 gauge the thinnest. Consider flexibility, the attachment point, and the length needed to reach around it; 21 gauge copper is also available.',
+		question: 'How much wire does the connection need?'
 	},
 	{
 		id: 'string',
@@ -40,10 +42,10 @@ export const attachmentOptions = [
 		category: 'Make the connection',
 		title: 'Tie the finishing detail together.',
 		description:
-			'String offers a familiar tied connection between a tag and its item. Consider how the tag will be presented, handled, and removed as you plan the finished piece.',
-		question: 'How should the tag hang?',
-		brief:
-			'Tell us about the item, the hanging length you have in mind, and how the tag will be tied.'
+			'String gives a tag a tied connection and room to hang. The choice affects the presentation of the finished tag as well as how it will be fitted and removed. Choose from #5 white, #9 white, or #9 twine.',
+		guidance:
+			'Think about the distance from the attachment point to the tag, the room needed to tie it, and clearance for the tag to hang without catching on nearby items. Share how you intend to attach it so we can discuss the finished arrangement.',
+		question: 'How should the tag hang?'
 	},
 	{
 		id: 'elastic',
@@ -52,9 +54,10 @@ export const attachmentOptions = [
 		category: 'Make the connection',
 		title: 'Make room for a flexible fit.',
 		description:
-			'An elastic loop offers another way to fit a tag around an item. The shape of the item and the way the tag will be applied help guide the discussion.',
-		question: 'What does the loop need to fit around?',
-		brief: 'Share the item dimensions, application method, and the fit you need.'
+			'Elastic stretches to fit around an item and draws back toward its resting shape. It offers a flexible loop connection where the tag needs to slip over a product or attachment point. White and black options let you consider the connection as part of the finished presentation.',
+		guidance:
+			'Share both the size the loop must pass over and the point where it will rest. Those can be different dimensions; both matter when discussing the fit.',
+		question: 'What does the loop need to fit around?'
 	}
 ] as const;
 
