@@ -1,0 +1,7 @@
+{
+	"source": "IMG_6387.jpg",
+	"asset": "static/images/about/safety-celebration-wide.webp",
+	"date": "2026-10-15",
+	"method": "Built-in imagegen cleanup and generative outpainting; Sharp conversion to 1200 x 667 WebP quality 85.",
+	"prompt": "Restore and outpaint this exact group photograph into a wide 9:5 landscape. Gently clean JPEG artifacts and balance natural color/contrast. Extend the existing lawn and trees to the left and right. Preserve ALL original people, faces, poses, clothing and the original central photo faithfully; no added people. Preserve the sign exactly: blue badge reads '730' above 'Day' (seven three zero); main text 'Safety Celebration', AB logo and Allen Bailey. Do not change the badge to 750. Keep everyone including feet and the entire sign visible. No new text or watermark."
+}

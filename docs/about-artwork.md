@@ -29,6 +29,30 @@ All six new assets are optimized at 1200 x 667, WebP quality 85, under `static/i
 
 All eight timeline cards suppress visible captions and use `object-cover`. Alt text identifies AI-extended archive images or generated illustrations. Existing 2018 and Today placeholder images remain generated. The complete final prompt for each of the six new images is stored in [about-image-prompts.json](about-image-prompts.json); execution used the built-in tool, not the API/CLI fallback. The extraction script regenerates original crops only, not AI extensions.
 
+## Restored hand-finishing archive photo (2026-10-15)
+
+The 1991 milestone now uses `archive-hand-finishing-color-wide.webp` from the owner-provided root `IMG_2263.jpg`, replacing the fictional `industrial-tags-1991-generated.webp` workbench (retained as an unused earlier asset). The original JPEG remains unchanged. The built-in imagegen tool removed page margins and captions, corrected perspective, reduced printed halftone artifacts, colorized the worker and workshop, and extended the surroundings to a wide landscape composition. Sharp exported the selected result at 1200 x 667, WebP quality 85, matching the other wide archive assets.
+
+This is an AI-restored, colorized and extended derivative. Colors and reconstructed surroundings are interpretive; the original photograph's date is unverified, and its use beside 1991 does not date it or document that acquisition. Alt text records these limits. The image uses the shared lightbox and the existing milestone caption. The exact prompt is in [about-hand-finishing-restoration.json](about-hand-finishing-restoration.json).
+
+## Restored press operator archive photo (2026-10-15)
+
+The 2011 milestone now uses `archive-press-operator-wide.webp` from the owner-provided root `IMG_2265.jpg`, replacing the fictional `centenary-2011-generated.webp` cake and album scene (retained as an unused earlier asset). The original JPEG remains unchanged. The built-in imagegen tool removed paper margins, corrected perspective, reduced print artifacts, restored contrast and existing color, and extended the workshop to either side. Sharp center-cropped the extended result to 1200 x 667 and exported WebP quality 85, matching the wide timeline assets.
+
+The worker and main press remain in the composition. This is an AI-restored and extended derivative, not an untouched historical photograph. The original photo date is unverified; its use beside 2011 does not date it or identify a centennial event. Alt text records this provenance. It retains the shared lightbox and the existing 2011 milestone caption. The exact prompt is in [about-press-operator-restoration.json](about-press-operator-restoration.json).
+
+## Safety celebration group photo (2026-10-15)
+
+The 2018 milestone now uses `safety-celebration-wide.webp` from the owner-provided `IMG_6387.jpg`, replacing the fictional `ennis-2018-placeholder.webp` building (retained as an unused asset). The built-in imagegen tool cleaned compression artifacts, improved color and contrast, and extended the lawn and surroundings to a wide composition. The selected output preserves the sign's 730 Day badge; an earlier output with altered digits was rejected. Sharp exported the final image at 1200 x 667, WebP quality 85. The source JPEG remains unchanged.
+
+This is an AI-cleaned and extended derivative, not untouched documentary evidence. The supplied photo depicts a safety celebration; its date is unverified and placement beside 2018 does not identify it as an acquisition event. Alt text records the provenance. It uses the existing shared lightbox and milestone caption. The exact selected prompt is in [about-safety-celebration-restoration.json](about-safety-celebration-restoration.json).
+
+## Editorial cord reel detail (2026-10-15)
+
+The Today timeline milestone now uses `tag-cord-reel-editorial-wide.webp` from the owner-provided `IMG_2266.jpg`, replacing the generated printing-press placeholder in the timeline only. The separate About section continues to use that earlier placeholder. The unchanged original is a photographed book page showing an orange cord reel, yellow guide pulley and white strung tags on a blue-edged workbench.
+
+At the owner's request, the built-in imagegen tool removed page margins and print artifacts, corrected perspective, extended the workbench and workshop, and applied a premium product-photography treatment with directional lighting, controlled highlights, richer color and selective focus. This is an AI-enhanced editorial derivative with reconstructed surroundings and lighting, not an untouched contemporary facility photograph. No equipment date or current installation is inferred from its Today placement. Alt text identifies the edit. Sharp center-cropped the wide output and exported 1200 x 667 WebP quality 85. The exact prompt is in [about-cord-reel-editorial.json](about-cord-reel-editorial.json).
+
 ## Replacing the photos
 
 Replace these files with approved photographs and update their alt text and the shared StoryPhoto caption. Keep alt text and project notes accurate when replacing images. Timeline captions are intentionally hidden; StoryPhoto retains optional visible captions for other sections. Image cropping is controlled by the owning section. Use optimized WebP/AVIF and correct intrinsic dimensions.

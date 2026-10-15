@@ -6,20 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 05b89a5456e050a1a96619cc044b89a647d2bb87 -->
+<!-- pending-base: 86ed801466707ea1db63c1fdfc038b00ed7b35af -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add footer landscape artwork and About photo lightboxes
+feat: restore supplied photos for the About timeline
 
-Create a primary/secondary editorial landscape with rolling hills, a winding road, tagged Christmas trees and a delivery truck carrying label rolls and a tagged fire extinguisher. Display the alpha-preserving WebP across the footer with responsive overlap to reduce empty space while keeping text clear. Remove footer background and forced text colors so it uses the inherited site palette and shared link focus styles.
-Retain the supplied style reference, document the generation prompt and provenance, and reconcile the changelog.
-Create shared LightboxImage for stock-color marquee and About photos, composing BentoItem outlines, expanding surfaces and animated expand icons with hover/focus image zoom, preloading and ImageLightbox. Preserve crops, captions, keyboard access, duplicate-card interaction and marquee pausing; document the component and add About interaction coverage.
-Include each timeline milestone's year, title and body beneath its enlarged photo, with readable caption widths and paragraph breaks.
+Clean up, colorize and extend the supplied IMG_2263.jpg hand-finishing photo, then replace the generated 1991 workbench with an optimized 1200 x 667 WebP. Restore the existing color and extend IMG_2265.jpg to replace the generated 2011 cake with a matching wide press-operator photo. Preserve originals, identify AI restoration and unverified photo dates, record prompts and provenance, and reconcile committed changelog history.
+Clean up and extend IMG_6387.jpg for the 2018 milestone, replacing the fictional building with the supplied safety-celebration group photo at matching dimensions; preserve the source and document the selected prompt and image provenance.
+Replace the Today timeline placeholder with a professionally lit, AI-enhanced wide cord-reel and tag detail from IMG_2266.jpg; optimize the image, preserve the original and document the editorial treatment.
 ```
 
 ## 2026-10-15
+
+- **feat: add footer landscape artwork and About photo lightboxes** (`86ed801`)
+  Add transparent footer landscapes and responsive footer styling with provenance notes. Share LightboxImage across stock-color marquees and About photos, including outline effects, hover zoom, expand icons, preloading and modal behavior; add interaction coverage and milestone captions beneath enlarged timeline images.
 
 - **fix: finalize the connected About timeline and scroll reveals** (`05b89a5`)
   Replace the original timeline grid with the connected alternating layout, animate rich list entries individually through the global attachment, retain shared milestone content and extend reveal regressions.

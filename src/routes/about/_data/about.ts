@@ -89,8 +89,8 @@ export const milestones = [
 		description:
 			'Allen-Bailey acquired Avery Dennison’s Industrial Tag Division in Framingham, Massachusetts, and opened a manufacturing and office facility in Hopkinton. That operation produced manifold tags using bond and carbon papers, expanding the company’s industrial tag business.',
 		photo: {
-			src: '/images/about/industrial-tags-1991-generated.webp',
-			alt: 'Generated illustration of a period tag-making workbench with bond and carbon papers; not an actual 1991 facility photograph',
+			src: '/images/about/archive-hand-finishing-color-wide.webp',
+			alt: 'AI-restored, colorized and extended archive photo of a worker hand-finishing tags at a workbench; original photo date unverified',
 			width: 1200,
 			height: 667
 		}
@@ -101,8 +101,8 @@ export const milestones = [
 		description:
 			'The company’s centennial history brought together the wooden stakes, early photographs, changing materials, and people behind its first hundred years. It also recognized employees whose families had worked here for more than one generation. That history is part of the work we carry forward.',
 		photo: {
-			src: '/images/about/centenary-2011-generated.webp',
-			alt: 'Generated illustration of a centennial cake, tags and photo album; not a photograph of an actual 2011 event',
+			src: '/images/about/archive-press-operator-wide.webp',
+			alt: 'AI-restored and extended archive color photo of a worker operating a tag printing press; original photo date unverified',
 			width: 1200,
 			height: 667
 		}
@@ -113,10 +113,10 @@ export const milestones = [
 		description:
 			'On April 30, Allen-Bailey joined the Ennis family of print businesses, bringing its tag and label expertise to a broader manufacturing network.',
 		photo: {
-			src: '/images/about/ennis-2018-placeholder.webp',
-			alt: 'Generated placeholder: an imagined industrial building, not the actual facility or acquisition event',
+			src: '/images/about/safety-celebration-wide.webp',
+			alt: 'AI-cleaned and extended owner-provided group photo at a safety celebration outside an industrial building; photo date unverified',
 			width: 1200,
-			height: 533
+			height: 667
 		}
 	},
 	{
@@ -125,10 +125,10 @@ export const milestones = [
 		description:
 			'From our home in Caledonia, New York, we produce stock and custom tags and labels for the way businesses identify, organize, and communicate. More than a century after those first nursery stakes, the next application could be yours.',
 		photo: {
-			src: '/images/about/press-today-placeholder.webp',
-			alt: 'Generated placeholder: a modern printing press, not actual Allen-Bailey equipment',
+			src: '/images/about/tag-cord-reel-editorial-wide.webp',
+			alt: 'AI-enhanced and extended owner-provided photo of an orange cord reel, yellow guide pulley and white strung tags on a workshop bench',
 			width: 1200,
-			height: 533
+			height: 667
 		}
 	}
 ] as const;

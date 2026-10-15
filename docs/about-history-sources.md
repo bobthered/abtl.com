@@ -28,6 +28,14 @@ The four original crops listed below are retained. The page now uses correspondi
 
 The partial photographs at the outside edges are not extracted: the supplied images omit too much of them. Ask for the adjoining pages if those pictures are needed. Originals remain unmodified at the repository root. The reproducible extraction coordinates and perspective correction are in `scripts/extract-about-archive.mjs`.
 
+The 1991 milestone now uses a restored, colorized and AI-extended hand-finishing photograph from the separately supplied `IMG_2263.jpg`, replacing the fictional workbench scene. Its original date is unverified; placement beside 1991 is not evidence that it depicts the acquisition. The original page is retained unchanged. See [restoration prompt](about-hand-finishing-restoration.json).
+
+The 2011 milestone now uses a restored and AI-extended color photograph of a press operator from the separately supplied `IMG_2265.jpg`, replacing the fictional cake and album. Its original date is unverified, and it is not identified as a centennial-event photograph. The original page is retained unchanged. See [restoration prompt](about-press-operator-restoration.json).
+
+The 2018 milestone now uses the owner-provided safety-celebration group photograph `IMG_6387.jpg`, cleaned and extended with AI. Its date is unverified; it is not described as an acquisition-event photograph. The unchanged original is retained. See [restoration prompt](about-safety-celebration-restoration.json).
+
+The Today milestone uses an editorially enhanced and AI-extended detail of a cord reel and strung tags from `IMG_2266.jpg`. Its source is a photographed printed page, not a verified photograph of a current installation. The edit applies professional lighting and composition at the owner's request. See [editorial image prompt](about-cord-reel-editorial.json).
+
 ## Deliberate exclusions
 
 The booklet describes customer counts, employee counts, machinery still operating, and then-current management. Those are period statements, not verified current facts, and were not copied into current-day marketing. Historical customer names are not presented as current customers or endorsements. General adhesive-industry history and sensitive family/medical details were omitted because they do not strengthen the public company story.
