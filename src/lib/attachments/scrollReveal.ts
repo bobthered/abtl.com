@@ -20,7 +20,7 @@ const revealViewportOffset = 0.2;
 const pendingClass = 'motion-safe:opacity-0';
 
 const contentSelector =
-	'h1, h2, h3, h4, h5, h6, p, article, figure, figcaption, img, a, button, ul, ol, dl, blockquote, pre, table, form, label, input, select, textarea, details, summary, [role="group"]';
+	'h1, h2, h3, h4, h5, h6, p, article, figure, figcaption, img, a, button, ul, ol, li, dl, blockquote, pre, table, form, label, input, select, textarea, details, summary, [role="group"]';
 const selector = `:is(main, dialog, footer) :is(${contentSelector}, div, span, svg, canvas), footer nav, [data-marquee], [data-bento-topic], [data-scroll-reveal], [data-count-up], [data-scroll-stagger]`;
 const numberFormat = new Intl.NumberFormat('en-US');
 const excluded =
@@ -51,6 +51,18 @@ const revealTarget = (element: Element): RevealElement | null => {
 			: element;
 	}
 	if (!(element instanceof HTMLElement)) return null;
+	// Rich lists are structural shells: observe each entry so long timelines do not
+	// reveal all their below-fold content when the first entry enters the viewport.
+	if (
+		element.matches('ul, ol') &&
+		[...element.children].some(
+			(child) =>
+				child.matches('li') &&
+				child.querySelector('h1, h2, h3, h4, h5, h6, article, figure, img, canvas')
+		)
+	)
+		return null;
+
 	if (
 		element.matches(
 			`${contentSelector}, canvas, footer nav, [data-bento-topic], [data-scroll-reveal], [data-count-up]`

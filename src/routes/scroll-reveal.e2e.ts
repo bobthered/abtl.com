@@ -528,3 +528,79 @@ test('navigation smooth scroll does not consume incoming below-fold reveals', as
 	await swatches.first().scrollIntoViewIfNeeded();
 	await expect(swatches.first()).toHaveAttribute('data-scroll-reveal-state', 'complete');
 });
+
+for (const width of [390, 1440]) {
+	test(`connected About timeline entries reveal independently at ${width}px`, async ({ page }) => {
+		await page.setViewportSize({ width, height: 900 });
+		await page.emulateMedia({ reducedMotion: 'no-preference' });
+		await page.goto('/about');
+		await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete', {
+			timeout: 20000
+		});
+		const entries = page.locator('#our-story li');
+		await expect(entries).toHaveCount(8);
+		await expect(entries.first()).toHaveAttribute('data-scroll-reveal-state', 'pending');
+		await expect(entries.first()).toHaveCSS('opacity', '0');
+		await expect(page.locator('#our-story ol')).not.toHaveAttribute('data-scroll-reveal-state');
+		await entries
+			.first()
+			.evaluate((element) =>
+				scrollTo({
+					top: scrollY + element.getBoundingClientRect().top - innerHeight * 0.75,
+					behavior: 'instant'
+				})
+			);
+		await expect(entries.first()).toHaveAttribute('data-scroll-reveal-state', 'complete');
+		await expect(entries.first()).toHaveCSS('opacity', '1');
+		await expect(entries.nth(4)).toHaveAttribute('data-scroll-reveal-state', 'pending');
+		await expect(entries.nth(4)).toHaveCSS('opacity', '0');
+		await entries
+			.nth(4)
+			.evaluate((element) =>
+				scrollTo({
+					top: scrollY + element.getBoundingClientRect().top - innerHeight * 0.75,
+					behavior: 'instant'
+				})
+			);
+		await expect(entries.nth(4)).toHaveAttribute('data-scroll-reveal-state', 'complete');
+		await expect(entries.nth(4)).toHaveCSS('opacity', '1');
+	});
+}
+
+test('future unmarked rich list entries get independent scroll reveals', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'no-preference' });
+	await page.setViewportSize({ width: 1200, height: 900 });
+	await page.goto('/about');
+	await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete', {
+		timeout: 20000
+	});
+	await page.evaluate(() => {
+		const list = document.createElement('ol');
+		list.id = 'future-rich-list';
+		for (let index = 0; index < 4; index++) {
+			const entry = document.createElement('li');
+			entry.className = 'h-96';
+			const heading = document.createElement('h3');
+			heading.textContent = `Future chapter ${index}`;
+			const description = document.createElement('p');
+			description.textContent = 'Content with no reveal attributes or timeline-specific markup.';
+			entry.append(heading, description);
+			list.append(entry);
+		}
+		document.querySelector('main')!.append(list);
+	});
+	const entries = page.locator('#future-rich-list li');
+	await expect(entries.first()).toHaveAttribute('data-scroll-reveal-state', 'pending');
+	await entries
+		.first()
+		.evaluate((element) =>
+			scrollTo({
+				top: scrollY + element.getBoundingClientRect().top - innerHeight * 0.75,
+				behavior: 'instant'
+			})
+		);
+	await expect(entries.first()).toHaveCSS('opacity', '1');
+	await expect(entries.last()).toHaveCSS('opacity', '0');
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await expect(entries.last()).toHaveCSS('opacity', '1');
+});

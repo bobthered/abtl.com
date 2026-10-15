@@ -55,7 +55,7 @@ test('about story remains readable without JavaScript', async ({ browser, baseUR
 	await page.goto(`${baseURL}/about`);
 	await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 	await expect(
-		page.getByRole('heading', { name: 'More than a century in the making.' })
+		page.getByRole('heading', { name: 'One idea. A century of forward motion.' })
 	).toBeVisible();
 	await expect(page.locator('main')).toContainText('90M+');
 	await context.close();
@@ -77,6 +77,10 @@ test('about landscape fades and archive photography retains accurate provenance'
 	}
 	await expect(page.locator('main img')).toHaveCount(11);
 	await expect(page.locator('main img[src*="/archive-"]')).toHaveCount(4);
+	await expect(page.locator('#our-story li')).toHaveCount(8);
+	await expect(
+		page.locator('#timeline-editorial, #timeline-index, #timeline-alternating')
+	).toHaveCount(0);
 	await expect(page.locator('#our-story figcaption')).toHaveCount(0);
 	await expect(page.locator('#our-story img')).toHaveCount(8);
 	for (const photo of await page.locator('#our-story img').all()) {

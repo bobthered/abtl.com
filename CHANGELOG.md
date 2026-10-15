@@ -6,18 +6,21 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 7ddc6cf5a9c029c924f9cf294d63a386b6c446db -->
+<!-- pending-base: 92f422e9d13f51a02c93893755a2e4f903426241 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: enrich About history with company archive photos
+fix: finalize the connected About timeline and scroll reveals
 
-Use the supplied history pages to expand the founding, Caledonia move, manufacturing evolution, label production, and acquisition timeline. Retain the source JPGs and extract four perspective-corrected WebP images with a reproducible script. Add wide AI-extended versions and generated 1991 and 2011 illustrations.
-Use object-cover timeline photos without visible caption strips. Keep image provenance in alt text and notes, record generation prompts and historical uncertainties, update About coverage, and reconcile the changelog.
+Replace the timeline explorations and original grid with the connected alternating timeline, retain all milestone copy and photos, and restore section background alternation.
+Update global scroll-reveal discovery to animate rich list entries individually, add timeline and unmarked-list regression coverage, and update the changelog.
 ```
 
 ## 2026-10-14
+
+- **feat: enrich About history with company archive photos** (`92f422e`)
+  Expand the company timeline from supplied history pages, preserve source scans and extracted archive crops, add wide AI-extended images and generated 1991/2011 scenes, remove timeline captions, and record image provenance, prompts and browser coverage.
 
 - **feat: add animated chevron labels across site actions** (`7ddc6cf`)
   Add shared ActionLabel with hover/focus chevron-to-arrow motion and reduced-motion support, replace action arrows throughout the site, enlarge hero CTAs, add secondary CTA backdrop blur and refine About CTA styling.

@@ -14,8 +14,9 @@
 		Section,
 		Span
 	} from '#lib/components';
-	import { applications, milestones, processSteps } from './_data/about.js';
+	import { applications, processSteps } from './_data/about.js';
 	import CaledoniaLandscape from './_components/CaledoniaLandscape.svelte';
+	import CompanyTimeline from './_components/CompanyTimeline.svelte';
 	import { MapPin } from '#lib/icons';
 	import StoryPhoto from './_components/StoryPhoto.svelte';
 </script>
@@ -121,42 +122,7 @@
 		</Container>
 	</Section>
 
-	<Section variants={['surface']} id="our-story" class="scroll-mt-36">
-		<Container variants={['section']}>
-			<Div class="grid items-end gap-4 lg:grid-cols-2">
-				<Div>
-					<P variants={['eyebrow']} class="text-primary-600 dark:text-primary-300">
-						Our story, still unfolding
-					</P><H2 variants={['section']} class="max-w-2xl">More than a century in the making.</H2>
-				</Div>
-				<P class="max-w-xl text-lg leading-relaxed text-gray-600 dark:text-gray-300">
-					Before paper tags and printed labels, there were wooden nursery stakes. Our story began in
-					Dansville with a practical idea: help growers identify their plants. The materials have
-					changed. The purpose has carried on.
-				</P>
-			</Div>
-			<Div class="mt-12 grid gap-4 md:grid-cols-2">
-				{#each milestones as milestone (milestone.year)}
-					<Div class="overflow-hidden rounded-sm bg-white dark:bg-gray-900">
-						{#if milestone.photo}
-							<StoryPhoto {...milestone.photo} caption={null} class="h-64 sm:h-80" />
-						{/if}
-						<Div class="p-6 sm:p-8">
-							<P
-								class="mb-4 text-4xl font-light tracking-tight text-primary-600 dark:text-primary-300"
-							>
-								{milestone.year}
-							</P>
-							<H3 class="text-2xl">{milestone.title}</H3>
-							<P class="mt-4 max-w-xl leading-relaxed text-gray-600 dark:text-gray-300">
-								{milestone.description}
-							</P>
-						</Div>
-					</Div>
-				{/each}
-			</Div>
-		</Container>
-	</Section>
+	<CompanyTimeline />
 
 	<Section variants={['surfaceAlternate']}>
 		<Container variants={['section']}>
