@@ -11,7 +11,8 @@
 		isBackdropVisible = true,
 		isPreview = false,
 		isStorm = false,
-		material = 'SYNTHETIC'
+		material = 'SYNTHETIC',
+		windStrength = isStorm ? 100 : 0
 	}: {
 		attachment?: 'wire' | 'string' | 'elastic';
 		class?: string;
@@ -19,6 +20,7 @@
 		isPreview?: boolean;
 		isStorm?: boolean;
 		material?: string;
+		windStrength?: number;
 	} = $props();
 </script>
 
@@ -33,6 +35,7 @@
 	data-weather-material={material}
 	data-weather-preview={isPreview}
 	data-weather-storm={isStorm}
+	data-weather-wind={windStrength}
 	aria-hidden="true"
 >
 	{#if isBackdropVisible && !isPreview}

@@ -65,10 +65,50 @@ for (const colorScheme of ['light', 'dark'] as const) {
 			}
 			expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
 			if (route === 'synthetic-materials') {
-				await page.getByRole('button', { name: 'Turn up the wind', exact: true }).click();
-				await expect(
-					page.getByRole('button', { name: 'Ease the wind', exact: true })
-				).toHaveAttribute('aria-pressed', 'true');
+				const wind = page.getByRole('slider', { name: 'Wind strength' });
+				const thumb = page.locator('[data-wind-thumb]');
+				const thumbStyle = await thumb.evaluate((node, isDark) => {
+					const style = getComputedStyle(node);
+					const bounds = node.getBoundingClientRect();
+					return {
+						isCircular:
+							bounds.width === bounds.height && parseFloat(style.borderRadius) >= bounds.width / 2,
+						isPrimary:
+							style.backgroundColor ===
+							getComputedStyle(
+								node
+									.closest('[class]')!
+									.parentElement!.parentElement!.querySelector('[data-range-fill]')!
+							).backgroundColor,
+						isRingContrasting:
+							style.getPropertyValue('--tw-ring-color').trim() ===
+							getComputedStyle(document.documentElement)
+								.getPropertyValue(isDark ? '--color-gray-50' : '--color-gray-950')
+								.trim()
+					};
+				}, colorScheme === 'dark');
+				expect(thumbStyle).toEqual({ isCircular: true, isPrimary: true, isRingContrasting: true });
+				const sliderBounds = (await wind.boundingBox())!;
+				const studioBounds = (await page
+					.locator('[data-illustration-surface]')
+					.first()
+					.boundingBox())!;
+				expect(sliderBounds.width).toBeCloseTo(studioBounds.width - 48, 0);
+				expect(sliderBounds.x - studioBounds.x).toBeCloseTo(24, 0);
+				await wind.fill('100');
+				await expect(wind).toHaveValue('100');
+				await expect(page.locator('[data-weather-tag]').first()).toHaveAttribute(
+					'data-weather-wind',
+					'100'
+				);
+				await wind.fill('35');
+				await expect(page.locator('[data-weather-tag]').first()).toHaveAttribute(
+					'data-weather-wind',
+					'35'
+				);
+				await wind.focus();
+				await page.keyboard.press('ArrowRight');
+				await expect(wind).toHaveValue('36');
 				await page.getByRole('button', { name: 'Elastic', exact: true }).click();
 				await expect(page.locator('[data-weather-attachment="elastic"]')).toHaveCount(1);
 			} else {

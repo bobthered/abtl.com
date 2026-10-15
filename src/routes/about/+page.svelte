@@ -129,7 +129,8 @@
 			<Div class="grid items-center gap-4 lg:grid-cols-5">
 				<StoryPhoto
 					src="/images/about/rural-landscape-placeholder.webp"
-					alt="Generated placeholder: an imagined western New York rural landscape with fields, tree lines and a country road"
+					alt="An imagined western New York rural landscape with fields, tree lines and a country road"
+					caption={null}
 					class="h-96 lg:col-span-3 lg:h-136"
 				/>
 				<Div class="py-8 lg:col-span-2 lg:pl-12">

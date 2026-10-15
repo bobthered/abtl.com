@@ -1,3 +1,4 @@
+import { advanceWeatherMotion, createWeatherMotion } from './weatherMotion';
 import patchSvg from '#lib/assets/tag-patch.svg?raw';
 import shapeSvg from '#lib/assets/tag-shape.svg?raw';
 
@@ -22,9 +23,9 @@ export const weatherTag = (element: HTMLElement) => {
 	let isHovered = false;
 	let isInView = false;
 	let lastFrame = 0;
+	let motion = createWeatherMotion();
 	let primary = '';
 	let secondary = '';
-	let storm = 0;
 	let tetherColor = '';
 	let width = 0;
 	const makeTexture = () => {
@@ -89,7 +90,7 @@ export const weatherTag = (element: HTMLElement) => {
 		context.clearRect(0, 0, width, height);
 		const t = elapsed / 1000;
 		const isReduced = preference.matches;
-		const intensity = isReduced ? 0 : storm;
+		const intensity = isReduced ? 0 : motion.intensity;
 		// Tether point stays fixed; the tag rotates and flexes around its reinforced hole.
 		const anchorX = width * 0.3;
 		const anchorY = height * 0.1;
@@ -97,7 +98,7 @@ export const weatherTag = (element: HTMLElement) => {
 		const holeY = height * 0.27 + Math.cos(t * 3.3) * intensity * 3;
 		const angle = isReduced
 			? -0.18
-			: -0.18 - intensity * 0.5 + Math.sin(t * (2.4 + intensity * 5)) * (0.045 + intensity * 0.16);
+			: -0.18 - intensity * 0.5 + Math.sin(motion.swingPhase) * (0.045 + intensity * 0.16);
 		const scale = Math.min(height * 0.63, width * 0.69, 310) / 474;
 		const attachment = element.dataset.weatherAttachment ?? 'wire';
 		const stroke = tetherColor;
@@ -105,7 +106,7 @@ export const weatherTag = (element: HTMLElement) => {
 		context.strokeStyle = primary;
 		context.lineWidth = 1;
 		for (let i = 0; i < 7; i++) {
-			const x = ((t * (35 + intensity * 130) + i * 83) % (width + 180)) - 120;
+			const x = ((motion.windOffset + i * 83) % (width + 180)) - 120;
 			const y = height * (0.2 + i * 0.105);
 			context.globalAlpha = (isDark ? 0.04 : 0.12) + intensity * 0.08;
 			context.beginPath();
@@ -151,7 +152,7 @@ export const weatherTag = (element: HTMLElement) => {
 		for (let row = 0; row < rows; row++) {
 			const y = row * rowHeight;
 			const u = Math.max(0, (y - 60) / 414);
-			const bend = Math.sin(u * 4.2 - t * (5 + intensity * 10)) * u * u * (3 + intensity * 24);
+			const bend = Math.sin(u * 4.2 - motion.bendPhase) * u * u * (3 + intensity * 24);
 			const twist = 1 - Math.sin(u * 3.2 + t * 4) ** 2 * u * intensity * 0.1;
 			context.drawImage(
 				texture,
@@ -170,7 +171,7 @@ export const weatherTag = (element: HTMLElement) => {
 		context.lineWidth = 0.9;
 		const drops = isReduced ? 22 : Math.round(30 + intensity * 105);
 		for (let i = 0; i < drops; i++) {
-			const phase = isReduced ? 0.37 : t * (0.28 + intensity * 0.8);
+			const phase = isReduced ? 0.37 : motion.rainPhase;
 			const y = ((i * 0.618033 + phase) % 1) * (height + 70) - 35;
 			const x = ((i * 0.754877 + phase * 0.65) % 1) * (width + 140) - 70;
 			const length = 9 + intensity * 14 + (i % 4) * 2;
@@ -205,19 +206,33 @@ export const weatherTag = (element: HTMLElement) => {
 			const delta = lastFrame ? Math.min(time - lastFrame, 80) : 0;
 			elapsed += delta;
 			lastFrame = time;
-			const target = isHovered || element.dataset.weatherStorm === 'true' ? 1 : 0;
-			storm += (target - storm) * (1 - Math.exp(-delta / 420));
+			const target = isHovered
+				? 1
+				: Math.min(
+						1,
+						Math.max(
+							0,
+							Number(
+								element.dataset.weatherWind ?? (element.dataset.weatherStorm === 'true' ? 100 : 0)
+							) / 100
+						)
+					);
+			motion = advanceWeatherMotion(motion, target, delta);
 			draw();
 		}
 		frame = requestAnimationFrame(animate);
 	};
 	const update = () => {
 		cancelAnimationFrame(frame);
-		lastFrame = 0;
 		const isMoving = isInView && !document.hidden && !preference.matches;
+		if (!isMoving) lastFrame = 0;
 		element.dataset.weatherMotion = isMoving ? 'active' : 'static';
 		element.dataset.weatherIntensity =
-			isHovered || element.dataset.weatherStorm === 'true' ? 'storm' : 'breeze';
+			isHovered ||
+			Number(element.dataset.weatherWind ?? (element.dataset.weatherStorm === 'true' ? 100 : 0)) >=
+				50
+				? 'storm'
+				: 'breeze';
 		draw();
 		if (isMoving) frame = requestAnimationFrame(animate);
 	};
@@ -251,8 +266,14 @@ export const weatherTag = (element: HTMLElement) => {
 	});
 	const size = new ResizeObserver(resize);
 	const theme = new MutationObserver(resize);
-	const settings = new MutationObserver(() => {
-		makeTexture();
+	const settings = new MutationObserver((records) => {
+		// Wind changes only motion; avoid rebuilding the tag texture during slider drags.
+		if (
+			records.some((record) =>
+				['data-weather-attachment', 'data-weather-material'].includes(record.attributeName ?? '')
+			)
+		)
+			makeTexture();
 		update();
 	});
 	visibility.observe(element);
@@ -263,7 +284,12 @@ export const weatherTag = (element: HTMLElement) => {
 	});
 	settings.observe(element, {
 		attributes: true,
-		attributeFilter: ['data-weather-storm', 'data-weather-attachment', 'data-weather-material']
+		attributeFilter: [
+			'data-weather-storm',
+			'data-weather-wind',
+			'data-weather-attachment',
+			'data-weather-material'
+		]
 	});
 	trigger?.addEventListener('pointerenter', enter);
 	trigger?.addEventListener('pointerleave', leave);

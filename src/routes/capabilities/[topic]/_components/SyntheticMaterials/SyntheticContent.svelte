@@ -10,6 +10,7 @@
 		H3,
 		H4,
 		P,
+		Range,
 		Section,
 		Span,
 		StockTag,
@@ -48,11 +49,12 @@
 
 	// $state
 	let attachment = $state<'wire' | 'string' | 'elastic'>('wire');
-	let isStorm = $state(false);
 	let selectedMaterial = $state<string>('tyvek');
+	let windStrength = $state(0);
 
 	// $derived
 	const currentAttachment = $derived(attachments.find((item) => item.id === attachment)!);
+	const isStorm = $derived(windStrength >= 50);
 	const material = $derived(syntheticMaterials.find((item) => item.id === selectedMaterial)!);
 	const sampleHref = $derived(
 		`mailto:sales@abtl.com?subject=${encodeURIComponent('Synthetic tag samples')}&body=${encodeURIComponent(`I'd like to compare synthetic tag materials.\nMaterial of interest: ${material.name}\nApplication: \nOutdoor exposure and handling: \nAttachment: ${currentAttachment.name}\nQuantity: \nSample shipping address: `)}`
@@ -125,22 +127,33 @@
 					</Span>
 				</Div>
 				<Div {@attach floatIllustration}>
-					<WeatherTag class="min-h-100 sm:min-h-128" isBackdropVisible={false} {isStorm} />
+					<WeatherTag class="min-h-100 sm:min-h-128" isBackdropVisible={false} {windStrength} />
 				</Div>
-				<Div class="relative flex flex-wrap items-center justify-between gap-4 px-6 pb-6">
-					<P class="max-w-64 text-xs text-gray-500 dark:text-gray-400">
-						Illustrative motion. Let's match the actual material and print to your conditions.
+				<Div class="relative space-y-4 px-6 pb-6">
+					<P class="flex items-center justify-between gap-4 text-sm">
+						<Span class="flex items-center gap-2">
+							<Wind class="size-4" aria-hidden="true" />Wind strength
+						</Span>
+						<Span aria-hidden="true">{windStrength}%</Span>
 					</P>
-					<Button
-						variants={['neutral-outline']}
-						aria-pressed={isStorm}
-						onclick={() => (isStorm = !isStorm)}
+					<Range
+						bind:value={windStrength}
+						min={0}
+						max={100}
+						step={1}
+						isLabelVisible={false}
+						aria-label="Wind strength"
+						aria-valuetext={`${windStrength}%`}
+						class="h-6 w-full rounded-sm focus-within:outline-2 focus-within:outline-offset-4 focus-within:outline-primary-600 dark:focus-within:outline-primary-300"
 						data-weather-control
 					>
-						<Wind class="size-4" aria-hidden="true" />{isStorm
-							? 'Ease the wind'
-							: 'Turn up the wind'}
-					</Button>
+						{#snippet thumb()}
+							<Div
+								class="aspect-square h-full rounded-full bg-primary-500 ring-2 ring-gray-950 dark:ring-gray-50"
+								data-wind-thumb
+							/>
+						{/snippet}
+					</Range>
 				</Div>
 			</Div>
 		</Div>

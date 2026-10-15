@@ -441,7 +441,7 @@ test('synthetic materials opens a storm dialog, explores stock and attachments, 
 	const dialog = page.getByRole('dialog', { name: 'Built to weather it.' });
 	await expect(dialog).toBeVisible();
 	await expect(dialog.locator('[data-synthetic-material]')).toHaveCount(5);
-	await dialog.getByRole('button', { name: 'Turn up the wind', exact: true }).click();
+	await dialog.getByRole('slider', { name: 'Wind strength' }).fill('100');
 	await expect(dialog.locator('[data-weather-tag]').first()).toHaveAttribute(
 		'data-weather-intensity',
 		'storm'

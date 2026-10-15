@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 014363a0002265c622008f371b8d41cea803aef1 -->
+<!-- pending-base: 3dcf602fcd070472c9a300cff5c0887bd5fc6e43 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: use a responsive 12:9 ratio for About timeline images
+feat: add a continuous wind range to synthetic materials
 
-Replace fixed timeline photo heights with a responsive 4:3 (12:9) aspect ratio. Override inherited full-height, minimum-height and flex-growth sizing so image height follows the existing column width on mobile and desktop, retaining shared hover behavior and lightbox captions.
+Replace the wind toggle with Sveltewind Range at the bottom of the illustration, spanning its width with side padding and an accessible percentage readout. Use a circular primary-colored thumb with a dark ring in light mode and a light ring in dark mode.
 
-Reconcile the committed shared card interaction work into changelog history.
+Integrate wind, rain, swing and bend motion frame by frame so intensity changes accelerate and decelerate continuously without phase jumps, surges or reversal. Preserve preview hover and reduced motion, avoid rebuilding tag textures on slider input, and add long-runtime physics regressions.
+
+Update standalone and dialog control regressions. Hide the About landscape caption and simplify its alt text, remove weather illustration helper copy, and reconcile the committed timeline sizing changes into changelog history.
 ```
 
 ## 2026-10-15
+
+- **fix: use a responsive 12:9 ratio for About timeline images** (`3dcf602`)
+  Replace fixed timeline heights with a responsive 4:3 media container, overriding inherited height, minimum-height and flex growth while keeping column widths and lightbox captions.
 
 - **fix: standardize expanding card surfaces and media across the site** (`014363a`)
   Add shared BentoMedia with fixed-size bleed and animated clipping to avoid photo zoom and canvas resize work. Standardize About, stock-color, homepage and news cards, retain foreground gradient outlines and keyboard focus, preserve stock-column loops through resize, and add geometry and reduced-motion coverage with component documentation and project conventions.
