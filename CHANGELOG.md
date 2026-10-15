@@ -6,21 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: b33c14697c6f243048f3ee49914609f1a0078722 -->
+<!-- pending-base: 014363a0002265c622008f371b8d41cea803aef1 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: standardize expanding card surfaces and media across the site
+fix: use a responsive 12:9 ratio for About timeline images
 
-Coordinate BentoItem surface expansion with new BentoMedia's animated clip over fixed-size media bleed. Keep image crops, artwork viewports and canvas resolutions stable during hover to eliminate apparent photo zoom and repeated resize work, while retaining foreground gradient outlines and keyboard focus.
+Replace fixed timeline photo heights with a responsive 4:3 (12:9) aspect ratio. Override inherited full-height, minimum-height and flex-growth sizing so image height follows the existing column width on mobile and desktop, retaining shared hover behavior and lightbox captions.
 
-Apply the shared behavior to About and stock-color lightbox photos, homepage previews, news carousel cards and news listing cards. Preserve stock-column animation identity and playback through resize, and retain lightbox focus, captions and marquee behavior.
-
-Document component ownership and project conventions, add geometry and reduced-motion regressions, and reconcile committed instruction changes into changelog history.
+Reconcile the committed shared card interaction work into changelog history.
 ```
 
 ## 2026-10-15
+
+- **fix: standardize expanding card surfaces and media across the site** (`014363a`)
+  Add shared BentoMedia with fixed-size bleed and animated clipping to avoid photo zoom and canvas resize work. Standardize About, stock-color, homepage and news cards, retain foreground gradient outlines and keyboard focus, preserve stock-column loops through resize, and add geometry and reduced-motion coverage with component documentation and project conventions.
 
 - **refactor: require complete descriptive commit message suggestions** (`b33c146`)
   Require complete copyable final commit suggestions with descriptive bodies for multiple changes, and reconcile the committed About image updates into changelog history.

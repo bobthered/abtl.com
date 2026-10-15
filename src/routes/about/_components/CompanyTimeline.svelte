@@ -43,7 +43,7 @@
 								<StoryPhoto
 									{...milestone.photo}
 									caption={null}
-									imageClass="h-64 sm:h-80"
+									imageClass="aspect-4/3 h-auto min-h-0 flex-none"
 									lightboxCaption={`${milestone.year} — ${milestone.title}\n\n${milestone.description}`}
 								/>
 							{/if}
