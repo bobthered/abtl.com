@@ -1,7 +1,7 @@
 # Component ownership
 
 Import shared UI from `#lib/components`. This directory contains reusable components:
-Logo, BentoItem, ImageLightbox, Marquee, StockTag, the retained site-wide FloatingTags
+Logo, BentoItem, ImageLightbox, LightboxImage, Marquee, StockTag, the retained site-wide FloatingTags
 effect and settings, and topic artwork that can appear in both gallery previews and
 topic pages (BentoPreview, StockTagColumns, ShippingGlobe, ProcessArtwork,
 VariableDataPreview, WarehouseScene, WeatherTag).

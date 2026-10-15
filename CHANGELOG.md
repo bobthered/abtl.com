@@ -6,16 +6,23 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 92f422e9d13f51a02c93893755a2e4f903426241 -->
+<!-- pending-base: 05b89a5456e050a1a96619cc044b89a647d2bb87 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: finalize the connected About timeline and scroll reveals
+feat: add footer landscape artwork and About photo lightboxes
 
-Replace the timeline explorations and original grid with the connected alternating timeline, retain all milestone copy and photos, and restore section background alternation.
-Update global scroll-reveal discovery to animate rich list entries individually, add timeline and unmarked-list regression coverage, and update the changelog.
+Create a primary/secondary editorial landscape with rolling hills, a winding road, tagged Christmas trees and a delivery truck carrying label rolls and a tagged fire extinguisher. Display the alpha-preserving WebP across the footer with responsive overlap to reduce empty space while keeping text clear. Remove footer background and forced text colors so it uses the inherited site palette and shared link focus styles.
+Retain the supplied style reference, document the generation prompt and provenance, and reconcile the changelog.
+Create shared LightboxImage for stock-color marquee and About photos, composing BentoItem outlines, expanding surfaces and animated expand icons with hover/focus image zoom, preloading and ImageLightbox. Preserve crops, captions, keyboard access, duplicate-card interaction and marquee pausing; document the component and add About interaction coverage.
+Include each timeline milestone's year, title and body beneath its enlarged photo, with readable caption widths and paragraph breaks.
 ```
+
+## 2026-10-15
+
+- **fix: finalize the connected About timeline and scroll reveals** (`05b89a5`)
+  Replace the original timeline grid with the connected alternating layout, animate rich list entries individually through the global attachment, retain shared milestone content and extend reveal regressions.
 
 ## 2026-10-14
 

@@ -1,7 +1,8 @@
 <script lang="ts">
 	// Imports
-	import { Container, Div, H2, H3, Img, Li, Ol, P, Section, Span } from '#lib/components';
+	import { Container, Div, H2, H3, Li, Ol, P, Section, Span } from '#lib/components';
 	import { milestones } from '../_data/about.js';
+	import StoryPhoto from './StoryPhoto.svelte';
 	import { twMerge } from 'tailwind-merge';
 </script>
 
@@ -39,11 +40,11 @@
 						/>
 						<Div class={twMerge('lg:col-span-5', index % 2 === 0 ? 'lg:order-1' : 'lg:order-3')}>
 							{#if milestone.photo}
-								<Img
+								<StoryPhoto
 									{...milestone.photo}
-									loading="lazy"
-									decoding="async"
-									class="h-64 w-full rounded-sm object-cover sm:h-80"
+									caption={null}
+									imageClass="h-64 sm:h-80"
+									lightboxCaption={`${milestone.year} — ${milestone.title}\n\n${milestone.description}`}
 								/>
 							{/if}
 						</Div>

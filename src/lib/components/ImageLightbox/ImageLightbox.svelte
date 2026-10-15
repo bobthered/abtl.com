@@ -145,7 +145,7 @@
 				</P>
 			{/if}
 			{#if caption}
-				<P class="text-center text-white">{caption}</P>
+				<P class="max-w-3xl text-center whitespace-pre-line text-white">{caption}</P>
 			{/if}
 		</Div>
 	</Div>

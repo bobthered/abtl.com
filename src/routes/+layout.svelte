@@ -8,6 +8,7 @@
 		Div,
 		Footer,
 		Header,
+		Img,
 		Logo,
 		Nav,
 		P,
@@ -35,7 +36,7 @@
 	type ColorMode = 'dark' | 'light';
 
 	// consts
-	const footerClass = 'text-sm leading-relaxed text-gray-600 dark:text-gray-300';
+	const footerClass = 'text-sm leading-relaxed';
 	// Capture request state during component initialization for async server rendering.
 	const initialPathname = page.url.pathname;
 
@@ -295,10 +296,9 @@
 	{@render children()}
 
 	<Footer
-		variants={['bordered']}
-		class="relative z-10 border-0 bg-primary-500 pt-0 text-white dark:bg-primary-500 [&_a]:rounded-sm [&_a]:text-white dark:[&_a]:text-white [&_a:focus]:text-white dark:[&_a:focus]:text-white [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4 [&_a:focus-visible]:outline-white dark:[&_a:focus-visible]:outline-white [&_a:hover]:text-white dark:[&_a:hover]:text-white [&_p]:text-white dark:[&_p]:text-white"
+		class="relative z-10 p-0 [&_a]:rounded-sm [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4 [&_a:focus-visible]:outline-primary-600 dark:[&_a:focus-visible]:outline-primary-300"
 	>
-		<Container class="space-y-10 py-12 lg:py-16">
+		<Container class="relative z-10 space-y-10 py-12 lg:py-16">
 			<Div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				<Div class="space-y-4">
 					<A
@@ -309,9 +309,7 @@
 					>
 						<Logo
 							aria-hidden="true"
-							blueColor="currentColor"
-							redColor="currentColor"
-							variants={['site']}
+							variants={['onSurface', 'site']}
 						/>
 					</A>
 					<P class={footerClass}>Stock and custom tags and labels.</P>
@@ -327,11 +325,20 @@
 				</Div>
 				<Div class="space-y-4">
 					<P variants={['eyebrow']}>Let's talk about your project</P>
-					<A href="mailto:sales@abtl.com" variants={['ghost', 'accent']}>sales@abtl.com</A>
+					<A href="mailto:sales@abtl.com" variants={['ghost']}>sales@abtl.com</A>
 				</Div>
 			</Div>
 			<P class={footerClass}>© {new Date().getFullYear()} Allen-Bailey Tag & Label.</P>
 		</Container>
+		<Img
+			src="/images/footer/footer-landscape-v2.webp"
+			alt="Rolling hills and a winding road lined with tagged Christmas trees, with a delivery truck carrying label rolls and a tagged fire extinguisher"
+			width={2172}
+			height={724}
+			loading="lazy"
+			decoding="async"
+			class="pointer-events-none -mt-28 block h-64 w-full object-cover object-right sm:-mt-32 sm:h-auto lg:-mt-52 xl:-mt-56 2xl:-mt-72"
+		/>
 	</Footer>
 </Div>
 
