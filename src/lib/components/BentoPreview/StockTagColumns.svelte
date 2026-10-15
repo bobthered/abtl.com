@@ -81,18 +81,23 @@
 					previous && previousDuration
 						? (Number(previous.currentTime) / previousDuration) % 1
 						: Math.random();
-				previous?.cancel();
 				// One complete copy includes its trailing gap, so the loop never jumps.
 				const keyframes = [
 					{ transform: 'translateY(0)' },
 					{ transform: `translateY(-${distance}px)` }
 				];
-				const animation = track.animate(index % 2 === 0 ? [...keyframes].reverse() : keyframes, {
+				const frames = index % 2 === 0 ? [...keyframes].reverse() : keyframes;
+				const timing = {
 					duration: (distance / pixelsPerSecond) * 1000,
 					easing: 'linear',
 					iterations: Infinity
-				});
-				animation.pause();
+				};
+				// Surface expansion resizes the artwork; retain the loop and its playback rate.
+				const animation = previous ?? track.animate(frames, timing);
+				if (previous) {
+					(previous.effect as KeyframeEffect).setKeyframes(frames);
+					previous.effect?.updateTiming(timing);
+				} else animation.pause();
 				animation.currentTime = ((phase * distance) / pixelsPerSecond) * 1000;
 				animations[index] = animation;
 				distances[index] = distance;
@@ -173,7 +178,7 @@
 	data-stock-columns
 >
 	<Div
-		class="grid h-full w-full origin-center grid-cols-4 gap-4 px-4 motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out motion-safe:group-hover:scale-105 motion-safe:group-focus-visible:scale-105 sm:grid-cols-6 sm:gap-6 sm:px-6"
+		class="grid h-full w-full grid-cols-4 gap-4 px-4 sm:grid-cols-6 sm:gap-6 sm:px-6"
 		data-stock-column-grid
 	>
 		{#each columns as colors, index (index)}

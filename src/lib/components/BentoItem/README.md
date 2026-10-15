@@ -2,7 +2,10 @@
 
 Import from `#lib/components`. Shared tile styling, pointer-following canvas edge,
 hover expansion, focus indicator, and optional animated expand icon live here.
-Content retains its position as the tile's surface expands.
+Text retains its position as the tile's surface expands. Compose `BentoMedia` for
+images or artwork that fill the expanding surface without transform-based zoom.
+Both components share inset geometry and timing. The outline sits above media,
+and keyboard focus draws the gradient at the upper-right edge.
 
 ```svelte
 <BentoItem title="Explore our options" aria-haspopup="dialog" onclick={openDialog}>

@@ -1,6 +1,7 @@
 export * from 'sveltewind/components';
 export { default as ActionLabel } from './ActionLabel/ActionLabel.svelte';
 export { default as BentoItem } from './BentoItem/BentoItem.svelte';
+export { default as BentoMedia } from './BentoMedia/BentoMedia.svelte';
 export { default as BentoPreview } from './BentoPreview/BentoPreview.svelte';
 export { default as FloatingTagSettings } from './FloatingTags/FloatingTagSettings.svelte';
 export { default as FloatingTags } from './FloatingTags/FloatingTags.svelte';

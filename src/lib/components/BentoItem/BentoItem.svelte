@@ -2,6 +2,7 @@
 	// Imports
 	import { A, Button, Canvas, Div, Span } from '#lib/components';
 	import type { ComponentProps } from 'svelte';
+	import { expansionClass } from './classes';
 	import { Maximize2 } from '#lib/icons';
 	import { pointerOutline } from '#lib/attachments';
 	import { twMerge } from 'tailwind-merge';
@@ -43,14 +44,22 @@
 {#snippet content()}
 	<Span
 		class={twMerge(
-			'pointer-events-none absolute inset-0 -z-10 rounded-sm bg-white inset-ring-1 inset-ring-gray-200 motion-safe:transition-[inset] motion-safe:duration-300 motion-safe:group-hover:-inset-1 motion-safe:group-focus-visible:-inset-1 dark:bg-gray-900 dark:inset-ring-gray-800',
+			expansionClass,
+			'pointer-events-none -z-10 rounded-sm bg-white dark:bg-gray-900',
 			...(surface === 'neutral' ? ['bg-gray-100 dark:bg-gray-950'] : [])
+		)}
+		aria-hidden="true"
+	/>
+	<Span
+		class={twMerge(
+			expansionClass,
+			'pointer-events-none z-20 rounded-sm inset-ring-1 inset-ring-gray-200 dark:inset-ring-gray-800'
 		)}
 		data-bento-surface
 		aria-hidden="true"
 	>
 		<Canvas
-			class="pointer-events-none absolute inset-0 block h-full w-full text-primary-400 opacity-0 transition-opacity duration-300 [--bento-outline-secondary:var(--color-secondary-400)] group-hover:opacity-60 motion-reduce:transition-none dark:text-primary-500 dark:[--bento-outline-secondary:var(--color-secondary-500)] dark:group-hover:opacity-90"
+			class="pointer-events-none absolute inset-0 block h-full w-full text-primary-400 opacity-0 transition-opacity duration-300 [--bento-outline-secondary:var(--color-secondary-400)] group-hover:opacity-60 group-focus-visible:opacity-60 motion-reduce:transition-none dark:text-primary-500 dark:[--bento-outline-secondary:var(--color-secondary-500)] dark:group-hover:opacity-90 dark:group-focus-visible:opacity-90"
 			data-bento-outline
 			aria-hidden="true"
 		/>

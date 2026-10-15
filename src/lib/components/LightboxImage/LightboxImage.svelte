@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Imports
-	import { BentoItem, Div, Figure, ImageLightbox, Img } from '#lib/components';
+	import { BentoItem, BentoMedia, Figure, ImageLightbox, Img } from '#lib/components';
 	import type { ComponentProps, Snippet } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
 	import { untrack } from 'svelte';
@@ -78,7 +78,7 @@
 	onpointerenter={preloadImage}
 >
 	<Figure class="relative m-0 flex h-full min-h-0 w-full flex-col gap-6">
-		<Div class="min-h-0 w-full flex-1 overflow-hidden rounded-sm">
+		<BentoMedia class={twMerge('h-full w-full flex-1', imageClass)}>
 			<Img
 				{src}
 				{alt}
@@ -87,12 +87,9 @@
 				loading={isPriority ? 'eager' : 'lazy'}
 				fetchpriority={isPriority ? 'high' : 'auto'}
 				decoding="async"
-				class={twMerge(
-					'h-full w-full rounded-sm object-cover motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-105 motion-safe:group-focus-visible:scale-105',
-					imageClass
-				)}
+				class="h-full w-full object-cover"
 			/>
-		</Div>
+		</BentoMedia>
 		{#if children}{@render children()}{/if}
 	</Figure>
 </BentoItem>

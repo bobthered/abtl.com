@@ -54,12 +54,23 @@ export const pointerOutline = (tile: HTMLElement) => {
 		pointer = { x: event.clientX, y: event.clientY };
 		scheduleDraw();
 	};
+	const focus = () => {
+		if (!tile.matches(':focus-visible')) return;
+		const bounds = surface.getBoundingClientRect();
+		pointer = { x: bounds.right, y: bounds.top };
+		scheduleDraw();
+	};
+	const blur = () => {
+		if (!tile.matches(':hover')) leave();
+	};
 	const observer = new ResizeObserver(scheduleDraw);
 	observer.observe(surface);
 	tile.addEventListener('pointerenter', move);
 	tile.addEventListener('pointermove', move);
 	tile.addEventListener('pointerleave', leave);
 	tile.addEventListener('pointercancel', leave);
+	tile.addEventListener('focusin', focus);
+	tile.addEventListener('focusout', blur);
 	window.addEventListener('scroll', scheduleDraw, { passive: true, capture: true });
 	return () => {
 		leave();
@@ -68,6 +79,8 @@ export const pointerOutline = (tile: HTMLElement) => {
 		tile.removeEventListener('pointermove', move);
 		tile.removeEventListener('pointerleave', leave);
 		tile.removeEventListener('pointercancel', leave);
+		tile.removeEventListener('focusin', focus);
+		tile.removeEventListener('focusout', blur);
 		window.removeEventListener('scroll', scheduleDraw, true);
 	};
 };

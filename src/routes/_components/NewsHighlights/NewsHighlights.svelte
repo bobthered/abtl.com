@@ -3,6 +3,7 @@
 	import {
 		A,
 		BentoItem,
+		BentoMedia,
 		Button,
 		Container,
 		Div,
@@ -203,15 +204,17 @@
 </script>
 
 {#snippet image(story: NewsPost)}
-	<Div class="flex h-full w-full items-center justify-center overflow-hidden rounded-sm">
-		<Img
-			src={story.image}
-			alt={story.alt}
-			class="h-auto w-160 max-w-none shrink-0 sm:w-192 lg:w-256"
-			loading={isAnimating ? 'eager' : 'lazy'}
-			decoding="async"
-		/>
-	</Div>
+	<BentoMedia class="h-full w-full">
+		<Div class="flex h-full w-full items-center justify-center">
+			<Img
+				src={story.image}
+				alt={story.alt}
+				class="h-auto w-160 max-w-none shrink-0 sm:w-192 lg:w-256"
+				loading={isAnimating ? 'eager' : 'lazy'}
+				decoding="async"
+			/>
+		</Div>
+	</BentoMedia>
 {/snippet}
 
 {#if selected}
@@ -306,17 +309,16 @@
 										{@render image(story)}
 									</BentoItem>
 								{:else}
-									<Button
-										type="button"
-										variants={['ghost']}
+									<BentoItem
+										isExpandVisible={false}
 										aria-label={`Select ${story.title}`}
 										aria-controls={`${uid}-story`}
 										aria-disabled={isAnimating}
-										class="h-full w-full overflow-hidden rounded-sm p-0"
+										class="w-full"
 										onclick={() => void move(index)}
 									>
 										{@render image(story)}
-									</Button>
+									</BentoItem>
 								{/if}
 							</Div>
 						{/each}

@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 5479c9a1bece3d4637699424e6f2395b2993cd83 -->
+<!-- pending-base: b33c14697c6f243048f3ee49914609f1a0078722 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: require complete descriptive commit message suggestions
+fix: standardize expanding card surfaces and media across the site
 
-Require final responses to include the full copyable commit message, with a descriptive body covering distinct changes, components, routes, assets and documentation. Reserve subject-only suggestions for small self-contained changes and prevent brevity preferences or changelog references from hiding the body.
+Coordinate BentoItem surface expansion with new BentoMedia's animated clip over fixed-size media bleed. Keep image crops, artwork viewports and canvas resolutions stable during hover to eliminate apparent photo zoom and repeated resize work, while retaining foreground gradient outlines and keyboard focus.
 
-Reconcile the committed About timeline photo work into changelog history and track the instruction update as the sole pending entry.
+Apply the shared behavior to About and stock-color lightbox photos, homepage previews, news carousel cards and news listing cards. Preserve stock-column animation identity and playback through resize, and retain lightbox focus, captions and marquee behavior.
+
+Document component ownership and project conventions, add geometry and reduced-motion regressions, and reconcile committed instruction changes into changelog history.
 ```
 
 ## 2026-10-15
+
+- **refactor: require complete descriptive commit message suggestions** (`b33c146`)
+  Require complete copyable final commit suggestions with descriptive bodies for multiple changes, and reconcile the committed About image updates into changelog history.
 
 - **feat: restore supplied photos for the About timeline** (`5479c9a`)
   Replace the 1991, 2011, 2018 and Today timeline placeholders with optimized wide derivatives of owner-provided photos. Colorize the hand-finishing image, restore the press operator and safety-celebration photos, apply editorial lighting to the cord-reel detail, and document AI edits, prompts and provenance.
