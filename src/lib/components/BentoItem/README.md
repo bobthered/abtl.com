@@ -21,6 +21,7 @@ and keyboard focus draws the gradient at the upper-right edge.
 - `isInteractive` defaults to `true`: renders a Sveltewind Button; `false` renders Div.
 - `isExpandVisible` defaults to `true` and controls the decorative expand indicator.
 - `title` is optional. It uses the shared inset and hover translation.
+- `isResponsivePreview` opts a portrait-style preview into a named container query: at 36rem of actual tile width, copy and artwork become a 2:3 split. Narrow tiles stay stacked. `description` appears only in the split layout. Use this for single-subject artwork; panoramic compositions can keep the normal layout. Changes respond to layout width, never hover. In split mode, BentoPreview keeps its clipped viewport and decorative effects across the full tile, with only the subject constrained to the right column. Copy sits above this background layer.
 - `surface="neutral"` uses the contrasting neutral surface for dialog cards.
 - `children` supplies unpadded content; `class` controls layout and optional padding.
 - `variants` extends shared styling; other Button props and attachments are forwarded.

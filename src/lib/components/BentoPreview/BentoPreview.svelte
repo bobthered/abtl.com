@@ -20,6 +20,8 @@
 	// consts
 	const artworkOrbClass =
 		'absolute aspect-5/4 w-3/4 rounded-full bg-radial to-transparent blur-2xl';
+	// In split tiles the viewport spans the tile; only the subject occupies the right 3/5.
+	const artworkSubjectClass = 'relative h-full w-full @min-xl/bento:pl-[40%]';
 	const bentoLayerClass =
 		'absolute h-32 w-48 animate-none sm:h-40 sm:w-60 rounded-sm bg-gray-200 inset-ring-1 inset-ring-gray-300 dark:bg-gray-700 dark:inset-ring-gray-600 motion-safe:transition-transform motion-safe:duration-500';
 	const bentoTagClass =
@@ -31,7 +33,12 @@
 </script>
 
 <BentoMedia
-	class={isDialogPreview ? 'h-56 w-full sm:h-72 lg:h-80' : 'h-72 w-full sm:h-80 lg:h-96'}
+	class={twMerge(
+		isDialogPreview ? 'h-56 w-full sm:h-72 lg:h-80' : 'h-72 w-full sm:h-80 lg:h-96',
+		!isDialogPreview
+			? '@min-xl/bento:absolute @min-xl/bento:inset-0 @min-xl/bento:h-full @min-xl/bento:min-h-96'
+			: ''
+	)}
 	isExpandable={!isDialogPreview}
 	isTopFlush
 	aria-hidden="true"
@@ -106,10 +113,10 @@
 		{:else if kind === 'weather'}
 			<WeatherTag isPreview />
 		{:else if kind === 'process'}
-			<Div class="relative h-full w-full">
+			<Div class={artworkSubjectClass}>
 				<ProcessArtwork isPreview />
 				<Div
-					class="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center gap-4 text-xs font-medium text-gray-600 dark:text-gray-300"
+					class="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center gap-4 text-xs font-medium text-gray-600 @min-xl/bento:pl-[40%] dark:text-gray-300"
 				>
 					<Span>C</Span><Span>M</Span><Span>Y</Span><Span>K</Span>
 				</Div>

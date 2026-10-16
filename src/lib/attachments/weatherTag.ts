@@ -7,7 +7,8 @@ export const weatherTag = (element: HTMLElement) => {
 	const canvas = element.querySelector<HTMLCanvasElement>('canvas');
 	const accent = element.querySelector<HTMLElement>('[data-weather-accent]');
 	const context = canvas?.getContext('2d');
-	if (!canvas || !context || !accent) return;
+	const subject = element.querySelector<HTMLElement>('[data-weather-subject]');
+	if (!canvas || !context || !accent || !subject) return;
 	const preference = matchMedia('(prefers-reduced-motion: reduce)');
 	const trigger = element.dataset.weatherPreview === 'true' ? element.closest('a, button') : null;
 	const paper = new Path2D(shapeSvg.match(/\sd="([^"]+)"/)![1]);
@@ -26,6 +27,8 @@ export const weatherTag = (element: HTMLElement) => {
 	let motion = createWeatherMotion();
 	let primary = '';
 	let secondary = '';
+	let subjectWidth = 0;
+	let subjectX = 0;
 	let tetherColor = '';
 	let width = 0;
 	const makeTexture = () => {
@@ -92,21 +95,26 @@ export const weatherTag = (element: HTMLElement) => {
 		const isReduced = preference.matches;
 		const intensity = isReduced ? 0 : motion.intensity;
 		// Tether point stays fixed; the tag rotates and flexes around its reinforced hole.
-		const anchorX = width * 0.3;
+		const isPreview = element.dataset.weatherPreview === 'true';
+		const anchorX = subjectX + subjectWidth * (isPreview ? 0.34 : 0.3);
 		const anchorY = height * 0.1;
-		const holeX = width * 0.4 + Math.sin(t * 2.8) * intensity * 6;
+		const holeX =
+			subjectX + subjectWidth * (isPreview ? 0.46 : 0.4) + Math.sin(t * 2.8) * intensity * 6;
 		const holeY = height * 0.27 + Math.cos(t * 3.3) * intensity * 3;
 		const angle = isReduced
 			? -0.18
 			: -0.18 - intensity * 0.5 + Math.sin(motion.swingPhase) * (0.045 + intensity * 0.16);
-		const scale = Math.min(height * 0.63, width * 0.69, 310) / 474;
+		const scale =
+			(isPreview
+				? Math.min(height * 0.7, subjectWidth * 0.69)
+				: Math.min(height * 0.63, subjectWidth * 0.69, 310)) / 474;
 		const attachment = element.dataset.weatherAttachment ?? 'wire';
 		const stroke = tetherColor;
 		// Wind trails behind the tag, with a transparent canvas surface.
 		context.strokeStyle = primary;
 		context.lineWidth = 1;
 		for (let i = 0; i < 7; i++) {
-			const x = ((motion.windOffset + i * 83) % (width + 180)) - 120;
+			const x = ((motion.windOffset + (i * (width + 180)) / 7) % (width + 180)) - 120;
 			const y = height * (0.2 + i * 0.105);
 			context.globalAlpha = (isDark ? 0.04 : 0.12) + intensity * 0.08;
 			context.beginPath();
@@ -241,6 +249,9 @@ export const weatherTag = (element: HTMLElement) => {
 		const bounds = element.getBoundingClientRect();
 		width = bounds.width;
 		height = bounds.height;
+		const subjectBounds = subject.getBoundingClientRect();
+		subjectWidth = subjectBounds.width;
+		subjectX = subjectBounds.left - bounds.left;
 		const ratio = Math.min(devicePixelRatio || 1, 1.5);
 		canvas.width = Math.round(width * ratio);
 		canvas.height = Math.round(height * ratio);

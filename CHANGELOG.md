@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: eb02e8c185ed587c0b6533257f005834018361e6 -->
+<!-- pending-base: 9656534932d1ed70c6735f0458f0769863390645 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: standardize capability pages with a shared content layout
+fix: balance artwork and copy in wide bento previews
 
-Add ContentLayout in src/lib/layouts with reusable title, multi-section body, and centered closing call-to-action regions based on stock-colors. Export it through #lib/layouts and document standalone and dialog usage.
+Add an opt-in container-aware composition to BentoItem. Full-color, synthetic-material, and variable-data tiles switch to a 2:3 copy-and-artwork split at wide tile sizes, reveal their existing descriptions, and keep narrow tiles stacked. Preserve panoramic stock-color, globe, and warehouse compositions.
 
-Migrate the capabilities overview, attachments, and all six topic pages while preserving their route-owned content, sample dialogs, and interactive controls. Standardize heading and CTA sizing and alternate full-width body surfaces.
+Improve print and weather preview framing and fill available artwork height in mixed rows. Let glows, orbital particles, wind, and rain span the full tile behind the copy, position their subjects in the right column, and center particle orbits on the QR code. Preserve fixed canvas dimensions during hover. Document the shared behavior and add responsive composition coverage, and update the globe hover regression to check rendered motion within a fixed viewport.
 
-Preserve the footer's normal scrolling and explicit surface separator, add responsive capability layout coverage, and reconcile the committed homepage marquee removal in the changelog.
+Retain the synthetic-material wind slider thumb's smaller circular sizing and vertical spacing. Reconcile the committed capability layout work in the changelog.
 ```
 
 ## 2026-10-16
+
+- **refactor: standardize capability pages with a shared content layout** (`9656534`)
+  Add ContentLayout and the #lib/layouts entry point, migrate the capabilities overview, attachments and six topic pages to shared title/body/CTA regions, preserve dialogs and controls, alternate full-width body surfaces, and add responsive layout coverage. Retain the footer's explicit surface separator and normal scrolling.
 
 - **fix: remove the homepage brand marquee** (`eb02e8c`)
   Remove the hero marquee, unused content and imports, and obsolete browser tests. Preserve the capabilities bento showcase and restore alternating homepage section backgrounds without a replacement section.

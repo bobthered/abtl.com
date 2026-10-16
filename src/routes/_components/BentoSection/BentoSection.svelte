@@ -132,6 +132,8 @@
 			{#each orderedTopics as topic, index (topic.id)}
 				<BentoItem
 					class={slotClasses[index % slotClasses.length]}
+					description={topic.description}
+					isResponsivePreview={['data', 'process', 'weather'].includes(topic.preview)}
 					title={topic.title}
 					aria-label={`Explore ${topic.title}`}
 					aria-haspopup="dialog"

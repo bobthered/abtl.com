@@ -28,6 +28,8 @@ export const qrScan = (element: HTMLElement) => {
 	);
 	let artworkHeight = 0;
 	let artworkWidth = 0;
+	let centerX = 0;
+	let centerY = 0;
 	let frame = 0;
 	let isFocused = trigger.matches(':focus-visible');
 	let isHovered = trigger.matches(':hover');
@@ -52,7 +54,10 @@ export const qrScan = (element: HTMLElement) => {
 		const bounds = resizeCanvas(artwork, artContext);
 		artworkHeight = bounds.height;
 		artworkWidth = bounds.width;
-		scanSize = resizeCanvas(scan, scanContext).width;
+		const scanBounds = resizeCanvas(scan, scanContext);
+		scanSize = scanBounds.width;
+		centerX = scanBounds.left - bounds.left + scanBounds.width / 2;
+		centerY = scanBounds.top - bounds.top + scanBounds.height / 2;
 		scanColor = getComputedStyle(scan).color;
 		primary = getComputedStyle(artwork).color;
 		secondary = getComputedStyle(accent).color;
@@ -62,7 +67,7 @@ export const qrScan = (element: HTMLElement) => {
 		const height = artworkHeight;
 		artContext.clearRect(0, 0, width, height);
 		artContext.save();
-		artContext.translate(width * 0.5, height * 0.55);
+		artContext.translate(centerX, centerY);
 		artContext.rotate(-0.5);
 		const stroke = artContext.createLinearGradient(-width / 2, 0, width / 2, 0);
 		stroke.addColorStop(0, primary);

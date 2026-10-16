@@ -173,7 +173,8 @@ export const processPrint = (element: HTMLElement) => {
 	const draw = () => {
 		if (width <= 0 || height <= 0) return;
 		context.clearRect(0, 0, width, height);
-		const scale = Math.min(width / 460, height / 660);
+		const isPreview = element.dataset.printPreview === 'true';
+		const scale = Math.min(width / 460, height / (isPreview ? 570 : 660));
 		const yaw = ((35 * Math.PI) / 180) * spread;
 		const roll = ((-5 * Math.PI) / 180) * spread;
 		const layerGap = 80 * spread;

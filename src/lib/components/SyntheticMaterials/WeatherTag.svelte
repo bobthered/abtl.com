@@ -44,7 +44,11 @@
 		/>
 	{/if}
 	<Div
-		class="absolute inset-0 flex items-center justify-center group-data-[weather-ready=true]/weather:invisible"
+		data-weather-subject
+		class={twMerge(
+			'absolute inset-y-0 right-0 flex w-full items-center justify-center group-data-[weather-ready=true]/weather:invisible',
+			isPreview ? '@min-xl/bento:w-3/5' : ''
+		)}
 	>
 		<StockTag class="w-28 text-white" />
 	</Div>

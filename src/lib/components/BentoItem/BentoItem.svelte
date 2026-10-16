@@ -9,9 +9,11 @@
 
 	// Types
 	type Props = ComponentProps<typeof Button> & {
+		description?: string;
 		href?: string;
 		isExpandVisible?: boolean;
 		isInteractive?: boolean;
+		isResponsivePreview?: boolean;
 		surface?: 'default' | 'neutral';
 		title?: string;
 	};
@@ -26,9 +28,11 @@
 	let {
 		children,
 		class: className = '',
+		description,
 		href,
 		isExpandVisible = true,
 		isInteractive = true,
+		isResponsivePreview = false,
 		surface = 'default',
 		title,
 		variants = [],
@@ -37,7 +41,12 @@
 
 	// $derived
 	const classes = $derived(
-		twMerge(neutralTileClass, surface === 'neutral' ? neutralTileMutedClass : '', className)
+		twMerge(
+			neutralTileClass,
+			surface === 'neutral' ? neutralTileMutedClass : '',
+			isResponsivePreview ? '@container/bento' : '',
+			className
+		)
 	);
 </script>
 
@@ -78,15 +87,44 @@
 			</Span>
 		</Span>
 	{/if}
-	{#if title}
-		<Span
-			class="relative block pt-4 pr-18 pl-4 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-x-1 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:-translate-x-1 motion-safe:group-focus-visible:-translate-y-1 sm:pt-5 sm:pr-19 sm:pl-5"
-			data-bento-copy
+	{#if isResponsivePreview}
+		<Div
+			class="grid h-full w-full min-w-0 gap-6 @min-xl/bento:min-h-112 @min-xl/bento:grid-cols-5 @min-xl/bento:gap-0"
+			data-bento-composition
 		>
-			<Span class="block text-2xl font-medium tracking-tight">{title}</Span>
-		</Span>
+			{#if title}
+				<Span
+					class="relative block pt-4 pr-18 pl-4 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-x-1 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:-translate-x-1 motion-safe:group-focus-visible:-translate-y-1 sm:pt-5 sm:pr-19 sm:pl-5 @min-xl/bento:z-10 @min-xl/bento:col-span-2 @min-xl/bento:self-center @min-xl/bento:p-8 @min-xl/bento:pr-4"
+					data-bento-copy
+				>
+					<Span
+						class="block text-2xl font-medium tracking-tight @min-xl/bento:text-3xl @min-4xl/bento:text-4xl"
+					>
+						{title}
+					</Span>
+					{#if description}<Span
+							class="mt-4 hidden max-w-sm text-base leading-relaxed text-gray-600 @min-xl/bento:block dark:text-gray-300"
+							data-bento-description
+						>
+							{description}
+						</Span>{/if}
+				</Span>
+			{/if}
+			<Div class="min-w-0 @min-xl/bento:col-span-3" data-bento-artwork>
+				{#if children}{@render children()}{/if}
+			</Div>
+		</Div>
+	{:else}
+		{#if title}
+			<Span
+				class="relative block pt-4 pr-18 pl-4 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-x-1 motion-safe:group-hover:-translate-y-1 motion-safe:group-focus-visible:-translate-x-1 motion-safe:group-focus-visible:-translate-y-1 sm:pt-5 sm:pr-19 sm:pl-5"
+				data-bento-copy
+			>
+				<Span class="block text-2xl font-medium tracking-tight">{title}</Span>
+			</Span>
+		{/if}
+		{#if children}{@render children()}{/if}
 	{/if}
-	{#if children}{@render children()}{/if}
 {/snippet}
 
 {#if isInteractive && href}

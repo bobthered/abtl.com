@@ -130,7 +130,7 @@
 					>
 						{#snippet thumb()}
 							<Div
-								class="aspect-square h-full rounded-full bg-primary-500 ring-2 ring-gray-950 dark:ring-gray-50"
+								class="my-1 aspect-square h-4 rounded-full bg-primary-500 ring-2 ring-gray-950 dark:ring-gray-50"
 								data-wind-thumb
 							/>
 						{/snippet}

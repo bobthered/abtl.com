@@ -80,11 +80,16 @@ for (const span of [2, 4, 6]) {
 				} else if (id === 'shipping') {
 					await expect(tile.locator('[data-globe-ready="true"]')).toBeVisible();
 					const globe = tile.locator('[data-shipping-globe]');
-					const resting = await globe.evaluate((element) => getComputedStyle(element).scale);
+					const resting = await globe.boundingBox();
+					const before = (await globe.screenshot()).toString('base64');
 					await tile.hover();
+					// The globe moves inside a fixed viewport; CSS scale is intentionally unchanged.
 					await expect
-						.poll(() => globe.evaluate((element) => getComputedStyle(element).scale))
-						.not.toBe(resting);
+						.poll(async () => (await globe.screenshot()).toString('base64'))
+						.not.toBe(before);
+					const hovered = await globe.boundingBox();
+					expect(hovered!.width).toBe(resting!.width);
+					expect(hovered!.height).toBe(resting!.height);
 				} else {
 					const canvas = tile.locator(id === 'variable-data' ? '[data-qr-scan]' : 'canvas').last();
 					if (id === 'full-color-printing') {
