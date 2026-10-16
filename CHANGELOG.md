@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 9656534932d1ed70c6735f0458f0769863390645 -->
+<!-- pending-base: 63ae1576b3a2ce0225ebfa3ae27708ec960a6f6c -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: balance artwork and copy in wide bento previews
+refactor: simplify navigation and redirect section roots
 
-Add an opt-in container-aware composition to BentoItem. Full-color, synthetic-material, and variable-data tiles switch to a 2:3 copy-and-artwork split at wide tile sizes, reveal their existing descriptions, and keep narrow tiles stacked. Preserve panoramic stock-color, globe, and warehouse compositions.
+Show only route titles in the megamenu's right-hand links, preserving the section introduction on the left and removing desktop and mobile All-section links. Replace diagonal link icons with the shared ActionLabel chevron-to-arrow hover and keyboard-focus animation. Sort submenu destinations alphabetically in shared navigation data so desktop and mobile use the same order.
 
-Improve print and weather preview framing and fill available artwork height in mixed rows. Let glows, orbital particles, wind, and rain span the full tile behind the copy, position their subjects in the right column, and center particle orbits on the QR code. Preserve fixed canvas dimensions during hover. Document the shared behavior and add responsive composition coverage, and update the globe hover regression to check rendered motion within a fixed viewport.
+Replace the capabilities, markets, products, and resources overview pages with SvelteKit server redirects to their first alphabetical subpages, preserving query strings. Remove unused overview copy.
 
-Retain the synthetic-material wind slider thumb's smaller circular sizing and vertical spacing. Reconcile the committed capability layout work in the changelog.
+Update navigation and capability layout regressions for title-only labels, alphabetical ordering, taller-content height transitions, and server redirects without JavaScript. Reconcile the committed bento composition work in the changelog.
 ```
 
 ## 2026-10-16
+
+- **fix: balance artwork and copy in wide bento previews** (`63ae157`)
+  Add container-aware split compositions for wide portrait previews, retain panoramic artwork, improve print and weather framing, and extend glows, particles, wind and rain across the full tile. Preserve fixed hover canvases, document behavior, add responsive coverage, update globe assertions, and retain the smaller wind slider thumb.
 
 - **refactor: standardize capability pages with a shared content layout** (`9656534`)
   Add ContentLayout and the #lib/layouts entry point, migrate the capabilities overview, attachments and six topic pages to shared title/body/CTA regions, preserve dialogs and controls, alternate full-width body surfaces, and add responsive layout coverage. Retain the footer's explicit surface separator and normal scrolling.

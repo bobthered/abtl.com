@@ -246,14 +246,6 @@
 											transition={[slide, { duration: isReducedMotion ? 0 : 240 }]}
 											class="flex flex-col gap-2 pb-4 pl-4"
 										>
-											<A
-												href={item.href}
-												variants={['ghost', 'navigation']}
-												class="justify-start"
-												onclick={() => (isMenuVisible = false)}
-											>
-												All {item.label.toLowerCase()}
-											</A>
 											{#each item.children as child (child.href)}
 												<A
 													href={child.href}

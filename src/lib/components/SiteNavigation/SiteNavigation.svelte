@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Imports
-	import { A, Button, Card, Div, H2, Nav, P, Span } from '#lib/components';
+	import { A, ActionLabel, Button, Card, Div, H2, Nav, P } from '#lib/components';
 	import { afterNavigate } from '$app/navigation';
-	import { ArrowUpRight, ChevronDown } from '#lib/icons';
+	import { ChevronDown } from '#lib/icons';
 	import { fly } from 'svelte/transition';
 	import { navigation } from '#lib/data/navigation.js';
 	import { onMount, tick, untrack } from 'svelte';
@@ -268,17 +268,6 @@
 										Explore {panel.section.label}
 									</P>
 									<H2 class="text-2xl">{panel.section.description}</H2>
-									<A
-										href={panel.section.href}
-										variants={['ghost', 'accent']}
-										class="mt-auto inline-flex items-center gap-2 px-0"
-										onclick={close}
-									>
-										All {panel.section.label.toLowerCase()}<ArrowUpRight
-											class="size-4"
-											aria-hidden="true"
-										/>
-									</A>
 								</Div>
 								<Nav
 									aria-label={`${panel.section.label} pages`}
@@ -292,17 +281,9 @@
 											class="group block rounded-sm p-4 text-gray-950 hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800"
 											onclick={close}
 										>
-											<Span class="flex items-center justify-between gap-2 font-semibold">
-												{child.label}<ArrowUpRight
-													class="size-4 text-primary-600 dark:text-primary-300"
-													aria-hidden="true"
-												/>
-											</Span>
-											<Span
-												class="mt-2 block text-sm leading-relaxed text-gray-600 dark:text-gray-300"
-											>
-												{child.description}
-											</Span>
+											<ActionLabel class="w-full justify-between font-semibold">
+												{child.label}
+											</ActionLabel>
 										</A>
 									{/each}
 								</Nav>

@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
 
 const routes = [
-	'',
 	'/stock-colors',
 	'/shipping',
 	'/variable-data',

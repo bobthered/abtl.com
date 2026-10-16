@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { createPageTitle } from './lib/pageTitle.js';
 import { navigation as sections } from './lib/data/navigation.js';
 
 test('megamenu clips horizontal travel and animates height in both directions', async ({
@@ -9,6 +10,8 @@ test('megamenu clips horizontal travel and animates height in both directions', 
 	await page.waitForFunction(() =>
 		document.getAnimations().some((animation) => animation.id === 'illustration-float')
 	);
+	// Stress natural content sizing now that compact labels normally fit the minimum panel height.
+	await page.addStyleTag({ content: '[data-nav-panel] nav > a { min-height: 100px; }' });
 	const navigation = page.getByRole('navigation', { name: 'Main navigation', exact: true });
 	await navigation.getByRole('button', { name: 'Markets', exact: true }).hover();
 	const viewport = page.locator('[data-nav-viewport]');
@@ -109,8 +112,13 @@ test('navigation pages render with real links and a sign-in placeholder', async 
 		const response = await page.goto(`/${route}`);
 		expect(response?.status()).toBe(200);
 		await expect(page.locator('main h1')).toBeVisible();
+		const expectedRoute =
+			sections.find((section) => section.href === `/${route}`)?.children[0]?.href ?? `/${route}`;
+		await expect(page).toHaveURL(expectedRoute);
 		await expect(page).toHaveTitle(
-			`${route[0].toUpperCase()}${route.slice(1)} | Allen-Bailey Tag & Label`
+			expectedRoute === '/capabilities/attachments'
+				? 'Attachments | Allen-Bailey Tag & Label'
+				: createPageTitle(expectedRoute)
 		);
 		const mainNavigation = page.getByRole('navigation', { name: 'Main navigation', exact: true });
 		for (const section of sections) {
@@ -147,10 +155,13 @@ test('compact navigation reaches pages and closes after selection', async ({ pag
 		await navigation.getByRole('button', { name: section.label, exact: true }).click();
 		await expect(
 			navigation.getByRole('link', { name: `All ${section.label.toLowerCase()}`, exact: true })
+		).toHaveCount(0);
+		await expect(
+			navigation.getByRole('link', { name: section.children[0].label, exact: true })
 		).toBeVisible();
 	}
-	await navigation.getByRole('link', { name: 'All markets', exact: true }).click();
-	await expect(page).toHaveURL(/\/markets$/);
+	await navigation.getByRole('link', { name: 'Equipment & service', exact: true }).click();
+	await expect(page).toHaveURL(/\/markets\/equipment-service$/);
 	await expect(navigation).not.toBeVisible();
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
@@ -194,9 +205,7 @@ test('mega menu transitions directionally and supports keyboard dismissal', asyn
 		'1'
 	);
 	await expect(
-		page
-			.locator('[data-nav-panel]:not([inert])')
-			.getByRole('link', { name: /Paper and synthetic tags/ })
+		page.locator('[data-nav-panel]:not([inert])').getByRole('link', { name: 'Tags', exact: true })
 	).toBeVisible();
 	await mainNavigation.getByRole('button', { name: 'Markets', exact: true }).hover();
 	await expect(page.locator('[data-nav-panel]:not([inert])')).toHaveAttribute(
@@ -215,8 +224,32 @@ test('mega menu transitions directionally and supports keyboard dismissal', asyn
 	await expect(products).toHaveAttribute('aria-expanded', 'false');
 });
 
-test('all submenu destinations exist and unknown pages return 404', async ({ request }) => {
+test('submenus show sorted route titles and all destinations exist', async ({ page, request }) => {
+	await page.setViewportSize({ width: 1440, height: 1000 });
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/products');
+	await page.waitForFunction(() =>
+		document.getAnimations().some((animation) => animation.id === 'illustration-float')
+	);
+	const mainNavigation = page.getByRole('navigation', { name: 'Main navigation', exact: true });
 	for (const section of sections) {
+		if (section.children.length) {
+			const response = await request.get(`${section.href}?source=menu`, { maxRedirects: 0 });
+			expect(response.status()).toBe(308);
+			expect(response.headers().location).toBe(`${section.children[0].href}?source=menu`);
+			await mainNavigation.getByRole('button', { name: section.label, exact: true }).hover();
+			await expect(
+				page
+					.locator('[data-nav-panel]:not([inert])')
+					.getByRole('link', { name: `All ${section.label.toLowerCase()}`, exact: true })
+			).toHaveCount(0);
+			const links = page.locator('[data-nav-panel]:not([inert]) nav a');
+			await expect(links).toHaveText(
+				section.children
+					.map((child) => child.label)
+					.sort((first, second) => first.localeCompare(second, 'en'))
+			);
+		}
 		for (const child of section.children) {
 			const response = await request.get(child.href);
 			expect(response.status(), child.href).toBe(200);
@@ -342,4 +375,16 @@ test('mobile utilities live in the menu and submenus slide with matching link si
 	await expect(products).toHaveAttribute('aria-expanded', 'false');
 	await expect.poll(hasSlide).toBe(true);
 	await expect(submenu).not.toBeVisible();
+});
+
+test('section roots redirect on the server without JavaScript', async ({ browser, baseURL }) => {
+	const context = await browser.newContext({ javaScriptEnabled: false });
+	const page = await context.newPage();
+	for (const section of sections.filter((section) => section.children.length)) {
+		const response = await page.goto(`${baseURL}${section.href}?source=direct`);
+		expect(response?.status()).toBe(200);
+		await expect(page).toHaveURL(`${baseURL}${section.children[0].href}?source=direct`);
+		await expect(page.locator('main h1')).toBeVisible();
+	}
+	await context.close();
 });

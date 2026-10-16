@@ -128,11 +128,18 @@ export const navigation: NavigationSection[] = [
 		description: '',
 		children: []
 	}
-].sort(
-	(first, second) =>
-		Number(second.children.length > 0) - Number(first.children.length > 0) ||
-		first.label.localeCompare(second.label)
-);
+]
+	.map((section) => ({
+		...section,
+		children: [...section.children].sort((first, second) =>
+			first.label.localeCompare(second.label, 'en')
+		)
+	}))
+	.sort(
+		(first, second) =>
+			Number(second.children.length > 0) - Number(first.children.length > 0) ||
+			first.label.localeCompare(second.label)
+	);
 
 export const contactNavigation = { href: '/contact', label: 'Contact' };
 
