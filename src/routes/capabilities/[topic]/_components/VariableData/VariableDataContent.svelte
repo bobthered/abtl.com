@@ -19,8 +19,10 @@
 	import { fade } from 'svelte/transition';
 	import { MediaQuery } from 'svelte/reactivity';
 	import type { Snippet } from 'svelte';
+	import { ticketExamples } from './ticketExamples';
 	import { twMerge } from 'tailwind-merge';
 	import VariableDataPiece from './VariableDataPiece.svelte';
+	import VariableDataTag from './VariableDataTag.svelte';
 	import { variableExamples } from './examples';
 
 	// consts
@@ -38,13 +40,13 @@
 		$props();
 
 	// $state
-	let isLabel = $state(false);
 	let mailingIndex = $state(0);
 	let selectedIndex = $state(0);
+	let selectedTicketIndex = $state(0);
 
 	// $derived
 	const mailingRecord = $derived(variableExamples[mailingIndex]);
-	const selectedRecord = $derived(variableExamples[selectedIndex]);
+	const selectedTicket = $derived(ticketExamples[selectedTicketIndex]);
 </script>
 
 {#snippet constrained(children: Snippet, index: number)}
@@ -68,29 +70,29 @@
 					The design stays.<Br />The information moves.
 				</H3>
 				<P variants={['dialogBody']} class="mt-6">
-					A different asset. A different destination. A different person. We print tags and labels
-					with changing barcodes, QR codes, sequential numbers, and personalized details—so each
-					piece carries the information it needs.
+					One tag. A set of matching references. Print a name and number, then carry that reference
+					across each detachable section in text and Data Matrix form.
 				</P>
 				<P class="mt-6 text-sm text-gray-500 dark:text-gray-400">
 					Choose a sample record to see the printed information change.
 				</P>
 				<Div class="mt-6 space-y-2" role="group" aria-label="Sample data records">
-					{#each variableExamples as record, index (record.id)}
+					{#each ticketExamples as record, index (record.reference)}
 						<Button
-							variants={[...(selectedIndex === index ? ['selected'] : [])]}
+							variants={[...(selectedTicketIndex === index ? ['selected'] : [])]}
 							class="flex w-full items-center justify-between gap-3 rounded-sm bg-white px-4 py-4 text-left text-gray-950 inset-ring-1 inset-ring-gray-200 hover:bg-primary-50 hover:text-gray-950 focus:bg-primary-50 focus:text-gray-950 dark:bg-gray-900 dark:text-gray-50 dark:inset-ring-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50"
-							aria-pressed={selectedIndex === index}
-							onclick={() => (selectedIndex = index)}
+							aria-label={`Sample ${record.number}, reference ${record.reference}`}
+							aria-pressed={selectedTicketIndex === index}
+							onclick={() => (selectedTicketIndex = index)}
 						>
-							<Span class="font-mono text-xs sm:text-sm">{record.id}</Span>
+							<Span class="font-mono text-xs sm:text-sm">{record.number}</Span>
 							<Span class="min-w-0 flex-1 text-sm">
-								{record.item}
+								{record.reference}
 							</Span>
 							<Check
 								class={twMerge(
 									'size-4 shrink-0',
-									selectedIndex === index ? 'opacity-100' : 'opacity-0'
+									selectedTicketIndex === index ? 'opacity-100' : 'opacity-0'
 								)}
 								aria-hidden="true"
 							/>
@@ -104,40 +106,24 @@
 					'flex min-h-128 flex-col items-center justify-center gap-8 p-6 sm:p-10'
 				)}
 			>
-				<Div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Printed format">
-					<Button
-						variants={['neutral-outline', ...(!isLabel ? ['selected'] : [])]}
-						aria-pressed={!isLabel}
-						onclick={() => (isLabel = false)}
-					>
-						Tag
-					</Button>
-					<Button
-						variants={['neutral-outline', ...(isLabel ? ['selected'] : [])]}
-						aria-pressed={isLabel}
-						onclick={() => (isLabel = true)}
-					>
-						Label
-					</Button>
-				</Div>
 				<Div
 					class="flex min-h-112 w-full items-center justify-center"
 					aria-live="polite"
 					aria-atomic="true"
 				>
-					{#key `${selectedRecord.id}-${isLabel}`}
+					{#key selectedTicket.reference}
 						<Div
 							inTransition={[fade, { duration: motionPreference.current ? 0 : 180 }]}
-							class={isLabel ? 'w-full max-w-80' : 'w-56'}
+							class="w-44 sm:w-48"
 							data-variable-output
 						>
-							<VariableDataPiece record={selectedRecord} {isLabel} />
+							<VariableDataTag record={selectedTicket} />
 						</Div>
 					{/key}
 				</Div>
 				<P class="max-w-sm text-center text-xs leading-relaxed text-gray-600 dark:text-gray-300">
-					Illustrative records and layouts. Both codes contain the displayed sample ID; they do not
-					link to a live asset database.
+					Illustrative records. Each Data Matrix code contains the displayed number and reference.
+					The bottom code identifies the complete tag.
 				</P>
 			</Div>
 		</Div>
@@ -206,8 +192,7 @@
 						<ArrowDown class="mb-3 size-6 text-secondary-500" aria-hidden="true" />
 						<P class="font-medium">One record at a time</P>
 						<P class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-							Explore the sample sequence. Each selection updates the corresponding tag or label
-							above.
+							Explore the sample sequence. Each selection highlights the corresponding record.
 						</P>
 					</Div>
 				</Div>

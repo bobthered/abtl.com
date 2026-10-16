@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 63ae1576b3a2ce0225ebfa3ae27708ec960a6f6c -->
+<!-- pending-base: 0f31d4e563c65f8390968d0e01aaf35bd565e10e -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: simplify navigation and redirect section roots
+feat: use the supplied tag design for the variable-data demo
 
-Show only route titles in the megamenu's right-hand links, preserving the section introduction on the left and removing desktop and mobile All-section links. Replace diagonal link icons with the shared ActionLabel chevron-to-arrow hover and keyboard-focus animation. Sort submenu destinations alphabetically in shared navigation data so desktop and mobile use the same order.
+Preserve the original SVG's 180 x 648 tag geometry, stock color, fixed copy, and perforated sections in a cleaned template. Remove baked sample numbers and Data Matrix images, then render selectable names, piece counts, numbers, references, and matching section and master codes. Blend Data Matrix images with multiply so their white areas inherit the tag stock color.
 
-Replace the capabilities, markets, products, and resources overview pages with SvelteKit server redirects to their first alphabetical subpages, preserving query strings. Remove unused overview copy.
+Update the first-section selectors to match the supplied example and replace the generic tag/label toggle with the new tag. Keep the barcode sequence and mailing examples independent. Add build-time Data Matrix generation, route-owned sample assets and documentation, and updated interaction coverage; retain the original source SVG.
 
-Update navigation and capability layout regressions for title-only labels, alphabetical ordering, taller-content height transitions, and server redirects without JavaScript. Reconcile the committed bento composition work in the changelog.
+Reconcile the committed navigation and server-redirect work in the changelog.
 ```
 
 ## 2026-10-16
+
+- **refactor: simplify navigation and redirect section roots** (`0f31d4e`)
+  Use alphabetized title-only submenu links and animated ActionLabel chevrons, remove desktop and mobile All-section links, and replace four overview pages with server redirects preserving query strings. Remove unused overview copy and cover navigation, capability layouts, and no-JavaScript redirects.
 
 - **fix: balance artwork and copy in wide bento previews** (`63ae157`)
   Add container-aware split compositions for wide portrait previews, retain panoramic artwork, improve print and weather framing, and extend glows, particles, wind and rain across the full tile. Preserve fixed hover canvases, document behavior, add responsive coverage, update globe assertions, and retain the smaller wind slider thumb.

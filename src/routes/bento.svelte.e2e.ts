@@ -109,7 +109,7 @@ test('variable data QR scans on hover and keyboard focus and respects reduced mo
 	await expect(trigger.locator('[data-qr-code]')).toHaveCount(1);
 });
 
-test('variable data keeps records, codes, formats, and mailing recipients in sync', async ({
+test('variable data uses the supplied tag with matching Data Matrix codes and independent examples', async ({
 	page
 }) => {
 	await page.goto('/');
@@ -123,28 +123,44 @@ test('variable data keeps records, codes, formats, and mailing recipients in syn
 	});
 	const studio = dialog.locator('[data-variable-section="studio"]');
 	const output = studio.locator('[data-variable-output]');
-	await expect(output.locator('[data-variable-piece]')).toHaveAttribute(
-		'data-variable-piece',
-		'AB-004201'
+	await expect(output.locator('[data-variable-ticket]')).toHaveAttribute(
+		'data-variable-ticket',
+		'612000'
 	);
-	const firstBarcode = await output.locator('img').first().getAttribute('src');
-	await dialog.getByRole('button', { name: /AB-004203 Motor assembly/ }).click();
-	await expect(output).toContainText('Motor assembly');
-	await expect(output.locator('img').first()).toHaveAttribute(
-		'alt',
-		'Example Code 128 barcode encoding AB-004203'
+	await expect(output.locator('svg')).toHaveAttribute('viewBox', '0 0 180 648');
+	await expect(output.locator('[data-variable-matrix]')).toHaveCount(7);
+	const firstCode = await output.locator('[data-variable-matrix]').first().getAttribute('href');
+	await dialog.getByRole('button', { name: 'Sample 003, reference 612002', exact: true }).click();
+	await expect(output.locator('[data-variable-ticket]')).toHaveAttribute(
+		'data-variable-ticket',
+		'612002'
 	);
-	await expect(output.locator('img').last()).toHaveAttribute(
-		'alt',
-		'Example QR code encoding AB-004203'
+	await expect(output).toContainText('Alex Rivera');
+	await expect(output.locator('[data-variable-reference]')).toHaveText([
+		'612002-1',
+		'612002-2',
+		'612002-3',
+		'612002-4',
+		'612002-5',
+		'612002-6',
+		'612002'
+	]);
+	await expect(output.locator('[data-variable-matrix]').first()).toHaveAttribute(
+		'data-encoded-value',
+		'003/612002-1'
 	);
-	await expect.poll(() => output.locator('img').first().getAttribute('src')).not.toBe(firstBarcode);
-	await dialog.getByRole('button', { name: 'Label', exact: true }).click();
-	await expect(output.locator('svg')).toHaveCount(0);
-	await dialog.getByRole('button', { name: 'Tag', exact: true }).click();
-	await expect(output.locator('svg')).toHaveCount(1);
+	await expect
+		.poll(() => output.locator('[data-variable-matrix]').first().getAttribute('href'))
+		.not.toBe(firstCode);
+	await expect(studio.getByRole('group', { name: 'Printed format' })).toHaveCount(0);
 	await dialog.getByRole('button', { name: 'Print the next record' }).click();
-	await expect(output).toContainText('AB-004204');
+	await expect(
+		dialog.locator('[data-variable-section="sequence"] div.bg-primary-500')
+	).toContainText('004202');
+	await expect(output.locator('[data-variable-ticket]')).toHaveAttribute(
+		'data-variable-ticket',
+		'612002'
+	);
 	await dialog.getByRole('button', { name: 'Meet the next recipient' }).click();
 	await expect(dialog.locator('[data-variable-section="mailing"]')).toContainText('Morgan Lee');
 	await expect(dialog.locator('[data-variable-section="contact"] a')).toHaveAttribute(
@@ -165,8 +181,9 @@ test('variable data keeps records, codes, formats, and mailing recipients in syn
 		expect(contact!.width).toBeCloseTo(width, 0);
 	}
 	await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'dark' });
-	await page.getByRole('button', { name: /AB-004202 Valve assembly/ }).click();
-	await expect(page.locator('[data-variable-output]')).toContainText('Valve assembly');
+	await expect(page.locator('[data-topic-ready]')).toHaveAttribute('data-topic-ready', 'true');
+	await page.getByRole('button', { name: 'Sample 002, reference 612001', exact: true }).click();
+	await expect(page.locator('[data-variable-output]')).toContainText('612001-6');
 	await page.goto('/about/printing');
 	await expect(page).toHaveURL(/\/capabilities\/variable-data$/);
 });
