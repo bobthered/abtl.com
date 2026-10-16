@@ -55,6 +55,7 @@
 		"#lib/attachments": "./src/lib/attachments/index.js",
 		"#lib/components": "./src/lib/components/index.js",
 		"#lib/icons": "./src/lib/icons/index.js",
+		"#lib/layouts": "./src/lib/layouts/index.js",
 		"#lib/*": "./src/lib/*"
 	},
 	"dependencies": {

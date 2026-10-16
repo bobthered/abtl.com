@@ -7,6 +7,7 @@
 		Button,
 		Container,
 		Div,
+		H2,
 		H3,
 		H4,
 		P,
@@ -17,13 +18,15 @@
 		WeatherTag
 	} from '#lib/components';
 	import { Check, Droplets, Hand, Link, ShieldCheck, Wind } from '#lib/icons';
+	import { ContentLayout } from '#lib/layouts';
 	import { floatIllustration } from '#lib/attachments';
 	import type { Snippet } from 'svelte';
 	import { syntheticMaterials } from './materials';
 	import { twMerge } from 'tailwind-merge';
 
 	// $props()
-	let { isStandalone = false }: { isStandalone?: boolean } = $props();
+	let { introduction, isStandalone = false }: { introduction: Snippet; isStandalone?: boolean } =
+		$props();
 
 	// $state
 	let selectedMaterial = $state<string>('tyvek');
@@ -37,9 +40,11 @@
 	);
 </script>
 
-{#snippet constrained(children: Snippet)}
+{#snippet constrained(children: Snippet, index: number)}
 	{#if isStandalone}
-		<Container>{@render children()}</Container>
+		<Section variants={[index % 2 === 0 ? 'surfaceAlternate' : 'surface']}>
+			<Container>{@render children()}</Container>
+		</Section>
 	{:else}{@render children()}{/if}
 {/snippet}
 
@@ -252,33 +257,35 @@
 	</Section>
 {/snippet}
 
-<Div data-synthetic-content>
-	{@render constrained(weather)}
-	{@render constrained(explorer)}
-	<Section
-		variants={['sampleInvitation']}
-		class={isStandalone ? '' : '-mx-6 sm:-mx-8 lg:-mx-16'}
-		data-synthetic-section="samples"
+{#snippet callToAction()}
+	<Div><ShieldCheck class="size-8" aria-hidden="true" /></Div>
+	<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
+		Take the comparison into your own hands
+	</P>
+	<H2 class="max-w-3xl text-4xl font-light tracking-tight sm:text-5xl">
+		Feel the difference.<Br />Find the right fit.
+	</H2>
+	<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
+		Request individual materials or a selection of synthetic samples. Tell us where your tags will
+		work and how they'll be attached.
+	</P>
+	<A
+		variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
+		href={sampleHref}
+		data-synthetic-samples
 	>
-		<Container class="flex flex-col items-center gap-6">
-			<Div><ShieldCheck class="size-8" aria-hidden="true" /></Div>
-			<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
-				Take the comparison into your own hands
-			</P>
-			<H3 class="max-w-3xl text-4xl sm:text-5xl">
-				Feel the difference.<Br />Find the right fit.
-			</H3>
-			<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
-				Request individual materials or a selection of synthetic samples. Tell us where your tags
-				will work and how they'll be attached.
-			</P>
-			<A
-				variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
-				href={sampleHref}
-				data-synthetic-samples
-			>
-				<ActionLabel>Request Synthetic Samples</ActionLabel>
-			</A>
-		</Container>
-	</Section>
+		<ActionLabel>Request Synthetic Samples</ActionLabel>
+	</A>
+{/snippet}
+
+<Div data-synthetic-content>
+	<ContentLayout
+		callToActionAttributes={{ 'data-synthetic-section': 'samples' }}
+		{callToAction}
+		{introduction}
+		{isStandalone}
+	>
+		{@render constrained(weather, 0)}
+		{@render constrained(explorer, 1)}
+	</ContentLayout>
 </Div>

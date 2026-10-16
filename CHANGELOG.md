@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: a139a31a4698169f72dc10e24db85f48fd7670e4 -->
+<!-- pending-base: eb02e8c185ed587c0b6533257f005834018361e6 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: remove the homepage brand marquee
+refactor: standardize capability pages with a shared content layout
 
-Remove the hero marquee, its unused imports and content, and its obsolete browser tests. Keep the capabilities bento grid as the homepage showcase and restore alternating section backgrounds without adding a replacement section.
+Add ContentLayout in src/lib/layouts with reusable title, multi-section body, and centered closing call-to-action regions based on stock-colors. Export it through #lib/layouts and document standalone and dialog usage.
 
-Update the changelog with the committed megamenu improvements and the pending homepage cleanup.
+Migrate the capabilities overview, attachments, and all six topic pages while preserving their route-owned content, sample dialogs, and interactive controls. Standardize heading and CTA sizing and alternate full-width body surfaces.
+
+Preserve the footer's normal scrolling and explicit surface separator, add responsive capability layout coverage, and reconcile the committed homepage marquee removal in the changelog.
 ```
 
 ## 2026-10-16
+
+- **fix: remove the homepage brand marquee** (`eb02e8c`)
+  Remove the hero marquee, unused content and imports, and obsolete browser tests. Preserve the capabilities bento showcase and restore alternating homepage section backgrounds without a replacement section.
 
 - **fix: animate megamenu sizing without scrollbar flashes** (`a139a31`)
   Start panel height changes alongside incoming slides, fit all seven capability links, clip horizontal travel and enable vertical scrolling only when content exceeds the viewport limit. Preserve keyboard access and reduced motion, and cover transition timing and short-viewport scrolling.

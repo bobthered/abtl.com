@@ -8,6 +8,7 @@
 		Container,
 		Div,
 		G,
+		H2,
 		H3,
 		P,
 		Rect,
@@ -17,6 +18,7 @@
 		Svg,
 		Text
 	} from '#lib/components';
+	import { ContentLayout } from '#lib/layouts';
 	import { Globe2, MapPin, PackageCheck } from '#lib/icons';
 	import {
 		internationalLocations,
@@ -31,15 +33,18 @@
 		'overflow-hidden rounded-sm bg-gradient-to-br from-primary-50 via-gray-100 to-secondary-50 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950';
 
 	// $props()
-	let { isStandalone = false }: { isStandalone?: boolean } = $props();
+	let { introduction, isStandalone = false }: { introduction: Snippet; isStandalone?: boolean } =
+		$props();
 
 	// $state
 	let selectedLocationId = $state(internationalLocations[0].id);
 </script>
 
-{#snippet constrained(children: Snippet)}
+{#snippet constrained(children: Snippet, index: number)}
 	{#if isStandalone}
-		<Container>{@render children()}</Container>
+		<Section variants={[index % 2 === 0 ? 'surfaceAlternate' : 'surface']}>
+			<Container>{@render children()}</Container>
+		</Section>
 	{:else}{@render children()}{/if}
 {/snippet}
 
@@ -167,44 +172,48 @@
 {/snippet}
 
 {#snippet invitation()}
-	<Container class="flex flex-col items-center gap-6">
-		<Div class="flex gap-3" aria-hidden="true">
-			<PackageCheck class="size-7" /><Globe2 class="size-7" />
-		</Div>
-		<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
-			Let's put your project on the map
-		</P>
-		<H3
-			id="shipping-contact-heading"
-			class="max-w-2xl text-4xl font-light tracking-tight sm:text-5xl"
-		>
-			Where do your tags need to go?
-		</H3>
-		<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
-			Share your destination, the tags you need, and your timing. We'll help you work through the
-			next steps.
-		</P>
-		<A
-			href="mailto:sales@abtl.com?subject=Shipping%20inquiry&body=Destination%3A%0ATags%20or%20labels%20needed%3A%0AQuantity%3A%0ATiming%3A"
-			variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
-		>
-			<ActionLabel>Talk about shipping</ActionLabel>
-		</A>
-		<P class="text-sm text-gray-300 dark:text-gray-600">
-			Your destination. Your project. Let's make a plan.
-		</P>
-	</Container>
+	<Div class="flex gap-3" aria-hidden="true">
+		<PackageCheck class="size-7" /><Globe2 class="size-7" />
+	</Div>
+	<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
+		Let's put your project on the map
+	</P>
+	<H2
+		id="shipping-contact-heading"
+		class="max-w-3xl text-4xl font-light tracking-tight sm:text-5xl"
+	>
+		Where do your tags need to go?
+	</H2>
+	<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
+		Share your destination, the tags you need, and your timing. We'll help you work through the next
+		steps.
+	</P>
+	<A
+		href="mailto:sales@abtl.com?subject=Shipping%20inquiry&body=Destination%3A%0ATags%20or%20labels%20needed%3A%0AQuantity%3A%0ATiming%3A"
+		variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
+	>
+		<ActionLabel>Talk about shipping</ActionLabel>
+	</A>
+	<P class="text-sm text-gray-300 dark:text-gray-600">
+		Your destination. Your project. Let's make a plan.
+	</P>
+{/snippet}
+
+{#snippet callToAction()}
+	{@render invitation()}
 {/snippet}
 
 <Div data-shipping-content>
-	{@render constrained(domestic)}
-	{@render constrained(international)}
-	<Section
-		variants={['sampleInvitation']}
-		class={isStandalone ? '' : '-mx-6 sm:-mx-8 lg:-mx-16'}
-		data-shipping-section="contact"
-		aria-labelledby="shipping-contact-heading"
+	<ContentLayout
+		callToActionAttributes={{
+			'data-shipping-section': 'contact',
+			'aria-labelledby': 'shipping-contact-heading'
+		}}
+		{callToAction}
+		{introduction}
+		{isStandalone}
 	>
-		{@render invitation()}
-	</Section>
+		{@render constrained(domestic, 0)}
+		{@render constrained(international, 1)}
+	</ContentLayout>
 </Div>

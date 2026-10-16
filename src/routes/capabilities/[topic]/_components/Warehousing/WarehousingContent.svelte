@@ -7,6 +7,7 @@
 		Button,
 		Container,
 		Div,
+		H2,
 		H3,
 		P,
 		Section,
@@ -14,6 +15,7 @@
 		WarehouseScene
 	} from '#lib/components';
 	import { Boxes, Check, PackageCheck, RotateCcw, Truck } from '#lib/icons';
+	import { ContentLayout } from '#lib/layouts';
 	import type { Snippet } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
 
@@ -33,7 +35,8 @@
 	};
 
 	// $props()
-	let { isStandalone = false }: { isStandalone?: boolean } = $props();
+	let { introduction, isStandalone = false }: { introduction: Snippet; isStandalone?: boolean } =
+		$props();
 
 	// $state
 	let isStocked = $state(true);
@@ -42,9 +45,11 @@
 	let stock = $state(24);
 </script>
 
-{#snippet constrained(children: Snippet)}
+{#snippet constrained(children: Snippet, index: number)}
 	{#if isStandalone}
-		<Container>{@render children()}</Container>
+		<Section variants={[index % 2 === 0 ? 'surfaceAlternate' : 'surface']}>
+			<Container>{@render children()}</Container>
+		</Section>
 	{:else}{@render children()}{/if}
 {/snippet}
 
@@ -254,33 +259,35 @@
 	</Section>
 {/snippet}
 
-<Div data-warehouse-content>
-	{@render constrained(volume)}
-	{@render constrained(shelf)}
-	{@render constrained(timing)}
-	<Section
-		variants={['sampleInvitation']}
-		class={isStandalone ? '' : '-mx-6 sm:-mx-8 lg:-mx-16'}
-		data-warehouse-section="contact"
+{#snippet callToAction()}
+	<Div><PackageCheck class="size-8" aria-hidden="true" /></Div>
+	<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
+		Plan the run. Choose the releases.
+	</P>
+	<H2 class="max-w-3xl text-4xl font-light tracking-tight sm:text-5xl">
+		Make room for what's next.<Br />We'll hold the tags.
+	</H2>
+	<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
+		Tell us what you use, how much you need, and how often you need it. Let's plan a production
+		order and a warehousing arrangement around your workflow.
+	</P>
+	<A
+		variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
+		href="mailto:sales@abtl.com?subject=Warehousing%20%26%20scheduled%20releases&body=Tags%20or%20labels%3A%0AEstimated%20total%20quantity%3A%0ATypical%20release%20quantity%3A%0ARelease%20frequency%3A%0AShip-to%20locations%3A"
 	>
-		<Container class="flex flex-col items-center gap-6">
-			<Div><PackageCheck class="size-8" aria-hidden="true" /></Div>
-			<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
-				Plan the run. Choose the releases.
-			</P>
-			<H3 class="max-w-3xl text-4xl sm:text-5xl">
-				Make room for what's next.<Br />We'll hold the tags.
-			</H3>
-			<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
-				Tell us what you use, how much you need, and how often you need it. Let's plan a production
-				order and a warehousing arrangement around your workflow.
-			</P>
-			<A
-				variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
-				href="mailto:sales@abtl.com?subject=Warehousing%20%26%20scheduled%20releases&body=Tags%20or%20labels%3A%0AEstimated%20total%20quantity%3A%0ATypical%20release%20quantity%3A%0ARelease%20frequency%3A%0AShip-to%20locations%3A"
-			>
-				<ActionLabel>Plan your stock & releases</ActionLabel>
-			</A>
-		</Container>
-	</Section>
+		<ActionLabel>Plan your stock & releases</ActionLabel>
+	</A>
+{/snippet}
+
+<Div data-warehouse-content>
+	<ContentLayout
+		callToActionAttributes={{ 'data-warehouse-section': 'contact' }}
+		{callToAction}
+		{introduction}
+		{isStandalone}
+	>
+		{@render constrained(volume, 0)}
+		{@render constrained(shelf, 1)}
+		{@render constrained(timing, 2)}
+	</ContentLayout>
 </Div>

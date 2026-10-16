@@ -7,6 +7,7 @@
 		Button,
 		Container,
 		Div,
+		H2,
 		H3,
 		P,
 		ProcessArtwork,
@@ -14,6 +15,7 @@
 		Span
 	} from '#lib/components';
 	import { Check, FlipHorizontal2, Layers, RotateCcw } from '#lib/icons';
+	import { ContentLayout } from '#lib/layouts';
 	import { floatIllustration } from '#lib/attachments';
 	import type { Snippet } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
@@ -41,7 +43,8 @@
 	};
 
 	// $props()
-	let { isStandalone = false }: { isStandalone?: boolean } = $props();
+	let { introduction, isStandalone = false }: { introduction: Snippet; isStandalone?: boolean } =
+		$props();
 
 	// $state
 	let isBack = $state(false);
@@ -60,9 +63,11 @@
 	);
 </script>
 
-{#snippet constrained(children: Snippet)}
+{#snippet constrained(children: Snippet, index: number)}
 	{#if isStandalone}
-		<Container>{@render children()}</Container>
+		<Section variants={[index % 2 === 0 ? 'surfaceAlternate' : 'surface']}>
+			<Container>{@render children()}</Container>
+		</Section>
 	{:else}{@render children()}{/if}
 {/snippet}
 
@@ -218,42 +223,44 @@
 	</Section>
 {/snippet}
 
-<Div data-process-content>
-	{@render constrained(process)}
-	{@render constrained(sides)}
-	<Section
-		variants={['sampleInvitation']}
-		class={isStandalone ? '' : '-mx-6 sm:-mx-8 lg:-mx-16'}
-		data-process-section="contact"
-	>
-		<Container class="flex flex-col items-center gap-6">
-			<Div><Layers class="size-8" aria-hidden="true" /></Div>
-			<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
-				Four-color process. Eight-color capability.
-			</P>
-			<H3 class="max-w-3xl text-4xl sm:text-5xl">
-				Your product has a story.<Br />Give it a tag to match.
-			</H3>
-			<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
-				Start with your artwork, the stock you have in mind, and the quantity you need. Tell us what
-				belongs on each side. We'll help plan the full-color printing for your tags or labels.
-			</P>
-			<Div class="grid w-full max-w-3xl gap-4 py-4 text-left sm:grid-cols-3">
-				{#each [{ title: 'The artwork', text: 'Illustration, photography, or a mix. Share the look you want to achieve.' }, { title: 'The printed piece', text: 'Tags or labels, stock, size, and quantity. Let the application guide the choices.' }, { title: 'Both sides', text: 'Plan the image and information together, with up to eight total printing colors.' }] as detail (detail.title)}
-					<Div>
-						<H3 class="text-lg">{detail.title}</H3>
-						<P class="mt-3 text-sm text-gray-300 dark:text-gray-600">
-							{detail.text}
-						</P>
-					</Div>
-				{/each}
+{#snippet callToAction()}
+	<Div><Layers class="size-8" aria-hidden="true" /></Div>
+	<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
+		Four-color process. Eight-color capability.
+	</P>
+	<H2 class="max-w-3xl text-4xl font-light tracking-tight sm:text-5xl">
+		Your product has a story.<Br />Give it a tag to match.
+	</H2>
+	<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
+		Start with your artwork, the stock you have in mind, and the quantity you need. Tell us what
+		belongs on each side. We'll help plan the full-color printing for your tags or labels.
+	</P>
+	<Div class="grid w-full max-w-3xl gap-4 py-4 text-left sm:grid-cols-3">
+		{#each [{ title: 'The artwork', text: 'Illustration, photography, or a mix. Share the look you want to achieve.' }, { title: 'The printed piece', text: 'Tags or labels, stock, size, and quantity. Let the application guide the choices.' }, { title: 'Both sides', text: 'Plan the image and information together, with up to eight total printing colors.' }] as detail (detail.title)}
+			<Div>
+				<H3 class="text-lg">{detail.title}</H3>
+				<P class="mt-3 text-sm text-gray-300 dark:text-gray-600">
+					{detail.text}
+				</P>
 			</Div>
-			<A
-				variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
-				href="mailto:sales@abtl.com?subject=Full-color%20printing%20project&body=Tags%20or%20labels%3A%0AQuantity%3A%0AFace%20artwork%3A%0ABack%20artwork%3A%0AStock%20or%20application%3A"
-			>
-				<ActionLabel>Plan your full-color project</ActionLabel>
-			</A>
-		</Container>
-	</Section>
+		{/each}
+	</Div>
+	<A
+		variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
+		href="mailto:sales@abtl.com?subject=Full-color%20printing%20project&body=Tags%20or%20labels%3A%0AQuantity%3A%0AFace%20artwork%3A%0ABack%20artwork%3A%0AStock%20or%20application%3A"
+	>
+		<ActionLabel>Plan your full-color project</ActionLabel>
+	</A>
+{/snippet}
+
+<Div data-process-content>
+	<ContentLayout
+		callToActionAttributes={{ 'data-process-section': 'contact' }}
+		{callToAction}
+		{introduction}
+		{isStandalone}
+	>
+		{@render constrained(process, 0)}
+		{@render constrained(sides, 1)}
+	</ContentLayout>
 </Div>

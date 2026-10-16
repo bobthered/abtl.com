@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Imports
 	import BentoTopicContent from './_components/BentoTopicContent.svelte';
-	import { Container, Main, Section } from '#lib/components';
+	import { Main } from '#lib/components';
 	import type { PageProps } from './$types';
 
 	// $props()
@@ -13,13 +13,5 @@
 </svelte:head>
 
 <Main id="main-content" tabindex={-1}>
-	<Section variants={['surface']}>
-		{#if ['colors', 'shipping', 'variable-data', 'warehousing', 'full-color-printing', 'synthetic-materials'].includes(data.topic.id)}
-			<BentoTopicContent topic={data.topic} isStandalone />
-		{:else}
-			<Container variants={['section']}>
-				<BentoTopicContent topic={data.topic} isStandalone />
-			</Container>
-		{/if}
-	</Section>
+	<BentoTopicContent topic={data.topic} isStandalone />
 </Main>

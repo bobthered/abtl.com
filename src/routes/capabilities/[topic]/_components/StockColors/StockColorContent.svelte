@@ -8,6 +8,7 @@
 		Div,
 		Figcaption,
 		Figure,
+		H2,
 		H3,
 		Img,
 		P,
@@ -15,12 +16,14 @@
 		Span,
 		StockTag
 	} from '#lib/components';
+	import { ContentLayout } from '#lib/layouts';
 	import { floatIllustration } from '#lib/attachments';
 	import inspectionBack from '#lib/assets/tags/backs/inspection-record-01.svg';
 	import inspectionFront from '#lib/assets/tags/fronts/inspection-record-01.svg';
 	import { RotateCw } from '#lib/icons';
 	import serviceFront from '#lib/assets/tags/fronts/service-tag-01.svg';
 	import serviceSecondFront from '#lib/assets/tags/fronts/service-tag-02.svg';
+	import type { Snippet } from 'svelte';
 	import { stockColors } from '#lib/data/stockColors.js';
 	import { twMerge } from 'tailwind-merge';
 
@@ -30,9 +33,16 @@
 
 	// $props()
 	let {
+		before,
+		introduction,
 		isStandalone = false,
 		onRequestSamples
-	}: { isStandalone?: boolean; onRequestSamples: () => void } = $props();
+	}: {
+		before: Snippet;
+		introduction: Snippet;
+		isStandalone?: boolean;
+		onRequestSamples: () => void;
+	} = $props();
 
 	// $state
 	let isBackVisible = $state(false);
@@ -174,34 +184,35 @@
 	</Section>
 {/snippet}
 
-<Div data-stock-color-content>
-	{#if isStandalone}
-		<Container>{@render studio()}</Container>
-	{:else}{@render studio()}{/if}
+{#snippet callToAction()}
+	<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
+		From your screen to your hands
+	</P>
+	<H2 id="stock-samples-heading" class="max-w-3xl text-4xl font-light tracking-tight sm:text-5xl">
+		Meet your next tag color.
+	</H2>
+	<P class="max-w-lg text-lg text-gray-300 dark:text-gray-600">
+		One favorite or a handful of possibilities. We'll send the stock colors you want to compare.
+	</P>
+	<Button variants={['large', 'neutral']} onclick={onRequestSamples} aria-haspopup="dialog">
+		<ActionLabel>Request Samples</ActionLabel>
+	</Button>
+	<P class="text-sm text-gray-300 dark:text-gray-600">Choose your colors in one quick list.</P>
+{/snippet}
 
-	<Section
-		variants={['dialogSection', 'sampleInvitation']}
-		class={isStandalone ? '' : '-mx-6 sm:-mx-8 lg:-mx-16'}
-		aria-labelledby="stock-samples-heading"
-		data-color-section="samples"
+<Div data-stock-color-content>
+	<ContentLayout
+		callToActionAttributes={{
+			'aria-labelledby': 'stock-samples-heading',
+			'data-color-section': 'samples'
+		}}
+		{callToAction}
+		{introduction}
+		{isStandalone}
 	>
-		<Container class="flex flex-col items-center gap-6">
-			<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
-				From your screen to your hands
-			</P>
-			<H3
-				id="stock-samples-heading"
-				class="max-w-xl text-4xl font-light tracking-tight sm:text-5xl"
-			>
-				Meet your next tag color.
-			</H3>
-			<P class="max-w-lg text-lg text-gray-300 dark:text-gray-600">
-				One favorite or a handful of possibilities. We'll send the stock colors you want to compare.
-			</P>
-			<Button variants={['large', 'neutral']} onclick={onRequestSamples} aria-haspopup="dialog">
-				<ActionLabel>Request Samples</ActionLabel>
-			</Button>
-			<P class="text-sm text-gray-300 dark:text-gray-600">Choose your colors in one quick list.</P>
-		</Container>
-	</Section>
+		{@render before()}
+		{#if isStandalone}
+			<Section variants={['surface']}><Container>{@render studio()}</Container></Section>
+		{:else}{@render studio()}{/if}
+	</ContentLayout>
 </Div>

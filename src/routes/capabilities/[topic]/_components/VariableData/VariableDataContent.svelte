@@ -7,6 +7,7 @@
 		Button,
 		Container,
 		Div,
+		H2,
 		H3,
 		Img,
 		P,
@@ -14,6 +15,7 @@
 		Span
 	} from '#lib/components';
 	import { ArrowDown, ArrowRight, Check, Database, Mail, ScanLine } from '#lib/icons';
+	import { ContentLayout } from '#lib/layouts';
 	import { fade } from 'svelte/transition';
 	import { MediaQuery } from 'svelte/reactivity';
 	import type { Snippet } from 'svelte';
@@ -32,7 +34,8 @@
 	};
 
 	// $props()
-	let { isStandalone = false }: { isStandalone?: boolean } = $props();
+	let { introduction, isStandalone = false }: { introduction: Snippet; isStandalone?: boolean } =
+		$props();
 
 	// $state
 	let isLabel = $state(false);
@@ -44,9 +47,11 @@
 	const selectedRecord = $derived(variableExamples[selectedIndex]);
 </script>
 
-{#snippet constrained(children: Snippet)}
+{#snippet constrained(children: Snippet, index: number)}
 	{#if isStandalone}
-		<Container>{@render children()}</Container>
+		<Section variants={[index % 2 === 0 ? 'surfaceAlternate' : 'surface']}>
+			<Container>{@render children()}</Container>
+		</Section>
 	{:else}{@render children()}{/if}
 {/snippet}
 
@@ -259,31 +264,35 @@
 	</Section>
 {/snippet}
 
-<Div data-variable-content>
-	{@render constrained(studio)}
-	{@render constrained(sequence)}
-	{@render constrained(mailing)}
-	<Section
-		variants={['sampleInvitation']}
-		class={isStandalone ? '' : '-mx-6 sm:-mx-8 lg:-mx-16'}
-		data-variable-section="contact"
+{#snippet callToAction()}
+	<Div><Mail class="size-8" aria-hidden="true" /></Div>
+	<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
+		Your data. Your next project.
+	</P>
+	<H2 class="max-w-3xl text-4xl font-light tracking-tight sm:text-5xl">
+		What changes on your next run?
+	</H2>
+	<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
+		Tell us what stays the same, what changes, and how your tags or labels will be used. We'll work
+		through the printing details with you.
+	</P>
+	<A
+		variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
+		href="mailto:sales@abtl.com?subject=Variable%20data%20printing&body=Tags%20or%20labels%3A%0AFields%20that%20change%3A%0ACodes%20or%20numbering%3A%0AQuantity%3A%0AHow%20they%20will%20be%20used%3A"
 	>
-		<Container class="flex flex-col items-center gap-6">
-			<Div><Mail class="size-8" aria-hidden="true" /></Div>
-			<P variants={['eyebrow']} class="text-gray-300 dark:text-gray-600">
-				Your data. Your next project.
-			</P>
-			<H3 class="max-w-2xl text-4xl sm:text-5xl">What changes on your next run?</H3>
-			<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
-				Tell us what stays the same, what changes, and how your tags or labels will be used. We'll
-				work through the printing details with you.
-			</P>
-			<A
-				variants={['button.base', 'button.variant.large', 'button.variant.neutral']}
-				href="mailto:sales@abtl.com?subject=Variable%20data%20printing&body=Tags%20or%20labels%3A%0AFields%20that%20change%3A%0ACodes%20or%20numbering%3A%0AQuantity%3A%0AHow%20they%20will%20be%20used%3A"
-			>
-				<ActionLabel>Plan your variable data project</ActionLabel>
-			</A>
-		</Container>
-	</Section>
+		<ActionLabel>Plan your variable data project</ActionLabel>
+	</A>
+{/snippet}
+
+<Div data-variable-content>
+	<ContentLayout
+		callToActionAttributes={{ 'data-variable-section': 'contact' }}
+		{callToAction}
+		{introduction}
+		{isStandalone}
+	>
+		{@render constrained(studio, 0)}
+		{@render constrained(sequence, 1)}
+		{@render constrained(mailing, 2)}
+	</ContentLayout>
 </Div>

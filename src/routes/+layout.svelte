@@ -296,7 +296,7 @@
 	{@render children()}
 
 	<Footer
-		class="relative z-10 p-0 [&_a]:rounded-sm [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4 [&_a:focus-visible]:outline-primary-600 dark:[&_a:focus-visible]:outline-primary-300"
+		class="relative z-10 border-t border-gray-200 bg-white p-0 backdrop-blur-none dark:border-gray-800 dark:bg-gray-950 [&_a]:rounded-sm [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4 [&_a:focus-visible]:outline-primary-600 dark:[&_a:focus-visible]:outline-primary-300"
 	>
 		<Container class="relative z-10 space-y-10 py-12 lg:py-16">
 			<Div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -307,10 +307,7 @@
 						variants={['ghost', 'brand']}
 						class="w-fit items-start"
 					>
-						<Logo
-							aria-hidden="true"
-							variants={['onSurface', 'site']}
-						/>
+						<Logo aria-hidden="true" variants={['onSurface', 'site']} />
 					</A>
 					<P class={footerClass}>Stock and custom tags and labels.</P>
 				</Div>

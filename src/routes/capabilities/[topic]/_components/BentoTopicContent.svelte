@@ -122,45 +122,51 @@
 	</P>
 {/snippet}
 
-<Div
-	data-topic-ready={isReady}
-	class={isStandalone ? (isDetailedTopic ? 'pt-20 lg:pt-28' : '') : 'pt-12 sm:pt-20'}
->
-	<Div class="pb-12 sm:pb-16" data-topic-introduction>{@render constrained(introduction)}</Div>
+{#snippet colorExamples()}
+	<Section
+		variants={isStandalone ? ['surfaceAlternate', 'dialogSection'] : ['dialogSection']}
+		aria-labelledby="stock-examples-heading"
+		data-color-section="examples"
+		class="border-t-0 pt-0 sm:pt-0"
+	>
+		{@render constrained(examplesIntroduction)}
+		<Div
+			class={twMerge(
+				isStandalone ? [] : ['-mx-6 flex min-w-0 sm:-mx-8 lg:-mx-16'],
+				'mt-8 flex min-w-0'
+			)}
+		>
+			<StockTagExamples />
+		</Div>
+	</Section>
+{/snippet}
+
+<Div data-topic-ready={isReady} class={isDetailedTopic || isStandalone ? '' : 'pt-12 sm:pt-20'}>
+	{#if !isDetailedTopic}<Div class="pb-12 sm:pb-16" data-topic-introduction>
+			{@render constrained(introduction)}
+		</Div>{/if}
 	{#if !isDetailedTopic}
 		<Div class="group my-12 rounded-sm bg-gray-100 p-8 sm:p-12 dark:bg-gray-950">
 			<BentoPreview kind={topic.preview} isDialogPreview />
 		</Div>
 	{/if}
 	{#if topic.id === 'colors'}
-		<Section
-			variants={['dialogSection']}
-			aria-labelledby="stock-examples-heading"
-			data-color-section="examples"
-			class="border-t-0 pt-0 sm:pt-0"
-		>
-			{@render constrained(examplesIntroduction)}
-			<Div
-				class={twMerge(
-					isStandalone ? [] : ['-mx-6 flex min-w-0 sm:-mx-8 lg:-mx-16'],
-					'mt-8 flex min-w-0'
-				)}
-			>
-				<StockTagExamples />
-			</Div>
-		</Section>
-
-		<StockColorContent {isStandalone} onRequestSamples={() => (isSamplesVisible = true)} />
+		<StockColorContent
+			{introduction}
+			{isStandalone}
+			before={colorExamples}
+			onRequestSamples={() => (isSamplesVisible = true)}
+		/>
 	{:else if topic.id === 'shipping'}
-		<ShippingContent {isStandalone} />
+		<ShippingContent {introduction} {isStandalone} />
 	{:else if topic.id === 'variable-data'}
-		<VariableDataContent {isStandalone} />
+		<VariableDataContent {introduction} {isStandalone} />
 	{:else if topic.id === 'warehousing'}
-		<WarehousingContent {isStandalone} />
+		<WarehousingContent {introduction} {isStandalone} />
 	{:else if topic.id === 'full-color-printing'}
-		<ProcessPrintingContent {isStandalone} />
+		<ProcessPrintingContent {introduction} {isStandalone} />
 	{:else if topic.id === 'synthetic-materials'}
-		<SyntheticContent {isStandalone} />
+		<SyntheticContent {introduction} {isStandalone} />
 	{:else}
 		{#each detailSections as title, index (title)}
 			<Section
