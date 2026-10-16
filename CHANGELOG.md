@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 0f31d4e563c65f8390968d0e01aaf35bd565e10e -->
+<!-- pending-base: 7ee656518ef001e88c80a192b6a28d2a3ed91942 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: use the supplied tag design for the variable-data demo
+feat: expand variable-data applications and planning content
 
-Preserve the original SVG's 180 x 648 tag geometry, stock color, fixed copy, and perforated sections in a cleaned template. Remove baked sample numbers and Data Matrix images, then render selectable names, piece counts, numbers, references, and matching section and master codes. Blend Data Matrix images with multiply so their white areas inherit the tag stock color.
+Preserve the supplied tag demo and replace the old sequence and mailing sections with illustrated applications, an interactive code-format comparison, and guidance for preparing variable data. Keep the shared page layout and alternating surfaces in standalone pages and homepage dialogs.
 
-Update the first-section selectors to match the supplied example and replace the generic tag/label toggle with the new tag. Keep the barcode sequence and mailing examples independent. Add build-time Data Matrix generation, route-owned sample assets and documentation, and updated interaction coverage; retain the original source SVG.
+Generate matching Code 128 and QR samples alongside existing Data Matrix codes, reuse the selected tag reference across the new examples, and remove the unused legacy presentation component and data mapping. Add keyboard and responsive interaction coverage and update artwork documentation.
 
-Reconcile the committed navigation and server-redirect work in the changelog.
+Reconcile the committed supplied-tag demo in the changelog.
 ```
 
 ## 2026-10-16
+
+- **feat: use the supplied tag design for the variable-data demo** (`7ee6565`)
+  Preserve the owner-supplied tag geometry and fixed artwork, replace baked values with selectable fields and build-time Data Matrix codes, blend code backgrounds into the stock, and update first-section controls and interaction coverage while retaining the original SVG.
 
 - **refactor: simplify navigation and redirect section roots** (`0f31d4e`)
   Use alphabetized title-only submenu links and animated ActionLabel chevrons, remove desktop and mobile All-section links, and replace four overview pages with server redirects preserving query strings. Remove unused overview copy and cover navigation, capability layouts, and no-JavaScript redirects.

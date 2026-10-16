@@ -9,43 +9,35 @@
 		Div,
 		H2,
 		H3,
-		Img,
 		P,
 		Section,
 		Span
 	} from '#lib/components';
-	import { ArrowDown, ArrowRight, Check, Database, Mail, ScanLine } from '#lib/icons';
+	import { Check, Mail } from '#lib/icons';
 	import { ContentLayout } from '#lib/layouts';
+	import DataApplications from './DataApplications.svelte';
+	import DataFormats from './DataFormats.svelte';
+	import DataPlanning from './DataPlanning.svelte';
 	import { fade } from 'svelte/transition';
 	import { MediaQuery } from 'svelte/reactivity';
 	import type { Snippet } from 'svelte';
 	import { ticketExamples } from './ticketExamples';
 	import { twMerge } from 'tailwind-merge';
-	import VariableDataPiece from './VariableDataPiece.svelte';
 	import VariableDataTag from './VariableDataTag.svelte';
-	import { variableExamples } from './examples';
 
 	// consts
 	const dataArtworkClass =
 		'rounded-sm bg-gradient-to-br from-primary-100 via-gray-100 to-secondary-100 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950';
 	const motionPreference = new MediaQuery('(prefers-reduced-motion: reduce)', true);
 
-	// helpers
-	const advanceRecord = () => {
-		selectedIndex = (selectedIndex + 1) % variableExamples.length;
-	};
-
 	// $props()
 	let { introduction, isStandalone = false }: { introduction: Snippet; isStandalone?: boolean } =
 		$props();
 
 	// $state
-	let mailingIndex = $state(0);
-	let selectedIndex = $state(0);
 	let selectedTicketIndex = $state(0);
 
 	// $derived
-	const mailingRecord = $derived(variableExamples[mailingIndex]);
 	const selectedTicket = $derived(ticketExamples[selectedTicketIndex]);
 </script>
 
@@ -121,133 +113,14 @@
 						</Div>
 					{/key}
 				</Div>
-				<P class="max-w-sm text-center text-xs leading-relaxed text-gray-600 dark:text-gray-300">
-					Illustrative records. Each Data Matrix code contains the displayed number and reference.
-					The bottom code identifies the complete tag.
-				</P>
 			</Div>
 		</Div>
 	</Section>
 {/snippet}
 
-{#snippet sequence()}
-	<Section
-		variants={['dialogSection']}
-		data-variable-section="sequence"
-		aria-labelledby="variable-sequence-heading"
-	>
-		<Div class="grid items-center gap-4 lg:grid-cols-2">
-			<Div class={twMerge(dataArtworkClass, 'order-2 overflow-hidden p-6 sm:p-10 lg:order-1')}>
-				<Div class="mb-8 flex items-center justify-between text-primary-600 dark:text-primary-300">
-					<Database class="size-6" aria-hidden="true" />
-					<Span class="font-mono text-xs">RECORD → PRINTED PIECE</Span>
-				</Div>
-				<Div class="space-y-3" aria-hidden="true">
-					{#each variableExamples as record, index (record.id)}
-						<Div
-							class={twMerge(
-								'flex items-center gap-4 rounded-sm p-4 inset-ring-1 motion-safe:transition-all motion-safe:duration-500',
-								selectedIndex === index
-									? 'translate-x-2 bg-primary-500 text-white inset-ring-primary-500'
-									: 'bg-white/70 text-gray-500 inset-ring-gray-200 dark:bg-gray-950/70 dark:text-gray-400 dark:inset-ring-gray-800'
-							)}
-						>
-							<Span class="font-mono text-xl tabular-nums sm:text-2xl">
-								{record.id.slice(3)}
-							</Span>
-							<ArrowRight class="size-4 shrink-0" aria-hidden="true" />
-							<Img
-								src={record.barcode}
-								alt=""
-								class="h-10 min-w-0 flex-1 rounded-sm bg-white object-fill"
-								width={242}
-								height={100}
-							/>
-						</Div>
-					{/each}
-				</Div>
-				<Button class="mt-8 w-full" onclick={advanceRecord}>
-					<ActionLabel>Print the next record</ActionLabel>
-				</Button>
-			</Div>
-			<Div class="order-1 lg:order-2">
-				<P variants={['eyebrow']}>Barcodes · QR codes · Sequential numbering</P>
-				<H3 id="variable-sequence-heading" class="text-4xl sm:text-5xl">
-					A number to read.<Br />A code to scan.
-				</H3>
-				<P variants={['dialogBody']} class="mt-6">
-					Put the identifier in plain sight, in a barcode, or in a QR code. Sequential numbering
-					gives each piece its place in the run. Variable codes give your scanner a way to read the
-					information printed on it.
-				</P>
-				<Div class="mt-8 grid gap-4 sm:grid-cols-2">
-					<Div>
-						<ScanLine class="mb-3 size-6 text-primary-500" aria-hidden="true" />
-						<P class="font-medium">Built around your data</P>
-						<P class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-							Asset IDs, reference numbers, or other changing fields from your project.
-						</P>
-					</Div>
-					<Div>
-						<ArrowDown class="mb-3 size-6 text-secondary-500" aria-hidden="true" />
-						<P class="font-medium">One record at a time</P>
-						<P class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-							Explore the sample sequence. Each selection highlights the corresponding record.
-						</P>
-					</Div>
-				</Div>
-			</Div>
-		</Div>
-	</Section>
-{/snippet}
-
-{#snippet mailing()}
-	<Section
-		variants={['dialogSection']}
-		data-variable-section="mailing"
-		aria-labelledby="variable-mailing-heading"
-	>
-		<Div class="grid items-center gap-4 lg:grid-cols-5">
-			<Div class="lg:col-span-2">
-				<P variants={['eyebrow']}>Personalization for mailings</P>
-				<H3 id="variable-mailing-heading" class="text-4xl sm:text-5xl">
-					Make it personal.<Br />Piece by piece.
-				</H3>
-				<P variants={['dialogBody']} class="mt-6">
-					Your message can stay consistent while names, addresses, and other details change. Bring a
-					personal touch to your mailing with tags and labels printed for each recipient.
-				</P>
-				<Button
-					class="mt-8"
-					onclick={() => (mailingIndex = (mailingIndex + 1) % variableExamples.length)}
-				>
-					<ActionLabel>Meet the next recipient</ActionLabel>
-				</Button>
-			</Div>
-			<Div
-				class={twMerge(
-					dataArtworkClass,
-					'relative flex min-h-112 items-center justify-center overflow-hidden p-6 sm:p-12 lg:col-span-3'
-				)}
-			>
-				<Div
-					class="absolute inset-x-6 top-12 bottom-12 rotate-6 rounded-sm bg-secondary-200/70 sm:inset-x-12 dark:bg-secondary-900/60"
-					aria-hidden="true"
-				/>
-				<Div class="relative w-full max-w-80 -rotate-3" aria-live="polite" aria-atomic="true">
-					{#key mailingRecord.id}
-						<Div inTransition={[fade, { duration: motionPreference.current ? 0 : 220 }]}>
-							<VariableDataPiece record={mailingRecord} isLabel isMailing />
-						</Div>
-					{/key}
-				</Div>
-				<Span class="absolute right-6 bottom-4 text-xs text-gray-600 dark:text-gray-300">
-					Fictional recipient · Illustrative layout
-				</Span>
-			</Div>
-		</Div>
-	</Section>
-{/snippet}
+{#snippet applications()}<DataApplications record={selectedTicket} />{/snippet}
+{#snippet formats()}<DataFormats record={selectedTicket} />{/snippet}
+{#snippet planning()}<DataPlanning />{/snippet}
 
 {#snippet callToAction()}
 	<Div><Mail class="size-8" aria-hidden="true" /></Div>
@@ -277,7 +150,8 @@
 		{isStandalone}
 	>
 		{@render constrained(studio, 0)}
-		{@render constrained(sequence, 1)}
-		{@render constrained(mailing, 2)}
+		{@render constrained(applications, 1)}
+		{@render constrained(formats, 2)}
+		{@render constrained(planning, 3)}
 	</ContentLayout>
 </Div>

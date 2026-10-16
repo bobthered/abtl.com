@@ -109,7 +109,7 @@ test('variable data QR scans on hover and keyboard focus and respects reduced mo
 	await expect(trigger.locator('[data-qr-code]')).toHaveCount(1);
 });
 
-test('variable data uses the supplied tag with matching Data Matrix codes and independent examples', async ({
+test('variable data preserves the supplied tag and compares matching code formats', async ({
 	page
 }) => {
 	await page.goto('/');
@@ -153,16 +153,44 @@ test('variable data uses the supplied tag with matching Data Matrix codes and in
 		.poll(() => output.locator('[data-variable-matrix]').first().getAttribute('href'))
 		.not.toBe(firstCode);
 	await expect(studio.getByRole('group', { name: 'Printed format' })).toHaveCount(0);
-	await dialog.getByRole('button', { name: 'Print the next record' }).click();
 	await expect(
-		dialog.locator('[data-variable-section="sequence"] div.bg-primary-500')
-	).toContainText('004202');
+		dialog.locator('[data-variable-section="sequence"], [data-variable-section="mailing"]')
+	).toHaveCount(0);
+	await expect(dialog.locator('[data-variable-section="applications"]')).toContainText(
+		'Give each piece a purpose.'
+	);
+	await expect(dialog.locator('[data-variable-section="planning"]')).toContainText(
+		'Good print starts with clear data.'
+	);
+	const format = dialog.locator('[data-variable-section="formats"]');
+	await expect(format.locator('[data-variable-format]')).toHaveAttribute(
+		'data-variable-format',
+		'barcode'
+	);
+	await expect(format.locator('[data-variable-format-code]')).toHaveAttribute(
+		'alt',
+		'Code 128 encoding 003/612002'
+	);
+	await format.getByRole('button', { name: 'QR code', exact: true }).click();
+	await expect(format.locator('[data-variable-format-code]')).toHaveAttribute(
+		'alt',
+		'QR code encoding 003/612002'
+	);
+	const matrixButton = format.getByRole('button', { name: 'Data Matrix', exact: true });
+	await matrixButton.focus();
+	await matrixButton.press('Enter');
+	await expect(matrixButton).toHaveAttribute('aria-pressed', 'true');
+	await expect(format.locator('[data-variable-format-code]')).toHaveAttribute(
+		'alt',
+		'Data Matrix encoding 003/612002'
+	);
+	await format.getByRole('button', { name: 'Printed text', exact: true }).click();
+	await expect(format.locator('[data-variable-format-code]')).toHaveCount(0);
+	await expect(format.locator('[data-variable-format]')).toContainText('003/612002');
 	await expect(output.locator('[data-variable-ticket]')).toHaveAttribute(
 		'data-variable-ticket',
 		'612002'
 	);
-	await dialog.getByRole('button', { name: 'Meet the next recipient' }).click();
-	await expect(dialog.locator('[data-variable-section="mailing"]')).toContainText('Morgan Lee');
 	await expect(dialog.locator('[data-variable-section="contact"] a')).toHaveAttribute(
 		'href',
 		/^mailto:sales@abtl.com\?subject=Variable/
