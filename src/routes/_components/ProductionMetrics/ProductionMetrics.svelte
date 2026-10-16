@@ -49,7 +49,7 @@
 </script>
 
 <Section
-	variants={['surfaceAlternate']}
+	variants={['surface']}
 	class="relative isolate"
 	aria-labelledby="production-metrics-heading"
 	data-production-metrics

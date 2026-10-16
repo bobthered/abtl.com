@@ -6,17 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: c60944e809b347b568ea2bda05011421e712a201 -->
+<!-- pending-base: a139a31a4698169f72dc10e24db85f48fd7670e4 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: animate megamenu sizing without scrollbar flashes
+fix: remove the homepage brand marquee
 
-Measure incoming panels directly in the hover handler and start height changes alongside their slide, without waiting for outgoing panels or resize notifications. Animate from the current visible size, fit all seven capability links, and clip horizontal travel. Enable vertical scrolling only when active content exceeds the viewport limit, preventing scrollbar flashes while preserving keyboard access and reduced motion.
+Remove the hero marquee, its unused imports and content, and its obsolete browser tests. Keep the capabilities bento grid as the homepage showcase and restore alternating section backgrounds without adding a replacement section.
 
-Cover expanding and shrinking transitions without scrollbar flashes, all seven links and keyboard scrolling in short viewports, and reconcile the committed visual attachment work into changelog history.
+Update the changelog with the committed megamenu improvements and the pending homepage cleanup.
 ```
+
+## 2026-10-16
+
+- **fix: animate megamenu sizing without scrollbar flashes** (`a139a31`)
+  Start panel height changes alongside incoming slides, fit all seven capability links, clip horizontal travel and enable vertical scrolling only when content exceeds the viewport limit. Preserve keyboard access and reduced motion, and cover transition timing and short-viewport scrolling.
 
 ## 2026-10-15
 

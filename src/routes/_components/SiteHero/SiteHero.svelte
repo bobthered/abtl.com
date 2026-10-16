@@ -1,28 +1,14 @@
 <script lang="ts">
 	// Imports
-	import {
-		A,
-		ActionLabel,
-		Container,
-		Div,
-		H1,
-		Marquee,
-		P,
-		Path,
-		Section,
-		Span,
-		Svg
-	} from '#lib/components';
+	import { A, ActionLabel, Container, Div, H1, P, Section, Span } from '#lib/components';
 	import { estimateAnnualProduction } from '#lib/productionMetric.js';
 	import { onMount } from 'svelte';
-	import { redPath } from '../../../lib/components/Logo/paths';
 	import TagRain from '../TagRain/TagRain.svelte';
 
 	// consts
 	const formatter = new Intl.NumberFormat('en-US');
 	const heroTextClass =
 		'relative -left-3 box-decoration-clone rounded-sm bg-gray-50/70 px-3 py-1 dark:bg-gray-950/70 backdrop-blur';
-	const words = ['Identify.', 'Organize.', 'Inform.', 'Connect.'];
 
 	// helpers
 	const initializeMotion = () => {
@@ -145,39 +131,5 @@
 				</P>
 			</Div>
 		</Div>
-	</Container>
-</Section>
-
-<Section
-	variants={['surfaceAlternate']}
-	class="relative"
-	data-hero-marquee
-	aria-label="Allen-Bailey brand"
->
-	<Container>
-		<Marquee
-			ariaLabel="Brand marquee"
-			items={words}
-			isRandomStart={false}
-			pixelsPerSecond={24}
-			class="mask-x-from-90% mask-x-to-100%"
-		>
-			{#snippet renderItem(word)}
-				<Div class="flex items-center gap-4">
-					<Span
-						class="text-xl font-semibold tracking-tight text-gray-400 sm:text-2xl dark:text-gray-500"
-					>
-						{word}
-					</Span>
-					<Svg
-						viewBox="0 0 24 14"
-						class="h-auto w-8 shrink-0 fill-abtl-red-500/60"
-						aria-hidden="true"
-					>
-						<Path d={redPath} />
-					</Svg>
-				</Div>
-			{/snippet}
-		</Marquee>
 	</Container>
 </Section>

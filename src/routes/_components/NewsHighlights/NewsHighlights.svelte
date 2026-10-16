@@ -218,7 +218,7 @@
 {/snippet}
 
 {#if selected}
-	<Section variants={['surface']} aria-labelledby={`${uid}-heading`} data-news-highlights>
+	<Section variants={['surfaceAlternate']} aria-labelledby={`${uid}-heading`} data-news-highlights>
 		<Container variants={['section']}>
 			<Div class="mb-10 flex flex-wrap items-end justify-between gap-6 sm:mb-12">
 				<Div class="max-w-2xl">

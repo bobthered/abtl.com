@@ -122,7 +122,7 @@
 
 <Section
 	id="possibilities"
-	variants={['surface']}
+	variants={['surfaceAlternate']}
 	aria-label="Tag and label options"
 	data-bento-section
 	data-bento-ready={isReady}
