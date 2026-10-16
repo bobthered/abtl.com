@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: f3b7e1894684d64fd27feb7313bead9fa4cb42bd -->
+<!-- pending-base: c60944e809b347b568ea2bda05011421e712a201 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add visual attachment comparisons and tailored enquiries
+fix: animate megamenu sizing without scrollbar flashes
 
-Replace plain attachment lists with illustrated option cards for eyelet sizes and metals, wire gauges and materials, white string and twine, and white or black elastic. Update each section's main tag illustration and enquiry link from the selected option, and add a patch close-up with stronger section hierarchy and practical selection guidance.
+Measure incoming panels directly in the hover handler and start height changes alongside their slide, without waiting for outgoing panels or resize notifications. Animate from the current visible size, fit all seven capability links, and clip horizontal travel. Enable vertical scrolling only when active content exceeds the viewport limit, preventing scrollbar flashes while preserving keyboard access and reduced motion.
 
-Keep all five dedicated sections, confirmed stock options, capability header sizing, responsive layouts and no-JavaScript option visibility. Remove external comparison references from source comments and project notes, extend selection regressions, and reconcile committed attachment-page history.
+Cover expanding and shrinking transitions without scrollbar flashes, all seven links and keyboard scrolling in short viewports, and reconcile the committed visual attachment work into changelog history.
 ```
 
 ## 2026-10-15
+
+- **feat: add visual attachment comparisons and tailored enquiries** (`c60944e`)
+  Replace plain attachment lists with selectable illustrated samples that update tag details and enquiry links. Add a patch close-up, practical selection guidance and stronger section hierarchy, retain confirmed stock options and responsive behavior, remove external comparison references, and extend browser coverage.
 
 - **feat: create detailed attachment capability sections** (`f3b7e18`)
   Add a dedicated attachment capability page with five illustrated sections and owner-confirmed eyelet, wire, string and elastic options. Match capability header sizing, link the new page from navigation and overview pages, remove the synthetic-material attachment section, and cover specifications, responsive sizing and no-JavaScript content.

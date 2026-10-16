@@ -5,7 +5,7 @@
 	import { ArrowUpRight, ChevronDown } from '#lib/icons';
 	import { fly } from 'svelte/transition';
 	import { navigation } from '#lib/data/navigation.js';
-	import { onMount, tick } from 'svelte';
+	import { onMount, tick, untrack } from 'svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { subtleReveal } from 'sveltewind/transitions';
 	import { twMerge } from 'tailwind-merge';
@@ -20,8 +20,50 @@
 
 	// consts
 	const cleanupTimers = new SvelteSet<ReturnType<typeof setTimeout>>();
+	// Nonreactive bridge: hover measures the incoming panel before the browser paints.
+	let resizeMenu: ((id?: number) => void) | undefined;
 
 	// helpers
+	const animateMenuHeight = (isMotionReduced: boolean) => (node: HTMLElement) => {
+		const content = node.firstElementChild as HTMLElement;
+		let animation: Animation | undefined;
+		let observedPanel: HTMLElement | undefined;
+		let targetHeight = 0;
+		const resize = (id = panelId) => {
+			const panel = content.querySelector<HTMLElement>(`[data-nav-panel-id="${id}"]`);
+			if (!panel || activeIndex < 0) return;
+			if (observedPanel !== panel) {
+				observer.disconnect();
+				observer.observe(panel);
+				observedPanel = panel;
+			}
+			const maximum = parseFloat(getComputedStyle(node).maxHeight);
+			// Scroll only for actual viewport limits, never the temporary animated height.
+			isMenuScrollable = panel.offsetHeight > maximum;
+			const height = Math.min(panel.offsetHeight, maximum);
+			if (height === targetHeight) return;
+			const from = node.getBoundingClientRect().height;
+			animation?.cancel();
+			targetHeight = height;
+			animation = node.animate([{ height: `${from}px` }, { height: `${height}px` }], {
+				duration: isMotionReduced || !from ? 0 : 320,
+				easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+				fill: 'forwards'
+			});
+		};
+		const observer = new ResizeObserver(() => resize());
+		const handleResize = () => resize();
+		resizeMenu = resize;
+		// Panel changes call the bridge directly; they must not remount this attachment.
+		untrack(() => resize());
+		window.addEventListener('resize', handleResize);
+		return () => {
+			observer.disconnect();
+			window.removeEventListener('resize', handleResize);
+			animation?.cancel();
+			if (resizeMenu === resize) resizeMenu = undefined;
+		};
+	};
 	const cancelClose = () => {
 		clearTimeout(closeTimer);
 	};
@@ -66,7 +108,12 @@
 		// Toggle the primitive's own visibility after mount so its local Svelte transition runs.
 		await tick();
 		const incoming = panels.find((panel) => panel.id === id);
-		if (incoming && activeIndex === index && panelId === id) incoming.isVisible = true;
+		if (incoming && activeIndex === index && panelId === id) {
+			incoming.isVisible = true;
+			await tick();
+			// Begin sizing with the incoming slide, without waiting for an observer or outro.
+			if (activeIndex === index && panelId === id) resizeMenu?.(id);
+		}
 		const timer = setTimeout(
 			() => {
 				panels = panels.filter((panel) => !departingIds.has(panel.id));
@@ -105,6 +152,7 @@
 	let activeIndex = $state(-1);
 	let closeTimer = $state<ReturnType<typeof setTimeout> | undefined>();
 	let direction = $state(1);
+	let isMenuScrollable = $state(false);
 	let panelId = $state(0);
 	let panels = $state<SubmenuPanel[]>([]);
 	let root = $state<HTMLDivElement | null>(null);
@@ -187,69 +235,80 @@
 			<Card
 				class="relative overflow-hidden p-0 shadow-xl inset-ring-1 inset-ring-gray-200 dark:inset-ring-gray-800"
 			>
-				<Div class="relative min-h-104">
-					{#each panels as panel (panel.id)}
-						<Div
-							data-nav-panel
-							isVisible={panel.isVisible}
-							data-direction={direction}
-							class="absolute inset-0 grid grid-cols-3 gap-4 p-8"
-							inTransition={[
-								fly,
-								{ x: isReducedMotion ? 0 : direction * 96, duration: isReducedMotion ? 0 : 320 }
-							]}
-							outTransition={[
-								fly,
-								{ x: isReducedMotion ? 0 : -direction * 96, duration: isReducedMotion ? 0 : 320 }
-							]}
-						>
+				<Div
+					class={twMerge(
+						'max-h-[calc(100dvh-8rem)] overflow-x-hidden overscroll-contain',
+						isMenuScrollable ? '[scrollbar-gutter:stable] overflow-y-auto' : 'overflow-y-hidden'
+					)}
+					data-nav-viewport
+					{@attach animateMenuHeight(isReducedMotion)}
+				>
+					<Div class="relative grid overflow-x-clip">
+						{#each panels as panel (panel.id)}
 							<Div
-								class="flex flex-col items-start gap-4 rounded-sm bg-gray-50 p-6 dark:bg-gray-950"
+								data-nav-panel
+								data-nav-panel-id={panel.id}
+								isVisible={panel.isVisible}
+								data-direction={direction}
+								data-nav-active={panel.index === activeIndex}
+								class="absolute top-0 left-0 grid min-h-104 w-full min-w-0 grid-cols-3 gap-4 p-8"
+								inTransition={[
+									fly,
+									{ x: isReducedMotion ? 0 : direction * 96, duration: isReducedMotion ? 0 : 320 }
+								]}
+								outTransition={[
+									fly,
+									{ x: isReducedMotion ? 0 : -direction * 96, duration: isReducedMotion ? 0 : 320 }
+								]}
 							>
-								<P class="text-sm font-semibold text-primary-600 dark:text-primary-300">
-									Explore {panel.section.label}
-								</P>
-								<H2 class="text-2xl">{panel.section.description}</H2>
-								<A
-									href={panel.section.href}
-									variants={['ghost', 'accent']}
-									class="mt-auto inline-flex items-center gap-2 px-0"
-									onclick={close}
+								<Div
+									class="flex flex-col items-start gap-4 rounded-sm bg-gray-50 p-6 dark:bg-gray-950"
 								>
-									All {panel.section.label.toLowerCase()}<ArrowUpRight
-										class="size-4"
-										aria-hidden="true"
-									/>
-								</A>
-							</Div>
-							<Nav
-								aria-label={`${panel.section.label} pages`}
-								class="col-span-2 grid grid-cols-2 content-start gap-4"
-								aria-labelledby={`nav-trigger-${panel.index}`}
-							>
-								{#each panel.section.children as child (child.href)}
+									<P class="text-sm font-semibold text-primary-600 dark:text-primary-300">
+										Explore {panel.section.label}
+									</P>
+									<H2 class="text-2xl">{panel.section.description}</H2>
 									<A
-										href={child.href}
-										variants={['ghost']}
-										class="group block rounded-sm p-4 text-gray-950 hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800"
+										href={panel.section.href}
+										variants={['ghost', 'accent']}
+										class="mt-auto inline-flex items-center gap-2 px-0"
 										onclick={close}
 									>
-										<Span class="flex items-center justify-between gap-2 font-semibold">
-											{child.label}<ArrowUpRight
-												class="size-4 text-primary-600 dark:text-primary-300"
-												aria-hidden="true"
-											/>
-										</Span>
-										<Span
-											class="mt-2 block text-sm leading-relaxed text-gray-600 dark:text-gray-300"
-										>
-											{child.description}
-										</Span>
+										All {panel.section.label.toLowerCase()}<ArrowUpRight
+											class="size-4"
+											aria-hidden="true"
+										/>
 									</A>
-								{/each}
-							</Nav>
-						</Div>
-					{/each}
+								</Div>
+								<Nav
+									aria-label={`${panel.section.label} pages`}
+									class="col-span-2 grid grid-cols-2 content-start gap-4"
+									aria-labelledby={`nav-trigger-${panel.index}`}
+								>
+									{#each panel.section.children as child (child.href)}
+										<A
+											href={child.href}
+											variants={['ghost']}
+											class="group block rounded-sm p-4 text-gray-950 hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800"
+											onclick={close}
+										>
+											<Span class="flex items-center justify-between gap-2 font-semibold">
+												{child.label}<ArrowUpRight
+													class="size-4 text-primary-600 dark:text-primary-300"
+													aria-hidden="true"
+												/>
+											</Span>
+											<Span
+												class="mt-2 block text-sm leading-relaxed text-gray-600 dark:text-gray-300"
+											>
+												{child.description}
+											</Span>
+										</A>
+									{/each}
+								</Nav>
+							</Div>
+						{/each}
+					</Div>
 				</Div>
 			</Card>
 		</Div>

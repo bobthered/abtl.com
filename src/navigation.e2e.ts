@@ -1,6 +1,96 @@
 import { expect, test } from '@playwright/test';
 import { navigation as sections } from './lib/data/navigation.js';
 
+test('megamenu clips horizontal travel and animates height in both directions', async ({
+	page
+}) => {
+	await page.setViewportSize({ width: 1440, height: 1000 });
+	await page.goto('/products');
+	await page.waitForFunction(() =>
+		document.getAnimations().some((animation) => animation.id === 'illustration-float')
+	);
+	const navigation = page.getByRole('navigation', { name: 'Main navigation', exact: true });
+	await navigation.getByRole('button', { name: 'Markets', exact: true }).hover();
+	const viewport = page.locator('[data-nav-viewport]');
+	await expect(viewport).toBeVisible();
+	await viewport.evaluate(async (node) => {
+		await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
+	});
+	const smallHeight = (await viewport.boundingBox())!.height;
+	const heightFrames = () =>
+		viewport.evaluate((node) =>
+			node
+				.getAnimations()
+				.filter((animation) => animation.playState === 'running')
+				.map((animation) => (animation.effect as KeyframeEffect).getKeyframes())
+				.find((frames) => frames.some((frame) => frame.height !== undefined))
+				?.map((frame) => parseFloat(String(frame.height)))
+		);
+	await navigation.getByRole('button', { name: 'Capabilities', exact: true }).hover();
+	await expect.poll(heightFrames).toEqual([smallHeight, expect.any(Number)]);
+	const growing = (await heightFrames())!;
+	expect(growing[1]).toBeGreaterThan(growing[0]);
+	const timingGap = await viewport.evaluate((node) => {
+		const heightAnimation = node
+			.getAnimations()
+			.find((animation) =>
+				(animation.effect as KeyframeEffect)
+					.getKeyframes()
+					.some((frame) => frame.height !== undefined)
+			)!;
+		const panel = node.querySelector('[data-nav-active="true"]')!;
+		const slide = panel
+			.getAnimations()
+			.find((animation) => animation.effect?.getTiming().duration === 320)!;
+		return Math.abs(Number(heightAnimation.currentTime) - Number(slide.currentTime));
+	});
+	expect(timingGap).toBeLessThan(34);
+	await expect(viewport).toHaveCSS('overflow-x', 'hidden');
+	await expect(viewport).toHaveCSS('overflow-y', 'hidden');
+	await viewport.evaluate(async (node) => {
+		await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
+	});
+	const largeHeight = (await viewport.boundingBox())!.height;
+	await expect(viewport).toHaveCSS('overflow-y', 'hidden');
+	await navigation.getByRole('button', { name: 'Markets', exact: true }).hover();
+	await expect.poll(heightFrames).toEqual([largeHeight, smallHeight]);
+	await expect(viewport).toHaveCSS('overflow-x', 'hidden');
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await navigation.getByRole('button', { name: 'Capabilities', exact: true }).hover();
+	await expect(viewport).toHaveCSS('height', `${largeHeight}px`);
+	expect(await heightFrames()).toBeUndefined();
+});
+
+test('capability megamenu fits all links and scrolls within short viewports', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.setViewportSize({ width: 1440, height: 1000 });
+	await page.goto('/');
+	await expect(page.locator('[data-bento-ready]')).toHaveAttribute('data-bento-ready', 'true', {
+		timeout: 60000
+	});
+	const trigger = page
+		.getByRole('navigation', { name: 'Main navigation', exact: true })
+		.getByRole('button', { name: 'Capabilities', exact: true });
+	await trigger.hover();
+	const panel = page.locator('[data-nav-panel]:not([inert])');
+	const links = panel.locator('nav a');
+	await expect(links).toHaveCount(7);
+	for (const link of await links.all()) {
+		expect((await link.boundingBox())!.y + (await link.boundingBox())!.height).toBeLessThanOrEqual(
+			(await panel.boundingBox())!.y + (await panel.boundingBox())!.height
+		);
+	}
+	await page.setViewportSize({ width: 1440, height: 500 });
+	const last = links.last();
+	await last.focus();
+	await last.scrollIntoViewIfNeeded();
+	await expect(page.locator('[data-nav-viewport]')).toHaveCSS('overflow-y', 'auto');
+	const bounds = (await last.boundingBox())!;
+	expect(bounds.y).toBeGreaterThanOrEqual(0);
+	expect(bounds.y + bounds.height).toBeLessThanOrEqual(500);
+	await expect(last).toBeFocused();
+});
+
 const routes = [
 	'products',
 	'markets',
