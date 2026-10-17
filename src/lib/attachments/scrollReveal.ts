@@ -88,6 +88,7 @@ const revealTarget = (element: Element): RevealElement | null => {
 /** One observer for page content, routed content, and portalled dialogs. Content stays visible without JS. */
 export const scrollReveal: Attachment<HTMLElement> = () => {
 	const preference = matchMedia('(prefers-reduced-motion: reduce)');
+	const isInitialPaintProtected = document.documentElement.dataset.scrollRevealBoot === 'pending';
 	const observed = new Set<RevealElement>();
 	const completed = new WeakSet<RevealElement>();
 	const groups = new WeakSet<RevealElement>();
@@ -100,6 +101,7 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 	let batchFrame = 0;
 	let countFrame = 0;
 	let observer: IntersectionObserver;
+	let isInitialRegistration = true;
 	let isNavigationPaused = false;
 	let scrollFrame = 0;
 
@@ -286,7 +288,18 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 			if (isGrouped && !target.hasAttribute('data-count-up') && staggerChildren(target).length < 2)
 				continue;
 			groups.add(target);
-			if (preference.matches) {
+			if (
+				preference.matches ||
+				(isInitialRegistration &&
+					!isInitialPaintProtected &&
+					target.getBoundingClientRect().top < innerHeight)
+			) {
+				// A timed-out or keyboard-released bootstrap already painted this content.
+				// Do not hide it again when a late client bundle finally attaches.
+				for (const child of staggerChildren(target)) {
+					completed.add(child);
+					child.dataset.scrollRevealState = 'complete';
+				}
 				completed.add(target);
 				target.dataset.scrollRevealState = 'complete';
 				continue;
@@ -414,6 +427,9 @@ export const scrollReveal: Attachment<HTMLElement> = () => {
 	navigationListeners.add(navigation);
 	observeViewport();
 	register(document.body);
+	isInitialRegistration = false;
+	document.dispatchEvent(new Event('scroll-reveal-ready'));
+	delete document.documentElement.dataset.scrollRevealBoot;
 	window.addEventListener('resize', observeViewport);
 	document.addEventListener('scroll', revealAtEnd, { capture: true, passive: true });
 	mutations.observe(document.body, { childList: true, subtree: true });

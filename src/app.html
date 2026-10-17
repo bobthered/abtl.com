@@ -2,7 +2,7 @@
 <html
 	lang="en"
 	data-theme="light"
-	class="scroll-pt-8 scroll-smooth bg-gray-50 font-sans text-gray-950 antialiased scheme-light motion-reduce:scroll-auto dark:bg-gray-900 dark:text-gray-50 dark:scheme-dark"
+	class="scroll-pt-8 scroll-smooth bg-gray-50 font-sans text-gray-950 antialiased scheme-light motion-reduce:scroll-auto dark:bg-gray-900 dark:text-gray-50 dark:scheme-dark motion-safe:[&[data-scroll-reveal-boot=pending]_footer]:opacity-0 motion-safe:[&[data-scroll-reveal-boot=pending]_main]:opacity-0"
 >
 	<head>
 		<meta charset="utf-8" />
@@ -29,6 +29,32 @@
 				} catch {
 					// The selected mode is already applied without storage.
 				}
+			})();
+			// Stage the initial SSR paint until the attachment has prepared its targets.
+			(() => {
+				const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+				if (preference.matches) return;
+				const root = document.documentElement;
+				root.dataset.scrollRevealBoot = 'pending';
+				let fallbackTimer;
+				const release = (isReady = false) => {
+					clearTimeout(fallbackTimer);
+					if (isReady) delete root.dataset.scrollRevealBoot;
+					else root.dataset.scrollRevealBoot = 'visible';
+					document.removeEventListener('scroll-reveal-ready', ready);
+					document.removeEventListener('focusin', expose);
+					preference.removeEventListener('change', updatePreference);
+				};
+				const expose = () => release();
+				const ready = () => release(true);
+				const updatePreference = () => {
+					if (preference.matches) release();
+				};
+				document.addEventListener('scroll-reveal-ready', ready, { once: true });
+				document.addEventListener('focusin', expose, { once: true });
+				preference.addEventListener('change', updatePreference);
+				// Content remains usable if hydration is delayed or its bundle cannot load.
+				fallbackTimer = window.setTimeout(expose, 1800);
 			})();
 		</script>
 		%sveltekit.head%

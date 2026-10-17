@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: ccb98b2b9a8a6f8ddd2ec2dad4676126202f7ab6 -->
+<!-- pending-base: 7359d5e0652c3ee7aafdad7594ba920052ca9488 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: document predefined-option state control conventions
+fix: prevent scroll-reveal flicker during initial page load
 
-Require Radio or Select for single-choice state drawn from predefined options. Document shared RadioChoice usage, accessible group naming, native keyboard behavior, selected checkmark handles, and the distinction between selection controls, multi-selects, and action buttons.
+Stage the first server-rendered paint with a document-head bootstrap and Tailwind visibility utilities, then release main content and the footer after the shared attachment prepares its reveal targets. Keep the header visible and preserve layout dimensions.
 
-Reconcile the committed radio checkmark update in the changelog.
+Fail open for delayed startup, keyboard focus, and reduced motion. Avoid re-hiding already-visible initial content when hydration starts late, while retaining automatic below-fold, route, and dialog entrances.
+
+Document the startup handoff and add delayed-script frame checks for first paint and fallback behavior. Reconcile the committed predefined-option control instructions in the changelog.
 ```
 
 ## 2026-10-17
+
+- **refactor: document predefined-option state control conventions** (`7359d5e`)
+  Require Radio or Select for predefined single-choice state and document RadioChoice reuse, accessible grouping, native keyboard behavior, selected checkmark handles, and distinctions from multi-selects and action buttons.
 
 - **fix: show selected radio choices with checkmark handles** (`ccb98b2`)
   Render selected-only Lucide checkmarks through Radio handle snippets while retaining native inputs, group bindings, focus and keyboard behavior, and indicator visibility options; update documentation and icon coverage.
