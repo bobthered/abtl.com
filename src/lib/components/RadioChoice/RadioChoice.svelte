@@ -12,6 +12,7 @@
 		class?: string;
 		contentClass?: string;
 		isIndicatorVisible?: boolean;
+		isSurfaceVisible?: boolean;
 		group: Value;
 		name: string;
 		value: Value;
@@ -26,6 +27,7 @@
 		contentClass = '',
 		group = $bindable(),
 		isIndicatorVisible = true,
+		isSurfaceVisible = true,
 		name,
 		value,
 		...restProps
@@ -57,7 +59,10 @@
 	{...restProps}
 	aria-label={ariaLabel}
 	class={twMerge(
-		'relative isolate flex min-h-11 cursor-pointer items-center gap-3 rounded-sm bg-gray-100 px-4 py-3 pr-10 text-sm font-medium text-gray-950 inset-ring-1 inset-ring-gray-200 hover:bg-gray-200 has-checked:inset-ring-2 has-checked:inset-ring-primary-500 has-focus-visible:outline-2 has-focus-visible:outline-offset-4 has-focus-visible:outline-primary-600 dark:bg-gray-800 dark:text-gray-50 dark:inset-ring-gray-700 dark:hover:bg-gray-700 dark:has-checked:inset-ring-primary-400 dark:has-focus-visible:outline-primary-300',
+		'relative flex min-h-11 cursor-pointer items-center gap-3 px-4 py-3 pr-10 text-sm font-medium text-gray-950 has-focus-visible:outline-2 has-focus-visible:outline-offset-4 has-focus-visible:outline-primary-600 dark:text-gray-50 dark:has-focus-visible:outline-primary-300',
+		isSurfaceVisible
+			? 'isolate rounded-sm bg-gray-100 inset-ring-1 inset-ring-gray-200 hover:bg-gray-200 has-checked:inset-ring-2 has-checked:inset-ring-primary-500 dark:bg-gray-800 dark:inset-ring-gray-700 dark:hover:bg-gray-700 dark:has-checked:inset-ring-primary-400'
+			: '',
 		className
 	)}
 >

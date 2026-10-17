@@ -6,21 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 7359d5e0652c3ee7aafdad7594ba920052ca9488 -->
+<!-- pending-base: a80d7ed9414e775042e056a0120204729d0b38ba -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: prevent scroll-reveal flicker during initial page load
+fix: restore the homepage metric row styling
 
-Stage the first server-rendered paint with a document-head bootstrap and Tailwind visibility utilities, then release main content and the footer after the shared attachment prepares its reveal targets. Keep the header visible and preserve layout dimensions.
+Remove individual radio-card surfaces from the four homepage metrics so the row retains only its shared top and bottom rules and moving gradient highlight. Preserve native radio selection, keyboard focus, hover highlighting, and animation controls.
 
-Fail open for delayed startup, keyboard focus, and reduced motion. Avoid re-hiding already-visible initial content when hydration starts late, while retaining automatic below-fold, route, and dialog entrances.
-
-Document the startup handoff and add delayed-script frame checks for first paint and fallback behavior. Reconcile the committed predefined-option control instructions in the changelog.
+Add an optional surface-free RadioChoice presentation, document its metric usage, and cover row borders, absent card rings, gradient rules, responsive positioning, and reduced motion. Reconcile the committed initial-load reveal fix in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: prevent scroll-reveal flicker during initial page load** (`a80d7ed`)
+  Stage initial SSR content with a head bootstrap until reveal targets are prepared, fail open for timeout, focus and reduced motion, avoid re-hiding visible content during late hydration, and document and test startup frames and fallbacks.
 
 - **refactor: document predefined-option state control conventions** (`7359d5e`)
   Require Radio or Select for predefined single-choice state and document RadioChoice reuse, accessible grouping, native keyboard behavior, selected checkmark handles, and distinctions from multi-selects and action buttons.

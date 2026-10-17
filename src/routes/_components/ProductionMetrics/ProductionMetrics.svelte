@@ -100,6 +100,7 @@
 					value={index}
 					name={`${controlId}-metric`}
 					isIndicatorVisible={false}
+					isSurfaceVisible={false}
 					contentClass="flex-col items-center gap-4"
 					aria-controls="metric-animation-panel"
 					class="relative flex min-w-0 flex-col items-center justify-start gap-4 rounded-sm bg-transparent px-4 py-10 text-center font-normal text-gray-600 no-underline transition-colors duration-500 hover:bg-transparent hover:text-gray-950 focus:bg-transparent focus:text-gray-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 data-[active=true]:text-gray-950 motion-reduce:transition-none sm:px-6 lg:py-12 dark:bg-transparent dark:text-gray-400 dark:hover:bg-transparent dark:hover:text-gray-50 dark:focus:bg-transparent dark:focus:text-gray-50 dark:focus-visible:outline-primary-300 dark:data-[active=true]:text-gray-50"

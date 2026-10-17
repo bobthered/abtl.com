@@ -12,6 +12,18 @@ for (const width of [390, 1440]) {
 		const links = section.locator('[data-metric-index]');
 		const highlight = section.locator('[data-metric-highlight]');
 		await expect(links).toHaveCount(4);
+		const grid = section.locator('[data-metric-grid]');
+		await expect(grid).toHaveCSS('border-top-width', '1px');
+		await expect(grid).toHaveCSS('border-bottom-width', '1px');
+		await expect(grid).toHaveCSS('border-left-width', '0px');
+		await expect(grid).toHaveCSS('border-right-width', '0px');
+		for (const link of await links.all()) await expect(link).toHaveCSS('box-shadow', 'none');
+		await expect(highlight.locator('span').first()).toHaveCSS(
+			'background-image',
+			/linear-gradient/
+		);
+		await expect(highlight.locator('span').first()).toHaveCSS('height', '1px');
+
 		await expect(links.nth(2).locator('[data-count-up]')).toHaveAttribute(
 			'data-scroll-reveal-state',
 			'complete'
@@ -34,6 +46,7 @@ for (const width of [390, 1440]) {
 		const start = (await highlight.boundingBox())!.x;
 		await links.last().hover();
 		await expect(links.last()).toHaveAttribute('data-active', 'true');
+		await expect(links.last()).toHaveCSS('box-shadow', 'none');
 		await expect(links.first().getByRole('radio')).toBeChecked();
 		await expect
 			.poll(async () =>
