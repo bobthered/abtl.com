@@ -53,6 +53,11 @@ export const navigation: NavigationSection[] = [
 				href: '/markets/fire-suppression',
 				label: 'Fire Suppression',
 				description: 'Inspection tags, service labels, and collars for fire-service teams.'
+			},
+			{
+				href: '/markets/tree-tags',
+				label: 'Tree Tags',
+				description: 'Standard and custom tree-shaped tags on your choice of substrate.'
 			}
 		]
 	},

@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: ff19d04e35cb74f322db90ac42fa78805a905ee3 -->
+<!-- pending-base: 85f12d7047860ca66179103e5dec8fdb4027f323 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: share animated product flips and refine fire-service options
+feat: add an interactive tree tags market page
 
-Share an animated FlipPreview component between Fire Suppression and full-color printing, with a fixed viewport, bottom control, readable front/back artwork, keyboard support, and reduced motion. Keep ink-registration rendering separate from the shared flip and measure canvas layout independently of rotation.
+Add Tree Tags to market navigation and use the shared title, alternating body sections, and centered contact CTA layout. Present standard and custom die-cut shapes on any substrate, highlighting Polyart and Tyvek as the most popular choices.
 
-Replace collar equipment views with Small/Green, Medium/Gray, Large/Blue, and XL/Purple options. Keep collars white, use the size color for type, and show company, license, and phone personalization in digitally printed black variable data.
+Reuse the supplied standard tag and patch geometry and create original tree-shaped concept artwork in two dedicated sections. Place live farm, tree, and identifier personalization beside the standard tag and share the details across both formats. Keep independent front/back flips, stable preview dimensions, and user-entered details local to the page.
 
-Replace the label selector with eight visible radio choices and remove the duplicate label range list. Update route-owned artwork, product data, documentation, and responsive flip, label, collar, and printing regression coverage, and reconcile the committed Fire Suppression market rebuild in the changelog.
+Document route-owned artwork and product scope, add responsive, theme, geometry, interaction, and no-JavaScript coverage, and reconcile the committed shared-flip and fire-service updates in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: share animated product flips and refine fire-service options** (`85f12d7`)
+  Share a fixed-viewport FlipPreview between Fire Suppression and full-color printing, retain ink registration in the canvas renderer, expose eight label radios, add the four white-collar size and print-color combinations with black personalization, and document and cover responsive behavior, animation, reduced motion, and printing controls.
 
 - **feat: rebuild markets around fire suppression products** (`ff19d04`)
   Replace placeholder markets with a shared-layout Fire Suppression page, introduce all 14 supplied product types through interactive tag, label, and collar examples, update navigation and About links, and cover responsive layouts, themes, retired routes, and server redirects. The initial planning section was removed before this commit so collars lead directly into the closing CTA.
