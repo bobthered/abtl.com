@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from './_test/bento';
 
 for (const width of [390, 768, 1440]) {
 	test(`preview compositions follow actual tile width at ${width}px`, async ({ page }) => {

@@ -8,5 +8,5 @@ export const load: PageServerLoad = () => {
 		const other = Math.floor(Math.random() * (index + 1));
 		[bentoTopics[index], bentoTopics[other]] = [bentoTopics[other], bentoTopics[index]];
 	}
-	return { bentoTopics };
+	return { bentoTopics: bentoTopics.slice(0, 6) };
 };

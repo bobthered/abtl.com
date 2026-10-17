@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from './_test/bento';
 
 test('warehousing releases demo stock, compares workflows, and refreshes as a standalone page', async ({
 	page
@@ -60,6 +61,7 @@ test('warehousing releases demo stock, compares workflows, and refreshes as a st
 });
 
 const topics = [
+	'attachments',
 	'stock-colors',
 	'variable-data',
 	'shipping',
@@ -542,7 +544,7 @@ test('synthetic materials opens a storm dialog, explores stock, and refreshes st
 	await expect(dialog).toHaveCount(0);
 	await expect(page).toHaveURL(/\/$/);
 	await expect(trigger).toBeFocused();
-	await trigger.click();
+	await trigger.press('Enter');
 	await page.reload();
 	await expect(page.getByRole('heading', { level: 1, name: 'Built to weather it.' })).toBeVisible();
 	await expect(page.getByRole('dialog')).toHaveCount(0);

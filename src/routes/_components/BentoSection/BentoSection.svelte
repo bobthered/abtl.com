@@ -76,7 +76,7 @@
 	// $props()
 	let {
 		onNavigate,
-		orderedTopics = topics,
+		orderedTopics = topics.slice(0, 6),
 		topicId
 	}: {
 		onNavigate?: (topic: Topic | null) => void;
@@ -129,11 +129,13 @@
 >
 	<Container variants={['section']}>
 		<Div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
-			{#each orderedTopics as topic, index (topic.id)}
+			{#each orderedTopics.slice(0, 6) as topic, index (topic.id)}
 				<BentoItem
 					class={slotClasses[index % slotClasses.length]}
 					description={topic.description}
-					isResponsivePreview={['data', 'process', 'weather'].includes(topic.preview)}
+					isResponsivePreview={['attachments', 'data', 'process', 'weather'].includes(
+						topic.preview
+					)}
 					title={topic.title}
 					aria-label={`Explore ${topic.title}`}
 					aria-haspopup="dialog"

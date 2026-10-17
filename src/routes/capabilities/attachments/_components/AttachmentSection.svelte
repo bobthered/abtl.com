@@ -22,7 +22,11 @@
 	import { twMerge } from 'tailwind-merge';
 
 	// $props()
-	let { index, option }: { index: number; option: AttachmentOption } = $props();
+	let {
+		index,
+		isStandalone = true,
+		option
+	}: { index: number; isStandalone?: boolean; option: AttachmentOption } = $props();
 
 	// $state
 	let isReady = $state(false);
@@ -44,8 +48,8 @@
 
 <Section
 	id={option.id}
-	variants={[index % 2 === 0 ? 'surfaceAlternate' : 'surface']}
-	class="scroll-mt-28"
+	variants={isStandalone ? [index % 2 === 0 ? 'surfaceAlternate' : 'surface'] : ['dialogSection']}
+	class={isStandalone ? 'scroll-mt-28' : '-mx-6 scroll-mt-28 sm:-mx-8 lg:-mx-16'}
 	aria-labelledby={`${option.id}-heading`}
 	data-attachment-section={option.id}
 	data-attachment-ready={isReady}

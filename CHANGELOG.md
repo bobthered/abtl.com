@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: d0b9f1e4207ed24669a4208ca6feeb1544bd285e -->
+<!-- pending-base: 0e0966dc08c49c80c96f7c19a470b9faa6b6c131 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add original variable-data product artwork
+feat: add animated attachments to the randomized homepage bento
 
-Replace the three application illustrations with original product scenes inspired by supplied references, export optimized WebP assets, and use shared lightboxes for enlarged viewing. Record generation prompts and asset provenance.
+Add a stock-colored attachment fan with patch, eyelet, wire, string, and elastic artwork. Share the existing bento surface expansion, gradient outline, fixed media viewport, responsive composition, keyboard interaction, and reduced-motion behavior.
 
-Add branded artwork and a stock-colored surface to the four-format label preview while preserving live codes, sample references, and multiply blending. Keep the preview height consistent across all four formats. Cover image loading, nested lightboxes, and desktop/mobile preview geometry in browser checks.
+Select six unique capabilities from seven in a random server-rendered order on each homepage request. Preserve the selection through hydration and dialog navigation, and reuse route-owned Attachments content in both the homepage dialog and standalone page.
 
-Reconcile the committed variable-data content expansion in the changelog.
+Extend random selection, responsive geometry, motion, and dialog coverage; adapt existing content tests to request their required tiles. Document the preview behavior and reconcile the committed variable-data artwork in the changelog.
 ```
+
+## 2026-10-17
+
+- **feat: add original variable-data product artwork** (`0e0966d`)
+  Replace application illustrations with original optimized product scenes and shared lightboxes, record generation prompts, add branded artwork to the live format comparison, keep the preview height fixed, and cover image loading, nested lightboxes and desktop/mobile geometry.
 
 ## 2026-10-16
 

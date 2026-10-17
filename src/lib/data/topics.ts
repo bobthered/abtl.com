@@ -2,6 +2,7 @@ export type Topic = {
 	description: string;
 	id: string;
 	preview:
+		| 'attachments'
 		| 'globe'
 		| 'columns'
 		| 'fan'
@@ -59,6 +60,13 @@ export const topics: Topic[] = [
 		description:
 			'Lower your unit price with a larger production run. Warehouse finished tags and labels for later shipments, available for immediate release from stock.',
 		preview: 'warehouse'
+	},
+	{
+		id: 'attachments',
+		title: 'Small details. A stronger connection.',
+		description:
+			'Patches, eyelets, wire, string, and elastic. Finish your tag around the way it will be used.',
+		preview: 'attachments'
 	}
 ];
 

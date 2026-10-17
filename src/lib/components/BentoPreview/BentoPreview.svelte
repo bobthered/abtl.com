@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Imports
 	import {
+		AttachmentsPreview,
 		BentoMedia,
 		Div,
 		ProcessArtwork,
@@ -78,7 +79,9 @@
 				{/if}
 			</Div>
 		{/if}
-		{#if kind === 'globe'}
+		{#if kind === 'attachments'}
+			<AttachmentsPreview />
+		{:else if kind === 'globe'}
 			<Div class="relative h-full w-full">
 				<ShippingGlobe class="absolute inset-0 aspect-auto h-full w-full" />
 				<!--

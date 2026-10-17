@@ -14,6 +14,7 @@
 		Section,
 		Skeleton
 	} from '#lib/components';
+	import AttachmentsContent from '../../attachments/_components/AttachmentsContent.svelte';
 	import { onMount } from 'svelte';
 	import ProcessPrintingContent from './ProcessPrinting/ProcessPrintingContent.svelte';
 	import ShippingContent from './ShippingContent/ShippingContent.svelte';
@@ -44,6 +45,7 @@
 	// $derived
 	const isDetailedTopic = $derived(
 		[
+			'attachments',
 			'colors',
 			'shipping',
 			'variable-data',
@@ -150,7 +152,9 @@
 			<BentoPreview kind={topic.preview} isDialogPreview />
 		</Div>
 	{/if}
-	{#if topic.id === 'colors'}
+	{#if topic.id === 'attachments'}
+		<AttachmentsContent {isStandalone} />
+	{:else if topic.id === 'colors'}
 		<StockColorContent
 			{introduction}
 			{isStandalone}

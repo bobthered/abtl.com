@@ -1,5 +1,6 @@
 import { topics, topicHref } from '../lib/data/topics';
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { selectBentoTopics, test } from './_test/bento';
 
 test('new content reveals once, staggers a row, and counts up without layout overflow', async ({
 	page
@@ -363,6 +364,7 @@ for (const topic of topics) {
 		page
 	}) => {
 		await page.setViewportSize({ width: 1440, height: 900 });
+		await selectBentoTopics(page, [topic.id]);
 		await page.goto('/');
 		await expect(page.locator('[data-bento-ready="true"]')).toBeVisible();
 		await page.locator(`[data-bento-topic="${topic.id}"]`).click();
@@ -542,26 +544,22 @@ for (const width of [390, 1440]) {
 		await expect(entries.first()).toHaveAttribute('data-scroll-reveal-state', 'pending');
 		await expect(entries.first()).toHaveCSS('opacity', '0');
 		await expect(page.locator('#our-story ol')).not.toHaveAttribute('data-scroll-reveal-state');
-		await entries
-			.first()
-			.evaluate((element) =>
-				scrollTo({
-					top: scrollY + element.getBoundingClientRect().top - innerHeight * 0.75,
-					behavior: 'instant'
-				})
-			);
+		await entries.first().evaluate((element) =>
+			scrollTo({
+				top: scrollY + element.getBoundingClientRect().top - innerHeight * 0.75,
+				behavior: 'instant'
+			})
+		);
 		await expect(entries.first()).toHaveAttribute('data-scroll-reveal-state', 'complete');
 		await expect(entries.first()).toHaveCSS('opacity', '1');
 		await expect(entries.nth(4)).toHaveAttribute('data-scroll-reveal-state', 'pending');
 		await expect(entries.nth(4)).toHaveCSS('opacity', '0');
-		await entries
-			.nth(4)
-			.evaluate((element) =>
-				scrollTo({
-					top: scrollY + element.getBoundingClientRect().top - innerHeight * 0.75,
-					behavior: 'instant'
-				})
-			);
+		await entries.nth(4).evaluate((element) =>
+			scrollTo({
+				top: scrollY + element.getBoundingClientRect().top - innerHeight * 0.75,
+				behavior: 'instant'
+			})
+		);
 		await expect(entries.nth(4)).toHaveAttribute('data-scroll-reveal-state', 'complete');
 		await expect(entries.nth(4)).toHaveCSS('opacity', '1');
 	});
@@ -591,14 +589,12 @@ test('future unmarked rich list entries get independent scroll reveals', async (
 	});
 	const entries = page.locator('#future-rich-list li');
 	await expect(entries.first()).toHaveAttribute('data-scroll-reveal-state', 'pending');
-	await entries
-		.first()
-		.evaluate((element) =>
-			scrollTo({
-				top: scrollY + element.getBoundingClientRect().top - innerHeight * 0.75,
-				behavior: 'instant'
-			})
-		);
+	await entries.first().evaluate((element) =>
+		scrollTo({
+			top: scrollY + element.getBoundingClientRect().top - innerHeight * 0.75,
+			behavior: 'instant'
+		})
+	);
 	await expect(entries.first()).toHaveCSS('opacity', '1');
 	await expect(entries.last()).toHaveCSS('opacity', '0');
 	await page.emulateMedia({ reducedMotion: 'reduce' });
