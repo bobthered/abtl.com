@@ -8,4 +8,4 @@ Shared SVG content for three physical finishing styles, rendered inside a Svelte
 
 Coordinates use a hole centered at `(90, 125)` and a drawing area of approximately `180 x 140`. Translate the group to the supplied tag's hole rather than changing its tag geometry. Material variants retain steel/copper colors, white/twine/black cord, and gauge or cord-weight differences. The 26-gauge steel option is thinner than 23- and 21-gauge steel.
 
-String finish selection is owned by the Attachments section and updates the main artwork, explanatory copy, and enquiry together. Material-selection buttons show wide horizontal wave samples with material colors and thicknesses, independent of the finishing style. These are illustrative construction details, not scale drawings or specified attachment lengths.
+String finish selection is owned by the Attachments section and updates the main artwork and explanatory copy together. Material-selection buttons show wide horizontal wave samples with material colors and thicknesses, independent of the finishing style. These are illustrative construction details, not scale drawings or specified attachment lengths.

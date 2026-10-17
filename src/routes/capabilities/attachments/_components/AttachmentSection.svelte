@@ -1,18 +1,6 @@
 <script lang="ts">
 	// Imports
-	import {
-		A,
-		ActionLabel,
-		Button,
-		Container,
-		Div,
-		H2,
-		Li,
-		P,
-		Section,
-		Span,
-		Ul
-	} from '#lib/components';
+	import { Button, Container, Div, H2, Li, P, Section, Span, Ul } from '#lib/components';
 	import AttachmentArtwork from './AttachmentArtwork.svelte';
 	import type { AttachmentOption } from './options';
 	import AttachmentSample from './AttachmentSample.svelte';
@@ -36,9 +24,6 @@
 	// $derived
 	const variant = $derived(
 		option.variants.find((item) => item === selectedVariant) ?? option.variants[0] ?? ''
-	);
-	const enquiryHref = $derived(
-		`mailto:sales@abtl.com?subject=${encodeURIComponent(`${option.name} for my tags`)}&body=${encodeURIComponent(`I'd like to discuss ${option.name.toLowerCase()} for my tags.\nOption of interest: ${variant}\n${option.id === 'string' ? `Finish: ${stringFinish}\n` : ''}Item to identify: \nTag stock and size: \nAttachment point: \nHandling and exposure: \nQuantity: `)}`
 	);
 
 	// $effects
@@ -64,9 +49,6 @@
 				<H2 id={`${option.id}-heading`} class="text-4xl sm:text-5xl">{option.name}</H2>
 				<P class="mt-4 max-w-lg text-2xl font-light sm:text-3xl">{option.title}</P>
 				<P variants={['dialogBody']} class="mt-6 leading-relaxed">{option.description}</P>
-				<A href={enquiryHref} variants={['button.base']} class="mt-8" data-attachment-enquiry>
-					<ActionLabel>Discuss {option.name.toLowerCase()}</ActionLabel>
-				</A>
 			</Div>
 			<Div
 				variants={['illustration']}

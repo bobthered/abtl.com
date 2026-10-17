@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: bec4f69a667490cc6aba42978ed9a69617536fd0 -->
+<!-- pending-base: e8c1b2c431bea8a02c8db9aa92c9c4a53622696f -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: show wide material waves in attachment option buttons
+fix: remove discuss actions from attachment sections
 
-Replace wire, string, and elastic selector artwork with horizontal sine-like strands spanning the buttons. Retain material colors and thickness differences, and keep the detailed fastening styles in the main tag previews.
+Remove all five section-level Discuss links and their unused enquiry URL logic from the shared Attachments content. Update selection coverage and artwork documentation to reflect the simplified page.
 
-Remove the unused sample finishing prop, update artwork documentation and selection coverage, and reconcile the committed selector-patch removal in the changelog.
+Reconcile the committed material-wave selector update in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: show wide material waves in attachment option buttons** (`e8c1b2c`)
+  Replace wire, string and elastic selector fastenings with wide horizontal material waves, preserve colors and thicknesses, remove the unused sample finish prop, and update documentation and selection coverage while retaining detailed tag previews.
 
 - **fix: remove patches from attachment option samples** (`bec4f69`)
   Remove patches from wire, string and elastic selection artwork while retaining the main tag previews and dedicated patch sample.

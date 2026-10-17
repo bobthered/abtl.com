@@ -13,6 +13,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
 		await page.goto('/capabilities/attachments');
 		await expect(page).toHaveTitle('Attachments | Allen-Bailey Tag & Label');
 		await expect(page.locator('[data-attachment-section]')).toHaveCount(5);
+		await expect(page.getByRole('link', { name: /^Discuss/i })).toHaveCount(0);
 		await expect(page.locator('[data-attachment-section]').first()).toHaveAttribute(
 			'data-attachment-ready',
 			'true',
@@ -27,8 +28,6 @@ for (const colorScheme of ['light', 'dark'] as const) {
 		]) {
 			const section = page.locator(`[data-attachment-section="${id}"]`);
 			await expect(section.getByRole('heading', { name, exact: true })).toBeVisible();
-			const href = await section.locator('[data-attachment-enquiry]').getAttribute('href');
-			expect(new URL(href!).searchParams.get('body')).toContain(id);
 		}
 		for (const [id, labels] of Object.entries(variants)) {
 			const items = page.locator(`[data-attachment-section="${id}"] li`);
@@ -43,8 +42,6 @@ for (const colorScheme of ['light', 'dark'] as const) {
 					'data-attachment-variant',
 					label
 				);
-				const href = await section.locator('[data-attachment-enquiry]').getAttribute('href');
-				expect(new URL(href!).searchParams.get('body')).toContain(`Option of interest: ${label}`);
 			}
 		}
 		for (const width of [1440, 390]) {
@@ -93,7 +90,7 @@ test('attachment sections and specifications are discoverable without JavaScript
 	await context.close();
 });
 
-test('string finishing styles update the tag and enquiry while material samples stay simple', async ({
+test('string finishing styles update the tag while material samples stay simple', async ({
 	page
 }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -111,8 +108,6 @@ test('string finishing styles update the tag and enquiry while material samples 
 		'aria-pressed',
 		'true'
 	);
-	const href = await section.locator('[data-attachment-enquiry]').getAttribute('href');
-	expect(new URL(href!).searchParams.get('body')).toContain('Finish: knotted');
 	await section.getByRole('button', { name: 'Looped', exact: true }).focus();
 	await page.keyboard.press('Enter');
 	await expect(section.locator('[data-attachment-fastening="looped"]')).toHaveCount(1);
