@@ -6,21 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: c5053942e72da5eb036eb16e2d793cbbb491b796 -->
+<!-- pending-base: 4af6c0f8ffb61de0c6890f7bfb1f9b8d3f98967c -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: use native radios for exclusive state choices sitewide
+fix: show selected radio choices with checkmark handles
 
-Audit the site's state controls and migrate thirteen exclusive groups across Attachments, stock colors, synthetic materials, variable data, shipping, warehousing, and homepage metrics. Compose Sveltewind Radio and Label in a shared RadioChoice component with checked indicators, visible focus, typed bindings, and independent names for page and dialog instances.
+Render a Lucide checkmark only for selected choices through Sveltewind Radio's handle snippet. Retain the native radio input, group bindings, keyboard behavior, focus indicators, and existing indicator visibility options.
 
-Preserve multi-select controls, independent toggles, and action buttons. Extend automatic scroll reveals and staggering to radio groups and labels, remove the unused selectable-button variant, and update interaction tests for checked state and native keyboard behavior.
-
-Document the audit and validate initial selection, arrow keys, preview updates, responsive layouts, and future unmarked radio content. Reconcile the committed attachment Discuss-link removal in the changelog.
+Update component documentation and checked/unchecked icon coverage, and reconcile the committed sitewide radio migration in the changelog.
 ```
 
 ## 2026-10-17
+
+- **refactor: use native radios for exclusive state choices sitewide** (`4af6c0f`)
+  Migrate thirteen exclusive groups to shared Sveltewind-based RadioChoice controls, retain independent toggles and multi-selects, support radio-group entrance staggering, remove an unused button variant, and document and cover checked state, keyboard access and preview behavior.
 
 - **fix: remove discuss actions from attachment sections** (`c505394`)
   Remove the five section-level Discuss links and unused enquiry URLs from shared Attachments content, and update selection coverage and artwork documentation.

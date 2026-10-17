@@ -1,7 +1,8 @@
 <script lang="ts" generics="Value extends string | number | boolean">
 	// Imports
+	import { Check } from '#lib/icons';
 	import type { HTMLLabelAttributes } from 'svelte/elements';
-	import { Label, Radio, Span } from '#lib/components';
+	import { Input, Label, Radio, Span } from '#lib/components';
 	import type { Snippet } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
 
@@ -31,6 +32,27 @@
 	}: Props = $props();
 </script>
 
+{#snippet handle()}
+	<!-- Radio's handle replaces its default input; retain the native control here. -->
+	<Input
+		bind:group
+		{name}
+		{value}
+		type="radio"
+		variants={['unstyled']}
+		aria-label={ariaLabel}
+		aria-controls={ariaControls}
+		class="absolute inset-0 z-10 m-0 h-full w-full cursor-pointer rounded-sm opacity-0"
+	/>
+	{#if isIndicatorVisible && group === value}
+		<Check
+			class="pointer-events-none absolute top-3 right-3 size-4 text-primary-600 dark:text-primary-300"
+			aria-hidden="true"
+			data-radio-check
+		/>
+	{/if}
+{/snippet}
+
 <Label
 	{...restProps}
 	aria-label={ariaLabel}
@@ -39,20 +61,7 @@
 		className
 	)}
 >
-	<Radio
-		bind:group
-		{name}
-		{value}
-		aria-label={ariaLabel}
-		aria-controls={ariaControls}
-		class="peer absolute inset-0 z-10 m-0 h-full w-full cursor-pointer rounded-sm opacity-0"
-	/>
-	{#if isIndicatorVisible}
-		<Span
-			class="pointer-events-none absolute top-3 right-3 size-4 rounded-full bg-white inset-ring-1 inset-ring-gray-400 peer-checked:bg-primary-500 peer-checked:inset-ring-4 peer-checked:inset-ring-white dark:bg-gray-950 dark:inset-ring-gray-500 dark:peer-checked:bg-primary-400 dark:peer-checked:inset-ring-gray-950"
-			aria-hidden="true"
-		/>
-	{/if}
+	<Radio {handle} />
 	<Span
 		class={twMerge(
 			'pointer-events-none flex w-full min-w-0 flex-wrap items-center gap-3',

@@ -36,9 +36,16 @@ for (const [route, count] of [
 			expect(names.has(name!)).toBe(false);
 			names.add(name!);
 			await radios.first().check();
+			if (route !== '/' && !route.endsWith('stock-colors')) {
+				await expect(radios.first().locator('..').locator('[data-radio-check]')).toHaveCount(1);
+			}
 			await radios.first().press('ArrowRight');
 			await expect(radios.nth(1)).toBeChecked();
 			await expect(radios.first()).not.toBeChecked();
+			if (route !== '/' && !route.endsWith('stock-colors')) {
+				await expect(radios.first().locator('..').locator('[data-radio-check]')).toHaveCount(0);
+				await expect(radios.nth(1).locator('..').locator('[data-radio-check]')).toHaveCount(1);
+			}
 			await expect(group.locator('input:checked')).toHaveCount(1);
 			await radios.nth(1).press('ArrowLeft');
 			await expect(radios.first()).toBeChecked();
