@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: e8c1b2c431bea8a02c8db9aa92c9c4a53622696f -->
+<!-- pending-base: c5053942e72da5eb036eb16e2d793cbbb491b796 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: remove discuss actions from attachment sections
+refactor: use native radios for exclusive state choices sitewide
 
-Remove all five section-level Discuss links and their unused enquiry URL logic from the shared Attachments content. Update selection coverage and artwork documentation to reflect the simplified page.
+Audit the site's state controls and migrate thirteen exclusive groups across Attachments, stock colors, synthetic materials, variable data, shipping, warehousing, and homepage metrics. Compose Sveltewind Radio and Label in a shared RadioChoice component with checked indicators, visible focus, typed bindings, and independent names for page and dialog instances.
 
-Reconcile the committed material-wave selector update in the changelog.
+Preserve multi-select controls, independent toggles, and action buttons. Extend automatic scroll reveals and staggering to radio groups and labels, remove the unused selectable-button variant, and update interaction tests for checked state and native keyboard behavior.
+
+Document the audit and validate initial selection, arrow keys, preview updates, responsive layouts, and future unmarked radio content. Reconcile the committed attachment Discuss-link removal in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: remove discuss actions from attachment sections** (`c505394`)
+  Remove the five section-level Discuss links and unused enquiry URLs from shared Attachments content, and update selection coverage and artwork documentation.
 
 - **fix: show wide material waves in attachment option buttons** (`e8c1b2c`)
   Replace wire, string and elastic selector fastenings with wide horizontal material waves, preserve colors and thicknesses, remove the unused sample finish prop, and update documentation and selection coverage while retaining detailed tag previews.

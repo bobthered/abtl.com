@@ -12,6 +12,7 @@
 		H3,
 		Img,
 		P,
+		RadioChoice,
 		Section,
 		Span,
 		StockTag
@@ -30,6 +31,7 @@
 	// consts
 	const colorStudioSideClass =
 		'absolute top-1/2 w-28 -translate-y-1/2 transition-transform duration-700 ease-out sm:w-36 motion-reduce:transition-none';
+	const controlId = $props.id();
 
 	// $props()
 	let {
@@ -98,14 +100,19 @@
 					<P class="max-w-40 text-base">stock colors.<Br />One unmistakable impression.</P>
 				</Div>
 				<P class="mt-8 mb-3 text-sm font-medium">Try a stock color</P>
-				<Div class="flex max-w-sm flex-wrap gap-2" role="group" aria-label="Preview stock colors">
+				<Div
+					class="flex max-w-sm flex-wrap gap-2"
+					role="radiogroup"
+					aria-label="Preview stock colors"
+				>
 					{#each stockColors as color (color.id)}
-						<Button
-							variants={['ghost']}
+						<RadioChoice
+							isIndicatorVisible={false}
+							bind:group={selectedColorId}
+							value={color.id}
+							name={`${controlId}-stock`}
 							class="size-10 min-h-0 p-2"
 							aria-label={`Preview ${color.name}`}
-							aria-pressed={selectedColorId === color.id}
-							onclick={() => (selectedColorId = color.id)}
 						>
 							<Span
 								class={twMerge(
@@ -116,7 +123,7 @@
 										: ''
 								)}
 							/>
-						</Button>
+						</RadioChoice>
 					{/each}
 				</Div>
 			</Div>

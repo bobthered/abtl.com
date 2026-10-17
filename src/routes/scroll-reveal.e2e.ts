@@ -298,9 +298,9 @@ for (const isDialog of [false, true]) {
 		}
 		const content = page.locator('[data-stock-color-content]');
 		const preview = content.locator('figure');
-		const swatches = content.getByRole('group', { name: 'Preview stock colors' });
+		const swatches = content.getByRole('radiogroup', { name: 'Preview stock colors' });
 		const samples = content.getByRole('button', { name: 'Request Samples', exact: true });
-		for (const item of [preview, swatches.getByRole('button').first(), samples]) {
+		for (const item of [preview, swatches.locator('label').first(), samples]) {
 			await expect(item).not.toHaveAttribute('data-scroll-reveal');
 			await expect(item).toHaveCSS('opacity', '0');
 		}
@@ -308,7 +308,7 @@ for (const isDialog of [false, true]) {
 		await expect(preview).toHaveAttribute('data-scroll-reveal-state', 'complete');
 		await expect(swatches).toHaveAttribute('data-scroll-reveal-state', 'complete');
 		await expect(preview).toHaveCSS('opacity', '1');
-		await swatches.getByRole('button', { name: 'Preview White', exact: true }).click();
+		await swatches.getByRole('radio', { name: 'Preview White', exact: true }).click();
 		await expect(preview.locator('[data-stock-preview-color]')).toHaveAttribute(
 			'data-stock-preview-color',
 			'white'
@@ -484,8 +484,8 @@ for (const isDialog of [false, true]) {
 				await expect(page.locator('[data-bento-ready="true"]')).toBeVisible();
 				await page.locator('[data-bento-topic="colors"]').click();
 			}
-			const group = page.getByRole('group', { name: 'Preview stock colors' });
-			const buttons = group.getByRole('button');
+			const group = page.getByRole('radiogroup', { name: 'Preview stock colors' });
+			const buttons = group.locator('label');
 			await expect(buttons).toHaveCount(21);
 			await expect(buttons.first()).toHaveCSS('opacity', '0');
 			await group.scrollIntoViewIfNeeded();
@@ -497,7 +497,7 @@ for (const isDialog of [false, true]) {
 			expect(new Set(delays).size).toBe(21);
 			expect(delays.at(-1)).toBeGreaterThan(500);
 			expect(delays[1]).toBeLessThan(140);
-			await buttons.last().focus();
+			await buttons.last().getByRole('radio').focus();
 			await expect(buttons.last()).toHaveCSS('opacity', '1');
 			await expect
 				.poll(() => buttons.last().evaluate((element) => element.getAnimations().length))
@@ -523,7 +523,7 @@ test('navigation smooth scroll does not consume incoming below-fold reveals', as
 	await expect(page).toHaveURL(/\/capabilities\/stock-colors$/);
 	await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 	await expect(page.locator('main h1')).toHaveAttribute('data-scroll-reveal-state', 'complete');
-	const swatches = page.getByRole('group', { name: 'Preview stock colors' }).getByRole('button');
+	const swatches = page.getByRole('radiogroup', { name: 'Preview stock colors' }).locator('label');
 	await expect(swatches).toHaveCount(21);
 	await expect(swatches.first()).toHaveAttribute('data-scroll-reveal-state', 'pending');
 	await expect(swatches.last()).toHaveAttribute('data-scroll-reveal-state', 'pending');

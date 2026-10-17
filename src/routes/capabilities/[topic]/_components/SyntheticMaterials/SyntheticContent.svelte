@@ -4,13 +4,13 @@
 		A,
 		ActionLabel,
 		Br,
-		Button,
 		Container,
 		Div,
 		H2,
 		H3,
 		H4,
 		P,
+		RadioChoice,
 		Range,
 		Section,
 		Span,
@@ -23,6 +23,9 @@
 	import type { Snippet } from 'svelte';
 	import { syntheticMaterials } from './materials';
 	import { twMerge } from 'tailwind-merge';
+
+	// consts
+	const controlId = $props.id();
 
 	// $props()
 	let { introduction, isStandalone = false }: { introduction: Snippet; isStandalone?: boolean } =
@@ -160,16 +163,20 @@
 				application.
 			</P>
 		</Div>
-		<Div class="mt-10 flex flex-wrap gap-2" role="group" aria-label="Explore synthetic materials">
+		<Div
+			class="mt-10 flex flex-wrap gap-2"
+			role="radiogroup"
+			aria-label="Explore synthetic materials"
+		>
 			{#each syntheticMaterials as option (option.id)}
-				<Button
-					variants={['neutral-outline', 'neutral-selectable']}
-					aria-pressed={selectedMaterial === option.id}
-					onclick={() => (selectedMaterial = option.id)}
+				<RadioChoice
+					bind:group={selectedMaterial}
+					value={option.id}
+					name={`${controlId}-material`}
 					data-synthetic-material={option.id}
 				>
 					{option.name}
-				</Button>
+				</RadioChoice>
 			{/each}
 		</Div>
 		<Div

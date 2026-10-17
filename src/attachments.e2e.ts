@@ -30,14 +30,14 @@ for (const colorScheme of ['light', 'dark'] as const) {
 			await expect(section.getByRole('heading', { name, exact: true })).toBeVisible();
 		}
 		for (const [id, labels] of Object.entries(variants)) {
-			const items = page.locator(`[data-attachment-section="${id}"] li`);
+			const items = page.locator(`[data-attachment-section="${id}"] [data-attachment-choice]`);
 			await expect(items).toHaveText(labels);
 			const section = page.locator(`[data-attachment-section="${id}"]`);
 			for (const label of labels) {
-				const button = section.getByRole('button', { name: label, exact: true });
+				const button = section.getByRole('radio', { name: label, exact: true });
 				await button.focus();
-				await page.keyboard.press('Enter');
-				await expect(button).toHaveAttribute('aria-pressed', 'true');
+				await page.keyboard.press('Space');
+				await expect(button).toBeChecked();
 				await expect(section.locator('[data-attachment-artwork]')).toHaveAttribute(
 					'data-attachment-variant',
 					label
@@ -86,7 +86,9 @@ test('attachment sections and specifications are discoverable without JavaScript
 	await standalone.goto(new URL('/capabilities/attachments', page.url()).href);
 	await expect(standalone.locator('[data-attachment-section]')).toHaveCount(5);
 	for (const [id, labels] of Object.entries(variants))
-		await expect(standalone.locator(`[data-attachment-section="${id}"] li`)).toHaveText(labels);
+		await expect(
+			standalone.locator(`[data-attachment-section="${id}"] [data-attachment-choice]`)
+		).toHaveText(labels);
 	await context.close();
 });
 
@@ -101,15 +103,12 @@ test('string finishing styles update the tag while material samples stay simple'
 	await expect(
 		section.locator('[data-attachment-choice] [data-attachment-material="string"]')
 	).toHaveCount(3);
-	await section.getByRole('button', { name: 'Knotted', exact: true }).click();
+	await section.getByRole('radio', { name: 'Knotted', exact: true }).click();
 	await expect(section.locator('[data-attachment-fastening="knotted"]')).toHaveCount(1);
 	await expect(section.locator('[data-attachment-fastening="looped"]')).toHaveCount(0);
-	await expect(section.getByRole('button', { name: 'Knotted', exact: true })).toHaveAttribute(
-		'aria-pressed',
-		'true'
-	);
-	await section.getByRole('button', { name: 'Looped', exact: true }).focus();
-	await page.keyboard.press('Enter');
+	await expect(section.getByRole('radio', { name: 'Knotted', exact: true })).toBeChecked();
+	await section.getByRole('radio', { name: 'Looped', exact: true }).focus();
+	await page.keyboard.press('Space');
 	await expect(section.locator('[data-attachment-fastening="looped"]')).toHaveCount(1);
 	await expect(
 		section.locator('[data-attachment-choice] [data-attachment-material="string"]')

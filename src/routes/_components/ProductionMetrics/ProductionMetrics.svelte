@@ -1,11 +1,12 @@
 <script lang="ts">
 	// Imports
-	import { Button, Container, Div, H2, P, Section, Span } from '#lib/components';
+	import { Container, Div, H2, P, RadioChoice, Section, Span } from '#lib/components';
 	import MetricCanvas from './MetricCanvas.svelte';
 	import { stockColors } from '#lib/data/stockColors.js';
 	import { twMerge } from 'tailwind-merge';
 
 	// consts
+	const controlId = $props.id();
 	const indicatorPositions = [
 		'left-0 top-0 lg:left-0',
 		'left-1/2 top-0 lg:left-1/4',
@@ -77,6 +78,8 @@
 		</Div>
 		<Div
 			class="relative isolate grid grid-cols-2 border-y border-gray-200 lg:grid-cols-4 dark:border-gray-800"
+			role="radiogroup"
+			aria-label="Metric animation"
 			data-metric-grid
 		>
 			<Div
@@ -92,16 +95,18 @@
 				<Span class={twMerge(metricRuleClass, 'bottom-0')} />
 			</Div>
 			{#each metrics as metric, index (metric.label)}
-				<Button
-					type="button"
+				<RadioChoice
+					bind:group={selectedIndex}
+					value={index}
+					name={`${controlId}-metric`}
+					isIndicatorVisible={false}
+					contentClass="flex-col items-center gap-4"
 					aria-controls="metric-animation-panel"
-					aria-pressed={selectedIndex === index}
-					variants={['ghost']}
 					class="relative flex min-w-0 flex-col items-center justify-start gap-4 rounded-sm bg-transparent px-4 py-10 text-center font-normal text-gray-600 no-underline transition-colors duration-500 hover:bg-transparent hover:text-gray-950 focus:bg-transparent focus:text-gray-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600 data-[active=true]:text-gray-950 motion-reduce:transition-none sm:px-6 lg:py-12 dark:bg-transparent dark:text-gray-400 dark:hover:bg-transparent dark:hover:text-gray-50 dark:focus:bg-transparent dark:focus:text-gray-50 dark:focus-visible:outline-primary-300 dark:data-[active=true]:text-gray-50"
 					aria-label={metric.label}
 					data-metric-index={index}
 					data-active={activeIndex === index}
-					onclick={() => {
+					onchange={() => {
 						selectedIndex = index;
 						selectionRevision += 1;
 						activeIndex = index;
@@ -109,7 +114,7 @@
 					onpointerenter={() => {
 						activeIndex = index;
 					}}
-					onfocus={() => {
+					onfocusin={() => {
 						activeIndex = index;
 					}}
 				>
@@ -126,7 +131,7 @@
 					<Span class="block max-w-56 text-sm leading-relaxed sm:text-base">
 						{metric.description}
 					</Span>
-				</Button>
+				</RadioChoice>
 			{/each}
 		</Div>
 	</Container>

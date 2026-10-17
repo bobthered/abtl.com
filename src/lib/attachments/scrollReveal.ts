@@ -8,11 +8,11 @@ const revealDuration = 700;
 const staggerGap = (count: number) => (count > 1 ? 140 / Math.sqrt(count - 1) : 0);
 const staggerChildren = (element: Element): RevealElement[] => {
 	const isExplicit = element.hasAttribute('data-scroll-stagger');
-	if (!isExplicit && !element.matches('[role="group"]')) return [];
+	if (!isExplicit && !element.matches('[role="group"], [role="radiogroup"]')) return [];
 	return [...element.children].filter(
 		(child): child is RevealElement =>
 			(child instanceof HTMLElement || child instanceof SVGElement) &&
-			(isExplicit || child.matches('a, button, input, select, textarea')) &&
+			(isExplicit || child.matches('a, button, input, select, textarea, label:has(input)')) &&
 			!child.matches('.sr-only, [data-scroll-reveal="off"]')
 	);
 };
@@ -20,7 +20,7 @@ const revealViewportOffset = 0.2;
 const pendingClass = 'motion-safe:opacity-0';
 
 const contentSelector =
-	'h1, h2, h3, h4, h5, h6, p, article, figure, figcaption, img, a, button, ul, ol, li, dl, blockquote, pre, table, form, label, input, select, textarea, details, summary, [role="group"]';
+	'h1, h2, h3, h4, h5, h6, p, article, figure, figcaption, img, a, button, ul, ol, li, dl, blockquote, pre, table, form, label, input, select, textarea, details, summary, [role="group"], [role="radiogroup"]';
 const selector = `:is(main, dialog, footer) :is(${contentSelector}, div, span, svg, canvas), footer nav, [data-marquee], [data-bento-topic], [data-scroll-reveal], [data-count-up], [data-scroll-stagger]`;
 const numberFormat = new Intl.NumberFormat('en-US');
 const excluded =

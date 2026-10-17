@@ -10,6 +10,7 @@
 		H2,
 		H3,
 		P,
+		RadioChoice,
 		Section,
 		Span,
 		WarehouseScene
@@ -21,6 +22,7 @@
 
 	// consts
 	const allocations = [2, 4, 6];
+	const controlId = $props.id();
 	const stages = ['Produce', 'Warehouse', 'Release'];
 
 	// helpers
@@ -150,15 +152,11 @@
 				</Div>
 				<Div>
 					<P class="mb-3 text-sm font-medium">Try a release</P>
-					<Div class="flex flex-wrap gap-2" role="group" aria-label="Demo release quantity">
+					<Div class="flex flex-wrap gap-2" role="radiogroup" aria-label="Demo release quantity">
 						{#each allocations as amount (amount)}
-							<Button
-								variants={['neutral', ...(quantity === amount ? ['selected'] : [])]}
-								aria-pressed={quantity === amount}
-								onclick={() => (quantity = amount)}
-							>
+							<RadioChoice bind:group={quantity} value={amount} name={`${controlId}-quantity`}>
 								{amount} cartons
-							</Button>
+							</RadioChoice>
 						{/each}
 					</Div>
 				</Div>
@@ -201,21 +199,13 @@
 				</P>
 			</Div>
 			<Div class="rounded-sm bg-gray-100 p-6 sm:p-10 dark:bg-gray-900">
-				<Div class="flex flex-wrap gap-2" role="group" aria-label="Compare order workflows">
-					<Button
-						variants={['neutral', ...(!isStocked ? ['selected'] : [])]}
-						aria-pressed={!isStocked}
-						onclick={() => (isStocked = false)}
-					>
+				<Div class="flex flex-wrap gap-2" role="radiogroup" aria-label="Compare order workflows">
+					<RadioChoice bind:group={isStocked} value={false} name={`${controlId}-workflow`}>
 						New production
-					</Button>
-					<Button
-						variants={['neutral', ...(isStocked ? ['selected'] : [])]}
-						aria-pressed={isStocked}
-						onclick={() => (isStocked = true)}
-					>
+					</RadioChoice>
+					<RadioChoice bind:group={isStocked} value={true} name={`${controlId}-workflow`}>
 						Warehoused stock
-					</Button>
+					</RadioChoice>
 				</Div>
 				<Div class="mt-8 space-y-4">
 					{#each stages as stage, index (stage)}

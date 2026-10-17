@@ -18,13 +18,13 @@ for (const width of [390, 1440]) {
 		);
 		await expect(links.nth(2).locator('[data-count-up]')).toHaveText('21');
 		await expect(links.nth(0)).toHaveAccessibleName(/Over 90 million/);
-		await expect(links.first()).toHaveAttribute('aria-pressed', 'true');
+		await expect(links.first().getByRole('radio')).toBeChecked();
 		await expect(section.locator('[data-metric-animation]')).toHaveAttribute(
 			'data-metric-animation',
 			'0'
 		);
 		await page.mouse.move(0, 0);
-		await links.first().focus();
+		await links.first().getByRole('radio').focus();
 		await expect(links.first()).toHaveAttribute('data-active', 'true');
 		await expect
 			.poll(async () =>
@@ -34,14 +34,14 @@ for (const width of [390, 1440]) {
 		const start = (await highlight.boundingBox())!.x;
 		await links.last().hover();
 		await expect(links.last()).toHaveAttribute('data-active', 'true');
-		await expect(links.first()).toHaveAttribute('aria-pressed', 'true');
+		await expect(links.first().getByRole('radio')).toBeChecked();
 		await expect
 			.poll(async () =>
 				Math.abs((await highlight.boundingBox())!.x - (await links.last().boundingBox())!.x)
 			)
 			.toBeLessThan(2);
 		expect((await highlight.boundingBox())!.x).toBeGreaterThan(start);
-		await links.nth(2).focus();
+		await links.nth(2).getByRole('radio').focus();
 		await expect(links.nth(2)).toHaveAttribute('data-active', 'true');
 		await expect
 			.poll(async () =>
@@ -52,7 +52,7 @@ for (const width of [390, 1440]) {
 		expect(await section.evaluate((el) => el.scrollWidth <= innerWidth)).toBe(true);
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await expect(highlight).toHaveCSS('transition-property', 'none');
-		await links.nth(1).focus();
+		await links.nth(1).getByRole('radio').focus();
 		await expect(links.nth(1)).toHaveAttribute('data-active', 'true');
 		await expect
 			.poll(async () =>
@@ -92,7 +92,7 @@ for (const width of [390, 1440]) {
 		].entries()) {
 			const selector = page.locator(`[data-metric-index="${index}"]`);
 			await selector.click();
-			await expect(selector).toHaveAttribute('aria-pressed', 'true');
+			await expect(selector.getByRole('radio')).toBeChecked();
 			await expect(panel).toHaveAttribute('data-metric-animation', String(index));
 			await expect(canvas).toHaveAccessibleName(new RegExp(name));
 			await canvas.scrollIntoViewIfNeeded();

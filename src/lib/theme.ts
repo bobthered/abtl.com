@@ -34,11 +34,6 @@ export const initializeTheme = () => {
 		'border-t border-gray-200 py-12 sm:py-16 dark:border-gray-800'
 	);
 	theme.set.variant('p', 'dialogBody', 'max-w-2xl text-gray-600 dark:text-gray-300');
-	theme.set.variant(
-		'button',
-		'neutral-selectable',
-		'aria-pressed:bg-primary-500 aria-pressed:text-white dark:aria-pressed:bg-primary-500 dark:aria-pressed:text-white'
-	);
 	theme.set.variant('card', 'neutral', 'bg-gray-100 dark:bg-gray-950');
 	theme.set.variant('button', 'large', 'min-h-16 px-8 py-5 text-lg');
 	theme.set.variant(

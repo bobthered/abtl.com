@@ -4,16 +4,16 @@
 		A,
 		ActionLabel,
 		Br,
-		Button,
 		Container,
 		Div,
 		H2,
 		H3,
 		P,
+		RadioChoice,
 		Section,
 		Span
 	} from '#lib/components';
-	import { Check, Mail } from '#lib/icons';
+	import { Mail } from '#lib/icons';
 	import { ContentLayout } from '#lib/layouts';
 	import DataApplications from './DataApplications.svelte';
 	import DataFormats from './DataFormats.svelte';
@@ -26,6 +26,7 @@
 	import VariableDataTag from './VariableDataTag.svelte';
 
 	// consts
+	const controlId = $props.id();
 	const dataArtworkClass =
 		'rounded-sm bg-gradient-to-br from-primary-100 via-gray-100 to-secondary-100 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950';
 	const motionPreference = new MediaQuery('(prefers-reduced-motion: reduce)', true);
@@ -68,27 +69,20 @@
 				<P class="mt-6 text-sm text-gray-500 dark:text-gray-400">
 					Choose a sample record to see the printed information change.
 				</P>
-				<Div class="mt-6 space-y-2" role="group" aria-label="Sample data records">
+				<Div class="mt-6 space-y-2" role="radiogroup" aria-label="Sample data records">
 					{#each ticketExamples as record, index (record.reference)}
-						<Button
-							variants={[...(selectedTicketIndex === index ? ['selected'] : [])]}
+						<RadioChoice
+							bind:group={selectedTicketIndex}
+							value={index}
+							name={`${controlId}-record`}
 							class="flex w-full items-center justify-between gap-3 rounded-sm bg-white px-4 py-4 text-left text-gray-950 inset-ring-1 inset-ring-gray-200 hover:bg-primary-50 hover:text-gray-950 focus:bg-primary-50 focus:text-gray-950 dark:bg-gray-900 dark:text-gray-50 dark:inset-ring-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50"
 							aria-label={`Sample ${record.number}, reference ${record.reference}`}
-							aria-pressed={selectedTicketIndex === index}
-							onclick={() => (selectedTicketIndex = index)}
 						>
 							<Span class="font-mono text-xs sm:text-sm">{record.number}</Span>
 							<Span class="min-w-0 flex-1 text-sm">
 								{record.reference}
 							</Span>
-							<Check
-								class={twMerge(
-									'size-4 shrink-0',
-									selectedTicketIndex === index ? 'opacity-100' : 'opacity-0'
-								)}
-								aria-hidden="true"
-							/>
-						</Button>
+						</RadioChoice>
 					{/each}
 				</Div>
 			</Div>

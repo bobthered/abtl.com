@@ -1,10 +1,23 @@
 <script lang="ts">
 	// Imports
-	import { Button, Circle, Div, H3, Img, Logo, P, Path, Section, Span, Svg } from '#lib/components';
+	import {
+		Circle,
+		Div,
+		H3,
+		Img,
+		Logo,
+		P,
+		Path,
+		RadioChoice,
+		Section,
+		Span,
+		Svg
+	} from '#lib/components';
 	import { Barcode, QrCode, ScanLine, Type } from '#lib/icons';
 	import type { TicketExample } from './ticketExamples';
 
 	// consts
+	const controlId = $props.id();
 	const formats = [
 		{
 			id: 'text',
@@ -178,15 +191,11 @@
 			<P variants={['dialogBody']} class="mt-6">
 				The information comes first. The format should suit the person, scanner, or system using it.
 			</P>
-			<Div class="mt-8 flex flex-wrap gap-4" role="group" aria-label="Compare data formats">
+			<Div class="mt-8 flex flex-wrap gap-4" role="radiogroup" aria-label="Compare data formats">
 				{#each formats as option (option.id)}
-					<Button
-						variants={['neutral-outline', ...(option.id === selectedFormatId ? ['selected'] : [])]}
-						aria-pressed={option.id === selectedFormatId}
-						onclick={() => (selectedFormatId = option.id)}
-					>
+					<RadioChoice bind:group={selectedFormatId} value={option.id} name={`${controlId}-format`}>
 						<option.icon class="size-5" aria-hidden="true" />{option.label}
-					</Button>
+					</RadioChoice>
 				{/each}
 			</Div>
 			<Div class="mt-8" aria-live="polite">

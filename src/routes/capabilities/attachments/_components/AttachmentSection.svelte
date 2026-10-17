@@ -1,13 +1,15 @@
 <script lang="ts">
 	// Imports
-	import { Button, Container, Div, H2, Li, P, Section, Span, Ul } from '#lib/components';
+	import { Container, Div, H2, P, RadioChoice, Section, Span } from '#lib/components';
 	import AttachmentArtwork from './AttachmentArtwork.svelte';
 	import type { AttachmentOption } from './options';
 	import AttachmentSample from './AttachmentSample.svelte';
-	import { Check } from '#lib/icons';
 	import { floatIllustration } from '#lib/attachments';
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
+
+	// consts
+	const controlId = $props.id();
 
 	// $props()
 	let {
@@ -18,7 +20,7 @@
 
 	// $state
 	let isReady = $state(false);
-	let selectedVariant = $state('');
+	let selectedVariant = $state<string>(untrack(() => option.variants[0] ?? ''));
 	let stringFinish = $state<'looped' | 'knotted'>('looped');
 
 	// $derived
@@ -76,18 +78,14 @@
 		{#if option.id === 'string'}
 			<Div
 				class="mt-8 flex flex-wrap items-center gap-4"
-				role="group"
+				role="radiogroup"
 				aria-label="String finishing style"
 			>
 				<P class="text-lg font-medium">Choose a finish</P>
 				{#each ['looped', 'knotted'] as finish (finish)}
-					<Button
-						variants={['neutral-outline', ...(stringFinish === finish ? ['selected'] : [])]}
-						aria-pressed={stringFinish === finish}
-						onclick={() => (stringFinish = finish as 'looped' | 'knotted')}
-					>
+					<RadioChoice bind:group={stringFinish} value={finish} name={`${controlId}-finish`}>
 						{finish === 'looped' ? 'Looped' : 'Knotted'}
-					</Button>
+					</RadioChoice>
 				{/each}
 			</Div>
 			<P class="mt-3 text-sm text-gray-600 dark:text-gray-300" aria-live="polite">
@@ -103,7 +101,7 @@
 					Choose a detail. Picture the finished tag.
 				</P>
 			</Div>
-			<Ul
+			<Div
 				class={twMerge(
 					'mt-4 grid list-none grid-cols-2 gap-4 p-0',
 					option.variants.length === 3
@@ -112,33 +110,28 @@
 							? 'lg:max-w-3xl'
 							: 'lg:grid-cols-4'
 				)}
+				role="radiogroup"
 				aria-label={`${option.name} options`}
 			>
 				{#each option.variants as item (item)}
-					<Li>
-						<Button
-							variants={['ghost']}
-							class={twMerge(
-								'relative block w-full rounded-sm bg-gray-50 p-5 text-left text-gray-950 inset-ring-1 inset-ring-gray-200 hover:bg-gray-100 hover:text-gray-950 dark:bg-gray-950 dark:text-gray-50 dark:inset-ring-gray-800 dark:hover:bg-gray-900 dark:hover:text-gray-50',
-								item === variant
-									? 'inset-ring-2 inset-ring-primary-500 dark:inset-ring-primary-400'
-									: ''
-							)}
-							aria-label={item}
-							aria-pressed={item === variant}
-							onclick={() => (selectedVariant = item)}
-							data-attachment-choice={item}
-						>
-							<AttachmentSample kind={option.id} variant={item} />
-							<Span class="mt-4 block text-base font-medium">{item}</Span>
-							{#if item === variant}<Check
-									class="absolute top-4 right-4 size-4 text-primary-500"
-									aria-hidden="true"
-								/>{/if}
-						</Button>
-					</Li>
+					<RadioChoice
+						bind:group={selectedVariant}
+						value={item}
+						name={`${controlId}-material`}
+						class={twMerge(
+							'relative block w-full rounded-sm bg-gray-50 p-5 text-left text-gray-950 inset-ring-1 inset-ring-gray-200 hover:bg-gray-100 hover:text-gray-950 dark:bg-gray-950 dark:text-gray-50 dark:inset-ring-gray-800 dark:hover:bg-gray-900 dark:hover:text-gray-50',
+							item === variant
+								? 'inset-ring-2 inset-ring-primary-500 dark:inset-ring-primary-400'
+								: ''
+						)}
+						aria-label={item}
+						data-attachment-choice={item}
+					>
+						<AttachmentSample kind={option.id} variant={item} />
+						<Span class="mt-4 block text-base font-medium">{item}</Span>
+					</RadioChoice>
 				{/each}
-			</Ul>
+			</Div>
 		{:else}
 			<Div
 				class="mt-8 flex items-center gap-4 rounded-sm bg-gray-50 px-6 py-4 inset-ring-1 inset-ring-gray-200 dark:bg-gray-950 dark:inset-ring-gray-800"

@@ -20,7 +20,7 @@ test('warehousing releases demo stock, compares workflows, and refreshes as a st
 	const dialog = page.getByRole('dialog', { name: 'Produce in volume. Release on demand.' });
 	await expect(dialog).toBeVisible();
 	await expect(dialog.locator('[data-warehouse-count]')).toHaveText('24cartons');
-	await dialog.getByRole('button', { name: '6 cartons', exact: true }).click();
+	await dialog.getByRole('radio', { name: '6 cartons', exact: true }).click();
 	await dialog.getByRole('button', { name: 'Release from stock', exact: true }).click();
 	await expect(dialog.locator('[data-warehouse-count]')).toHaveText('18cartons');
 	await expect(dialog.locator('[data-warehouse-status]')).toHaveText(
@@ -34,11 +34,11 @@ test('warehousing releases demo stock, compares workflows, and refreshes as a st
 	).toBeDisabled();
 	await dialog.getByRole('button', { name: 'Reset demo', exact: true }).click();
 	await expect(dialog.locator('[data-warehouse-count]')).toHaveText('24cartons');
-	await dialog.getByRole('button', { name: 'New production', exact: true }).click();
+	await dialog.getByRole('radio', { name: 'New production', exact: true }).click();
 	await expect(dialog.locator('[data-warehouse-workflow]')).toContainText(
 		'A new run starts with production'
 	);
-	await dialog.getByRole('button', { name: 'Warehoused stock', exact: true }).click();
+	await dialog.getByRole('radio', { name: 'Warehoused stock', exact: true }).click();
 	await expect(dialog.locator('[data-warehouse-workflow]')).toContainText(
 		'Release from available stock'
 	);
@@ -132,7 +132,7 @@ test('variable data preserves the supplied tag and compares matching code format
 	await expect(output.locator('svg')).toHaveAttribute('viewBox', '0 0 180 648');
 	await expect(output.locator('[data-variable-matrix]')).toHaveCount(7);
 	const firstCode = await output.locator('[data-variable-matrix]').first().getAttribute('href');
-	await dialog.getByRole('button', { name: 'Sample 003, reference 612002', exact: true }).click();
+	await dialog.getByRole('radio', { name: 'Sample 003, reference 612002', exact: true }).click();
 	await expect(output.locator('[data-variable-ticket]')).toHaveAttribute(
 		'data-variable-ticket',
 		'612002'
@@ -195,20 +195,20 @@ test('variable data preserves the supplied tag and compares matching code format
 		'alt',
 		'Code 128 encoding 003/612002'
 	);
-	await format.getByRole('button', { name: 'QR code', exact: true }).click();
+	await format.getByRole('radio', { name: 'QR code', exact: true }).click();
 	await expect(format.locator('[data-variable-format-code]')).toHaveAttribute(
 		'alt',
 		'QR code encoding 003/612002'
 	);
-	const matrixButton = format.getByRole('button', { name: 'Data Matrix', exact: true });
+	const matrixButton = format.getByRole('radio', { name: 'Data Matrix', exact: true });
 	await matrixButton.focus();
-	await matrixButton.press('Enter');
-	await expect(matrixButton).toHaveAttribute('aria-pressed', 'true');
+	await matrixButton.press('Space');
+	await expect(matrixButton).toBeChecked();
 	await expect(format.locator('[data-variable-format-code]')).toHaveAttribute(
 		'alt',
 		'Data Matrix encoding 003/612002'
 	);
-	await format.getByRole('button', { name: 'Printed text', exact: true }).click();
+	await format.getByRole('radio', { name: 'Printed text', exact: true }).click();
 	await expect(format.locator('[data-variable-format-code]')).toHaveCount(0);
 	await expect(format.locator('[data-variable-format]')).toContainText('003/612002');
 	await expect(output.locator('[data-variable-ticket]')).toHaveAttribute(
@@ -235,13 +235,13 @@ test('variable data preserves the supplied tag and compares matching code format
 		const preview = formats.locator('[data-variable-designed-label]');
 		const previewHeight = (await preview.boundingBox())!.height;
 		for (const label of ['Printed text', 'Code 128', 'QR code', 'Data Matrix']) {
-			await formats.getByRole('button', { name: label, exact: true }).click();
+			await formats.getByRole('radio', { name: label, exact: true }).click();
 			expect((await preview.boundingBox())!.height).toBeCloseTo(previewHeight, 0);
 		}
 	}
 	await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'dark' });
 	await expect(page.locator('[data-topic-ready]')).toHaveAttribute('data-topic-ready', 'true');
-	await page.getByRole('button', { name: 'Sample 002, reference 612001', exact: true }).click();
+	await page.getByRole('radio', { name: 'Sample 002, reference 612001', exact: true }).click();
 	await expect(page.locator('[data-variable-output]')).toContainText('612001-6');
 	await page.goto('/about/printing');
 	await expect(page).toHaveURL(/\/capabilities\/variable-data$/);
@@ -468,11 +468,8 @@ test('shipping opens as a route-backed dialog, selects actual destinations, and 
 	await expect(dialog).toBeVisible();
 	await expect(dialog.locator('[data-shipping-state]')).toHaveCount(50);
 	await expect(dialog.locator('[data-shipping-state-count]')).toHaveText('50');
-	await dialog.getByRole('button', { name: 'Switzerland', exact: true }).click();
-	await expect(dialog.getByRole('button', { name: 'Switzerland', exact: true })).toHaveAttribute(
-		'aria-pressed',
-		'true'
-	);
+	await dialog.getByRole('radio', { name: 'Switzerland', exact: true }).click();
+	await expect(dialog.getByRole('radio', { name: 'Switzerland', exact: true })).toBeChecked();
 	await expect(dialog.locator('[data-shipping-globe]')).toBeVisible();
 	await expect(dialog.locator('[data-shipping-content]')).not.toContainText(
 		/\borders\b|supplied report|42,932/i
@@ -523,11 +520,8 @@ test('synthetic materials opens a storm dialog, explores stock, and refreshes st
 		'storm'
 	);
 	for (const name of ['Tyvek', 'Valeron', 'Polyart', 'Tundra', 'V-Max']) {
-		await dialog.getByRole('button', { name, exact: true }).click();
-		await expect(dialog.getByRole('button', { name, exact: true })).toHaveAttribute(
-			'aria-pressed',
-			'true'
-		);
+		await dialog.getByRole('radio', { name, exact: true }).click();
+		await expect(dialog.getByRole('radio', { name, exact: true })).toBeChecked();
 	}
 	await expect(dialog.locator('[data-material-detail]')).toContainText(
 		'balance of toughness and value'

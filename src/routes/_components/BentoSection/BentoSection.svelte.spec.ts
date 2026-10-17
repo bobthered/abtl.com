@@ -187,7 +187,7 @@ it('previews stock colors and both artwork faces with a padded final sample sect
 	render(BentoSection);
 	await page.getByRole('link', { name: 'Explore What color will you choose?' }).click();
 	const dialog = page.getByRole('dialog', { name: 'What color will you choose?' });
-	await page.getByRole('button', { name: 'Preview Blue (Dark)', exact: true }).click();
+	await page.getByRole('radio', { name: 'Preview Blue (Dark)', exact: true }).click();
 	const preview = dialog.element().querySelector<HTMLElement>('[data-stock-preview-color]')!;
 	expect(preview.dataset.stockPreviewColor).toBe('blue-dark');
 	expect(preview.dataset.stockPreviewSide).toBe('front');

@@ -4,13 +4,13 @@
 		A,
 		ActionLabel,
 		Br,
-		Button,
 		Container,
 		Div,
 		G,
 		H2,
 		H3,
 		P,
+		RadioChoice,
 		Rect,
 		Section,
 		ShippingGlobe,
@@ -29,6 +29,7 @@
 	import { twMerge } from 'tailwind-merge';
 
 	// consts
+	const controlId = $props.id();
 	const shippingArtworkClass =
 		'overflow-hidden rounded-sm bg-gradient-to-br from-primary-50 via-gray-100 to-secondary-50 dark:from-primary-950 dark:via-gray-900 dark:to-secondary-950';
 
@@ -150,20 +151,17 @@
 				<P class="mt-8 mb-3 text-sm font-medium">Some of our recent shipments</P>
 				<Div
 					class="flex flex-wrap gap-2"
-					role="group"
+					role="radiogroup"
 					aria-label="Actual international destinations"
 				>
 					{#each internationalLocations as location (location.id)}
-						<Button
-							variants={[
-								'neutral-outline',
-								...(selectedLocationId === location.id ? ['selected'] : [])
-							]}
-							aria-pressed={selectedLocationId === location.id}
-							onclick={() => (selectedLocationId = location.id)}
+						<RadioChoice
+							bind:group={selectedLocationId}
+							value={location.id}
+							name={`${controlId}-destination`}
 						>
 							<MapPin class="size-4" aria-hidden="true" />{location.countryName}
-						</Button>
+						</RadioChoice>
 					{/each}
 				</Div>
 			</Div>
