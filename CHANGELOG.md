@@ -6,21 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 73e884fc6fdfadbf592d213fb99b685bfcb758e9 -->
+<!-- pending-base: 08cce309920412624072a0e07b14acfa399f6727 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: correct wired looped and knotted attachment artwork
+fix: remove patches from attachment option samples
 
-Share accurate SVG fastening details across the attachment illustrations, material samples, and homepage fan. Show wire twisted near the tag hole with two loose ends, a looped hitch with two free ends, and a knot near the cord ends while retaining the supplied tag geometry and material colors.
+Show only the fastening in wire, string, and elastic selection buttons. Preserve the patches in the main tag previews and the dedicated patch sample.
 
-Add keyboard-accessible Looped and Knotted string controls that update the tag, samples, guidance, and enquiry together. Preserve the corrected 26-gauge steel option in specifications and use the matching thinner wire artwork.
-
-Document the shared artwork, extend finish-selection coverage, update the no-JavaScript attachment test for the current route, and reconcile the committed tag-proportion and contrast fixes in the changelog.
+Reconcile the committed wired, looped, and knotted artwork update in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: correct wired looped and knotted attachment artwork** (`08cce30`)
+  Share corrected fastening SVGs across page illustrations, samples and the bento fan, add Looped/Knotted string selection and enquiry details, preserve the 26-gauge steel correction, and document and test the finishing styles and current no-JavaScript route.
 
 - **fix: align attachment preview artwork with the shared tag design** (`73e884f`)
   Use the supplied tag and patch paths with uniform scaling, apply explicit gray-950 print details, share the full-width abstract bento glow, and document and test proportions, theme contrast and responsive backgrounds.

@@ -44,12 +44,6 @@
 			class="fill-gray-50 stroke-gray-500/50 stroke-2 dark:fill-gray-950"
 		/>
 	{:else if kind === 'wire' || kind === 'string' || kind === 'elastic'}
-		<Path
-			d={patchPath}
-			transform="translate(87.02 125.457) scale(0.55)"
-			fill-rule="evenodd"
-			class="fill-tag-brown"
-		/>
 		<G transform="translate(10 20)">
 			<AttachmentFastening
 				kind={kind === 'wire' ? 'wired' : kind === 'string' ? stringFinish : 'knotted'}
