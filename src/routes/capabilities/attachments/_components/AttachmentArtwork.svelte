@@ -1,25 +1,24 @@
 <script lang="ts">
 	// Imports
 	import type { AttachmentKind } from './options';
-	import { Circle, G, Path, Svg } from '#lib/components';
+	import { AttachmentFastening, Circle, G, Path, Svg } from '#lib/components';
 	import patchSvg from '#lib/assets/tag-patch.svg?raw';
 	import shapeSvg from '#lib/assets/tag-shape.svg?raw';
-	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const patchPath = patchSvg.match(/\sd="([^"]+)"/)![1];
 	const shapePath = shapeSvg.match(/\sd="([^"]+)"/)![1];
 
 	// $props()
-	let { kind, variant = '' }: { kind: AttachmentKind; variant?: string } = $props();
+	let {
+		kind,
+		stringFinish = 'looped',
+		variant = ''
+	}: { kind: AttachmentKind; stringFinish?: 'looped' | 'knotted'; variant?: string } = $props();
 
 	// $derived
 	const isBrass = $derived(variant.includes('brass'));
-	const isCopper = $derived(variant.includes('copper'));
-	const isDark = $derived(variant === 'Black');
-	const isTwine = $derived(variant.includes('twine'));
 	const ringRadius = $derived(variant.startsWith('3/8') ? 26 : variant.startsWith('1/4') ? 21 : 18);
-	const wireWidth = $derived(variant.startsWith('25') ? 1.5 : variant.startsWith('23') ? 2 : 3);
 </script>
 
 <Svg
@@ -66,42 +65,13 @@
 			class="fill-none stroke-primary-700 stroke-4"
 		/>
 	</G>
-	{#if kind === 'wire'}
-		<Path
-			d="M199 132C145 111 140 46 183 40C246 30 272 94 212 131 M199 132L211 109 M199 132L215 119"
-			class={twMerge('fill-none', isCopper ? 'stroke-orange-600' : 'stroke-gray-500')}
-			stroke-width={wireWidth}
-			stroke-linecap="round"
-		/>
-		<Path
-			d="M197 129C150 105 149 52 184 46C236 36 262 92 210 127"
-			class="fill-none stroke-gray-300 stroke-1"
-		/>
-	{:else if kind === 'string'}
-		<Path
-			d="M199 132C141 107 131 30 183 27C242 23 264 92 203 132 M198 131C180 112 179 153 201 134C225 111 229 147 205 134 M201 134L185 160 M204 134L220 159"
-			class={twMerge('fill-none stroke-4', isTwine ? 'stroke-tag-brown' : 'stroke-gray-300')}
-			stroke-linecap="round"
-		/>
-		<Path
-			d="M199 130C147 102 139 37 184 33C234 29 255 92 204 130"
-			class={twMerge('fill-none stroke-1', isTwine ? 'stroke-tag-buff' : 'stroke-white')}
-		/>
-	{:else if kind === 'elastic'}
-		<Path
-			d="M201 132C145 92 152 21 201 21C250 21 257 92 201 132Z"
-			class="fill-none stroke-gray-500 stroke-8"
-			stroke-linecap="round"
-		/>
-		<Path
-			d="M201 132C145 92 152 21 201 21C250 21 257 92 201 132Z"
-			class={isDark ? 'fill-none stroke-gray-950 stroke-6' : 'fill-none stroke-white stroke-6'}
-			stroke-linecap="round"
-		/>
-		<Path
-			d="M201 127C156 89 161 29 201 29C241 29 246 89 201 127"
-			class="fill-none stroke-gray-200 stroke-2"
-		/>
+	{#if kind === 'wire' || kind === 'string' || kind === 'elastic'}
+		<G transform="translate(109.36 5.78)">
+			<AttachmentFastening
+				kind={kind === 'wire' ? 'wired' : kind === 'string' ? stringFinish : 'knotted'}
+				{variant}
+			/>
+		</G>
 	{:else}
 		<Circle
 			cx="199.36"

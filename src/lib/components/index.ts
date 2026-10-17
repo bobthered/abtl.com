@@ -1,5 +1,6 @@
 export * from 'sveltewind/components';
 export { default as ActionLabel } from './ActionLabel/ActionLabel.svelte';
+export { default as AttachmentFastening } from './AttachmentFastening/AttachmentFastening.svelte';
 export { default as AttachmentsPreview } from './AttachmentsPreview/AttachmentsPreview.svelte';
 export { default as BentoItem } from './BentoItem/BentoItem.svelte';
 export { default as BentoMedia } from './BentoMedia/BentoMedia.svelte';

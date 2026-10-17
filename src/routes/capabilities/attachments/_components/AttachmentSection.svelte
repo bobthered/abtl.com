@@ -31,13 +31,14 @@
 	// $state
 	let isReady = $state(false);
 	let selectedVariant = $state('');
+	let stringFinish = $state<'looped' | 'knotted'>('looped');
 
 	// $derived
 	const variant = $derived(
 		option.variants.find((item) => item === selectedVariant) ?? option.variants[0] ?? ''
 	);
 	const enquiryHref = $derived(
-		`mailto:sales@abtl.com?subject=${encodeURIComponent(`${option.name} for my tags`)}&body=${encodeURIComponent(`I'd like to discuss ${option.name.toLowerCase()} for my tags.\nOption of interest: ${variant}\nItem to identify: \nTag stock and size: \nAttachment point: \nHandling and exposure: \nQuantity: `)}`
+		`mailto:sales@abtl.com?subject=${encodeURIComponent(`${option.name} for my tags`)}&body=${encodeURIComponent(`I'd like to discuss ${option.name.toLowerCase()} for my tags.\nOption of interest: ${variant}\n${option.id === 'string' ? `Finish: ${stringFinish}\n` : ''}Item to identify: \nTag stock and size: \nAttachment point: \nHandling and exposure: \nQuantity: `)}`
 	);
 
 	// $effects
@@ -80,7 +81,7 @@
 					The finishing detail / {option.name}
 				</Span>
 				<Div {@attach floatIllustration} class="h-88 px-6 pt-8 sm:h-112">
-					<AttachmentArtwork kind={option.id} {variant} />
+					<AttachmentArtwork kind={option.id} {stringFinish} {variant} />
 				</Div>
 				{#if variant}<P
 						class="absolute right-6 bottom-5 rounded-sm bg-white/90 px-3 py-2 text-sm font-medium dark:bg-gray-950/90"
@@ -90,6 +91,29 @@
 					</P>{/if}
 			</Div>
 		</Div>
+		{#if option.id === 'string'}
+			<Div
+				class="mt-8 flex flex-wrap items-center gap-4"
+				role="group"
+				aria-label="String finishing style"
+			>
+				<P class="text-lg font-medium">Choose a finish</P>
+				{#each ['looped', 'knotted'] as finish (finish)}
+					<Button
+						variants={['neutral-outline', ...(stringFinish === finish ? ['selected'] : [])]}
+						aria-pressed={stringFinish === finish}
+						onclick={() => (stringFinish = finish as 'looped' | 'knotted')}
+					>
+						{finish === 'looped' ? 'Looped' : 'Knotted'}
+					</Button>
+				{/each}
+			</Div>
+			<P class="mt-3 text-sm text-gray-600 dark:text-gray-300" aria-live="polite">
+				{stringFinish === 'looped'
+					? 'Looped through the hole with two loose ends for tying.'
+					: 'Passed through the hole with a knot near the free ends.'}
+			</P>
+		{/if}
 		{#if option.variants.length}
 			<Div class="mt-10 flex flex-wrap items-baseline justify-between gap-4">
 				<P class="text-lg font-medium">Available options</P>
@@ -123,7 +147,7 @@
 							onclick={() => (selectedVariant = item)}
 							data-attachment-choice={item}
 						>
-							<AttachmentSample kind={option.id} variant={item} />
+							<AttachmentSample kind={option.id} {stringFinish} variant={item} />
 							<Span class="mt-4 block text-base font-medium">{item}</Span>
 							{#if item === variant}<Check
 									class="absolute top-4 right-4 size-4 text-primary-500"

@@ -26,13 +26,13 @@ export const attachmentOptions = [
 	{
 		id: 'wire',
 		name: 'Wire',
-		variants: ['21 gauge steel', '23 gauge steel', '25 gauge steel', '21 gauge copper'],
+		variants: ['21 gauge steel', '23 gauge steel', '26 gauge steel', '21 gauge copper'],
 		category: 'Make the connection',
 		title: 'Keep identification with the work.',
 		description:
 			'Wire can be wrapped around an attachment point and twisted to fasten a tag to equipment, materials, or other items. The wire material and gauge affect how the connection feels and handles during fitting.',
 		guidance:
-			'A higher gauge number means thinner wire. Of our steel options, 21 gauge is the thickest and 25 gauge the thinnest. Consider flexibility, the attachment point, and the length needed to reach around it; 21 gauge copper is also available.',
+			'A higher gauge number means thinner wire. Of our steel options, 21 gauge is the thickest and 26 gauge the thinnest. Consider flexibility, the attachment point, and the length needed to reach around it; 21 gauge copper is also available.',
 		question: 'How much wire does the connection need?'
 	},
 	{

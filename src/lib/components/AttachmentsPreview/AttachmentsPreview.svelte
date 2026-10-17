@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Imports
-	import { Circle, Div, G, Path, Svg, Text } from '#lib/components';
+	import { AttachmentFastening, Circle, Div, G, Path, Svg, Text } from '#lib/components';
 	import { floatIllustration } from '#lib/attachments';
 	import patchSvg from '#lib/assets/tag-patch.svg?raw';
 	import shapeSvg from '#lib/assets/tag-shape.svg?raw';
@@ -89,35 +89,17 @@
 							class="fill-gray-50 stroke-amber-100 stroke-2 dark:fill-gray-900"
 						/>
 						<Circle cx={90} cy={115} r={16} class="fill-none stroke-white/70 stroke-1" />
-					{:else if finish.id === 'wire'}
-						<Path
-							d="M88 116C37 91 45 26 86 25C133 23 143 86 94 114L104 96M93 114L108 106"
-							class="fill-none stroke-gray-500 stroke-3"
-							stroke-linecap="round"
-						/>
-						<Path
-							d="M86 110C47 85 51 33 87 32C123 31 133 84 96 108"
-							class="fill-none stroke-gray-200 stroke-1"
-						/>
-					{:else if finish.id === 'string'}
-						<Path
-							d="M90 115C35 89 34 20 83 18C140 15 146 84 90 115M90 115C65 91 68 139 90 115C115 90 118 139 90 115M90 115L75 145M90 115L108 144"
-							class="fill-none stroke-gray-400 stroke-5"
-							stroke-linecap="round"
-						/>
-						<Path
-							d="M90 115C35 89 34 20 83 18C140 15 146 84 90 115"
-							class="fill-none stroke-white stroke-3"
-						/>
-					{:else if finish.id === 'elastic'}
-						<Path
-							d="M90 115C29 74 44 13 90 13C136 13 151 74 90 115Z"
-							class="fill-none stroke-gray-900 stroke-8"
-						/>
-						<Path
-							d="M90 110C40 73 51 22 90 22C129 22 140 73 90 110"
-							class="fill-none stroke-gray-500 stroke-2"
-						/>
+					{:else if finish.id === 'wire' || finish.id === 'string' || finish.id === 'elastic'}
+						<G transform="translate(0 -10)">
+							<AttachmentFastening
+								kind={finish.id === 'wire'
+									? 'wired'
+									: finish.id === 'string'
+										? 'looped'
+										: 'knotted'}
+								variant={finish.id === 'elastic' ? 'Black' : ''}
+							/>
+						</G>
 					{/if}
 					<G class="fill-gray-950">
 						<Text

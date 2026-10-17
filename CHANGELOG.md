@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 2b95b247a2aa72b9ee89d3d17dbc5bfac4b9dd57 -->
+<!-- pending-base: 73e884fc6fdfadbf592d213fb99b685bfcb758e9 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: align attachment preview artwork with the shared tag design
+fix: correct wired looped and knotted attachment artwork
 
-Use the supplied tag and patch SVG paths with uniform scaling to preserve their proportions. Set label text, printed details, and barcode strokes explicitly to gray-950 so they remain legible on light stock in both themes.
+Share accurate SVG fastening details across the attachment illustrations, material samples, and homepage fan. Show wire twisted near the tag hole with two loose ends, a looped hitch with two free ends, and a knot near the cord ends while retaining the supplied tag geometry and material colors.
 
-Replace the isolated fan halo with the shared full-width abstract glow used by synthetic-material and full-color bento previews. Preserve the fixed media viewport and fan interactions, update artwork notes, and cover proportions, ink contrast, and responsive backgrounds in browser checks.
+Add keyboard-accessible Looped and Knotted string controls that update the tag, samples, guidance, and enquiry together. Preserve the corrected 26-gauge steel option in specifications and use the matching thinner wire artwork.
 
-Reconcile the committed attachment bento feature in the changelog.
+Document the shared artwork, extend finish-selection coverage, update the no-JavaScript attachment test for the current route, and reconcile the committed tag-proportion and contrast fixes in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: align attachment preview artwork with the shared tag design** (`73e884f`)
+  Use the supplied tag and patch paths with uniform scaling, apply explicit gray-950 print details, share the full-width abstract bento glow, and document and test proportions, theme contrast and responsive backgrounds.
 
 - **feat: add animated attachments to the randomized homepage bento** (`2b95b24`)
   Add an animated attachment fan using shared bento interactions, randomly select six of seven capabilities per homepage request, reuse Attachments content in dialogs and its standalone route, and extend randomization, responsive, motion, navigation and no-JavaScript checks with preview documentation.
