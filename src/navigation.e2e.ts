@@ -113,12 +113,17 @@ test('navigation pages render with real links and a sign-in placeholder', async 
 		expect(response?.status()).toBe(200);
 		await expect(page.locator('main h1')).toBeVisible();
 		const expectedRoute =
-			sections.find((section) => section.href === `/${route}`)?.children[0]?.href ?? `/${route}`;
+			route === 'markets'
+				? '/markets/fire-suppression'
+				: (sections.find((section) => section.href === `/${route}`)?.children[0]?.href ??
+					`/${route}`);
 		await expect(page).toHaveURL(expectedRoute);
 		await expect(page).toHaveTitle(
 			expectedRoute === '/capabilities/attachments'
 				? 'Attachments | Allen-Bailey Tag & Label'
-				: createPageTitle(expectedRoute)
+				: expectedRoute === '/markets/fire-suppression'
+					? 'Fire Suppression | Allen-Bailey Tag & Label'
+					: createPageTitle(expectedRoute)
 		);
 		const mainNavigation = page.getByRole('navigation', { name: 'Main navigation', exact: true });
 		for (const section of sections) {
@@ -236,7 +241,9 @@ test('submenus show sorted route titles and all destinations exist', async ({ pa
 		if (section.children.length) {
 			const response = await request.get(`${section.href}?source=menu`, { maxRedirects: 0 });
 			expect(response.status()).toBe(308);
-			expect(response.headers().location).toBe(`${section.children[0].href}?source=menu`);
+			expect(section.children.map((child) => `${child.href}?source=menu`)).toContain(
+				response.headers().location
+			);
 			await mainNavigation.getByRole('button', { name: section.label, exact: true }).hover();
 			await expect(
 				page
@@ -383,7 +390,9 @@ test('section roots redirect on the server without JavaScript', async ({ browser
 	for (const section of sections.filter((section) => section.children.length)) {
 		const response = await page.goto(`${baseURL}${section.href}?source=direct`);
 		expect(response?.status()).toBe(200);
-		await expect(page).toHaveURL(`${baseURL}${section.children[0].href}?source=direct`);
+		expect(section.children.map((child) => `${baseURL}${child.href}?source=direct`)).toContain(
+			page.url()
+		);
 		await expect(page.locator('main h1')).toBeVisible();
 	}
 	await context.close();

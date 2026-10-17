@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 960f6892ba4f94821fdd24c3cc017d6a001aea33 -->
+<!-- pending-base: 1c8650734b22cb3d10d42d60109de8207321a46f -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add an interactive merchandise tags market page
+feat: add an interactive beverage market page
 
-Add Merchandise Tags to market navigation with the shared title, two alternating body sections, and centered contact CTA. Introduce merchandise, marking, and jewelry tags with original scalloped artwork and shared knotted-string details.
+Add Beverage to market navigation with separate craft beer can label, elastic growler tag, and wine label sections using the shared page layout and contact CTA. Keep the existing Markets root redirect and update navigation checks so alphabetic menu order does not determine the default page.
 
-Reuse the stock-color collection and circular ColorSwatch radios to update both previews across all 21 colors. Add native size radios for #1 through #8 with an explicitly illustrative progression and fixed preview dimensions, without inventing product measurements.
+Create original fictional packaging artwork with three beer designs and can/flat views, black or white elastic and growler/tag-detail views, and two wine designs with shared front/back flipping. Reuse the supplied tag and patch geometry, native radios, fixed preview sizes, and reduced-motion-aware shared animation.
 
-Document artwork and product scope, cover color rendering, shared state, size changes, keyboard access, themes, responsive layouts, and no-JavaScript defaults, and reconcile the committed Shellfish page in the changelog.
+Document research and product boundaries without inventing material performance or complete alcohol labels. Cover designs, views, elastic color, keyboard access, responsive themes, and no-JavaScript defaults, and reconcile the committed Merchandise Tags page in the changelog.
 ```
 
 ## 2026-10-17
+
+- **feat: add an interactive merchandise tags market page** (`1c86507`)
+  Add market navigation and original scalloped tag artwork with shared knotted string. Reuse all 21 stock-color swatches across both previews, offer eight illustrative numbered sizes in a fixed viewport, and document and cover color rendering, state, keyboard access, themes, responsiveness, and no-JavaScript defaults.
 
 - **feat: add an interactive shellfish market page** (`960f689`)
   Add market navigation and standard, pinfed, and six-up US Letter laser-compatible sheet previews with shared local personalization. Reuse tag geometry and front/back flipping, animate the pinfed strip, document primary-source research and illustrative specifications, and cover responsive, theme, keyboard, feed-motion, sheet geometry, and no-JavaScript behavior. The information-hierarchy section was removed before this commit; the sheet preview leads into the CTA.

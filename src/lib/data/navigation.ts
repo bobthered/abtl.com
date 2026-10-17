@@ -50,6 +50,11 @@ export const navigation: NavigationSection[] = [
 		description: 'Start with the way you will use it.',
 		children: [
 			{
+				href: '/markets/beverage',
+				label: 'Beverage',
+				description: 'Craft beer can labels, elastic growler tags, and wine labels.'
+			},
+			{
 				href: '/markets/fire-suppression',
 				label: 'Fire Suppression',
 				description: 'Inspection tags, service labels, and collars for fire-service teams.'
