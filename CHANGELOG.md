@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 2f654619695c86f08ca77978d7bc4af84154981f -->
+<!-- pending-base: 960f6892ba4f94821fdd24c3cc017d6a001aea33 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add an interactive shellfish market page
+feat: add an interactive merchandise tags market page
 
-Add Shellfish to market navigation and the shared title, alternating body sections, and centered contact CTA layout. Introduce confirmed standard, pinfed, and six-up laser-compatible US Letter sheet formats with digger and harvester examples and an additional dealer/shipper layout concept. Show six tags on an 8.5 x 11 inch sheet and lead directly from the sheet preview into the closing CTA.
+Add Merchandise Tags to market navigation with the shared title, two alternating body sections, and centered contact CTA. Introduce merchandise, marking, and jewelry tags with original scalloped artwork and shared knotted-string details.
 
-Reuse the supplied standard tag and patch geometry, add original shellfish print artwork, and share local company, harvest-area, and species personalization across all three formats. Use native radios, shared front/back flipping, and an animated pinfed feed with fixed preview dimensions and reduced-motion support.
+Reuse the stock-color collection and circular ColorSwatch radios to update both previews across all 21 colors. Add native size radios for #1 through #8 with an explicitly illustrative progression and fixed preview dimensions, without inventing product measurements.
 
-Document primary-source research and unverified product boundaries, add responsive, theme, keyboard, feed-motion, six-up sheet geometry, and no-JavaScript coverage, and reconcile the committed Hospitality page and shared luggage-tag work in the changelog.
+Document artwork and product scope, cover color rendering, shared state, size changes, keyboard access, themes, responsive layouts, and no-JavaScript defaults, and reconcile the committed Shellfish page in the changelog.
 ```
 
 ## 2026-10-17
+
+- **feat: add an interactive shellfish market page** (`960f689`)
+  Add market navigation and standard, pinfed, and six-up US Letter laser-compatible sheet previews with shared local personalization. Reuse tag geometry and front/back flipping, animate the pinfed strip, document primary-source research and illustrative specifications, and cover responsive, theme, keyboard, feed-motion, sheet geometry, and no-JavaScript behavior. The information-hierarchy section was removed before this commit; the sheet preview leads into the CTA.
 
 - **feat: add an interactive hospitality market page** (`2f65461`)
   Add market navigation, custom-project application examples, local personalization, and shared door-hanger flipping. Share a six-label luggage-tag layout with Variable Data while preserving real codes, add independent label and claim-stub separation, and document and cover responsive, theme, keyboard, matching-reference, and no-JavaScript behavior.
