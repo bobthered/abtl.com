@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 0e0966dc08c49c80c96f7c19a470b9faa6b6c131 -->
+<!-- pending-base: 2b95b247a2aa72b9ee89d3d17dbc5bfac4b9dd57 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add animated attachments to the randomized homepage bento
+fix: align attachment preview artwork with the shared tag design
 
-Add a stock-colored attachment fan with patch, eyelet, wire, string, and elastic artwork. Share the existing bento surface expansion, gradient outline, fixed media viewport, responsive composition, keyboard interaction, and reduced-motion behavior.
+Use the supplied tag and patch SVG paths with uniform scaling to preserve their proportions. Set label text, printed details, and barcode strokes explicitly to gray-950 so they remain legible on light stock in both themes.
 
-Select six unique capabilities from seven in a random server-rendered order on each homepage request. Preserve the selection through hydration and dialog navigation, and reuse route-owned Attachments content in both the homepage dialog and standalone page.
+Replace the isolated fan halo with the shared full-width abstract glow used by synthetic-material and full-color bento previews. Preserve the fixed media viewport and fan interactions, update artwork notes, and cover proportions, ink contrast, and responsive backgrounds in browser checks.
 
-Extend random selection, responsive geometry, motion, and dialog coverage; adapt existing content tests to request their required tiles. Document the preview behavior and reconcile the committed variable-data artwork in the changelog.
+Reconcile the committed attachment bento feature in the changelog.
 ```
 
 ## 2026-10-17
+
+- **feat: add animated attachments to the randomized homepage bento** (`2b95b24`)
+  Add an animated attachment fan using shared bento interactions, randomly select six of seven capabilities per homepage request, reuse Attachments content in dialogs and its standalone route, and extend randomization, responsive, motion, navigation and no-JavaScript checks with preview documentation.
 
 - **feat: add original variable-data product artwork** (`0e0966d`)
   Replace application illustrations with original optimized product scenes and shared lightboxes, record generation prompts, add branded artwork to the live format comparison, keep the preview height fixed, and cover image loading, nested lightboxes and desktop/mobile geometry.

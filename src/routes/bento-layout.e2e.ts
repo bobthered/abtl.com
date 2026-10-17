@@ -160,6 +160,37 @@ for (const width of [390, 1440]) {
 		const tile = page.locator('[data-bento-topic="attachments"]');
 		await tile.scrollIntoViewIfNeeded();
 		await expect(tile.locator('[data-attachment-fan]')).toHaveCount(5);
+		await expect(tile.locator('[data-attachment-tag-shape]')).toHaveCount(5);
+		for (const colorScheme of ['light', 'dark'] as const) {
+			await page.emulateMedia({ colorScheme });
+			const ink = await tile
+				.locator('text')
+				.first()
+				.evaluate((element) => getComputedStyle(element).fill);
+			expect(ink).not.toBe('currentcolor');
+			await expect(tile.locator('text').first()).toHaveCSS('fill', ink);
+			const isDarkInk = await tile
+				.locator('text')
+				.first()
+				.evaluate((element) => {
+					const canvas = document.createElement('canvas');
+					const context = canvas.getContext('2d')!;
+					context.fillStyle = getComputedStyle(element).fill;
+					context.fillRect(0, 0, 1, 1);
+					const pixel = context.getImageData(0, 0, 1, 1).data;
+					return Math.max(pixel[0], pixel[1], pixel[2]) < 40;
+				});
+			expect(isDarkInk).toBe(true);
+		}
+		await page.emulateMedia({ colorScheme: 'light' });
+		const tagProportions = await tile.locator('[data-attachment-tag-shape]').evaluateAll((paths) =>
+			paths.map((path) => {
+				const bounds = (path as SVGGraphicsElement).getBBox();
+				return bounds.width / bounds.height;
+			})
+		);
+		for (const ratio of tagProportions) expect(ratio).toBeCloseTo(0.5, 2);
+
 		for (const span of width === 1440 ? [2, 4, 6] : [0]) {
 			if (span)
 				await tile.evaluate((element, span) => {
@@ -171,6 +202,9 @@ for (const width of [390, 1440]) {
 			const fan = tile.locator('[data-attachment-fan="patch"]');
 			const media = tile.locator('[data-bento-media]');
 			const bounds = await media.boundingBox();
+			const glow = (await tile.locator('[data-artwork-glow]').boundingBox())!;
+			expect(glow.width).toBeGreaterThanOrEqual((await tile.boundingBox())!.width - 1);
+
 			await expect(fan).toHaveCSS('translate', '-56px');
 			await tile.hover();
 			await expect(fan).toHaveCSS('translate', '-96px');

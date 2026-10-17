@@ -45,7 +45,7 @@
 	aria-hidden="true"
 >
 	<Div class="relative flex h-full w-full items-center justify-center">
-		{#if ['globe', 'weather', 'process'].includes(kind)}
+		{#if ['attachments', 'globe', 'weather', 'process'].includes(kind)}
 			<Div
 				class="pointer-events-none absolute inset-0 overflow-hidden mask-t-from-50% mask-t-to-95%"
 				data-artwork-glow
