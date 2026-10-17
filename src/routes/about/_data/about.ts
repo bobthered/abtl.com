@@ -17,19 +17,19 @@ export const applications = [
 	{
 		title: 'Fire service & maintenance',
 		description: 'Tags that carry service and inspection information alongside fire equipment.',
-		href: '/markets/equipment-service',
+		href: '/markets/fire-suppression',
 		icon: 'fire'
 	},
 	{
 		title: 'Industry & agriculture',
 		description: 'Custom identification for working environments, materials, and products.',
-		href: '/markets/outdoor',
+		href: '/capabilities/synthetic-materials',
 		icon: 'industry'
 	},
 	{
 		title: 'Retail, hospitality & service',
 		description: 'Stock and custom tags that put useful information into everyday interactions.',
-		href: '/markets/retail',
+		href: '/products/tags',
 		icon: 'retail'
 	}
 ] as const;

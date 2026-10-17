@@ -50,19 +50,9 @@ export const navigation: NavigationSection[] = [
 		description: 'Start with the way you will use it.',
 		children: [
 			{
-				href: '/markets/equipment-service',
-				label: 'Equipment & service',
-				description: 'Keep identification and inspection records with equipment.'
-			},
-			{
-				href: '/markets/retail',
-				label: 'Retail & brand presentation',
-				description: 'Give your product a considered finishing touch.'
-			},
-			{
-				href: '/markets/outdoor',
-				label: 'Outdoor identification',
-				description: 'Explore materials for wet and exposed environments.'
+				href: '/markets/fire-suppression',
+				label: 'Fire Suppression',
+				description: 'Inspection tags, service labels, and collars for fire-service teams.'
 			}
 		]
 	},

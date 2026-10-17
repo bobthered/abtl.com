@@ -160,8 +160,8 @@ test('compact navigation reaches pages and closes after selection', async ({ pag
 			navigation.getByRole('link', { name: section.children[0].label, exact: true })
 		).toBeVisible();
 	}
-	await navigation.getByRole('link', { name: 'Equipment & service', exact: true }).click();
-	await expect(page).toHaveURL(/\/markets\/equipment-service$/);
+	await navigation.getByRole('link', { name: 'Fire Suppression', exact: true }).click();
+	await expect(page).toHaveURL(/\/markets\/fire-suppression$/);
 	await expect(navigation).not.toBeVisible();
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

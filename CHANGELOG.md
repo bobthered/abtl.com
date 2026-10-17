@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 9cd9078a7ed806f5d78d8b6e0905e60af5cfcde9 -->
+<!-- pending-base: 6deceb5db6eb8e1c2dba3ca7fc979e710fe32f92 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: unify circular stock color radio swatches
+feat: rebuild markets around fire suppression products
 
-Share a surface-free ColorSwatch component between the attachment patch palette and stock-color preview. Show only round colors with centered selected checkmarks, using gray-50 or gray-950 for contrast while retaining native radio and keyboard behavior.
+Replace the three placeholder market pages with a dedicated Fire Suppression route using the shared title, body, and centered CTA layout. Update market navigation, the query-preserving server redirect, and About links to current destinations.
 
-Allow RadioChoice indicator styling without changing other controls, document the shared presentation, and cover all 21 swatches in both themes for contrast, centering, selection, and absent container styling. Reconcile the committed attachment artwork changes in the changelog.
+Present all 14 supplied product types through an illustrated range, five selectable tag previews with reverse views, eight label examples with fixed-height previews, and flat or fitted collar views. Lead directly from the collars section into the closing contact CTA.
+
+Keep product data and original concept artwork with the route, document their scope, add responsive, theme, interaction, redirect, and no-JavaScript coverage, and reconcile the committed color-swatch update in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: unify circular stock color radio swatches** (`6deceb5`)
+  Share bare circular color radios between patch and stock-color selectors, center contrast-aware checkmarks, expose RadioChoice indicator styling, and document and test both palettes across themes and keyboard selection.
 
 - **fix: refine attachment colors and reinforcement artwork** (`9cd9078`)
   Remove introduction links, preview all 21 patch colors, cut transparent eyelet openings through the paper and patch, add missing patches to attachment tags and the homepage fan, and document and test colors, cutouts, radios, and bento geometry.
