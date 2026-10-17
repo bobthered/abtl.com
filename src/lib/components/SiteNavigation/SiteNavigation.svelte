@@ -4,7 +4,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { ChevronDown } from '#lib/icons';
 	import { fly } from 'svelte/transition';
-	import { navigation } from '#lib/data/navigation.js';
+	import { mainNavigation as navigation } from '#lib/data/navigation.js';
 	import { onMount, tick, untrack } from 'svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { subtleReveal } from 'sveltewind/transitions';

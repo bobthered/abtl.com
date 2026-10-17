@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { createPageTitle } from './lib/pageTitle.js';
-import { navigation as sections } from './lib/data/navigation.js';
+import { mainNavigation as sections, navigation as routeSections } from './lib/data/navigation.js';
 
 test('megamenu clips horizontal travel and animates height in both directions', async ({
 	page
@@ -115,7 +115,7 @@ test('navigation pages render with real links and a sign-in placeholder', async 
 		const expectedRoute =
 			route === 'markets'
 				? '/markets/fire-suppression'
-				: (sections.find((section) => section.href === `/${route}`)?.children[0]?.href ??
+				: (routeSections.find((section) => section.href === `/${route}`)?.children[0]?.href ??
 					`/${route}`);
 		await expect(page).toHaveURL(expectedRoute);
 		await expect(page).toHaveTitle(
@@ -126,6 +126,9 @@ test('navigation pages render with real links and a sign-in placeholder', async 
 					: createPageTitle(expectedRoute)
 		);
 		const mainNavigation = page.getByRole('navigation', { name: 'Main navigation', exact: true });
+		await expect(mainNavigation.getByRole('button', { name: 'Products', exact: true })).toHaveCount(
+			0
+		);
 		for (const section of sections) {
 			await expect(
 				mainNavigation.getByRole(section.children.length ? 'button' : 'link', {
@@ -156,6 +159,7 @@ test('compact navigation reaches pages and closes after selection', async ({ pag
 	);
 	await page.getByRole('button', { name: 'Open navigation menu' }).click();
 	const navigation = page.getByRole('navigation', { name: 'Mobile navigation', exact: true });
+	await expect(navigation.getByRole('button', { name: 'Products', exact: true })).toHaveCount(0);
 	for (const section of sections.filter((section) => section.children.length)) {
 		await navigation.getByRole('button', { name: section.label, exact: true }).click();
 		await expect(
@@ -204,13 +208,15 @@ test('mega menu transitions directionally and supports keyboard dismissal', asyn
 		'data-direction',
 		'1'
 	);
-	await mainNavigation.getByRole('button', { name: 'Products', exact: true }).hover();
+	await mainNavigation.getByRole('button', { name: 'Resources', exact: true }).hover();
 	await expect(page.locator('[data-nav-panel]:not([inert])')).toHaveAttribute(
 		'data-direction',
 		'1'
 	);
 	await expect(
-		page.locator('[data-nav-panel]:not([inert])').getByRole('link', { name: 'Tags', exact: true })
+		page
+			.locator('[data-nav-panel]:not([inert])')
+			.getByRole('link', { name: 'Artwork planning', exact: true })
 	).toBeVisible();
 	await mainNavigation.getByRole('button', { name: 'Markets', exact: true }).hover();
 	await expect(page.locator('[data-nav-panel]:not([inert])')).toHaveAttribute(
@@ -220,13 +226,13 @@ test('mega menu transitions directionally and supports keyboard dismissal', asyn
 	await page.screenshot({ path: 'test-results/mega-menu-desktop.png' });
 	await page.mouse.move(20, 700);
 	await expect(page.locator('#desktop-subnavigation')).not.toBeVisible();
-	const products = mainNavigation.getByRole('button', { name: 'Products', exact: true });
-	await products.focus();
-	await products.press('ArrowDown');
+	const resources = mainNavigation.getByRole('button', { name: 'Resources', exact: true });
+	await resources.focus();
+	await resources.press('ArrowDown');
 	await expect(page.locator('[data-nav-panel] a').first()).toBeFocused();
 	await page.keyboard.press('Escape');
-	await expect(products).toBeFocused();
-	await expect(products).toHaveAttribute('aria-expanded', 'false');
+	await expect(resources).toBeFocused();
+	await expect(resources).toHaveAttribute('aria-expanded', 'false');
 });
 
 test('submenus show sorted route titles and all destinations exist', async ({ page, request }) => {
@@ -293,7 +299,7 @@ test('mega menu runs reveal and real horizontal panel transitions', async ({ pag
 	await menu.evaluate(async (node) => {
 		await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
 	});
-	await navigation.getByRole('button', { name: 'Products', exact: true }).hover();
+	await navigation.getByRole('button', { name: 'Resources', exact: true }).hover();
 	const incoming = page.locator('[data-nav-panel]:not([inert])');
 	const getTravel = async () =>
 		incoming.evaluate((node) => {
@@ -347,7 +353,7 @@ test('mobile utilities live in the menu and submenus slide with matching link si
 	await expect(
 		menu.getByRole('button', { name: 'Sign In (coming soon)', exact: true })
 	).toBeDisabled();
-	const products = menu.getByRole('button', { name: 'Products', exact: true });
+	const resources = menu.getByRole('button', { name: 'Resources', exact: true });
 	const sizing = (node: HTMLElement | SVGElement) => {
 		const style = getComputedStyle(node);
 		return [
@@ -359,12 +365,12 @@ test('mobile utilities live in the menu and submenus slide with matching link si
 			style.paddingRight
 		];
 	};
-	expect(await products.evaluate(sizing)).toEqual(
+	expect(await resources.evaluate(sizing)).toEqual(
 		await menu.getByRole('link', { name: 'News', exact: true }).evaluate(sizing)
 	);
-	await products.click();
-	const submenu = page.locator('#mobile-submenu-products');
-	await expect(products).toHaveAttribute('aria-expanded', 'true');
+	await resources.click();
+	const submenu = page.locator('#mobile-submenu-resources');
+	await expect(resources).toHaveAttribute('aria-expanded', 'true');
 	await expect(submenu).toBeVisible();
 	const hasSlide = () =>
 		submenu.evaluate((node) =>
@@ -378,8 +384,8 @@ test('mobile utilities live in the menu and submenus slide with matching link si
 	await submenu.evaluate(async (node) => {
 		await Promise.all(node.getAnimations().map((animation) => animation.finished));
 	});
-	await products.click();
-	await expect(products).toHaveAttribute('aria-expanded', 'false');
+	await resources.click();
+	await expect(resources).toHaveAttribute('aria-expanded', 'false');
 	await expect.poll(hasSlide).toBe(true);
 	await expect(submenu).not.toBeVisible();
 });

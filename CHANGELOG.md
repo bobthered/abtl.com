@@ -6,21 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 1c8650734b22cb3d10d42d60109de8207321a46f -->
+<!-- pending-base: 2e158ff82a12e189608bcfc377179630cd3f78b6 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add an interactive beverage market page
+fix: remove Products from the main navigation
 
-Add Beverage to market navigation with separate craft beer can label, elastic growler tag, and wine label sections using the shared page layout and contact CTA. Keep the existing Markets root redirect and update navigation checks so alphabetic menu order does not determine the default page.
+Filter Products from desktop and mobile primary navigation while preserving its footer link and existing routes. Update menu interaction coverage to use Resources and assert that Products is absent from both primary menus.
 
-Create original fictional packaging artwork with three beer designs and can/flat views, black or white elastic and growler/tag-detail views, and two wine designs with shared front/back flipping. Reuse the supplied tag and patch geometry, native radios, fixed preview sizes, and reduced-motion-aware shared animation.
-
-Document research and product boundaries without inventing material performance or complete alcohol labels. Cover designs, views, elastic color, keyboard access, responsive themes, and no-JavaScript defaults, and reconcile the committed Merchandise Tags page in the changelog.
+Reconcile the committed Beverage market page and its supporting navigation checks in the changelog.
 ```
 
 ## 2026-10-17
+
+- **feat: add an interactive beverage market page** (`2e158ff`)
+  Add beer can label, elastic growler tag, and wine label sections with original interactive artwork, native radios, shared tag geometry, and front/back flipping. Document research and product boundaries, cover responsive themes, views, keyboard access, contrast, and no-JavaScript defaults, and keep the existing Markets redirect independent of alphabetic menu order.
 
 - **feat: add an interactive merchandise tags market page** (`1c86507`)
   Add market navigation and original scalloped tag artwork with shared knotted string. Reuse all 21 stock-color swatches across both previews, offer eight illustrative numbered sizes in a fixed viewport, and document and cover color rendering, state, keyboard access, themes, responsiveness, and no-JavaScript defaults.

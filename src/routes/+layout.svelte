@@ -18,7 +18,7 @@
 	import { browser } from '$app/env';
 	import { ChevronDown, Menu, X } from '#lib/icons';
 	import type { ComponentProps } from 'svelte';
-	import { allNavigation, contactNavigation } from '#lib/data/navigation.js';
+	import { allNavigation, contactNavigation, mobileNavigation } from '#lib/data/navigation.js';
 	import { createPageTitle } from '#lib/pageTitle.js';
 	import { fade, slide } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
@@ -218,7 +218,7 @@
 							isVisible={isNavigationVisible}
 							transition={[subtleReveal, { duration: isReducedMotion ? 0 : 200 }]}
 						>
-							{#each allNavigation as item (item.href)}
+							{#each mobileNavigation as item (item.href)}
 								{#if item.children.length}
 									<Div class="border-b border-gray-200 dark:border-gray-800">
 										<Button

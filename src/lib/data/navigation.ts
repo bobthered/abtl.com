@@ -167,3 +167,7 @@ export const allNavigation = [
 		Number(second.children.length > 0) - Number(first.children.length > 0) ||
 		first.label.localeCompare(second.label)
 );
+
+// Products remains available in the footer; primary navigation focuses on capabilities and markets.
+export const mainNavigation = navigation.filter((section) => section.href !== '/products');
+export const mobileNavigation = allNavigation.filter((section) => section.href !== '/products');
