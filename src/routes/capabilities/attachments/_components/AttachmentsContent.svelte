@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Imports
-	import { A, ActionLabel, Br, Div, H1, H2, P } from '#lib/components';
+	import { A, ActionLabel, Br, H1, H2, P } from '#lib/components';
 	import { attachmentOptions } from './options';
 	import AttachmentSection from './AttachmentSection.svelte';
 	import { ContentLayout } from '#lib/layouts';
@@ -24,13 +24,6 @@
 		The print carries the message. Patches and eyelets reinforce the opening; wire, string, and
 		elastic connect the tag to the item. Plan every detail around the way it will be used.
 	</P>
-	<Div class="mt-8 flex flex-wrap gap-4" role="group" aria-label="Explore tag finishing details">
-		{#each attachmentOptions as option (option.id)}
-			<A href={`#${option.id}`} variants={['button.base', 'button.variant.neutral-outline']}>
-				{option.name}
-			</A>
-		{/each}
-	</Div>
 {/snippet}
 
 {#snippet callToAction()}

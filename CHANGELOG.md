@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: a80d7ed9414e775042e056a0120204729d0b38ba -->
+<!-- pending-base: f2bc0df2b5d52c7b7ce2df0b0c2401571ee35dba -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: restore the homepage metric row styling
+fix: refine attachment colors and reinforcement artwork
 
-Remove individual radio-card surfaces from the four homepage metrics so the row retains only its shared top and bottom rules and moving gradient highlight. Preserve native radio selection, keyboard focus, hover highlighting, and animation controls.
+Remove the introduction section links and add an interactive patch preview using all 21 shared stock colors. Keep the attachments introduction focused on its text.
 
-Add an optional surface-free RadioChoice presentation, document its metric usage, and cover row borders, absent card rings, gradient rules, responsive positioning, and reduced motion. Reconcile the committed initial-load reveal fix in the changelog.
+Give eyelets transparent openings through the tag, patch, and metal in the page, option samples, and homepage fan. Add missing reinforcement patches to every attachment tag while retaining strand-only material samples.
+
+Extend color selection, cutout rendering, radio, and bento regression coverage, update artwork documentation, and reconcile the committed homepage metric styling in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: restore the homepage metric row styling** (`f2bc0df`)
+  Restore shared top and bottom rules and the moving gradient highlight on the four homepage metric radios, add a surface-free RadioChoice presentation, and document and cover responsive positioning, keyboard behavior, and reduced motion.
 
 - **fix: prevent scroll-reveal flicker during initial page load** (`a80d7ed`)
   Stage initial SSR content with a head bootstrap until reveal targets are prepared, fail open for timeout, focus and reduced motion, avoid re-hiding visible content during late hydration, and document and test startup frames and fallbacks.

@@ -1,15 +1,20 @@
 <script lang="ts">
 	// Imports
 	import type { AttachmentKind } from './options';
-	import { Circle, Path, Svg } from '#lib/components';
+	import { Circle, Defs, G, Mask, Path, Rect, Svg } from '#lib/components';
 	import patchSvg from '#lib/assets/tag-patch.svg?raw';
 	import { twMerge } from 'tailwind-merge';
 
 	// consts
+	const maskId = $props.id();
 	const patchPath = patchSvg.match(/\sd="([^"]+)"/)![1];
 
 	// $props()
-	let { kind, variant }: { kind: AttachmentKind; variant: string } = $props();
+	let {
+		kind,
+		patchClass = 'text-tag-brown',
+		variant
+	}: { kind: AttachmentKind; patchClass?: string; variant: string } = $props();
 
 	// $derived
 	const isBrass = $derived(variant.includes('brass'));
@@ -49,21 +54,28 @@
 	focusable="false"
 >
 	{#if kind === 'eyelets'}
-		<Circle
-			cx="100"
-			cy="55"
-			r={radius + 9}
-			class={isBrass
-				? 'fill-amber-300 stroke-amber-700 stroke-2'
-				: 'fill-gray-300 stroke-gray-500 stroke-2'}
-		/>
-		<Circle cx="100" cy="55" r={radius + 5} class="fill-none stroke-white/60 stroke-2" />
-		<Circle
-			cx="100"
-			cy="55"
-			r={radius - 5}
-			class="fill-gray-50 stroke-gray-500/50 stroke-2 dark:fill-gray-950"
-		/>
+		<Defs>
+			<Mask id={maskId} maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="110">
+				<Rect width="200" height="110" class="fill-white" /><Circle
+					cx="100"
+					cy="55"
+					r={radius - 5}
+					class="fill-black"
+				/>
+			</Mask>
+		</Defs>
+		<G mask={`url(#${maskId})`}>
+			<Circle
+				cx="100"
+				cy="55"
+				r={radius + 9}
+				class={isBrass
+					? 'fill-amber-300 stroke-amber-700 stroke-2'
+					: 'fill-gray-300 stroke-gray-500 stroke-2'}
+			/>
+			<Circle cx="100" cy="55" r={radius + 5} class="fill-none stroke-white/60 stroke-2" />
+			<Circle cx="100" cy="55" r={radius - 5} class="fill-none stroke-gray-500/50 stroke-2" />
+		</G>
 	{:else if isStrand}
 		<Path
 			d="M8 55C38 31 70 31 100 55S162 79 192 55"
@@ -85,7 +97,7 @@
 			d={patchPath}
 			transform="translate(57 4) scale(1.8)"
 			fill-rule="evenodd"
-			class="fill-tag-brown stroke-gray-950/20 stroke-1"
+			class={twMerge('fill-current stroke-gray-950/20 stroke-1', patchClass)}
 		/>
 	{/if}
 </Svg>

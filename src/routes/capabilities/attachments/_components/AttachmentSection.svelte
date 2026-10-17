@@ -6,6 +6,7 @@
 	import AttachmentSample from './AttachmentSample.svelte';
 	import { floatIllustration } from '#lib/attachments';
 	import { onMount, untrack } from 'svelte';
+	import { stockColors } from '#lib/data/stockColors.js';
 	import { twMerge } from 'tailwind-merge';
 
 	// consts
@@ -20,10 +21,14 @@
 
 	// $state
 	let isReady = $state(false);
+	let selectedPatchColor = $state('brown');
 	let selectedVariant = $state<string>(untrack(() => option.variants[0] ?? ''));
 	let stringFinish = $state<'looped' | 'knotted'>('looped');
 
 	// $derived
+	const patchColor = $derived(
+		stockColors.find((color) => color.id === selectedPatchColor) ?? stockColors[2]
+	);
 	const variant = $derived(
 		option.variants.find((item) => item === selectedVariant) ?? option.variants[0] ?? ''
 	);
@@ -65,7 +70,12 @@
 					The finishing detail / {option.name}
 				</Span>
 				<Div {@attach floatIllustration} class="h-88 px-6 pt-8 sm:h-112">
-					<AttachmentArtwork kind={option.id} {stringFinish} {variant} />
+					<AttachmentArtwork
+						kind={option.id}
+						patchClass={option.id === 'patch' ? patchColor.className : undefined}
+						{stringFinish}
+						{variant}
+					/>
 				</Div>
 				{#if variant}<P
 						class="absolute right-6 bottom-5 rounded-sm bg-white/90 px-3 py-2 text-sm font-medium dark:bg-gray-950/90"
@@ -136,14 +146,31 @@
 			<Div
 				class="mt-8 flex items-center gap-4 rounded-sm bg-gray-50 px-6 py-4 inset-ring-1 inset-ring-gray-200 dark:bg-gray-950 dark:inset-ring-gray-800"
 			>
-				<Div class="w-32 shrink-0"><AttachmentSample kind="patch" variant="" /></Div>
+				<Div class="w-32 shrink-0">
+					<AttachmentSample kind="patch" patchClass={patchColor.className} variant="" />
+				</Div>
 				<Div>
 					<P class="font-medium">Reinforcement where the pull begins.</P><P
 						class="mt-2 text-sm text-gray-600 dark:text-gray-300"
 					>
-						A closer look at the opening, the patch, and the fastening point.
+						Available in all {stockColors.length} stock colors. Choose a color below to preview the patch.
 					</P>
 				</Div>
+			</Div>
+			<P class="mt-6 font-medium" aria-live="polite">Patch color: {patchColor.name}</P>
+			<Div class="mt-4 flex flex-wrap gap-4" role="radiogroup" aria-label="Patch stock color">
+				{#each stockColors as color (color.id)}
+					<RadioChoice
+						bind:group={selectedPatchColor}
+						value={color.id}
+						name={`${controlId}-patch-color`}
+						aria-label={color.name}
+						class="size-12 p-2"
+						contentClass="justify-center"
+					>
+						<Span class={twMerge('block size-8 rounded-sm bg-current', color.className)} />
+					</RadioChoice>
+				{/each}
 			</Div>
 		{/if}
 		<Div class="mt-8 grid gap-4 border-t border-gray-200 pt-6 lg:grid-cols-3 dark:border-gray-700">

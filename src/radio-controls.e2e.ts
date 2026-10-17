@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 for (const [route, count] of [
-	['/capabilities/attachments', 5],
+	['/capabilities/attachments', 6],
 	['/capabilities/stock-colors', 1],
 	['/capabilities/synthetic-materials', 1],
 	['/capabilities/variable-data', 2],

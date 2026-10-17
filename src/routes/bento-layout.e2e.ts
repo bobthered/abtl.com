@@ -161,6 +161,7 @@ for (const width of [390, 1440]) {
 		await tile.scrollIntoViewIfNeeded();
 		await expect(tile.locator('[data-attachment-fan]')).toHaveCount(5);
 		await expect(tile.locator('[data-attachment-tag-shape]')).toHaveCount(5);
+		await expect(tile.locator('[data-attachment-patch]')).toHaveCount(5);
 		for (const colorScheme of ['light', 'dark'] as const) {
 			await page.emulateMedia({ colorScheme });
 			const ink = await tile

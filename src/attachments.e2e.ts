@@ -1,4 +1,6 @@
 import { expect, test } from '@playwright/test';
+import sharp from 'sharp';
+import { stockColors } from './lib/data/stockColors';
 
 const variants = {
 	eyelets: ['3/16" brass', '3/8" brass', '3/16" zinc', '1/4" zinc'],
@@ -19,6 +21,18 @@ for (const colorScheme of ['light', 'dark'] as const) {
 			'true',
 			{ timeout: 60000 }
 		);
+		const introduction = page.getByRole('heading', { level: 1 }).locator('..');
+		await expect(introduction.locator('a, button, input')).toHaveCount(0);
+		const colors = page.getByRole('radiogroup', { name: 'Patch stock color' });
+		await expect(colors.getByRole('radio')).toHaveCount(stockColors.length);
+		for (const color of stockColors) {
+			await colors.getByRole('radio', { name: color.name, exact: true }).check();
+			await expect(
+				page.locator('[data-attachment-artwork="patch"] [data-attachment-patch]')
+			).toHaveClass(new RegExp(color.className));
+			await expect(page.getByText(`Patch color: ${color.name}`, { exact: true })).toBeVisible();
+		}
+		await expect(page.locator('[data-attachment-artwork] [data-attachment-patch]')).toHaveCount(5);
 		for (const [id, name] of [
 			['patch', 'Patch'],
 			['eyelets', 'Eyelets'],
@@ -44,6 +58,30 @@ for (const colorScheme of ['light', 'dark'] as const) {
 				);
 			}
 		}
+		// Compare the eyelet center with the actual backdrop after hiding the tag.
+		// A background-colored disk would differ from this backdrop in either theme.
+		const tag = page.locator('[data-attachment-artwork="eyelets"] [data-attachment-tag]');
+		const svg = page.locator('[data-attachment-artwork="eyelets"] svg');
+		await svg.scrollIntoViewIfNeeded();
+		await tag.evaluate((node) => node.classList.remove('drop-shadow-lg'));
+		const box = (await svg.boundingBox())!;
+		const scale = Math.min(box.width / 400, box.height / 440);
+		const left = Math.round((box.width - 400 * scale) / 2 + 199.3568 * scale);
+		const top = Math.round((box.height - 440 * scale) / 2 + 130.778112 * scale);
+		const hole = await sharp(await svg.screenshot())
+			.extract({ left, top, width: 1, height: 1 })
+			.raw()
+			.toBuffer();
+		await tag.evaluate((node) => node.setAttribute('visibility', 'hidden'));
+		const backdrop = await sharp(await svg.screenshot())
+			.extract({ left, top, width: 1, height: 1 })
+			.raw()
+			.toBuffer();
+		expect([...hole]).toEqual([...backdrop]);
+		await tag.evaluate((node) => {
+			node.removeAttribute('visibility');
+			node.classList.add('drop-shadow-lg');
+		});
 		for (const width of [1440, 390]) {
 			await page.setViewportSize({ width, height: 1000 });
 			const attachmentsHeading = await page

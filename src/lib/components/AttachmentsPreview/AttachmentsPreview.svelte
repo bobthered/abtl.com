@@ -1,12 +1,24 @@
 <script lang="ts">
 	// Imports
-	import { AttachmentFastening, Circle, Div, G, Path, Svg, Text } from '#lib/components';
+	import {
+		AttachmentFastening,
+		Circle,
+		Defs,
+		Div,
+		G,
+		Mask,
+		Path,
+		Rect,
+		Svg,
+		Text
+	} from '#lib/components';
 	import { floatIllustration } from '#lib/attachments';
 	import patchSvg from '#lib/assets/tag-patch.svg?raw';
 	import shapeSvg from '#lib/assets/tag-shape.svg?raw';
 	import { twMerge } from 'tailwind-merge';
 
 	// consts
+	const controlId = $props.id();
 	const finishes = [
 		{
 			id: 'patch',
@@ -64,32 +76,57 @@
 					aria-hidden="true"
 					focusable="false"
 				>
-					<G transform="translate(25.24 95.425) scale(0.55)">
+					<Defs>
+						<Mask
+							id={`${controlId}-${finish.id}`}
+							maskUnits="userSpaceOnUse"
+							x="0"
+							y="0"
+							width="237"
+							height="474"
+						>
+							<Rect width="237" height="474" class="fill-white" /><Circle
+								cx="117.745"
+								cy="35.5908"
+								r={finish.id === 'eyelets' ? 21.82 : 11.275}
+								class="fill-black"
+							/>
+						</Mask>
+					</Defs>
+					<G
+						transform="translate(25.24 95.425) scale(0.55)"
+						mask={`url(#${controlId}-${finish.id})`}
+					>
 						<Path
 							d={shapePath}
 							fill-rule="evenodd"
 							class={twMerge('stroke-gray-950/15 stroke-1', finish.color)}
 							data-attachment-tag-shape
 						/>
-						{#if finish.id === 'patch'}
-							<Path
-								d={patchPath}
-								transform="translate(94.1475 0.057)"
-								fill-rule="evenodd"
-								class="fill-tag-brown"
+
+						<Path
+							d={patchPath}
+							transform="translate(94.1475 0.057)"
+							fill-rule="evenodd"
+							class="fill-tag-brown"
+							data-attachment-patch
+						/>
+						{#if finish.id === 'eyelets'}
+							<Circle
+								cx="117.745"
+								cy="35.5908"
+								r="34.55"
+								class="fill-amber-300 stroke-amber-700 stroke-2"
+							/>
+							<Circle
+								cx="117.745"
+								cy="35.5908"
+								r="29.1"
+								class="fill-none stroke-white/70 stroke-1"
 							/>
 						{/if}
 					</G>
-					{#if finish.id === 'eyelets'}
-						<Circle cx={90} cy={115} r={19} class="fill-amber-300 stroke-amber-700 stroke-2" />
-						<Circle
-							cx={90}
-							cy={115}
-							r={12}
-							class="fill-gray-50 stroke-amber-100 stroke-2 dark:fill-gray-900"
-						/>
-						<Circle cx={90} cy={115} r={16} class="fill-none stroke-white/70 stroke-1" />
-					{:else if finish.id === 'wire' || finish.id === 'string' || finish.id === 'elastic'}
+					{#if finish.id === 'wire' || finish.id === 'string' || finish.id === 'elastic'}
 						<G transform="translate(0 -10)">
 							<AttachmentFastening
 								kind={finish.id === 'wire'
