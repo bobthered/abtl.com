@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 4af6c0f8ffb61de0c6890f7bfb1f9b8d3f98967c -->
+<!-- pending-base: ccb98b2b9a8a6f8ddd2ec2dad4676126202f7ab6 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: show selected radio choices with checkmark handles
+refactor: document predefined-option state control conventions
 
-Render a Lucide checkmark only for selected choices through Sveltewind Radio's handle snippet. Retain the native radio input, group bindings, keyboard behavior, focus indicators, and existing indicator visibility options.
+Require Radio or Select for single-choice state drawn from predefined options. Document shared RadioChoice usage, accessible group naming, native keyboard behavior, selected checkmark handles, and the distinction between selection controls, multi-selects, and action buttons.
 
-Update component documentation and checked/unchecked icon coverage, and reconcile the committed sitewide radio migration in the changelog.
+Reconcile the committed radio checkmark update in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: show selected radio choices with checkmark handles** (`ccb98b2`)
+  Render selected-only Lucide checkmarks through Radio handle snippets while retaining native inputs, group bindings, focus and keyboard behavior, and indicator visibility options; update documentation and icon coverage.
 
 - **refactor: use native radios for exclusive state choices sitewide** (`4af6c0f`)
   Migrate thirteen exclusive groups to shared Sveltewind-based RadioChoice controls, retain independent toggles and multi-selects, support radio-group entrance staggering, remove an unused button variant, and document and cover checked state, keyboard access and preview behavior.

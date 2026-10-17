@@ -55,6 +55,13 @@ Apply these conventions when creating or editing any `.svelte` file, including c
 - Before creating any project component, check Sveltewind for an existing component that meets the need, including composed components such as Calendar, Popover, and Datatable. Prefer using or composing existing Sveltewind components.
 - These markup rules concern rendered HTML elements; Svelte script/style blocks, special Svelte elements, and template directives remain available. The required SvelteKit HTML document shell in `src/app.html` is not Svelte component markup.
 
+## State selection controls
+
+- Use Sveltewind `Radio` or `Select` components whenever a control selects one value from predefined options, including preview settings, materials, formats, sample records, destinations, quantities, and workflow modes. Do not implement exclusive option selection as a group of `Button` components with click handlers or `aria-pressed`.
+- Prefer `Radio` for a small, visible set of choices; use `Select` when a compact dropdown better suits the number or length of options. Use the shared `RadioChoice` component for styled radio cards or tiles rather than duplicating its implementation.
+- Preserve native selection semantics and keyboard behavior. Give radio groups accessible names and unique shared input names per group and component instance, and bind the selected value to state. Custom Radio handle snippets must retain the native input; show a checkmark only when selected and no icon when unselected, respecting intentional indicator visibility options.
+- Use appropriate multi-select controls for independent or multiple selections; do not force them into a single-choice Radio group. Keep buttons for actions such as opening dialogs, submitting, resetting, advancing a carousel, or flipping a preview. A standalone on/off toggle is not a predefined-option group.
+
 ## Icons
 
 - Use `@lucide/svelte` for UI icons whenever an icon is needed. Import icons through `#lib/icons`, the shared entry point at `src/lib/icons/index.ts`, which re-exports all of `@lucide/svelte`. Direct Lucide imports belong only in this entry point; keep icon exports out of `src/lib/components`.
