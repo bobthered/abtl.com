@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 08cce309920412624072a0e07b14acfa399f6727 -->
+<!-- pending-base: bec4f69a667490cc6aba42978ed9a69617536fd0 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: remove patches from attachment option samples
+fix: show wide material waves in attachment option buttons
 
-Show only the fastening in wire, string, and elastic selection buttons. Preserve the patches in the main tag previews and the dedicated patch sample.
+Replace wire, string, and elastic selector artwork with horizontal sine-like strands spanning the buttons. Retain material colors and thickness differences, and keep the detailed fastening styles in the main tag previews.
 
-Reconcile the committed wired, looped, and knotted artwork update in the changelog.
+Remove the unused sample finishing prop, update artwork documentation and selection coverage, and reconcile the committed selector-patch removal in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: remove patches from attachment option samples** (`bec4f69`)
+  Remove patches from wire, string and elastic selection artwork while retaining the main tag previews and dedicated patch sample.
 
 - **fix: correct wired looped and knotted attachment artwork** (`08cce30`)
   Share corrected fastening SVGs across page illustrations, samples and the bento fan, add Looped/Knotted string selection and enquiry details, preserve the 26-gauge steel correction, and document and test the finishing styles and current no-JavaScript route.

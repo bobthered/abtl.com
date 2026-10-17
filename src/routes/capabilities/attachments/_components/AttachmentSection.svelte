@@ -147,7 +147,7 @@
 							onclick={() => (selectedVariant = item)}
 							data-attachment-choice={item}
 						>
-							<AttachmentSample kind={option.id} {stringFinish} variant={item} />
+							<AttachmentSample kind={option.id} variant={item} />
 							<Span class="mt-4 block text-base font-medium">{item}</Span>
 							{#if item === variant}<Check
 									class="absolute top-4 right-4 size-4 text-primary-500"

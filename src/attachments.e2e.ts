@@ -93,14 +93,19 @@ test('attachment sections and specifications are discoverable without JavaScript
 	await context.close();
 });
 
-test('string finishing styles update the tag, samples, and enquiry together', async ({ page }) => {
+test('string finishing styles update the tag and enquiry while material samples stay simple', async ({
+	page
+}) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/capabilities/attachments');
 	const section = page.locator('[data-attachment-section="string"]');
 	await expect(section).toHaveAttribute('data-attachment-ready', 'true');
-	await expect(section.locator('[data-attachment-fastening="looped"]')).toHaveCount(4);
+	await expect(section.locator('[data-attachment-fastening="looped"]')).toHaveCount(1);
+	await expect(
+		section.locator('[data-attachment-choice] [data-attachment-material="string"]')
+	).toHaveCount(3);
 	await section.getByRole('button', { name: 'Knotted', exact: true }).click();
-	await expect(section.locator('[data-attachment-fastening="knotted"]')).toHaveCount(4);
+	await expect(section.locator('[data-attachment-fastening="knotted"]')).toHaveCount(1);
 	await expect(section.locator('[data-attachment-fastening="looped"]')).toHaveCount(0);
 	await expect(section.getByRole('button', { name: 'Knotted', exact: true })).toHaveAttribute(
 		'aria-pressed',
@@ -110,8 +115,11 @@ test('string finishing styles update the tag, samples, and enquiry together', as
 	expect(new URL(href!).searchParams.get('body')).toContain('Finish: knotted');
 	await section.getByRole('button', { name: 'Looped', exact: true }).focus();
 	await page.keyboard.press('Enter');
-	await expect(section.locator('[data-attachment-fastening="looped"]')).toHaveCount(4);
+	await expect(section.locator('[data-attachment-fastening="looped"]')).toHaveCount(1);
+	await expect(
+		section.locator('[data-attachment-choice] [data-attachment-material="string"]')
+	).toHaveCount(3);
 	await expect(
 		page.locator('[data-attachment-section="wire"] [data-attachment-fastening="wired"]')
-	).toHaveCount(5);
+	).toHaveCount(1);
 });
