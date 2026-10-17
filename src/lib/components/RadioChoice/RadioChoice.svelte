@@ -11,6 +11,7 @@
 		children: Snippet;
 		class?: string;
 		contentClass?: string;
+		indicatorClass?: string;
 		isIndicatorVisible?: boolean;
 		isSurfaceVisible?: boolean;
 		group: Value;
@@ -26,6 +27,7 @@
 		class: className = '',
 		contentClass = '',
 		group = $bindable(),
+		indicatorClass = '',
 		isIndicatorVisible = true,
 		isSurfaceVisible = true,
 		name,
@@ -48,7 +50,10 @@
 	/>
 	{#if isIndicatorVisible && group === value}
 		<Check
-			class="pointer-events-none absolute top-3 right-3 size-4 text-primary-600 dark:text-primary-300"
+			class={twMerge(
+				'pointer-events-none absolute top-3 right-3 size-4 text-primary-600 dark:text-primary-300',
+				indicatorClass
+			)}
 			aria-hidden="true"
 			data-radio-check
 		/>

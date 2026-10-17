@@ -6,21 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: f2bc0df2b5d52c7b7ce2df0b0c2401571ee35dba -->
+<!-- pending-base: 9cd9078a7ed806f5d78d8b6e0905e60af5cfcde9 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: refine attachment colors and reinforcement artwork
+fix: unify circular stock color radio swatches
 
-Remove the introduction section links and add an interactive patch preview using all 21 shared stock colors. Keep the attachments introduction focused on its text.
+Share a surface-free ColorSwatch component between the attachment patch palette and stock-color preview. Show only round colors with centered selected checkmarks, using gray-50 or gray-950 for contrast while retaining native radio and keyboard behavior.
 
-Give eyelets transparent openings through the tag, patch, and metal in the page, option samples, and homepage fan. Add missing reinforcement patches to every attachment tag while retaining strand-only material samples.
-
-Extend color selection, cutout rendering, radio, and bento regression coverage, update artwork documentation, and reconcile the committed homepage metric styling in the changelog.
+Allow RadioChoice indicator styling without changing other controls, document the shared presentation, and cover all 21 swatches in both themes for contrast, centering, selection, and absent container styling. Reconcile the committed attachment artwork changes in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: refine attachment colors and reinforcement artwork** (`9cd9078`)
+  Remove introduction links, preview all 21 patch colors, cut transparent eyelet openings through the paper and patch, add missing patches to attachment tags and the homepage fan, and document and test colors, cutouts, radios, and bento geometry.
 
 - **fix: restore the homepage metric row styling** (`f2bc0df`)
   Restore shared top and bottom rules and the moving gradient highlight on the four homepage metric radios, add a surface-free RadioChoice presentation, and document and cover responsive positioning, keyboard behavior, and reduced motion.

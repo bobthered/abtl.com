@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Imports
-	import { Container, Div, H2, P, RadioChoice, Section, Span } from '#lib/components';
+	import { ColorSwatch, Container, Div, H2, P, RadioChoice, Section, Span } from '#lib/components';
 	import AttachmentArtwork from './AttachmentArtwork.svelte';
 	import type { AttachmentOption } from './options';
 	import AttachmentSample from './AttachmentSample.svelte';
@@ -160,16 +160,7 @@
 			<P class="mt-6 font-medium" aria-live="polite">Patch color: {patchColor.name}</P>
 			<Div class="mt-4 flex flex-wrap gap-4" role="radiogroup" aria-label="Patch stock color">
 				{#each stockColors as color (color.id)}
-					<RadioChoice
-						bind:group={selectedPatchColor}
-						value={color.id}
-						name={`${controlId}-patch-color`}
-						aria-label={color.name}
-						class="size-12 p-2"
-						contentClass="justify-center"
-					>
-						<Span class={twMerge('block size-8 rounded-sm bg-current', color.className)} />
-					</RadioChoice>
+					<ColorSwatch {color} bind:group={selectedPatchColor} name={`${controlId}-patch-color`} />
 				{/each}
 			</Div>
 		{/if}

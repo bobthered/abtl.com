@@ -5,6 +5,7 @@ export { default as AttachmentsPreview } from './AttachmentsPreview/AttachmentsP
 export { default as BentoItem } from './BentoItem/BentoItem.svelte';
 export { default as BentoMedia } from './BentoMedia/BentoMedia.svelte';
 export { default as BentoPreview } from './BentoPreview/BentoPreview.svelte';
+export { default as ColorSwatch } from './ColorSwatch/ColorSwatch.svelte';
 export { default as FloatingTagSettings } from './FloatingTags/FloatingTagSettings.svelte';
 export { default as FloatingTags } from './FloatingTags/FloatingTags.svelte';
 export { default as ImageLightbox } from './ImageLightbox/ImageLightbox.svelte';

@@ -4,6 +4,7 @@
 		ActionLabel,
 		Br,
 		Button,
+		ColorSwatch,
 		Container,
 		Div,
 		Figcaption,
@@ -12,7 +13,6 @@
 		H3,
 		Img,
 		P,
-		RadioChoice,
 		Section,
 		Span,
 		StockTag
@@ -106,24 +106,12 @@
 					aria-label="Preview stock colors"
 				>
 					{#each stockColors as color (color.id)}
-						<RadioChoice
-							isIndicatorVisible={false}
+						<ColorSwatch
+							{color}
 							bind:group={selectedColorId}
-							value={color.id}
 							name={`${controlId}-stock`}
-							class="size-10 min-h-0 p-2"
-							aria-label={`Preview ${color.name}`}
-						>
-							<Span
-								class={twMerge(
-									color.className,
-									'block size-6 rounded-full bg-current inset-ring-1 inset-ring-gray-950/20',
-									selectedColorId === color.id
-										? 'ring-2 ring-primary-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-950'
-										: ''
-								)}
-							/>
-						</RadioChoice>
+							label={`Preview ${color.name}`}
+						/>
 					{/each}
 				</Div>
 			</Div>
