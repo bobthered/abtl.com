@@ -4,36 +4,37 @@
 		A,
 		ActionLabel,
 		Br,
-		Button,
 		Container,
 		Div,
+		FlipPreview,
 		H1,
 		H2,
 		H3,
-		Label,
 		P,
 		RadioChoice,
 		Section,
-		Select
+		Span
 	} from '#lib/components';
+	import { collars, labels, tags } from './products';
 	import { ContentLayout } from '#lib/layouts';
 	import { floatIllustration } from '#lib/attachments';
-	import { labels, tags } from './products';
 	import { onMount } from 'svelte';
 	import ProductArtwork from './ProductArtwork.svelte';
-	import { RotateCw } from '#lib/icons';
 
 	// consts
 	const controlId = $props.id();
 
 	// $state
-	let collarView = $state('flat');
 	let isBackVisible = $state(false);
 	let isReady = $state(false);
+	let selectedCollarId = $state('small');
 	let selectedLabelId = $state('six-year');
 	let selectedTagId = $state('inspection');
 
 	// $derived
+	const selectedCollar = $derived(
+		collars.find((collar) => collar.id === selectedCollarId) ?? collars[0]
+	);
 	const selectedLabel = $derived(
 		labels.find((product) => product.id === selectedLabelId) ?? labels[0]
 	);
@@ -65,7 +66,7 @@
 		Your service.<Br />Your name on every detail.
 	</H2>
 	<P class="max-w-xl text-lg text-gray-300 dark:text-gray-600">
-		Send us a sample, your artwork, or a list of the tags, labels, and collars you need. We?ll work
+		Send us a sample, your artwork, or a list of the tags, labels, and collars you need. We'll work
 		through the sizes, information, materials, and finishing together.
 	</P>
 	<A href="/contact" variants={['button.base', 'button.variant.large', 'button.variant.neutral']}>
@@ -131,12 +132,23 @@
 				<Div class="mt-8 grid items-center gap-4 lg:grid-cols-2">
 					<Div
 						variants={['illustration']}
-						class="flex h-112 items-center justify-center p-6 sm:h-128"
+						class="h-112 p-6 sm:h-128"
 						data-fire-tag-preview={selectedTagId}
+						data-fire-tag-side={isBackVisible ? 'reverse' : 'front'}
 					>
-						<Div {@attach floatIllustration} class="size-full">
-							<ProductArtwork format="tag" product={selectedTag} isBack={isBackVisible} />
-						</Div>
+						<FlipPreview
+							bind:isBack={isBackVisible}
+							buttonAttributes={{ 'data-fire-tag-flip': '' }}
+						>
+							{#snippet artwork(isReverseVisible: boolean)}
+								<ProductArtwork
+									format="tag"
+									product={selectedTag}
+									isBack={isReverseVisible}
+									isBackdropVisible={false}
+								/>
+							{/snippet}
+						</FlipPreview>
 					</Div>
 					<Div class="py-6 lg:pl-12">
 						<P
@@ -150,15 +162,6 @@
 						>
 							{selectedTag.description}
 						</P>
-						<Button
-							class="mt-6"
-							variants={['neutral-outline']}
-							onclick={() => (isBackVisible = !isBackVisible)}
-						>
-							<RotateCw class="size-4" aria-hidden="true" />{isBackVisible
-								? 'View front'
-								: 'Explore the reverse'}
-						</Button>
 						<P class="mt-6 text-sm text-gray-500 dark:text-gray-400">
 							Illustrative layouts. Make the fields, wording, and artwork your own.
 						</P>
@@ -176,15 +179,21 @@
 							From a call-for-service reminder to a maintenance record, build a label around what
 							your team needs to communicate.
 						</P>
-						<Label for={`${controlId}-label`} class="mt-8 mb-3 block text-sm font-medium">
-							Explore a label type
-						</Label>
-						<Select
-							id={`${controlId}-label`}
-							bind:value={selectedLabelId}
-							options={labels.map((product) => ({ label: product.name, value: product.id }))}
-							class="w-full"
-						/>
+						<Div
+							class="mt-8 grid grid-cols-2 gap-4"
+							role="radiogroup"
+							aria-label="Fire-service label type"
+						>
+							{#each labels as product (product.id)}
+								<RadioChoice
+									bind:group={selectedLabelId}
+									value={product.id}
+									name={`${controlId}-label`}
+								>
+									{product.name}
+								</RadioChoice>
+							{/each}
+						</Div>
 						<Div class="mt-6 min-h-48" aria-live="polite">
 							<H3 class="text-2xl font-medium">{selectedLabel.headline}</H3><P
 								class="mt-4 leading-relaxed text-gray-600 dark:text-gray-300"
@@ -203,15 +212,6 @@
 						</Div>
 					</Div>
 				</Div>
-				<P class="mt-8 text-sm font-medium">The label range</P><Div
-					class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
-				>
-					{#each labels as product (product.id)}<P
-							class="border-t border-gray-200 pt-4 text-sm dark:border-gray-700"
-						>
-							{product.name}
-						</P>{/each}
-				</Div>
 				<P class="mt-8 max-w-3xl text-sm text-gray-500 dark:text-gray-400">
 					Previews illustrate layout possibilities. Make the wording, information, and artwork your
 					own.
@@ -224,10 +224,10 @@
 					<Div
 						variants={['illustration']}
 						class="h-112 p-6 sm:h-128"
-						data-fire-collar-preview={collarView}
+						data-fire-collar-preview={selectedCollarId}
 					>
 						<Div {@attach floatIllustration} class="size-full">
-							<ProductArtwork format="collar" isFitted={collarView === 'fitted'} />
+							<ProductArtwork format="collar" collar={selectedCollar} />
 						</Div>
 					</Div>
 					<Div class="py-6 lg:pl-12">
@@ -238,18 +238,29 @@
 							equipment. Start with the fit, then plan the service details and company identity
 							around it.
 						</P>
-						<Div class="mt-8 flex flex-wrap gap-4" role="radiogroup" aria-label="Collar view">
-							{#each [{ id: 'flat', name: 'View flat' }, { id: 'fitted', name: 'View on equipment' }] as view (view.id)}<RadioChoice
-									bind:group={collarView}
-									value={view.id}
+						<P class="mt-6 leading-relaxed text-gray-600 dark:text-gray-300">
+							Four sizes, each with its own type color. Every collar is white; your company name,
+							license number, phone number, and other personalized information are digitally printed
+							in black using variable data.
+						</P>
+						<Div class="mt-8 grid grid-cols-2 gap-4" role="radiogroup" aria-label="Collar size">
+							{#each collars as collar (collar.id)}
+								<RadioChoice
+									bind:group={selectedCollarId}
+									value={collar.id}
 									name={`${controlId}-collar`}
 								>
-									{view.name}
-								</RadioChoice>{/each}
+									<Span class={collar.className}>
+										<Span class="block size-3 rounded-full bg-current" />
+									</Span>{collar.name} / {collar.color}
+								</RadioChoice>
+							{/each}
 						</Div>
-						<P class="mt-6 text-sm text-gray-500 dark:text-gray-400">
-							Concept illustration. Share the neck opening, outside dimensions, and artwork for your
-							collar.
+						<P class="mt-6 text-sm font-medium" aria-live="polite">
+							{selectedCollar.name} / {selectedCollar.color} type / Black personalization
+						</P>
+						<P class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+							Illustrative layout. Personalize with your company details.
 						</P>
 					</Div>
 				</Div>

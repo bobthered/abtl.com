@@ -115,3 +115,11 @@ export const labels: FireProduct[] = [
 		fields: ['Service date', 'Company name', 'Service details']
 	}
 ];
+
+/** Owner-supplied collar sizes and their printed type colors; stock remains white. */
+export const collars = [
+	{ id: 'small', name: 'Small', color: 'Green', className: 'text-green-700' },
+	{ id: 'medium', name: 'Medium', color: 'Gray', className: 'text-gray-600' },
+	{ id: 'large', name: 'Large', color: 'Blue', className: 'text-blue-700' },
+	{ id: 'xl', name: 'XL', color: 'Purple', className: 'text-purple-700' }
+];

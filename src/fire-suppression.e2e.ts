@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { labels, tags } from './routes/markets/fire-suppression/_components/products';
+import { collars, labels, tags } from './routes/markets/fire-suppression/_components/products';
 
 for (const colorScheme of ['light', 'dark'] as const) {
 	for (const width of [390, 1440]) {
@@ -30,14 +30,21 @@ for (const colorScheme of ['light', 'dark'] as const) {
 				).toBeVisible();
 			}
 			await tagGroup.getByRole('radio', { name: 'Empty / in use tags' }).check();
-			await page.getByRole('button', { name: 'Explore the reverse' }).click();
-			await expect(page.locator('[data-fire-tag-preview]')).toContainText('IN USE');
-			await page.getByRole('button', { name: 'View front' }).click();
-			await expect(page.locator('[data-fire-tag-preview]')).toContainText('EMPTY');
-			const labelSelect = page.getByRole('combobox', { name: 'Explore a label type' });
+			await page.getByRole('button', { name: 'Turn it over' }).click();
+			await expect(page.locator('[data-fire-tag-preview] [data-flip-face="back"]')).toContainText(
+				'IN USE'
+			);
+			await page.getByRole('button', { name: 'View the face' }).click();
+			await expect(page.locator('[data-fire-tag-preview] [data-flip-face="front"]')).toContainText(
+				'EMPTY'
+			);
+			const labelGroup = page.getByRole('radiogroup', { name: 'Fire-service label type' });
+			await expect(labelGroup.getByRole('radio')).toHaveCount(labels.length);
+			await expect(page.locator('#labels select')).toHaveCount(0);
+			await expect(page.getByText('The label range', { exact: true })).toHaveCount(0);
 			const previewHeight = (await page.locator('[data-fire-label-preview]').boundingBox())!.height;
 			for (const product of labels) {
-				await labelSelect.selectOption(product.id);
+				await labelGroup.getByRole('radio', { name: product.name, exact: true }).check();
 				await expect(page.locator('[data-fire-label-preview]')).toHaveAttribute(
 					'data-fire-label-preview',
 					product.id
@@ -49,18 +56,44 @@ for (const colorScheme of ['light', 'dark'] as const) {
 					previewHeight
 				);
 			}
-			await page.getByRole('radio', { name: 'View on equipment' }).check();
-			await expect(page.locator('[data-fire-collar-preview]')).toHaveAttribute(
-				'data-fire-collar-preview',
-				'fitted'
-			);
-			await page.getByRole('radio', { name: 'View flat', exact: true }).press('ArrowRight');
-			await expect(page.getByRole('radio', { name: 'View on equipment' })).toBeChecked();
-			await page.getByRole('radio', { name: 'View flat', exact: true }).check();
-			await expect(page.locator('[data-fire-collar-preview]')).toHaveAttribute(
-				'data-fire-collar-preview',
-				'flat'
-			);
+			const collarGroup = page.getByRole('radiogroup', { name: 'Collar size' });
+			await expect(page.getByRole('radio', { name: 'View on equipment' })).toHaveCount(0);
+			for (const collar of collars) {
+				await collarGroup
+					.getByRole('radio', { name: `${collar.name} / ${collar.color}`, exact: true })
+					.check();
+				const preview = page.locator('[data-fire-collar-preview]');
+				await expect(preview).toHaveAttribute('data-fire-collar-preview', collar.id);
+				await expect(preview.locator('[data-fire-collar-ink]')).toHaveClass(
+					new RegExp(collar.className)
+				);
+				await expect(preview.locator('[data-fire-collar-stock]')).toHaveCSS(
+					'fill',
+					'rgb(255, 255, 255)'
+				);
+				const ink = await preview
+					.locator('[data-fire-collar-ink]')
+					.evaluate((node) => getComputedStyle(node).color);
+				for (const text of await preview.locator('[data-fire-collar-ink] text').all()) {
+					await expect(text).toHaveCSS('fill', ink);
+				}
+				for (const text of await preview.locator('[data-fire-collar-personalization] text').all()) {
+					await expect(text).toHaveCSS('fill', 'rgb(0, 0, 0)');
+				}
+			}
+			await collarGroup.getByRole('radio').first().press('ArrowRight');
+			await expect(collarGroup.getByRole('radio').nth(1)).toBeChecked();
+			const tagPreview = page.locator('[data-fire-tag-preview]');
+			const flip = tagPreview.getByRole('button', { name: 'Turn it over' });
+			await flip.scrollIntoViewIfNeeded();
+			const panelBox = (await tagPreview.boundingBox())!;
+			const flipBox = (await flip.boundingBox())!;
+			expect(
+				Math.abs(flipBox.x + flipBox.width / 2 - panelBox.x - panelBox.width / 2)
+			).toBeLessThan(1);
+			expect(flipBox.y).toBeGreaterThan(panelBox.y + panelBox.height * 0.75);
+			expect(flipBox.y + flipBox.height).toBeLessThanOrEqual(panelBox.y + panelBox.height);
+
 			await expect(page.locator('main a[href^="/markets/"]')).toHaveCount(0);
 			expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
 				true

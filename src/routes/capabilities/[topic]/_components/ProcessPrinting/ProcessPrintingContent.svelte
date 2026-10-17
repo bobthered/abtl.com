@@ -7,6 +7,7 @@
 		Button,
 		Container,
 		Div,
+		FlipPreview,
 		H2,
 		H3,
 		P,
@@ -14,7 +15,7 @@
 		Section,
 		Span
 	} from '#lib/components';
-	import { Check, FlipHorizontal2, Layers, RotateCcw } from '#lib/icons';
+	import { Check, Layers, RotateCcw } from '#lib/icons';
 	import { ContentLayout } from '#lib/layouts';
 	import { floatIllustration } from '#lib/attachments';
 	import type { Snippet } from 'svelte';
@@ -198,26 +199,16 @@
 					</Span>
 					<Span class="font-mono text-xs text-gray-500 dark:text-gray-400">4 + 4 = 8</Span>
 				</Div>
-				<Div {@attach floatIllustration}>
-					<ProcessArtwork
-						class="min-h-112 sm:min-h-128"
-						isBackdropVisible={false}
-						{isBack}
-						isDuplex
-					/>
-				</Div>
-				<Div class="flex justify-center">
-					<Button
-						variants={['neutral-outline']}
-						onclick={() => (isBack = !isBack)}
-						aria-pressed={isBack}
-						data-process-flip
-					>
-						<FlipHorizontal2 class="size-5 rotate-90" aria-hidden="true" />{isBack
-							? 'View the face'
-							: 'Turn it over'}
-					</Button>
-				</Div>
+				<FlipPreview
+					bind:isBack
+					viewportClass="h-112 flex-none sm:h-128"
+					buttonAttributes={{ 'data-process-flip': '' }}
+					class="mt-4"
+				>
+					{#snippet artwork(isReverseVisible: boolean)}
+						<ProcessArtwork isBackdropVisible={false} isBack={isReverseVisible} isDuplex />
+					{/snippet}
+				</FlipPreview>
 			</Div>
 		</Div>
 	</Section>

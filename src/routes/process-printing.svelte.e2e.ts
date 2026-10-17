@@ -60,7 +60,7 @@ test('full-color printing opens a routed dialog, combines ink channels, and flip
 		)
 		.toBe(composite);
 	const sides = dialog.locator('[data-process-section="sides"]');
-	const duplex = sides.locator('[data-print-duplex]');
+	const duplex = sides.locator('[data-flip-face][aria-hidden="false"] [data-print-duplex]');
 	await sides.scrollIntoViewIfNeeded();
 	const face = await duplex
 		.locator('canvas')

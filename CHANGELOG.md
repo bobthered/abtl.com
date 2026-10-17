@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 6deceb5db6eb8e1c2dba3ca7fc979e710fe32f92 -->
+<!-- pending-base: ff19d04e35cb74f322db90ac42fa78805a905ee3 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: rebuild markets around fire suppression products
+fix: share animated product flips and refine fire-service options
 
-Replace the three placeholder market pages with a dedicated Fire Suppression route using the shared title, body, and centered CTA layout. Update market navigation, the query-preserving server redirect, and About links to current destinations.
+Share an animated FlipPreview component between Fire Suppression and full-color printing, with a fixed viewport, bottom control, readable front/back artwork, keyboard support, and reduced motion. Keep ink-registration rendering separate from the shared flip and measure canvas layout independently of rotation.
 
-Present all 14 supplied product types through an illustrated range, five selectable tag previews with reverse views, eight label examples with fixed-height previews, and flat or fitted collar views. Lead directly from the collars section into the closing contact CTA.
+Replace collar equipment views with Small/Green, Medium/Gray, Large/Blue, and XL/Purple options. Keep collars white, use the size color for type, and show company, license, and phone personalization in digitally printed black variable data.
 
-Keep product data and original concept artwork with the route, document their scope, add responsive, theme, interaction, redirect, and no-JavaScript coverage, and reconcile the committed color-swatch update in the changelog.
+Replace the label selector with eight visible radio choices and remove the duplicate label range list. Update route-owned artwork, product data, documentation, and responsive flip, label, collar, and printing regression coverage, and reconcile the committed Fire Suppression market rebuild in the changelog.
 ```
 
 ## 2026-10-17
+
+- **feat: rebuild markets around fire suppression products** (`ff19d04`)
+  Replace placeholder markets with a shared-layout Fire Suppression page, introduce all 14 supplied product types through interactive tag, label, and collar examples, update navigation and About links, and cover responsive layouts, themes, retired routes, and server redirects. The initial planning section was removed before this commit so collars lead directly into the closing CTA.
 
 - **fix: unify circular stock color radio swatches** (`6deceb5`)
   Share bare circular color radios between patch and stock-color selectors, center contrast-aware checkmarks, expose RadioChoice indicator styling, and document and test both palettes across themes and keyboard selection.

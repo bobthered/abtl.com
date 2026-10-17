@@ -1,9 +1,11 @@
 <script lang="ts">
 	// Imports
+	import { collars } from './products';
 	import { Circle, G, Path, Rect, Svg, Text } from '#lib/components';
 	import type { FireProduct } from './products';
 	import patchSvg from '#lib/assets/tag-patch.svg?raw';
 	import shapeSvg from '#lib/assets/tag-shape.svg?raw';
+	import { twMerge } from 'tailwind-merge';
 
 	// consts
 	const patchPath = patchSvg.match(/\sd="([^"]+)"/)![1];
@@ -11,14 +13,16 @@
 
 	// $props()
 	let {
+		collar = collars[0],
 		format,
 		isBack = false,
-		isFitted = false,
+		isBackdropVisible = true,
 		product
 	}: {
+		collar?: (typeof collars)[number];
 		format: 'tag' | 'label' | 'collar';
 		isBack?: boolean;
-		isFitted?: boolean;
+		isBackdropVisible?: boolean;
 		product?: FireProduct;
 	} = $props();
 </script>
@@ -30,8 +34,10 @@
 	focusable="false"
 	data-fire-artwork={format}
 >
-	<Circle cx="240" cy="240" r="190" class="fill-primary-500/5" />
-	<Circle cx="240" cy="240" r="145" class="fill-none stroke-primary-500/15" />
+	{#if isBackdropVisible}
+		<Circle cx="240" cy="240" r="190" class="fill-primary-500/5" />
+		<Circle cx="240" cy="240" r="145" class="fill-none stroke-primary-500/15" />
+	{/if}
 	{#if format === 'tag'}
 		<G transform="translate(139 32) scale(0.85)" class="drop-shadow-xl">
 			<Path d={shapePath} fill-rule="evenodd" class="fill-tag-manila stroke-gray-950/15" />
@@ -181,75 +187,49 @@
 				<Path d="M400 380V335H445Z" class="fill-gray-50 stroke-gray-300" />
 			{/if}
 		</G>
-	{:else if isFitted}
-		<G class="drop-shadow-xl">
-			<Path
-				d="M202 150H278V253C278 281 337 292 337 335V453H143V335C143 292 202 281 202 253Z"
-				class="fill-red-700 stroke-red-950/20"
-			/>
-			<Path d="M197 133H283V161H197Z" class="fill-gray-700" />
-			<Path d="M226 133V106H299V120H247V133Z" class="fill-gray-800" />
-			<Path
-				d="M240 201a104 40 0 1 0 0 80a104 40 0 1 0 0-80ZM240 222a47 18 0 1 1 0 36a47 18 0 1 1 0-36Z"
-				fill-rule="evenodd"
-				class="fill-tag-yellow stroke-gray-950/20"
-			/>
-			<Text
-				x="240"
-				y="272"
-				text-anchor="middle"
-				class="fill-gray-950 font-sans text-[10px] font-semibold tracking-wider"
-			>
-				SERVICE RECORD
-			</Text>
-			<Rect x="173" y="320" width="134" height="84" rx="2" class="fill-white" />
-			<Text
-				x="240"
-				y="350"
-				text-anchor="middle"
-				class="fill-gray-950 font-sans text-xs font-semibold"
-			>
-				YOUR EQUIPMENT
-			</Text>
-			<Path d="M188 368H292M188 385H270" class="stroke-gray-400" />
-		</G>
 	{:else}
 		<G class="drop-shadow-xl">
 			<Path
 				d="M240 72a168 168 0 1 0 0 336a168 168 0 1 0 0-336ZM240 176a64 64 0 1 1 0 128a64 64 0 1 1 0-128Z"
 				fill-rule="evenodd"
-				class="fill-tag-yellow stroke-gray-950/20"
+				class="fill-white stroke-gray-950/20"
+				data-fire-collar-stock
 			/>
-			<Text
-				x="240"
-				y="135"
-				text-anchor="middle"
-				class="fill-gray-950 font-sans text-base font-semibold tracking-widest"
-			>
-				YOUR COMPANY
-			</Text>
-			<Text
-				x="240"
-				y="350"
-				text-anchor="middle"
-				class="fill-gray-950 font-sans text-sm font-semibold"
-			>
-				SERVICE RECORD
-			</Text>
-			<Text
-				x="240"
-				y="376"
-				text-anchor="middle"
-				class="fill-gray-950 font-sans text-[10px] tracking-widest"
-			>
-				DATE / TECHNICIAN / IDENTIFIER
-			</Text>
-			{#each [0, 1, 2, 3] as index (index)}
-				<Path
-					d={`M${100 + index * 14} ${200 - index * 15}L${134 + index * 10} ${215 - index * 15}`}
-					class="stroke-gray-950/35"
-				/>
-			{/each}
+			<G class={twMerge('fill-current', collar.className)} data-fire-collar-ink>
+				<Text
+					x="240"
+					y="125"
+					text-anchor="middle"
+					class="font-sans text-sm font-semibold tracking-widest"
+				>
+					SERVICE RECORD
+				</Text>
+				<Text
+					x="240"
+					y="154"
+					text-anchor="middle"
+					class="font-sans text-base font-bold tracking-widest"
+				>
+					{collar.name.toUpperCase()}
+				</Text>
+				{#each [0, 1, 2, 3] as index (index)}
+					<Path
+						d={`M${100 + index * 14} ${200 - index * 15}L${134 + index * 10} ${215 - index * 15}`}
+						class="stroke-current"
+					/>
+				{/each}
+			</G>
+			<G class="fill-black text-black" data-fire-collar-personalization>
+				<Text x="240" y="340" text-anchor="middle" class="font-sans text-sm font-semibold">
+					YOUR COMPANY
+				</Text>
+				<Text x="240" y="363" text-anchor="middle" class="font-sans text-[10px]">
+					LICENSE # / YOUR LICENSE NUMBER
+				</Text>
+				<Text x="240" y="384" text-anchor="middle" class="font-sans text-[10px]">
+					PHONE # / YOUR SERVICE PHONE
+				</Text>
+			</G>
 		</G>
 	{/if}
 </Svg>

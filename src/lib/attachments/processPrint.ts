@@ -124,7 +124,7 @@ const createProof = (isBack: boolean): Proof => {
 	return proof;
 };
 
-/** Lightweight, event-driven registration and face/back animation. */
+/** Lightweight, event-driven ink registration. FlipPreview owns face/back motion. */
 export const processPrint = (element: HTMLElement) => {
 	const canvas = element.querySelector<HTMLCanvasElement>('canvas');
 	const context = canvas?.getContext('2d');
@@ -147,7 +147,6 @@ export const processPrint = (element: HTMLElement) => {
 	const sides = new Map<boolean, HTMLCanvasElement>();
 	const textures = new WeakMap<HTMLCanvasElement, Uint8ClampedArray>();
 	let channels = '1111';
-	let flip = 0;
 	let frame = 0;
 	let height = 0;
 	let isFocused = false;
@@ -155,12 +154,10 @@ export const processPrint = (element: HTMLElement) => {
 	let isInView = false;
 	let lastTime = 0;
 	let spread = 1;
-	let targetFlip = 0;
 	let targetSpread = 1;
 	let width = 0;
 	const readState = () => {
 		channels = element.dataset.printChannels ?? '1111';
-		targetFlip = element.dataset.printBack === 'true' ? 1 : 0;
 		targetSpread =
 			element.dataset.printPreview === 'true'
 				? isHovered || isFocused
@@ -179,7 +176,7 @@ export const processPrint = (element: HTMLElement) => {
 		const roll = ((-5 * Math.PI) / 180) * spread;
 		const layerGap = 80 * spread;
 		// Keep transition sampling inexpensive on high-DPI screens; restore full detail at rest.
-		const isSettled = spread === targetSpread && flip === targetFlip;
+		const isSettled = spread === targetSpread;
 		const ratio = Math.min(canvas.width / width, isSettled ? 1.5 : 0.75);
 		const surfaceWidth = Math.round(width * ratio);
 		const surfaceHeight = Math.round(height * ratio);
@@ -199,22 +196,19 @@ export const processPrint = (element: HTMLElement) => {
 			return {
 				x:
 					width / 2 +
-					(Math.cos(roll) * rotatedX - Math.sin(roll) * centeredY) *
-						perspective *
-						scale *
-						Math.max(0.015, Math.abs(Math.cos(flip * Math.PI))),
+					(Math.cos(roll) * rotatedX - Math.sin(roll) * centeredY) * perspective * scale,
 				y:
 					height / 2 +
 					(Math.sin(roll) * rotatedX + Math.cos(roll) * centeredY) * perspective * scale
 			};
 		};
 		const drawPlane = (source: HTMLCanvasElement, distance: number, isInk = false) => {
-			// Registered artwork and face/back flips need no projective resampling.
+			// Registered artwork needs no projective resampling.
 			if (spread === 0) {
 				context.save();
 				context.globalCompositeOperation = isInk ? 'multiply' : 'source-over';
 				context.translate(width / 2, height / 2);
-				context.scale(scale * Math.max(0.015, Math.abs(Math.cos(flip * Math.PI))), scale);
+				context.scale(scale, scale);
 				context.drawImage(source, -118.5, -237);
 				context.restore();
 				return;
@@ -248,13 +242,12 @@ export const processPrint = (element: HTMLElement) => {
 			const sineY = Math.sin(yaw);
 			const cosineZ = Math.cos(roll);
 			const sineZ = Math.sin(roll);
-			const flipScale = Math.max(0.015, Math.abs(Math.cos(flip * Math.PI)));
 			// Inverse-project pixel centers directly onto the plane. Unlike an affine triangle
 			// mesh, this preserves continuous texture sampling and transparent edges without seams.
 			for (let row = top; row < bottom; row++) {
 				const v = ((row + 0.5) / ratio - height / 2) / scale;
 				for (let column = left; column < right; column++) {
-					const u = ((column + 0.5) / ratio - width / 2) / (scale * flipScale);
+					const u = ((column + 0.5) / ratio - width / 2) / scale;
 					const horizontal = cosineZ * u + sineZ * v;
 					const vertical = -sineZ * u + cosineZ * v;
 					const x =
@@ -303,9 +296,9 @@ export const processPrint = (element: HTMLElement) => {
 			context.restore();
 		};
 		drawPlane(stock, 0);
-		const proof = createProof(flip >= 0.5);
+		const isBack = element.dataset.printBack === 'true';
+		const proof = createProof(isBack);
 		if (element.dataset.printDuplex === 'true') {
-			const isBack = flip >= 0.5;
 			let side = sides.get(isBack);
 			if (!side) {
 				side = document.createElement('canvas');
@@ -332,12 +325,9 @@ export const processPrint = (element: HTMLElement) => {
 		const amount = Math.min(1, (lastTime ? time - lastTime : 16) / 100);
 		lastTime = time;
 		spread += (targetSpread - spread) * amount;
-		flip += (targetFlip - flip) * amount;
-		const isSettled =
-			Math.abs(spread - targetSpread) < 0.001 && Math.abs(flip - targetFlip) < 0.001;
+		const isSettled = Math.abs(spread - targetSpread) < 0.001;
 		if (isSettled) {
 			spread = targetSpread;
-			flip = targetFlip;
 		}
 		draw();
 		if (isSettled) {
@@ -357,7 +347,6 @@ export const processPrint = (element: HTMLElement) => {
 		}
 		if (preference.matches || document.hidden) {
 			spread = targetSpread;
-			flip = targetFlip;
 			draw();
 			element.dataset.printMotion = 'static';
 		} else {
@@ -366,9 +355,9 @@ export const processPrint = (element: HTMLElement) => {
 		}
 	};
 	const resize = () => {
-		const bounds = element.getBoundingClientRect();
-		width = bounds.width;
-		height = bounds.height;
+		// Use layout dimensions so a parent flip cannot resize the canvas at an edge-on angle.
+		width = element.clientWidth;
+		height = element.clientHeight;
 		// Source artwork is 237px wide; higher densities add blending cost without more detail.
 		const ratio = Math.min(devicePixelRatio || 1, 1.5);
 		canvas.width = Math.round(width * ratio);
