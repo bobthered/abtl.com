@@ -162,7 +162,29 @@ test('variable data preserves the supplied tag and compares matching code format
 	await expect(dialog.locator('[data-variable-section="planning"]')).toContainText(
 		'Good print starts with clear data.'
 	);
+	const applicationImages = dialog.locator('[data-variable-application-image]');
+	await expect(applicationImages).toHaveCount(3);
+	for (const trigger of await applicationImages.all()) {
+		await trigger.scrollIntoViewIfNeeded();
+		await expect
+			.poll(() =>
+				trigger
+					.locator('img')
+					.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)
+			)
+			.toBe(true);
+	}
+	await applicationImages.first().click();
+	const imageDialog = page.getByRole('dialog', {
+		name: 'Identification - illustrative inventory labels on kraft packaging.',
+		exact: true
+	});
+	await expect(imageDialog).toBeVisible();
+	await imageDialog.getByRole('button', { name: 'Close image', exact: true }).click();
+	await expect(imageDialog).not.toBeVisible();
+	await expect(dialog).toBeVisible();
 	const format = dialog.locator('[data-variable-section="formats"]');
+	await expect(format.locator('[data-variable-designed-label]')).toContainText('Prepared for');
 	await expect(format.locator('[data-variable-format]')).toHaveAttribute(
 		'data-variable-format',
 		'barcode'
@@ -207,6 +229,13 @@ test('variable data preserves the supplied tag and compares matching code format
 		const contact = await page.locator('[data-variable-section="contact"]').boundingBox();
 		expect(contact!.x).toBeCloseTo(0, 0);
 		expect(contact!.width).toBeCloseTo(width, 0);
+		const formats = page.locator('[data-variable-section="formats"]');
+		const preview = formats.locator('[data-variable-designed-label]');
+		const previewHeight = (await preview.boundingBox())!.height;
+		for (const label of ['Printed text', 'Code 128', 'QR code', 'Data Matrix']) {
+			await formats.getByRole('button', { name: label, exact: true }).click();
+			expect((await preview.boundingBox())!.height).toBeCloseTo(previewHeight, 0);
+		}
 	}
 	await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'dark' });
 	await expect(page.locator('[data-topic-ready]')).toHaveAttribute('data-topic-ready', 'true');

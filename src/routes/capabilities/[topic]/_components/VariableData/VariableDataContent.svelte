@@ -118,7 +118,7 @@
 	</Section>
 {/snippet}
 
-{#snippet applications()}<DataApplications record={selectedTicket} />{/snippet}
+{#snippet applications()}<DataApplications />{/snippet}
 {#snippet formats()}<DataFormats record={selectedTicket} />{/snippet}
 {#snippet planning()}<DataPlanning />{/snippet}
 

@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 7ee656518ef001e88c80a192b6a28d2a3ed91942 -->
+<!-- pending-base: d0b9f1e4207ed24669a4208ca6feeb1544bd285e -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: expand variable-data applications and planning content
+feat: add original variable-data product artwork
 
-Preserve the supplied tag demo and replace the old sequence and mailing sections with illustrated applications, an interactive code-format comparison, and guidance for preparing variable data. Keep the shared page layout and alternating surfaces in standalone pages and homepage dialogs.
+Replace the three application illustrations with original product scenes inspired by supplied references, export optimized WebP assets, and use shared lightboxes for enlarged viewing. Record generation prompts and asset provenance.
 
-Generate matching Code 128 and QR samples alongside existing Data Matrix codes, reuse the selected tag reference across the new examples, and remove the unused legacy presentation component and data mapping. Add keyboard and responsive interaction coverage and update artwork documentation.
+Add branded artwork and a stock-colored surface to the four-format label preview while preserving live codes, sample references, and multiply blending. Keep the preview height consistent across all four formats. Cover image loading, nested lightboxes, and desktop/mobile preview geometry in browser checks.
 
-Reconcile the committed supplied-tag demo in the changelog.
+Reconcile the committed variable-data content expansion in the changelog.
 ```
 
 ## 2026-10-16
+
+- **feat: expand variable-data applications and planning content** (`d0b9f1e`)
+  Preserve the supplied tag demo, replace sequence and mailing sections with application cards, an interactive code-format comparison and data preparation guidance, generate matching Code 128 and QR samples, remove unused legacy presentation code, and extend keyboard and responsive coverage.
 
 - **feat: use the supplied tag design for the variable-data demo** (`7ee6565`)
   Preserve the owner-supplied tag geometry and fixed artwork, replace baked values with selectable fields and build-time Data Matrix codes, blend code backgrounds into the stock, and update first-section controls and interaction coverage while retaining the original SVG.

@@ -1,12 +1,17 @@
 <script lang="ts">
 	// Imports
-	import { Br, Card, Div, H3, H4, Img, P, Section, Span, StockTag } from '#lib/components';
-	import type { TicketExample } from './ticketExamples';
+	import { Card, Div, H3, H4, LightboxImage, P, Section } from '#lib/components';
+	import identification from './artwork/applications/identification.webp';
+	import personalization from './artwork/applications/personalization.webp';
+	import scannable from './artwork/applications/scannable.webp';
 
 	// consts
 	const applications = [
 		{
 			id: 'identify',
+			image: identification,
+			alt: 'Kraft pouches with original indigo inventory labels and barcodes',
+			caption: 'Identification - illustrative inventory labels on kraft packaging.',
 			eyebrow: 'Identification',
 			title: 'Keep the item and its record together.',
 			text: 'Give equipment, inventory, or individual pieces a reference that can be read at a glance and matched to your records.',
@@ -14,6 +19,10 @@
 		},
 		{
 			id: 'personalize',
+			image: personalization,
+			alt: 'A personalized ivory hang tag on an oatmeal knit garment',
+			caption:
+				'Personalization - an illustrative garment tag with a name and individual reference.',
 			eyebrow: 'Personalization',
 			title: 'Make the handoff feel personal.',
 			text: 'Change a name, destination, or message while keeping the look consistent across the printed pieces.',
@@ -21,15 +30,15 @@
 		},
 		{
 			id: 'connect',
+			image: scannable,
+			alt: 'An equipment tag with an original QR label attached to a coiled cable',
+			caption: 'Scannable information - an illustrative equipment identification label.',
 			eyebrow: 'Scannable information',
 			title: 'Give the next step a starting point.',
 			text: 'Use a printed code to carry an identifier or a destination you supply. Plan the information around what the person scanning needs next.',
 			detail: 'Reference numbers / Product details / Instructions'
 		}
 	];
-
-	// $props()
-	let { record }: { record: TicketExample } = $props();
 </script>
 
 <Section
@@ -50,54 +59,17 @@
 			<Card
 				class="flex min-w-0 flex-col p-0 shadow-none inset-ring-1 inset-ring-gray-200 dark:inset-ring-gray-800"
 			>
-				<Div
-					class="flex h-64 items-center justify-center overflow-hidden rounded-t-sm bg-linear-to-br from-primary-100 via-gray-100 to-secondary-100 p-6 dark:from-primary-950 dark:via-gray-800 dark:to-secondary-950"
-					aria-hidden="true"
-				>
-					{#if application.id === 'identify'}
-						<Div class="w-full max-w-64 -rotate-3 rounded-sm bg-white p-5 text-gray-950 shadow-lg">
-							<P
-								class="text-xs font-semibold tracking-widest text-gray-950 uppercase dark:text-gray-950"
-							>
-								Equipment record
-							</P>
-							<P class="mt-4 font-mono text-xl text-gray-950 dark:text-gray-950">
-								{record.number}/{record.reference}
-							</P>
-							<Img
-								src={record.barcode}
-								alt=""
-								width={320}
-								height={100}
-								class="mt-4 h-12 w-full object-contain"
-							/>
-						</Div>
-					{:else if application.id === 'personalize'}
-						<Div class="relative w-28 rotate-6">
-							<StockTag class="w-full text-secondary-200 drop-shadow-lg" />
-							<Div class="absolute inset-x-3 top-1/3 text-center text-gray-950">
-								<P class="text-xs font-semibold text-gray-950 dark:text-gray-950">Made for</P>
-								<P
-									class="mt-3 text-lg leading-tight font-semibold text-gray-950 dark:text-gray-950"
-								>
-									{record.name}
-								</P>
-								<Span class="mt-5 block text-xs tracking-widest uppercase">Thank you</Span>
-							</Div>
-						</Div>
-					{:else}
-						<Div
-							class="flex w-full max-w-60 rotate-3 items-center gap-4 rounded-sm bg-white p-5 text-gray-950 shadow-lg"
-						>
-							<Img src={record.qr} alt="" width={88} height={88} class="size-22 shrink-0" />
-							<Div>
-								<P class="text-sm font-semibold text-gray-950 dark:text-gray-950">
-									Scan.<Br />Find the reference.
-								</P><Span class="mt-3 block font-mono text-xs">{record.reference}</Span>
-							</Div>
-						</Div>
-					{/if}
-				</Div>
+				<LightboxImage
+					src={application.image}
+					alt={application.alt}
+					caption={application.caption}
+					width={1200}
+					height={900}
+					class="h-auto"
+					imageClass="aspect-4/3 h-auto min-h-0 flex-none"
+					data-variable-application-image={application.id}
+				/>
+
 				<Div class="flex flex-1 flex-col p-6">
 					<P class="text-sm font-semibold text-primary-600 dark:text-primary-300">
 						{application.eyebrow}
@@ -112,7 +84,6 @@
 		{/each}
 	</Div>
 	<P class="mt-4 text-xs text-gray-500 dark:text-gray-400">
-		Illustrative printed pieces. The sample codes contain a reference, rather than a live website
-		destination.
+		Illustrative product scenes. Explore live sample codes in the format comparison below.
 	</P>
 </Section>

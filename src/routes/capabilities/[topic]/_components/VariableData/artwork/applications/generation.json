@@ -1,0 +1,25 @@
+{
+	"generator": "Built-in image_gen",
+	"date": "2026-10-17",
+	"referencePolicy": "Owner-supplied images were style references only. Do not deploy reference files. These are original illustrative product scenes, not actual customer work; codes within the generated photos are illustrative.",
+	"export": {
+		"width": 1200,
+		"height": 900,
+		"format": "webp",
+		"quality": 84
+	},
+	"assets": [
+		{
+			"file": "identification.webp",
+			"prompt": "Use case: product-mockup. Create a NEW original premium product photograph for a tag-and-label manufacturer's website. Input image is a REFERENCE ONLY for the natural tactile photography style and broad subject idea; do not edit it or reproduce its composition, exact label layout, colors, branding or wording. Landscape 4:3 composition. Subject: three unbranded kraft coffee-style stand-up pouches arranged as an attractive small inventory grouping on a warm neutral work surface. A sharp foreground pouch has a beautifully designed original ivory label with a deep indigo vertical color block, a fine geometric line motif, a clearly visible black linear barcode and minimal generic text 'INVENTORY', 'LOT 041'. Other pouches softly recede with related but distinct numbered labels. Aim for high-end editorial commercial photography: real paper texture, tasteful soft window light, gentle shadows, crisp readable label detail, shallow depth of field. Entire main label stays within a generous centered crop. Colors warm kraft, ivory and restrained indigo; no copied turquoise cup motif. No existing brands, company logos, watermarks, certifications, claims, hands or extra props. This is illustrative marketing artwork, not a photograph of an actual customer's order."
+		},
+		{
+			"file": "personalization.webp",
+			"prompt": "Use case: product-mockup. Create a NEW original premium editorial product photograph for a tag-and-label manufacturer's website. Input image is a REFERENCE ONLY for tactile clothing and hang-tag photography; not an edit target. Do not reproduce its brand, exact tag design, text, composition, or burgundy backdrop. Landscape 4:3 composition. Subject: a beautifully folded soft oatmeal knit garment on a muted sage-gray studio surface, with a large elegant ivory rectangular hang tag with clipped upper corners, attached through a real punched hole using dark cotton string. The tag lies prominently and legibly on the knit, at a subtle diagonal, entirely inside the central composition. Original print design: restrained dark indigo type, a small lavender geometric color band, personalized name 'JORDAN', small line 'PREPARED FOR YOU', and a discreet black linear barcode with sample number '612041'. No price, existing company logos, or branding. Professional macro commercial photography with gentle window lighting, fine paper fibers and knit texture, soft realistic shadows, shallow depth of field and a calm refined palette. Not a white-background cutout. Do not add people, hands, unrelated props, watermarks or certifications. Illustrative artwork, not an actual customer product."
+		},
+		{
+			"file": "scannable.webp",
+			"prompt": "Use case: product-mockup. Create a NEW original premium commercial product photograph for a tag-and-label manufacturer's website. Input image is REFERENCE ONLY for an equipment asset tag in a real setting; do not edit it, copy the exact device, label design, composition, orange brand colors, or wording. Landscape 4:3 composition. Subject: a human hand naturally supporting a compact brushed-gray equipment identification tag attached with a black cable loop to a coiled equipment cable, in a softly blurred professional workshop or equipment room. A prominent clean original label on the tag has a deep indigo header with minimal text 'EQUIPMENT', an ivory main area with a crisp black QR-style square code, and a short identifier 'ASSET 612041'. A narrow lavender accent and small generic geometric motif make the design look considered. The label is the focal point, large enough to see its design, fully within the central crop; background equipment is subordinate. High-end editorial product photography, realistic metal, paper and cable textures, natural skin anatomy, soft directional light and restrained warm gray/indigo palette. No existing company names, brand logos, copied orange fingerprint motif, watermark, promises, certifications or extra fingers. Illustrative marketing image only."
+		}
+	]
+}
