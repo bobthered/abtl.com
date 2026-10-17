@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 0e2e55d493014c98b8940425a78219f14e129ad2 -->
+<!-- pending-base: 2f654619695c86f08ca77978d7bc4af84154981f -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add an interactive hospitality market page
+feat: add an interactive shellfish market page
 
-Add Hospitality to market navigation using the shared title, alternating sections, and centered contact CTA layout. Present researched applications for luggage claims, valet, coat checks, lost-and-found, laundry services, amenities, and guest-room door hangers as custom-project examples.
+Add Shellfish to market navigation and the shared title, alternating body sections, and centered contact CTA layout. Introduce confirmed standard, pinfed, and six-up laser-compatible US Letter sheet formats with digger and harvester examples and an additional dealer/shipper layout concept. Show six tags on an 8.5 x 11 inch sheet and lead directly from the sheet preview into the closing CTA.
 
-Share a six-label LuggageClaimTag layout with the variable-data example, preserving its real codes and printed template. Add independently peelable luggage-label and detachable claim-check demonstrations with seven matching live references, local property personalization, five native radio application choices, and shared two-sided door-hanger flipping. Preserve fixed preview sizes, keyboard access, and reduced-motion behavior without asserting unverified stock specifications.
+Reuse the supplied standard tag and patch geometry, add original shellfish print artwork, and share local company, harvest-area, and species personalization across all three formats. Use native radios, shared front/back flipping, and an animated pinfed feed with fixed preview dimensions and reduced-motion support.
 
-Document the research scope and artwork ownership, cover responsive layouts, themes, matching identifiers, label and stub separation, real barcode preservation, selection, and no-JavaScript rendering, and reconcile the committed Tree Tags page in the changelog.
+Document primary-source research and unverified product boundaries, add responsive, theme, keyboard, feed-motion, six-up sheet geometry, and no-JavaScript coverage, and reconcile the committed Hospitality page and shared luggage-tag work in the changelog.
 ```
 
 ## 2026-10-17
+
+- **feat: add an interactive hospitality market page** (`2f65461`)
+  Add market navigation, custom-project application examples, local personalization, and shared door-hanger flipping. Share a six-label luggage-tag layout with Variable Data while preserving real codes, add independent label and claim-stub separation, and document and cover responsive, theme, keyboard, matching-reference, and no-JavaScript behavior.
 
 - **feat: add an interactive tree tags market page** (`0e2e55d`)
   Add market navigation and two dedicated tag-format sections using supplied standard geometry and original tree artwork, share local personalization across independent front/back previews, retain the substrate overview in the introduction, and document and cover geometry, themes, responsiveness, keyboard interaction, and no-JavaScript defaults.

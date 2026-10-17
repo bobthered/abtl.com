@@ -60,6 +60,11 @@ export const navigation: NavigationSection[] = [
 				description: 'Claim checks, guest-service tags, and thoughtful printed details.'
 			},
 			{
+				href: '/markets/shellfish',
+				label: 'Shellfish',
+				description: 'Standard, pinfed, and laser-compatible sheeted shellfish tags.'
+			},
+			{
 				href: '/markets/tree-tags',
 				label: 'Tree Tags',
 				description: 'Standard and custom tree-shaped tags on your choice of substrate.'
