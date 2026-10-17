@@ -55,6 +55,11 @@ export const navigation: NavigationSection[] = [
 				description: 'Inspection tags, service labels, and collars for fire-service teams.'
 			},
 			{
+				href: '/markets/hospitality',
+				label: 'Hospitality',
+				description: 'Claim checks, guest-service tags, and thoughtful printed details.'
+			},
+			{
 				href: '/markets/tree-tags',
 				label: 'Tree Tags',
 				description: 'Standard and custom tree-shaped tags on your choice of substrate.'

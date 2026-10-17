@@ -13,6 +13,7 @@ export { default as ImageLightbox } from './ImageLightbox/ImageLightbox.svelte';
 export { default as LandingPage } from './LandingPage/LandingPage.svelte';
 export { default as LightboxImage } from './LightboxImage/LightboxImage.svelte';
 export { default as Logo } from './Logo/Logo.svelte';
+export { default as LuggageClaimTag } from './LuggageClaimTag/LuggageClaimTag.svelte';
 export { default as Marquee } from './Marquee/Marquee.svelte';
 export { default as ProcessArtwork } from './ProcessPrinting/ProcessArtwork.svelte';
 export { default as RadioChoice } from './RadioChoice/RadioChoice.svelte';

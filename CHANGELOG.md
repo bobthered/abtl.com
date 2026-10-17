@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 85f12d7047860ca66179103e5dec8fdb4027f323 -->
+<!-- pending-base: 0e2e55d493014c98b8940425a78219f14e129ad2 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add an interactive tree tags market page
+feat: add an interactive hospitality market page
 
-Add Tree Tags to market navigation and use the shared title, alternating body sections, and centered contact CTA layout. Present standard and custom die-cut shapes on any substrate, highlighting Polyart and Tyvek as the most popular choices.
+Add Hospitality to market navigation using the shared title, alternating sections, and centered contact CTA layout. Present researched applications for luggage claims, valet, coat checks, lost-and-found, laundry services, amenities, and guest-room door hangers as custom-project examples.
 
-Reuse the supplied standard tag and patch geometry and create original tree-shaped concept artwork in two dedicated sections. Place live farm, tree, and identifier personalization beside the standard tag and share the details across both formats. Keep independent front/back flips, stable preview dimensions, and user-entered details local to the page.
+Share a six-label LuggageClaimTag layout with the variable-data example, preserving its real codes and printed template. Add independently peelable luggage-label and detachable claim-check demonstrations with seven matching live references, local property personalization, five native radio application choices, and shared two-sided door-hanger flipping. Preserve fixed preview sizes, keyboard access, and reduced-motion behavior without asserting unverified stock specifications.
 
-Document route-owned artwork and product scope, add responsive, theme, geometry, interaction, and no-JavaScript coverage, and reconcile the committed shared-flip and fire-service updates in the changelog.
+Document the research scope and artwork ownership, cover responsive layouts, themes, matching identifiers, label and stub separation, real barcode preservation, selection, and no-JavaScript rendering, and reconcile the committed Tree Tags page in the changelog.
 ```
 
 ## 2026-10-17
+
+- **feat: add an interactive tree tags market page** (`0e2e55d`)
+  Add market navigation and two dedicated tag-format sections using supplied standard geometry and original tree artwork, share local personalization across independent front/back previews, retain the substrate overview in the introduction, and document and cover geometry, themes, responsiveness, keyboard interaction, and no-JavaScript defaults.
 
 - **fix: share animated product flips and refine fire-service options** (`85f12d7`)
   Share a fixed-viewport FlipPreview between Fire Suppression and full-color printing, retain ink registration in the canvas renderer, expose eight label radios, add the four white-collar size and print-color combinations with black personalization, and document and cover responsive behavior, animation, reduced motion, and printing controls.
