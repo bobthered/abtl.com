@@ -21,3 +21,7 @@ Invitations should store a hashed random token, normalized recipient email, comp
 Company management and invitation issuance belong in the separate internal administration project. This site should own invitation acceptance and customer purchasing. Do not add an unauthenticated invitation-creation endpoint here.
 
 Resolve whether new designs require artwork and price approval before payment, plus catalog availability, quantity rules, tax/shipping/payment integration, and distributor pricing before enabling checkout. Product categories here are navigation scaffolding, not purchasable SKUs.
+
+## Market artwork
+
+The private shop `MarketArtwork` composition reuses the route-owned market illustrations for all six assigned-market cards. Product artwork remains owned by each market rather than duplicating shapes or importing full market pages. Each preview uses the same 3:2 stage with a fixed square illustration viewport and theme-aware primary/secondary background. Preview artwork is decorative; the market heading and catalog link supply accessible labels.

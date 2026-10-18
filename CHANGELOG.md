@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 94ee07a181031b7017ea50bbeac6fe81de2619ec -->
+<!-- pending-base: a8cc376dca7cf66059c63602d85b69f69d167394 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: show company-assigned markets in the shop
+feat: add product artwork to shop market cards
 
-Make /shop the signed-in landing page with server-filtered market cards, a no-access state, and a path to request additional access. Link published catalogs and show coming-soon status for assigned markets still being prepared.
+Replace generic shopping icons with themed product previews for all six markets, reusing the existing market illustrations. Keep consistent preview proportions, light and dark backgrounds, and assigned-market visibility.
 
-Return buyers to the chooser after sign-in, add a market-switching link to fire suppression, and give the demo company fire suppression and shellfish access. Update authorization coverage, the login flow test, documentation, and committed beta history in the changelog.
+Document the artwork composition and reconcile the committed market chooser in the changelog.
 ```
 
 ## 2026-10-18
+
+- **feat: show company-assigned markets in the shop** (`a8cc376`)
+  Make /shop the signed-in market chooser, show only assigned markets, distinguish published catalogs from coming-soon markets, and add navigation back from fire suppression. Assign shellfish to the demo company and update access and login coverage.
 
 - **feat: add a temporary beta sign-in and protected shop** (`94ee07a`)
   Add a development-only sign-in form, signed expiring sessions, sign-out, session-aware header links, and a protected fire suppression landing page. Define company market access, test authorization and session integrity, and document remaining production integrations.

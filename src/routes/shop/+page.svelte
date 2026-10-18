@@ -13,7 +13,7 @@
 		P,
 		Section
 	} from '#lib/components';
-	import { ShoppingBag } from '#lib/icons';
+	import MarketArtwork from './_components/MarketArtwork.svelte';
 	import type { PageProps } from './$types';
 
 	// $props()
@@ -44,17 +44,23 @@
 			<Div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 				{#each data.markets as market (market.id)}
 					<Div
-						class="flex flex-col rounded-sm bg-gray-50 p-8 inset-ring-1 inset-ring-gray-200 dark:bg-gray-950 dark:inset-ring-gray-800"
+						class="flex flex-col rounded-sm bg-gray-50 p-4 inset-ring-1 inset-ring-gray-200 dark:bg-gray-950 dark:inset-ring-gray-800"
 					>
-						<ShoppingBag class="mb-6 size-6 text-primary-500" aria-hidden="true" />
-						<H2 class="text-2xl">{market.name}</H2>
-						<P class="mt-4 mb-6 text-gray-600 dark:text-gray-300">{market.description}</P>
-						{#if market.href}<A href={market.href} variants={['button.base']} class="mt-auto w-fit">
-								<ActionLabel>Shop {market.name}</ActionLabel>
-							</A>
-						{:else}<P class="mt-auto text-sm text-gray-500 dark:text-gray-400">
-								Online catalog coming soon
-							</P>{/if}
+						<MarketArtwork market={market.id} />
+						<Div class="flex flex-1 flex-col p-4">
+							<H2 class="text-2xl">{market.name}</H2>
+							<P class="mt-4 mb-6 text-gray-600 dark:text-gray-300">{market.description}</P>
+							{#if market.href}<A
+									href={market.href}
+									variants={['button.base']}
+									class="mt-auto w-fit"
+								>
+									<ActionLabel>Shop {market.name}</ActionLabel>
+								</A>
+							{:else}<P class="mt-auto text-sm text-gray-500 dark:text-gray-400">
+									Online catalog coming soon
+								</P>{/if}
+						</Div>
 					</Div>
 				{:else}<P class="text-gray-600 dark:text-gray-300">
 						No markets are available for your account yet. Contact our team to get set up.
