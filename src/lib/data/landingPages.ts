@@ -13,40 +13,6 @@ export type LandingPageContent = {
 };
 
 export const landingPages: Record<string, LandingPageContent> = {
-	contact: {
-		eyebrow: 'Start a conversation',
-		title: 'What can we help you make?',
-		description:
-			'Planning a new product, revisiting an existing design, or exploring materials? Tell us what you have in mind.',
-		heading: 'Give us a useful starting point.',
-		cards: [
-			[
-				'A new project',
-				'Include the application, approximate quantity, size, artwork, and when you need the product. We can work through the remaining details together.',
-				"mailto:sales@abtl.com'subject=New%20tag%20or%20label%20project",
-				'Email your project'
-			],
-			[
-				'Materials & samples',
-				'See stock colors and request individual colors or a selection of samples from the stock-color page.',
-				'/capabilities/stock-colors',
-				'Explore colors & samples'
-			],
-			[
-				'An existing order',
-				'Include your order reference and the question you need help with. For warehouse releases, include the product and quantity you want to discuss.',
-				"mailto:sales@abtl.com'subject=Existing%20order%20question",
-				'Ask about an order'
-			]
-		],
-		detailTitle: 'Talk to our team.',
-		detail:
-			'Email sales@abtl.com with your questions or project details. Attaching artwork or a photo of an existing product can help explain what you need.',
-		detailHref: 'mailto:sales@abtl.com',
-		detailLabel: 'Email sales@abtl.com',
-		cta: 'Your next tag or label starts here.',
-		ctaText: "No finished specification required. Start with the problem you're trying to solve."
-	},
 	careers: {
 		eyebrow: 'Careers',
 		title: 'Help make the details matter.',

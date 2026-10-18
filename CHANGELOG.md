@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 2e158ff82a12e189608bcfc377179630cd3f78b6 -->
+<!-- pending-base: b6bf8bb45bc5467579790984daa621fb3a6484cb -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: remove Products from the main navigation
+feat: build a dedicated contact page and inquiry form
 
-Filter Products from desktop and mobile primary navigation while preserving its footer link and existing routes. Update menu interaction coverage to use Resources and assert that Products is absent from both primary menus.
+Replace the contact placeholder with the shared ContentLayout, a focused inquiry form without project-type controls, button-style email links, a Caledonia address section, and a centered phone CTA. Add a Google map with a client-mounted iframe fallback and optional API-key-enabled light/dark styling using the site's primary and secondary colors.
 
-Reconcile the committed Beverage market page and its supporting navigation checks in the changelog.
+Route validated inquiries to sales@abtl.com through a server-only Resend adapter with visitor reply-to, bounded input, plain-text messages, and honest failure handling. Preserve submitted details on failure and disable online sending until RESEND_API_KEY and a verified CONTACT_FROM_EMAIL are configured.
+
+Document email and restricted Maps key setup, add mocked delivery, validation, map-theme, responsive, and no-JavaScript checks, remove stale placeholder content, and reconcile the committed navigation update in the changelog.
 ```
 
 ## 2026-10-17
+
+- **fix: remove Products from the main navigation** (`b6bf8bb`)
+  Filter Products from desktop and mobile primary navigation while retaining footer access and product routes, and update navigation coverage to use Resources and assert the removed primary item.
 
 - **feat: add an interactive beverage market page** (`2e158ff`)
   Add beer can label, elastic growler tag, and wine label sections with original interactive artwork, native radios, shared tag geometry, and front/back flipping. Document research and product boundaries, cover responsive themes, views, keyboard access, contrast, and no-JavaScript defaults, and keep the existing Markets redirect independent of alphabetic menu order.

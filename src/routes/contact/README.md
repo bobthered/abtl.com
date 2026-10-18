@@ -1,0 +1,25 @@
+# Contact
+
+Dedicated contact route replacing the old LandingPage placeholder and malformed contact mailto strings. ContentLayout renders the title, two alternating body sections, and a contrasting centered phone CTA. The form uses Sveltewind primitives, labeled inputs, server-rendered feedback, and SvelteKit progressive enhancement through fromAction. The location section embeds Google Maps. A browser key activates the Maps JavaScript API and Geocoding API; without it, or when SDK loading/geocoding fails, a standard Google map iframe is shown after hydration. Directions also open an external Maps search.
+
+## Public details
+
+The recipient is fixed to sales@abtl.com, explicitly confirmed by the owner. Street address (3177 Lehigh St., Caledonia, NY 14423) and toll-free phone (800.541.8868) were verified October 17, 2026 against the company-specific [Ennis profile](https://www.ennis.com/allen-bailey-tag-label/). A general locations directory lists another phone, so this page follows the company-specific profile. No opening hours, response-time promise, visitor policy, or shipping turnaround is invented. Public contact details are centralized in src/lib/data/contact.ts.
+
+## Activate delivery
+
+The repository had no form backend or email service configured. This implementation uses the Resend HTTPS API without a new runtime dependency. Set server-only RESEND_API_KEY and CONTACT_FROM_EMAIL in the deployment environment; the sender must belong to a domain verified in Resend. See the root .env.example. Never use the visitor's address as From. The recipient cannot be changed by form fields; validated visitor email is reply_to. Only an accepted provider response with a message id is treated as success. No auto-reply, file upload, local database, or application logging of inquiry text is added.
+
+Until both settings exist, sending is disabled and a visible notice points to email/phone. Direct POSTs fail honestly with 503 and retain fields rather than claiming delivery. Client connection errors, provider rejection, timeout, and malformed responses also preserve input and offer direct email. Actual delivery must be checked after credentials and sender-domain setup; local tests mock the provider and never send mail.
+
+Validation trims fields, requires name/email/message, bounds field lengths, rejects oversized declared requests and a honeypot, and sends plain text with a fixed subject prefix. SvelteKit retains same-origin form protection. No distributed rate-limit service or CAPTCHA is configured; assess deployment-level abuse controls before enabling a public email endpoint. API acceptance is not proof of inbox delivery; monitor the provider after activation. Ensure your privacy/retention terms match operational handling.
+
+Coverage tests validation, header-injection rejection, payload routing, reply-to, missing configuration, provider/network failures, responsive themes, native controls, and preserved no-JavaScript POST failures. Successful provider acceptance is tested with an injected fake fetch, not a live email.
+
+## Google map
+
+Set GOOGLE_MAPS_API_KEY to a browser key with Maps JavaScript API and Geocoding API enabled and billing configured. Restrict it to the deployed site's HTTP referrers and those APIs. This key is intentionally returned by the contact loader and is visible in the browser; email API credentials remain server-only. Maps loads on the contact route only and does not load its JavaScript SDK without a key. The iframe fallback uses Google's public map export URL and mounts after hydration. Without JavaScript, the address and a Google Maps directions link remain available. Sveltewind Iframe currently renders a conditional child block inside the raw-text iframe element, which produces an SSR hydration mismatch; client mounting avoids it without replacing the primitive. Fix the upstream Iframe SSR implementation before moving it into the server-rendered tree. See Google's [loader documentation](https://developers.google.com/maps/documentation/javascript/load-maps-js-api) and [style reference](https://developers.google.com/maps/documentation/javascript/style-reference).
+
+The interactive map geocodes the verified street address rather than using guessed coordinates. Raster styles use actual computed Tailwind gray, primary, and secondary tokens, converted to Google's required hex colors. Land, roads, labels, parks, and water update when the site's data-theme/class changes. A primary location circle with a secondary ring marks the geocoded position. Google attribution and controls remain intact. Standard iframe contents cannot be restyled across origins; full map-palette styling requires the browser API key. Component tests mock Google APIs to verify theme updates without billing or live geocoding; verify the actual map once a restricted key is supplied.
+
+The project-type field has been removed from UI, validation, and delivery payloads. Email now uses a fixed Website inquiry subject. Email CTAs beside the form and address use button.base styling. Browser checks assert that no project-type radios remain and that the shared layout includes the closing phone CTA.
