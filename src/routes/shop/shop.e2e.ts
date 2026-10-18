@@ -17,6 +17,11 @@ test('demo sign-in, protected access, and sign-out work without JavaScript', asy
 		await page.getByLabel('Work email').fill('beta@example.com');
 		await page.getByLabel('Password').fill('FireBeta2026!');
 		await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+		await expect(page).toHaveURL(/\/shop$/);
+		await expect(page.getByText('Online catalog coming soon')).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Shellfish', exact: true })).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Beverage', exact: true })).toHaveCount(0);
+		await page.getByRole('link', { name: 'Shop Fire Suppression' }).click();
 		await expect(page).toHaveURL(/\/shop\/fire-suppression$/);
 		await expect(
 			page.getByRole('heading', { name: 'Welcome, Fire Suppression Demo.' })

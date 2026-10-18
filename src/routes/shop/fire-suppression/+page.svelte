@@ -36,6 +36,9 @@
 <Main id="main-content" tabindex={-1}>
 	<Section variants={['surface']}>
 		<Container class="py-12 sm:py-16">
+			<A href="/shop" class="mb-6 inline-block text-primary-600 dark:text-primary-300">
+				Back to your markets
+			</A>
 			<P variants={['eyebrow']}>Beta shop / Fire Suppression</P>
 			<P class="my-4 text-sm text-gray-600 dark:text-gray-300">Demo workspace / No live ordering</P>
 			<H1 variants={['h2.variant.section']}>Welcome, {data.companyName}.</H1>

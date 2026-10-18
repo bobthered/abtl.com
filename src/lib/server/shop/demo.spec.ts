@@ -4,7 +4,10 @@ import { createDemoSession, demoSessionSeconds, verifyDemoSession } from './demo
 describe('temporary demo sessions', () => {
 	it('allows only signed unexpired development sessions', () => {
 		const token = createDemoSession(1000);
-		expect(verifyDemoSession(token, true, 1001)?.markets).toEqual(['fire-suppression']);
+		expect(verifyDemoSession(token, true, 1001)?.markets).toEqual([
+			'fire-suppression',
+			'shellfish'
+		]);
 		expect(verifyDemoSession(token, false, 1001)).toBeUndefined();
 		expect(verifyDemoSession(token, true, 1000 + demoSessionSeconds * 1000)).toBeUndefined();
 	});

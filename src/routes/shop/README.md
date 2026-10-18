@@ -1,13 +1,14 @@
 # Invitation-only shop foundation
 
-Public entry: `/account/sign-in`. `/shop` sends anonymous visitors there and signed-in demo buyers to their fire suppression catalog. The first protected market is `/shop/fire-suppression`.
+Public entry: `/account/sign-in`. `/shop` sends anonymous visitors there and shows signed-in buyers their company-assigned markets. The first protected market is `/shop/fire-suppression`.
 
 ## Current behavior
 
 - Desktop and mobile header links reach a real server-posted sign-in form. In development, the form displays temporary credentials (`beta@example.com` / `FireBeta2026!`). Signed-in visitors see a Shop link. No public registration or live invitations are available.
 - A server-only company membership contract separates user identity, company, customer type, and assigned markets. Direct and distributor buyers can each have multiple markets.
 - Fire suppression checks membership before returning any catalog data and disables response caching. Anonymous users redirect; members without market access receive 403.
-- The protected landing page groups existing product offerings into tags, labels, and collars. Prices, variants, purchasing, saved artwork, and orders are not yet implemented.
+- `/shop` lists only recognized assigned markets, without duplicates. Fire suppression opens its catalog; assigned markets without a published shop show a coming-soon status. Sign-in always lands at `/shop`, including for single-market accounts. The demo company has Fire Suppression and Shellfish to illustrate this.
+- The protected fire suppression landing page groups existing product offerings into tags, labels, and collars. Prices, variants, purchasing, saved artwork, and orders are not yet implemented.
 - Development sign-in sets a one-hour HttpOnly SameSite cookie signed with a random process-local HMAC secret. The hook verifies expiry and signature before populating the fixed demo company membership. Restarting the server invalidates sessions; signing out deletes the cookie. Forged browser values cannot grant access.
 - Demo authentication is hard-disabled outside SvelteKit development mode, including preview and production builds. Production never exposes demo credentials or accepts demo sessions. This is a local review account, not a customer identity system. Do not put real customer data in this workspace.
 

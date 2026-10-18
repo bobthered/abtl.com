@@ -10,7 +10,7 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = ({ locals, setHeaders }) => {
 	setHeaders({ 'cache-control': 'private, no-store' });
-	if (locals.shopMember) redirect(303, '/shop/fire-suppression');
+	if (locals.shopMember) redirect(303, '/shop');
 	return { isDemoEnabled: dev, demoCredentials: dev ? demoCredentials : null };
 };
 export const actions: Actions = {
@@ -35,6 +35,6 @@ export const actions: Actions = {
 			secure: !dev,
 			maxAge: demoSessionSeconds
 		});
-		redirect(303, '/shop/fire-suppression');
+		redirect(303, '/shop');
 	}
 };

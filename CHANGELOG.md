@@ -6,21 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 8a6c63593bd7de5462dd51e7234425635d475132 -->
+<!-- pending-base: 94ee07a181031b7017ea50bbeac6fe81de2619ec -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add a temporary beta sign-in and protected shop
+feat: show company-assigned markets in the shop
 
-Replace disabled header controls with a responsive sign-in form and session-aware Shop links. Add temporary development credentials, signed expiring HttpOnly sessions, sign-out, and a protected fire suppression landing page grouped into tags, labels, and collars.
+Make /shop the signed-in landing page with server-filtered market cards, a no-access state, and a path to request additional access. Link published catalogs and show coming-soon status for assigned markets still being prepared.
 
-Define server-only company membership and market authorization, deny anonymous and unassigned buyers, and prevent personalized response caching. Disable demo credentials and authentication in production; test access rules, session expiry, tampering, and route protection.
-
-Document the temporary review account and pending identity, invitation storage, and commerce integrations; keep live customer sign-in, invitation acceptance, and checkout unavailable until connected. Reconcile the committed contact refinements in the changelog.
+Return buyers to the chooser after sign-in, add a market-switching link to fire suppression, and give the demo company fire suppression and shellfish access. Update authorization coverage, the login flow test, documentation, and committed beta history in the changelog.
 ```
 
 ## 2026-10-18
+
+- **feat: add a temporary beta sign-in and protected shop** (`94ee07a`)
+  Add a development-only sign-in form, signed expiring sessions, sign-out, session-aware header links, and a protected fire suppression landing page. Define company market access, test authorization and session integrity, and document remaining production integrations.
 
 - **fix: clarify contact options and refine the map** (`8a6c635`)
   Clarify inquiry copy, make directions primary, move phone contact into a third section, remove address-section contact actions and the map company overlay, and use primary highway accents. Update the contact section-count check.

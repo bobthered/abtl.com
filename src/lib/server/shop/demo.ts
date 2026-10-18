@@ -8,7 +8,7 @@ export const demoMember: ShopMember = {
 	companyId: 'demo-fire-company',
 	companyName: 'Fire Suppression Demo',
 	customerType: 'direct',
-	markets: ['fire-suppression'],
+	markets: ['fire-suppression', 'shellfish'],
 	userId: 'demo-buyer'
 };
 export const demoSessionSeconds = 3600;
