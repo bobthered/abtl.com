@@ -139,15 +139,6 @@
 			class="absolute inset-0 size-full border-0"
 			data-scroll-reveal="off"
 		/>{/if}
-	{#if isMapReady}<Div
-			class="pointer-events-none absolute top-4 left-4 z-1 max-w-52 rounded-sm bg-gray-50/95 p-4 text-gray-950 shadow-sm inset-ring-1 inset-ring-gray-200 dark:bg-gray-950/95 dark:text-gray-50 dark:inset-ring-gray-800"
-		>
-			<MapPin class="mb-2 size-5 text-primary-500" aria-hidden="true" /><P
-				class="text-sm font-medium"
-			>
-				Allen-Bailey Tag &amp; Label
-			</P><P class="mt-1 text-xs text-gray-600 dark:text-gray-300">Caledonia, New York</P>
-		</Div>{/if}
 
 	{#if !isClient}<Div
 			class="absolute inset-0 flex flex-col items-center justify-center gap-4 p-8 text-center"

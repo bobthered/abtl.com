@@ -77,32 +77,11 @@
 			<Container class="py-12 sm:py-16">
 				<Div class="grid items-start gap-4 lg:grid-cols-5">
 					<Div class="py-6 lg:col-span-2 lg:pr-12">
-						<P variants={['eyebrow']}>01 / A conversation worth starting</P><H2
-							id="contact-inquiry-heading"
-							class="text-4xl font-light sm:text-5xl"
-						>
-							No finished brief?<Br />Start here anyway.
+						<H2 id="contact-inquiry-heading" class="text-4xl font-light sm:text-5xl">
+							Tell us what you need.
 						</H2><P class="mt-6 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
-							Share what the tag or label needs to do. If you know the size, quantity, artwork, or
-							timing, include it. If you don't, tell us about the application.
-						</P><P class="mt-6 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
-							Distributors and direct customers are welcome. Our team can help work through the
-							details with you.
+							Share the details and we'll handle the rest.
 						</P>
-						<Div class="mt-8 border-t border-gray-200 pt-6 dark:border-gray-800">
-							<Mail
-								class="mb-3 size-5 text-primary-600 dark:text-primary-300"
-								aria-hidden="true"
-							/><H3 class="text-xl font-medium">Prefer to email?</H3><A
-								href={`mailto:${contactDetails.email}`}
-								variants={['button.base']}
-								class="mt-3"
-							>
-								<ActionLabel>{contactDetails.email}</ActionLabel>
-							</A><P class="mt-3 text-sm text-gray-600 dark:text-gray-300">
-								Send a photo, existing sample details, or artwork with your message.
-							</P>
-						</Div>
 					</Div>
 					<Div class="lg:col-span-3">
 						<InquiryForm {form} isDeliveryConfigured={data.isDeliveryConfigured} />
@@ -120,10 +99,7 @@
 				<Div class="grid items-center gap-4 lg:grid-cols-2">
 					<ContactMap apiKey={data.googleMapsApiKey} />
 					<Div class="py-6 lg:pl-12">
-						<P variants={['eyebrow']}>02 / Find us in Caledonia</P><H2
-							id="contact-location-heading"
-							class="text-4xl font-light sm:text-5xl"
-						>
+						<H2 id="contact-location-heading" class="text-4xl font-light sm:text-5xl">
 							A real place.<Br />Real people behind the print.
 						</H2><P class="mt-6 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
 							Our home is in Caledonia, New York. Whether you're starting a project or sending a
@@ -140,40 +116,51 @@
 							href={contactDetails.mapsHref}
 							target="_blank"
 							rel="noopener noreferrer"
-							variants={['button.base', 'button.variant.neutral-outline']}
+							variants={['button.base']}
 							class="mt-6"
 						>
 							<ActionLabel>
 								Open directions<Span class="sr-only">(opens a new tab)</Span>
 							</ActionLabel>
 						</A>
-						<Div class="mt-8 grid gap-4 sm:grid-cols-2">
-							<Div>
-								<Phone
-									class="mb-3 size-5 text-primary-600 dark:text-primary-300"
-									aria-hidden="true"
-								/><P class="text-sm text-gray-500 dark:text-gray-400">Call our team</P><A
-									href={contactDetails.phoneHref}
-									class="mt-2 inline-flex text-lg underline underline-offset-4"
-								>
-									{contactDetails.phone}
-								</A>
-							</Div><Div>
-								<Mail
-									class="mb-3 size-5 text-primary-600 dark:text-primary-300"
-									aria-hidden="true"
-								/><P class="text-sm text-gray-500 dark:text-gray-400">Email sales</P><A
-									href={`mailto:${contactDetails.email}`}
-									variants={['button.base']}
-									class="mt-2"
-								>
-									{contactDetails.email}
-								</A>
-							</Div>
-						</Div>
 						<P class="mt-8 text-sm text-gray-500 dark:text-gray-400">
 							Sending a sample? Include your name, contact details, and a note about the project so
 							we can connect it with your inquiry.
+						</P>
+					</Div>
+				</Div>
+			</Container>
+		</Section>
+		<Section
+			id="contact-phone"
+			variants={['surfaceAlternate']}
+			aria-labelledby="contact-phone-heading"
+		>
+			<Container class="py-12 sm:py-16">
+				<Div class="grid items-center gap-4 lg:grid-cols-2">
+					<Div class="py-6 lg:pr-12">
+						<H2 id="contact-phone-heading" class="text-4xl font-light sm:text-5xl">
+							Some details are easier<Br />to talk through.
+						</H2>
+						<P class="mt-6 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+							Have a question about a tag or label? Call our team to discuss your application,
+							compare options, or talk through the next step for your project.
+						</P>
+					</Div>
+					<Div
+						class="rounded-sm bg-gray-50 p-8 inset-ring-1 inset-ring-gray-200 sm:p-12 dark:bg-gray-950 dark:inset-ring-gray-800"
+					>
+						<Phone class="mb-6 size-8 text-primary-500" aria-hidden="true" />
+						<P class="text-sm text-gray-600 dark:text-gray-300">Allen-Bailey Tag &amp; Label</P>
+						<A
+							href={contactDetails.phoneHref}
+							class="mt-3 inline-block text-3xl font-light tracking-tight text-primary-600 underline-offset-4 hover:underline sm:text-4xl dark:text-primary-300"
+						>
+							{contactDetails.phone}
+						</A>
+						<P class="mt-6 text-gray-600 dark:text-gray-300">
+							If you're calling about an existing project, have your reference or order details
+							handy.
 						</P>
 					</Div>
 				</Div>

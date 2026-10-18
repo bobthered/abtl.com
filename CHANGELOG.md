@@ -6,19 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: b6bf8bb45bc5467579790984daa621fb3a6484cb -->
+<!-- pending-base: 8700946500b5febe3fae66c22e96ca3fc3445750 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: build a dedicated contact page and inquiry form
+fix: clarify contact options and refine the map
 
-Replace the contact placeholder with the shared ContentLayout, a focused inquiry form without project-type controls, button-style email links, a Caledonia address section, and a centered phone CTA. Add a Google map with a client-mounted iframe fallback and optional API-key-enabled light/dark styling using the site's primary and secondary colors.
+Replace unclear inquiry wording, make directions a primary button, and remove phone and email actions from the address section. Add a dedicated third section for phone contact with the verified number and project guidance.
 
-Route validated inquiries to sales@abtl.com through a server-only Resend adapter with visitor reply-to, bounded input, plain-text messages, and honest failure handling. Preserve submitted details on failure and disable online sending until RESEND_API_KEY and a verified CONTACT_FROM_EMAIL are configured.
-
-Document email and restricted Maps key setup, add mocked delivery, validation, map-theme, responsive, and no-JavaScript checks, remove stale placeholder content, and reconcile the committed navigation update in the changelog.
+Use primary highway accents and remove the company-name map overlay. Reconcile the committed contact-page work in the changelog.
 ```
+
+## 2026-10-18
+
+- **feat: build a dedicated contact page and inquiry form** (`8700946`)
+  Replace the contact placeholder with ContentLayout, a validated inquiry form delivered to sales@abtl.com through Resend, button-style email links, the Caledonia address, and a phone CTA. Add an optional theme-aware Google map with an iframe fallback, document environment setup, and cover validation, mocked delivery, themes, responsiveness, and no-JavaScript behavior.
 
 ## 2026-10-17
 

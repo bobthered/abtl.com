@@ -31,7 +31,7 @@ export const createMapStyles = (palette: MapPalette): google.maps.MapTypeStyle[]
 		elementType: 'geometry.stroke',
 		stylers: [{ color: palette.primary }]
 	},
-	{ featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: palette.secondary }] },
+	{ featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: palette.primary }] },
 	{ featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: palette.park }] },
 	{ featureType: 'water', elementType: 'geometry', stylers: [{ color: palette.water }] }
 ];

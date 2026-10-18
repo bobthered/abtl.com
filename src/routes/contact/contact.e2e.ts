@@ -33,7 +33,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
 			expect(await form.evaluate((node) => (node as HTMLFormElement).checkValidity())).toBe(true);
 			await expect(form.getByRole('radio')).toHaveCount(0);
 			await expect(page.locator('[data-content-layout]')).toHaveCount(1);
-			await expect(page.locator('[data-content-body] > section')).toHaveCount(2);
+			await expect(page.locator('[data-content-body] > section')).toHaveCount(3);
 			await expect(page.locator('[data-content-cta] a')).toHaveAttribute(
 				'href',
 				'tel:+18005418868'
