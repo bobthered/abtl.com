@@ -6,6 +6,7 @@ import {
 	parseDraftQuantity
 } from '#lib/server/shop/fireSuppression.js';
 import type { Actions, PageServerLoad } from './$types';
+import { searchFireOrders } from '#lib/server/shop/orderSearch.js';
 import type { ShopMember } from '#lib/server/shop/access.js';
 
 const requireMember = (member: ShopMember | undefined) => {
@@ -18,18 +19,11 @@ const requireMember = (member: ShopMember | undefined) => {
 export const load: PageServerLoad = ({ locals, setHeaders, url }) => {
 	setHeaders({ 'cache-control': 'private, no-store' });
 	const member = requireMember(locals.shopMember);
-	const query = (url.searchParams.get('q') ?? '').trim().slice(0, 120);
-	const orders = getFireOrders(member);
 	return {
 		companyName: member.companyName,
 		isDemo: member.companyId === 'demo-fire-company',
-		orders: orders.filter((order) =>
-			[order.orderNumber, order.reference, order.artwork, order.product.name].some((value) =>
-				value.toLowerCase().includes(query.toLowerCase())
-			)
-		),
 		products: fireProducts,
-		query
+		...searchFireOrders(member, url.searchParams)
 	};
 };
 
@@ -51,7 +45,7 @@ export const actions: Actions = {
 				product: order.product.name,
 				quantity,
 				reference: `${order.orderNumber} / ${order.artwork}`,
-				details: order.reference
+				details: `${order.sku} / PO ${order.poNumber} / ${order.description}`
 			}
 		};
 	},

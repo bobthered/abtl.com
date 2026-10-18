@@ -88,70 +88,132 @@
 				Find it. Review it. Reorder it.
 			</H2>
 			<P class="mt-4 max-w-2xl text-gray-600 dark:text-gray-300">
-				Search by order number, product, your reference, or artwork number. Each selection keeps its
-				original artwork reference attached for review.
+				Search order and PO numbers, SKUs, descriptions, references, artwork, or dates. Narrow the
+				results by product type and order date to find the exact item you need.
 			</P>
+
 			<Form
 				method="GET"
 				action="/shop/fire-suppression#previous-orders"
-				class="my-8 flex flex-col items-start gap-4 sm:flex-row sm:items-end"
+				class="my-8 grid items-end gap-4 rounded-sm bg-gray-50 p-6 md:grid-cols-2 lg:grid-cols-4 dark:bg-gray-950"
 			>
-				<Div class="w-full sm:max-w-lg">
+				<Div class="md:col-span-2">
 					<Label for="order-search">Search previous orders</Label><Input
 						id="order-search"
 						name="q"
 						type="search"
-						value={data.query}
+						value={data.filters.q}
 						maxlength={120}
-						placeholder="Order, product, reference, or artwork"
+						placeholder="Order, PO, SKU, description, artwork, or date"
 						class="mt-2 w-full"
 					/>
 				</Div>
-				<Button type="submit">Search orders</Button>{#if data.query}<A
+				<Div class="md:col-span-2">
+					<Label for="order-type">Product type</Label><Select
+						id="order-type"
+						name="type"
+						value={data.filters.type}
+						options={[
+							{ label: 'All product types', value: '' },
+							...data.products.map((product) => ({ label: product.name, value: product.id }))
+						]}
+						class="mt-2 w-full"
+					/>
+				</Div>
+				<Div>
+					<Label for="order-from">Order date from</Label><Input
+						id="order-from"
+						name="from"
+						type="date"
+						value={data.filters.from}
+						class="mt-2 w-full"
+					/>
+				</Div>
+				<Div>
+					<Label for="order-to">Order date to</Label><Input
+						id="order-to"
+						name="to"
+						type="date"
+						value={data.filters.to}
+						class="mt-2 w-full"
+					/>
+				</Div>
+				<Div>
+					<Label for="order-sort">Sort results</Label><Select
+						id="order-sort"
+						name="sort"
+						value={data.filters.sort}
+						options={[
+							{ label: 'Newest first', value: 'newest' },
+							{ label: 'Oldest first', value: 'oldest' },
+							{ label: 'SKU', value: 'sku' }
+						]}
+						class="mt-2 w-full"
+					/>
+				</Div>
+				<Div class="flex flex-wrap items-center gap-4">
+					<Button type="submit">Search orders</Button><A
 						href="/shop/fire-suppression#previous-orders"
-						class="py-3"
 					>
-						Clear search
-					</A>{/if}
+						Reset filters
+					</A>
+				</Div>
 			</Form>
+			{#if data.filterError}<P role="alert" class="mb-4 text-red-600 dark:text-red-300">
+					{data.filterError}
+				</P>{/if}
 			<P class="mb-4 text-sm text-gray-600 dark:text-gray-300" role="status">
-				{data.orders.length} matching {data.orders.length === 1 ? 'product' : 'products'}
+				{data.pagination.total} matching {data.pagination.total === 1
+					? 'product'
+					: 'products'}{#if data.pagination.total > 0}
+					&nbsp;/ Showing {data.pagination.first}-{data.pagination.last}{/if}
 			</P>
-			<Div class="grid gap-4 lg:grid-cols-3">
+			<Div class="grid gap-4">
 				{#each data.orders as order (order.id)}
 					<Div
-						class="flex flex-col rounded-sm bg-gray-50 p-6 inset-ring-1 inset-ring-gray-200 dark:bg-gray-950 dark:inset-ring-gray-800"
+						class="grid items-start gap-4 rounded-sm bg-gray-50 p-4 inset-ring-1 inset-ring-gray-200 sm:p-6 lg:grid-cols-12 dark:bg-gray-950 dark:inset-ring-gray-800"
 					>
-						<Div
-							class="mb-6 flex h-56 items-center justify-center rounded-sm bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-950 dark:to-secondary-950"
-							aria-hidden="true"
-						>
-							<Div class="aspect-square h-full">
+						<Div class="flex gap-4 lg:col-span-7">
+							<Div
+								class="flex size-24 shrink-0 items-center justify-center rounded-sm bg-gradient-to-br from-primary-100 to-secondary-100 sm:size-32 dark:from-primary-950 dark:to-secondary-950"
+								aria-hidden="true"
+							>
 								<ProductArtwork
 									format={order.product.format}
 									product={order.product}
 									isBackdropVisible={false}
 								/>
 							</Div>
+							<Div class="min-w-0">
+								<P class="text-xs text-gray-500 dark:text-gray-400">SKU {order.sku}</P><H3
+									class="mt-1 text-xl"
+								>
+									{order.product.name}
+								</H3><P class="mt-2">{order.description}</P><P
+									class="mt-2 text-sm text-gray-600 dark:text-gray-300"
+								>
+									{order.reference}
+								</P><P class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+									Illustrative preview / not an approved proof
+								</P>
+							</Div>
 						</Div>
-						<P class="text-sm text-gray-600 dark:text-gray-300">
-							{order.orderNumber} / {order.date}
-						</P><P class="mb-2 text-xs text-gray-500 dark:text-gray-400">
-							Illustrative preview / not an approved proof
-						</P>
-						<H3 class="mt-2 text-2xl">{order.product.name}</H3>
-						<P class="mt-3">{order.reference}</P><P
-							class="mt-2 text-sm text-gray-600 dark:text-gray-300"
-						>
-							Artwork: {order.artwork}
-						</P><P class="mt-2 mb-6 text-sm text-gray-600 dark:text-gray-300">
-							Previous quantity: {order.quantity.toLocaleString()}
-						</P>
+						<Div class="text-sm lg:col-span-2">
+							<P class="font-medium">{order.orderNumber}</P><P class="mt-2">
+								PO: {order.poNumber}
+							</P><P class="mt-2 text-gray-600 dark:text-gray-300">Ordered: {order.date}</P><P
+								class="mt-2 break-words text-gray-600 dark:text-gray-300"
+							>
+								Artwork: {order.artwork}
+							</P><P class="mt-2 text-gray-600 dark:text-gray-300">
+								Previous quantity: {order.quantity.toLocaleString()}
+							</P>
+						</Div>
 						<Form
 							method="POST"
 							action="?/reorder"
-							aria-label={`Reorder ${order.product.name}`}
-							class="mt-auto grid gap-4"
+							aria-label={`Reorder ${order.sku}`}
+							class="grid gap-4 lg:col-span-3"
 						>
 							<Input type="hidden" name="orderId" value={order.id} />
 							<Div>
@@ -172,13 +234,35 @@
 					</Div>
 				{:else}<Div class="rounded-sm bg-gray-50 p-8 dark:bg-gray-950">
 						<H3 class="text-xl">
-							{data.query ? 'No matching orders.' : 'No previous orders yet.'}
+							{data.query || data.filters.type || data.filters.from || data.filters.to
+								? 'No matching orders.'
+								: 'No previous orders yet.'}
 						</H3><P class="mt-3">
-							Try another reference, start a new product below, or contact us for help finding an
+							Try different filters, start a new product below, or contact us for help finding an
 							older order.
 						</P>
 					</Div>{/each}
 			</Div>
+			{#if data.pagination.pageCount > 1}<Div
+					class="mt-6 flex flex-wrap items-center justify-between gap-4"
+					role="navigation"
+					aria-label="Order result pages"
+				>
+					<P class="text-sm">Page {data.pagination.page} of {data.pagination.pageCount}</P>
+					<Div class="flex gap-4">
+						{#if data.previousHref}<A
+								href={data.previousHref}
+								variants={['button.base', 'button.variant.neutral-outline']}
+							>
+								Previous page
+							</A>{/if}{#if data.nextHref}<A
+								href={data.nextHref}
+								variants={['button.base', 'button.variant.neutral-outline']}
+							>
+								Next page
+							</A>{/if}
+					</Div>
+				</Div>{/if}
 		</Container>
 	</Section>
 	<Section id="new-product" variants={['surface']} aria-labelledby="new-product-heading">

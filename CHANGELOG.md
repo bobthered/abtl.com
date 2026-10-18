@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 1a27a29c286ebfd544196e2f7de8c024dd2d5583 -->
+<!-- pending-base: a138f18e9a9215dc04acb7b7ed8d68d5b83ed3e8 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add fire suppression reorder and new-product reviews
+feat: expand fire suppression order history lookup
 
-Replace the catalog placeholder with searchable company order history, product previews, artwork references, and quantity-based reorder reviews. Add a separate new-product selection and requirements form covering the fire suppression range.
+Search company order lines by order number, PO, SKU, description, reference, artwork, and date. Add combined product-type and inclusive date filters, sorting, validation, and filter-preserving pagination.
 
-Use company-scoped fictional demo records, recheck market access and ownership on POST, and validate product selections and quantities. Keep summaries transient and clearly distinguish demo reviews from saved drafts, submitted requests, and paid orders.
+Replace large cards with compact SKU-level result rows and expand fictional history to demonstrate multiple configurations and order lines. Keep reorder ownership checks and the separate new-product workflow.
 
-Add order-search and authorization coverage, document the remaining order-system integration, and reconcile the committed shop artwork in the changelog.
+Cover combined searches, dates, pagination, and company isolation; document the future indexed order-system query and reconcile the committed reorder work in the changelog.
 ```
 
 ## 2026-10-18
+
+- **feat: add fire suppression reorder and new-product reviews** (`a138f18`)
+  Add company-scoped demo order search, illustrated reorder reviews carrying artwork references, and a separate new-product requirements form. Validate POST ownership and quantities, test search and review flows, and document that summaries are transient and do not submit orders.
 
 - **feat: add product artwork to shop market cards** (`1a27a29`)
   Replace shopping icons with existing product illustrations for all six markets, using consistent proportions and theme-aware backgrounds while preserving assigned-market visibility.

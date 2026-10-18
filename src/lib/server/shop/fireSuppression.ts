@@ -19,6 +19,9 @@ const demoOrders = [
 	{
 		id: 'demo-inspection',
 		orderNumber: 'DEMO-1042',
+		poNumber: 'PO-DEMO-2409',
+		sku: 'FS-DEMO-001',
+		description: 'Annual inspection tag - main service team',
 		date: '2026-09-12',
 		productId: 'tag-inspection',
 		reference: 'Annual inspection tag',
@@ -28,6 +31,9 @@ const demoOrders = [
 	{
 		id: 'demo-service',
 		orderNumber: 'DEMO-1031',
+		poNumber: 'PO-DEMO-2408',
+		sku: 'FS-DEMO-002',
+		description: 'Service contact label - equipment cabinets',
 		date: '2026-08-20',
 		productId: 'label-call-service',
 		reference: 'Service contact label',
@@ -37,12 +43,30 @@ const demoOrders = [
 	{
 		id: 'demo-collar',
 		orderNumber: 'DEMO-1018',
+		poNumber: 'PO-DEMO-2407',
+		sku: 'FS-DEMO-003',
+		description: 'Small green collar - service department',
 		date: '2026-07-08',
 		productId: 'collars',
 		reference: 'Small / Green collar',
 		artwork: 'DEMO-ART-103',
 		quantity: 250
-	}
+	},
+	...Array.from({ length: 15 }, (_, index) => {
+		const product = fireProducts[index % fireProducts.length];
+		return {
+			id: `demo-line-${index + 4}`,
+			orderNumber: `DEMO-${1000 - Math.floor(index / 3)}`,
+			poNumber: `PO-DEMO-${2406 - Math.floor(index / 3)}`,
+			sku: `FS-DEMO-${String(index + 4).padStart(3, '0')}`,
+			description: `${product.name} - sample layout ${index + 1}`,
+			date: `2026-${String(6 - Math.floor(index / 3)).padStart(2, '0')}-${String(20 - (index % 3)).padStart(2, '0')}`,
+			productId: product.id,
+			reference: `Demo service program ${index + 1}`,
+			artwork: `DEMO-ART-${104 + index}`,
+			quantity: 500
+		};
+	})
 ];
 
 export const getFireOrders = (member: ShopMember) =>
