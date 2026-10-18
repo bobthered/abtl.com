@@ -3,7 +3,9 @@
 declare global {
 	namespace App {
 		// interface Error {}
-		// interface Locals {}
+		interface Locals {
+			shopMember?: import('./lib/server/shop/access').ShopMember;
+		}
 		// interface PageData {}
 		interface PageState {
 			bentoTopic?: string;

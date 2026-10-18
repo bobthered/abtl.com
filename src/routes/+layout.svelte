@@ -98,7 +98,7 @@
 	});
 
 	// $props()
-	let { children }: LayoutProps = $props();
+	let { children, data }: LayoutProps = $props();
 
 	// $state
 	let colorMode = $state<ColorMode>('light');
@@ -175,14 +175,12 @@
 				<A href={contactNavigation.href} variants={['ghost', 'navigation']} class="px-0 sm:px-3">
 					Contact
 				</A>
-				<Button
-					type="button"
-					disabled
-					title="Sign in coming soon"
-					aria-label="Sign In (coming soon)"
+				<A
+					href={data.isShopSignedIn ? '/shop' : '/account/sign-in'}
+					variants={['ghost', 'navigation']}
 				>
-					Sign In
-				</Button>
+					{data.isShopSignedIn ? 'Shop' : 'Sign in'}
+				</A>
 			</Div>
 			<Div class="xl:hidden">
 				<Popover
@@ -269,15 +267,14 @@
 									</A>
 								{/if}
 							{/each}
-							<Button
-								type="button"
-								disabled
-								title="Sign in coming soon"
-								aria-label="Sign In (coming soon)"
+							<A
+								href={data.isShopSignedIn ? '/shop' : '/account/sign-in'}
+								variants={['ghost', 'navigation']}
 								class="mt-4 w-fit"
+								onclick={() => (isMenuVisible = false)}
 							>
-								Sign In
-							</Button>
+								{data.isShopSignedIn ? 'Shop' : 'Sign in'}
+							</A>
 						</Nav>
 					</Container>
 				</Popover>

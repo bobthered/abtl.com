@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 8700946500b5febe3fae66c22e96ca3fc3445750 -->
+<!-- pending-base: 8a6c63593bd7de5462dd51e7234425635d475132 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-fix: clarify contact options and refine the map
+feat: add a temporary beta sign-in and protected shop
 
-Replace unclear inquiry wording, make directions a primary button, and remove phone and email actions from the address section. Add a dedicated third section for phone contact with the verified number and project guidance.
+Replace disabled header controls with a responsive sign-in form and session-aware Shop links. Add temporary development credentials, signed expiring HttpOnly sessions, sign-out, and a protected fire suppression landing page grouped into tags, labels, and collars.
 
-Use primary highway accents and remove the company-name map overlay. Reconcile the committed contact-page work in the changelog.
+Define server-only company membership and market authorization, deny anonymous and unassigned buyers, and prevent personalized response caching. Disable demo credentials and authentication in production; test access rules, session expiry, tampering, and route protection.
+
+Document the temporary review account and pending identity, invitation storage, and commerce integrations; keep live customer sign-in, invitation acceptance, and checkout unavailable until connected. Reconcile the committed contact refinements in the changelog.
 ```
 
 ## 2026-10-18
+
+- **fix: clarify contact options and refine the map** (`8a6c635`)
+  Clarify inquiry copy, make directions primary, move phone contact into a third section, remove address-section contact actions and the map company overlay, and use primary highway accents. Update the contact section-count check.
 
 - **feat: build a dedicated contact page and inquiry form** (`8700946`)
   Replace the contact placeholder with ContentLayout, a validated inquiry form delivered to sales@abtl.com through Resend, button-style email links, the Caledonia address, and a phone CTA. Add an optional theme-aware Google map with an iframe fallback, document environment setup, and cover validation, mocked delivery, themes, responsiveness, and no-JavaScript behavior.

@@ -1,0 +1,22 @@
+# Invitation-only shop foundation
+
+Public entry: `/account/sign-in`. `/shop` sends anonymous visitors there and signed-in demo buyers to their fire suppression catalog. The first protected market is `/shop/fire-suppression`.
+
+## Current behavior
+
+- Desktop and mobile header links reach a real server-posted sign-in form. In development, the form displays temporary credentials (`beta@example.com` / `FireBeta2026!`). Signed-in visitors see a Shop link. No public registration or live invitations are available.
+- A server-only company membership contract separates user identity, company, customer type, and assigned markets. Direct and distributor buyers can each have multiple markets.
+- Fire suppression checks membership before returning any catalog data and disables response caching. Anonymous users redirect; members without market access receive 403.
+- The protected landing page groups existing product offerings into tags, labels, and collars. Prices, variants, purchasing, saved artwork, and orders are not yet implemented.
+- Development sign-in sets a one-hour HttpOnly SameSite cookie signed with a random process-local HMAC secret. The hook verifies expiry and signature before populating the fixed demo company membership. Restarting the server invalidates sessions; signing out deletes the cookie. Forged browser values cannot grant access.
+- Demo authentication is hard-disabled outside SvelteKit development mode, including preview and production builds. Production never exposes demo credentials or accepts demo sessions. This is a local review account, not a customer identity system. Do not put real customer data in this workspace.
+
+## Next integration
+
+Choose the identity, durable storage, and commerce providers before enabling production sign-in. Replace the temporary demo hook and form action with verified provider sessions. A server hook must verify the provider session on every request, load current company membership from trusted storage, and then populate `locals.shopMember`. Never populate it from unsigned browser data. Future product, cart, checkout, artwork, and order endpoints must repeat authorization; page protection alone is not sufficient.
+
+Invitations should store a hashed random token, normalized recipient email, company, assigned markets, issuer, expiry, and acceptance state in durable storage. Acceptance must verify the recipient and atomically consume the invitation once. Revocation and company membership changes must take effect on subsequent requests. Keep raw tokens out of logs and analytics; do not issue live invitations until this lifecycle is implemented.
+
+Company management and invitation issuance belong in the separate internal administration project. This site should own invitation acceptance and customer purchasing. Do not add an unauthenticated invitation-creation endpoint here.
+
+Resolve whether new designs require artwork and price approval before payment, plus catalog availability, quantity rules, tax/shipping/payment integration, and distributor pricing before enabling checkout. Product categories here are navigation scaffolding, not purchasable SKUs.
