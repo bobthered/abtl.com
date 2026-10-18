@@ -25,3 +25,9 @@ Resolve whether new designs require artwork and price approval before payment, p
 ## Market artwork
 
 The private shop `MarketArtwork` composition reuses the route-owned market illustrations for all six assigned-market cards. Product artwork remains owned by each market rather than duplicating shapes or importing full market pages. Each preview uses the same 3:2 stage with a fixed square illustration viewport and theme-aware primary/secondary background. Preview artwork is decorative; the market heading and catalog link supply accessible labels.
+
+## Fire suppression ordering demo
+
+The market page offers server-side search by order, product, customer reference, and artwork, plus per-item quantity and reorder review. A separate new-product form covers the existing fire suppression range. Both POST actions recheck company/market access and validate products and quantities. Review summaries are transient action responses: no draft is stored, no request is sent, and no order or charge is created.
+
+Three fictional order lines are available only to the demo company. Other authorized companies receive an empty history. Replace the fixture repository with a company-and-market-scoped order query before importing real records. Never trust a posted order ID without verifying ownership. Historical artwork references are shown for continuity; previews are illustrative product artwork, not actual approved customer proofs. Quantity limits are technical input bounds, not product minimums or pricing rules. Real reorders must confirm artwork revision, current pricing, availability, delivery address, and payment before submission.

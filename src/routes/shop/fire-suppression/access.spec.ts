@@ -10,7 +10,11 @@ const member: ShopMember = {
 	userId: 'buyer'
 };
 const event = (shopMember?: ShopMember) =>
-	({ locals: { shopMember }, setHeaders: vi.fn() }) as unknown as Parameters<typeof load>[0];
+	({
+		locals: { shopMember },
+		setHeaders: vi.fn(),
+		url: new URL('http://localhost/shop/fire-suppression')
+	}) as unknown as Parameters<typeof load>[0];
 
 describe('fire suppression shop boundary', () => {
 	it('redirects anonymous visitors before returning catalog data', async () => {
@@ -26,7 +30,12 @@ describe('fire suppression shop boundary', () => {
 	});
 	it('returns only display context to an authorized buyer and prevents caching', async () => {
 		const request = event(member);
-		expect(await load(request)).toEqual({ companyName: 'Example' });
+		expect(await load(request)).toMatchObject({
+			companyName: 'Example',
+			orders: [],
+			isDemo: false,
+			query: ''
+		});
 		expect(request.setHeaders).toHaveBeenCalledWith({ 'cache-control': 'private, no-store' });
 	});
 });

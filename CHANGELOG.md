@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: a8cc376dca7cf66059c63602d85b69f69d167394 -->
+<!-- pending-base: 1a27a29c286ebfd544196e2f7de8c024dd2d5583 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add product artwork to shop market cards
+feat: add fire suppression reorder and new-product reviews
 
-Replace generic shopping icons with themed product previews for all six markets, reusing the existing market illustrations. Keep consistent preview proportions, light and dark backgrounds, and assigned-market visibility.
+Replace the catalog placeholder with searchable company order history, product previews, artwork references, and quantity-based reorder reviews. Add a separate new-product selection and requirements form covering the fire suppression range.
 
-Document the artwork composition and reconcile the committed market chooser in the changelog.
+Use company-scoped fictional demo records, recheck market access and ownership on POST, and validate product selections and quantities. Keep summaries transient and clearly distinguish demo reviews from saved drafts, submitted requests, and paid orders.
+
+Add order-search and authorization coverage, document the remaining order-system integration, and reconcile the committed shop artwork in the changelog.
 ```
 
 ## 2026-10-18
+
+- **feat: add product artwork to shop market cards** (`1a27a29`)
+  Replace shopping icons with existing product illustrations for all six markets, using consistent proportions and theme-aware backgrounds while preserving assigned-market visibility.
 
 - **feat: show company-assigned markets in the shop** (`a8cc376`)
   Make /shop the signed-in market chooser, show only assigned markets, distinguish published catalogs from coming-soon markets, and add navigation back from fire suppression. Assign shellfish to the demo company and update access and login coverage.
