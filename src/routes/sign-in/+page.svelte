@@ -16,7 +16,9 @@
 		Section
 	} from '#lib/components';
 	import { ArrowRight, Building2, Mail, ShieldCheck } from '#lib/icons';
+	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
+	import { signIn } from './sign-in.remote';
 
 	// consts
 	const steps = [
@@ -37,15 +39,24 @@
 			description: "We're starting with fire suppression. Additional markets will follow."
 		}
 	];
+
 	// $props()
-	let { data, form }: PageProps = $props();
+	let { data }: PageProps = $props();
+
+	// $state
+	let isReady = $state(false);
+
+	// $effects
+	onMount(() => {
+		isReady = true;
+	});
 </script>
 
 <svelte:head>
 	<title>Beta Shop Sign In | Allen-Bailey</title>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
-<Main id="main-content" tabindex={-1}>
+<Main id="main-content" tabindex={-1} data-sign-in-ready={isReady}>
 	<Section variants={['surface']}>
 		<Container class="py-12 sm:py-16 lg:py-28">
 			<Div class="grid items-center gap-4 lg:grid-cols-2">
@@ -73,15 +84,17 @@
 						Invited customers only.
 					</H2>
 					<P class="mt-4 text-gray-600 dark:text-gray-300">Sign in to your company's shop.</P>
-					{#if form?.message}<P role="alert" class="mt-4 text-red-600 dark:text-red-300">
-							{form.message}
-						</P>{/if}
-					<Form method="POST" aria-label="Shop sign in" class="mt-6 grid gap-4">
+					{#each signIn.fields.allIssues() ?? [] as issue, index (index)}<P
+							role="alert"
+							class="mt-4 text-red-600 dark:text-red-300"
+						>
+							{issue.message}
+						</P>{/each}
+					<Form {...signIn} aria-label="Shop sign in" class="mt-6 grid gap-4">
 						<Div>
 							<Label for="shop-email">Work email</Label><Input
 								id="shop-email"
-								name="email"
-								type="email"
+								{...signIn.fields.email.as('email')}
 								autocomplete="username"
 								required
 								maxlength={254}
@@ -91,15 +104,16 @@
 						<Div>
 							<Label for="shop-password">Password</Label><Input
 								id="shop-password"
-								name="password"
-								type="password"
+								{...signIn.fields._password.as('password')}
 								autocomplete="current-password"
 								required
 								maxlength={128}
 								class="mt-2 w-full"
 							/>
 						</Div>
-						<Button type="submit" disabled={!data.isDemoEnabled}>Sign in</Button>
+						<Button type="submit" disabled={!data.isDemoEnabled || signIn.pending > 0}>
+							Sign in
+						</Button>
 					</Form>
 					{#if data.demoCredentials}
 						<Div

@@ -1,13 +1,13 @@
 <script lang="ts">
 	// Imports
-	import BeerArtwork from '../../markets/beverage/_components/BeerArtwork.svelte';
+	import BeerArtwork from '../../../markets/beverage/_components/BeerArtwork.svelte';
 	import { Div } from '#lib/components';
-	import HospitalityArtwork from '../../markets/hospitality/_components/HospitalityArtwork.svelte';
-	import MerchandiseTag from '../../markets/merchandise-tags/_components/MerchandiseTag.svelte';
-	import ProductArtwork from '../../markets/fire-suppression/_components/ProductArtwork.svelte';
-	import ShellfishArtwork from '../../markets/shellfish/_components/ShellfishArtwork.svelte';
-	import { tags } from '../../markets/fire-suppression/_components/products';
-	import TreeTagArtwork from '../../markets/tree-tags/_components/TreeTagArtwork.svelte';
+	import HospitalityArtwork from '../../../markets/hospitality/_components/HospitalityArtwork.svelte';
+	import MerchandiseTag from '../../../markets/merchandise-tags/_components/MerchandiseTag.svelte';
+	import ProductArtwork from '../../../markets/fire-suppression/_components/ProductArtwork.svelte';
+	import ShellfishArtwork from '../../../markets/shellfish/_components/ShellfishArtwork.svelte';
+	import { tags } from '../../../markets/fire-suppression/_components/products';
+	import TreeTagArtwork from '../../../markets/tree-tags/_components/TreeTagArtwork.svelte';
 
 	// $props()
 	let { market }: { market: string } = $props();

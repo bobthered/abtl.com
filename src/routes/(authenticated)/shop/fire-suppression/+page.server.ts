@@ -10,7 +10,7 @@ import { searchFireOrders } from '#lib/server/shop/orderSearch.js';
 import type { ShopMember } from '#lib/server/shop/access.js';
 
 const requireMember = (member: ShopMember | undefined) => {
-	if (!member) redirect(303, '/account/sign-in');
+	if (!member) redirect(303, '/sign-in');
 	if (!canAccessMarket(member, 'fire-suppression'))
 		error(403, 'Your company does not have access to this market.');
 	return member;

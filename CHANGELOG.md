@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: a138f18e9a9215dc04acb7b7ed8d68d5b83ed3e8 -->
+<!-- pending-base: b940c707ad55b3c7b61eb8c0094356974d7f8839 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: expand fire suppression order history lookup
+refactor: centralize shop authentication with remote sign-in
 
-Search company order lines by order number, PO, SKU, description, reference, artwork, and date. Add combined product-type and inclusive date filters, sorting, validation, and filter-preserving pagination.
+Move shop routes into the authenticated layout group and enforce signed session access in the root server hook. Use /sign-in as the canonical entry, preserve the old sign-in URL as a redirect, and retain company and market authorization inside shop loaders and actions.
 
-Replace large cards with compact SKU-level result rows and expand fictional history to demonstrate multiple configurations and order lines. Keep reorder ownership checks and the separate new-product workflow.
+Replace the page-action login with a SvelteKit remote form and a 30-day HttpOnly session signed with a stable server-only secret. Keep demo login development-only, exclude passwords from form repopulation, and update navigation, sign-out, tests, and environment documentation.
 
-Cover combined searches, dates, pagination, and company isolation; document the future indexed order-system query and reconcile the committed reorder work in the changelog.
+Document production identity and revocation limitations, preserve shop artwork imports after the route move, and reconcile the committed order-history lookup in the changelog.
 ```
 
 ## 2026-10-18
+
+- **feat: expand fire suppression order history lookup** (`b940c70`)
+  Add order, PO, SKU, description, artwork, and date search with combined product-type/date filters, sorting, validation, and pagination. Replace large cards with compact SKU rows and expand fictional company history with search and isolation coverage.
 
 - **feat: add fire suppression reorder and new-product reviews** (`a138f18`)
   Add company-scoped demo order search, illustrated reorder reviews carrying artwork references, and a separate new-product requirements form. Validate POST ownership and quantities, test search and review flows, and document that summaries are transient and do not submit orders.

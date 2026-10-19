@@ -19,7 +19,7 @@
 		Textarea
 	} from '#lib/components';
 	import type { PageProps } from './$types';
-	import ProductArtwork from '../../markets/fire-suppression/_components/ProductArtwork.svelte';
+	import ProductArtwork from '../../../markets/fire-suppression/_components/ProductArtwork.svelte';
 
 	// $props()
 	let { data, form }: PageProps = $props();

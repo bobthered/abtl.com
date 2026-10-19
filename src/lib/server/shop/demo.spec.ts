@@ -19,9 +19,16 @@ describe('temporary demo sessions', () => {
 			'demo-buyer',
 			token + 'x',
 			'9'.repeat(1000),
-			token.replace('3601000', '3602000')
+			token.replace(token.split('.')[0], String(1000 + demoSessionSeconds * 1000 + 1))
 		]) {
 			expect(verifyDemoSession(value, true, 1001)).toBeUndefined();
 		}
+	});
+	it('uses a stable external signing key across requests and rejects a different key', () => {
+		const key = 'a'.repeat(64);
+		const token = createDemoSession(1000, key);
+		expect(verifyDemoSession(token, true, 2000, key)?.userId).toBe('demo-buyer');
+		expect(verifyDemoSession(token, true, 2000, 'b'.repeat(64))).toBeUndefined();
+		expect(demoSessionSeconds).toBe(30 * 24 * 60 * 60);
 	});
 });

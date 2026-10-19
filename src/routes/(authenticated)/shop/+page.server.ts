@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = ({ locals, setHeaders }) => {
 	setHeaders({ 'cache-control': 'private, no-store' });
-	if (!locals.shopMember) redirect(303, '/account/sign-in');
+	if (!locals.shopMember) redirect(303, '/sign-in');
 	return {
 		companyName: locals.shopMember.companyName,
 		markets: getAssignedMarkets(locals.shopMember)

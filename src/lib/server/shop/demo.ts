@@ -11,18 +11,20 @@ export const demoMember: ShopMember = {
 	markets: ['fire-suppression', 'shellfish'],
 	userId: 'demo-buyer'
 };
-export const demoSessionSeconds = 3600;
-// A restart invalidates every demo session; no persistent credential or secret is required.
+export const demoSessionSeconds = 60 * 60 * 24 * 30;
+// Tests can use the process-local fallback; runtime callers supply SHOP_SESSION_SECRET.
 const secret = randomBytes(32);
-const sign = (payload: string) => createHmac('sha256', secret).update(payload).digest('hex');
-export const createDemoSession = (now = Date.now()) => {
+const sign = (payload: string, signingKey: string | Buffer) =>
+	createHmac('sha256', signingKey).update(payload).digest('hex');
+export const createDemoSession = (now = Date.now(), signingKey: string | Buffer = secret) => {
 	const payload = `${now + demoSessionSeconds * 1000}.${randomBytes(16).toString('hex')}`;
-	return `${payload}.${sign(payload)}`;
+	return `${payload}.${sign(payload, signingKey)}`;
 };
 export const verifyDemoSession = (
 	token: string | undefined,
 	isEnabled: boolean,
-	now = Date.now()
+	now = Date.now(),
+	signingKey: string | Buffer = secret
 ) => {
 	if (!isEnabled || !token || token.length > 160) return undefined;
 	const parts = token.split('.');
@@ -35,7 +37,7 @@ export const verifyDemoSession = (
 		return undefined;
 	const expiry = Number(parts[0]);
 	if (expiry <= now || expiry > now + demoSessionSeconds * 1000) return undefined;
-	const expected = Buffer.from(sign(`${parts[0]}.${parts[1]}`), 'hex');
+	const expected = Buffer.from(sign(`${parts[0]}.${parts[1]}`, signingKey), 'hex');
 	if (!timingSafeEqual(expected, Buffer.from(parts[2], 'hex'))) return undefined;
 	return { ...demoMember, markets: [...demoMember.markets] };
 };

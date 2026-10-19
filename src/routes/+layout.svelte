@@ -175,10 +175,7 @@
 				<A href={contactNavigation.href} variants={['ghost', 'navigation']} class="px-0 sm:px-3">
 					Contact
 				</A>
-				<A
-					href={data.isShopSignedIn ? '/shop' : '/account/sign-in'}
-					variants={['ghost', 'navigation']}
-				>
+				<A href={data.isShopSignedIn ? '/shop' : '/sign-in'} variants={['ghost', 'navigation']}>
 					{data.isShopSignedIn ? 'Shop' : 'Sign in'}
 				</A>
 			</Div>
@@ -268,7 +265,7 @@
 								{/if}
 							{/each}
 							<A
-								href={data.isShopSignedIn ? '/shop' : '/account/sign-in'}
+								href={data.isShopSignedIn ? '/shop' : '/sign-in'}
 								variants={['ghost', 'navigation']}
 								class="mt-4 w-fit"
 								onclick={() => (isMenuVisible = false)}

@@ -20,7 +20,7 @@ describe('fire suppression shop boundary', () => {
 	it('redirects anonymous visitors before returning catalog data', async () => {
 		await expect(async () => load(event())).rejects.toMatchObject({
 			status: 303,
-			location: '/account/sign-in'
+			location: '/sign-in'
 		});
 	});
 	it('forbids an authenticated buyer from another market', async () => {

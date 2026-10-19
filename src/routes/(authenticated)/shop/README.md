@@ -1,20 +1,20 @@
 # Invitation-only shop foundation
 
-Public entry: `/account/sign-in`. `/shop` sends anonymous visitors there and shows signed-in buyers their company-assigned markets. The first protected market is `/shop/fire-suppression`.
+Public entry: `/sign-in`. `/shop` sends anonymous visitors there and shows signed-in buyers their company-assigned markets. The first protected market is `/shop/fire-suppression`.
 
 ## Current behavior
 
-- Desktop and mobile header links reach a real server-posted sign-in form. In development, the form displays temporary credentials (`beta@example.com` / `FireBeta2026!`). Signed-in visitors see a Shop link. No public registration or live invitations are available.
+- Desktop and mobile header links reach a SvelteKit remote sign-in form. In development, the form displays temporary credentials (`beta@example.com` / `FireBeta2026!`). Signed-in visitors see a Shop link. No public registration or live invitations are available.
 - A server-only company membership contract separates user identity, company, customer type, and assigned markets. Direct and distributor buyers can each have multiple markets.
 - Fire suppression checks membership before returning any catalog data and disables response caching. Anonymous users redirect; members without market access receive 403.
 - `/shop` lists only recognized assigned markets, without duplicates. Fire suppression opens its catalog; assigned markets without a published shop show a coming-soon status. Sign-in always lands at `/shop`, including for single-market accounts. The demo company has Fire Suppression and Shellfish to illustrate this.
 - The protected fire suppression landing page groups existing product offerings into tags, labels, and collars. Prices, variants, purchasing, saved artwork, and orders are not yet implemented.
-- Development sign-in sets a one-hour HttpOnly SameSite cookie signed with a random process-local HMAC secret. The hook verifies expiry and signature before populating the fixed demo company membership. Restarting the server invalidates sessions; signing out deletes the cookie. Forged browser values cannot grant access.
+- Development sign-in runs in `src/routes/sign-in/sign-in.remote.ts` and sets a 30-day HttpOnly SameSite cookie signed with the stable server-only `SHOP_SESSION_SECRET` (at least 32 random characters). The hook verifies expiry and signature before populating the fixed demo company membership. Sessions survive restarts when the secret is unchanged; secret rotation invalidates them and signing out deletes the browser cookie. Forged browser values cannot grant access.
 - Demo authentication is hard-disabled outside SvelteKit development mode, including preview and production builds. Production never exposes demo credentials or accepts demo sessions. This is a local review account, not a customer identity system. Do not put real customer data in this workspace.
 
 ## Next integration
 
-Choose the identity, durable storage, and commerce providers before enabling production sign-in. Replace the temporary demo hook and form action with verified provider sessions. A server hook must verify the provider session on every request, load current company membership from trusted storage, and then populate `locals.shopMember`. Never populate it from unsigned browser data. Future product, cart, checkout, artwork, and order endpoints must repeat authorization; page protection alone is not sufficient.
+Choose the identity, durable storage, and commerce providers before enabling production sign-in. Replace the temporary demo hook and form action with verified provider sessions. The server hook must verify the provider session on every request, load current company membership from trusted storage, and then populate `locals.shopMember`. Never populate it from unsigned browser data. Future product, cart, checkout, artwork, and order endpoints must repeat authorization; page protection alone is not sufficient.
 
 Invitations should store a hashed random token, normalized recipient email, company, assigned markets, issuer, expiry, and acceptance state in durable storage. Acceptance must verify the recipient and atomically consume the invitation once. Revocation and company membership changes must take effect on subsequent requests. Keep raw tokens out of logs and analytics; do not issue live invitations until this lifecycle is implemented.
 
@@ -37,3 +37,9 @@ Eighteen fictional order lines with distinct SKUs, PO numbers, and descriptions 
 A GET-based keyword search matches order number, PO number, SKU, description, customer reference, artwork, and ISO order date. Multiple words must all match the line. Product-type selection and inclusive date bounds combine with the query. Sorting supports newest, oldest, and SKU; deterministic tie-breaking and ten-line pages preserve filters in navigation URLs. Invalid or reversed dates show an error rather than silently broadening results. Result rows distinguish individual SKUs on orders with multiple lines.
 
 The current repository filters synthetic records in memory. Replace it with an indexed database/order-system query that applies company and market ownership, filters, sorting, and pagination before returning rows. Do not load an entire real customer history into the browser. Product types are catalog categories; a SKU identifies the individual customer product/configuration.
+
+## Route protection
+
+Shop routes live under `src/routes/(authenticated)/shop`; the group does not change their public URLs. The root `src/hooks.server.ts` checks exact `(authenticated)` segments of `event.route.id` for every request, including POSTs and endpoints, and redirects anonymous or invalid-session requests to `/sign-in` before loaders and actions execute. Market loaders and POST actions retain separate company/market ownership checks. `/account/sign-in` redirects old bookmarks to `/sign-in`.
+
+The remote form validates credentials server-side and uses `_password` so sensitive values are excluded from remote form repopulation. It supports enhanced submissions and native POST without JavaScript. Runtime code requires the stable signing secret and fails closed when missing. The demo remains development-only; durable identity storage, per-session revocation, password management, and real invitation acceptance are not yet implemented. A deleted cookie does not revoke a previously copied stateless demo token; production authentication must provide revocation.

@@ -4,5 +4,6 @@ import { defineEnvVars } from '@sveltejs/kit/env';
 export const variables = defineEnvVars({
 	CONTACT_FROM_EMAIL: { schema: (value) => value?.trim() || undefined },
 	GOOGLE_MAPS_API_KEY: { schema: (value) => value?.trim() || undefined },
-	RESEND_API_KEY: { schema: (value) => value?.trim() || undefined }
+	RESEND_API_KEY: { schema: (value) => value?.trim() || undefined },
+	SHOP_SESSION_SECRET: { schema: (value) => (value && value.length >= 32 ? value : undefined) }
 });

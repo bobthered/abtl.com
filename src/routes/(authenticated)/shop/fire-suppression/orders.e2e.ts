@@ -12,7 +12,7 @@ test('finds prior products and reviews reorder and new-product details', async (
 	});
 	try {
 		const page = await context.newPage();
-		await page.goto('/account/sign-in');
+		await page.goto('/sign-in');
 		await page.getByLabel('Work email').fill('beta@example.com');
 		await page.getByLabel('Password').fill('FireBeta2026!');
 		await page.getByRole('button', { name: 'Sign in', exact: true }).click();
