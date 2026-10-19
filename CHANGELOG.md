@@ -6,21 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 5c4bccd0bb3104759d3e85362976a0e7f879e1a0 -->
+<!-- pending-base: 33135319d7a35ef745b63fbb6812fb2840573b4b -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: make the shop a focused reorder workspace
+feat: add beta invitation requests and highlight shop access
 
-Replace the market chooser with direct company-scoped order search and reorder reviews. Remove the welcome and new-product sections, preserve filters and pagination at /shop, and redirect the former fire suppression shop URL.
+Add a remote invitation-request form to sign-in with validated contact and market fields, sales-team review messaging, and an email fallback when delivery is unavailable. Share the server-only sales email transport with Contact and never grant access or report delivery success automatically.
 
-Add a shared Shop dropdown with reorder, cart, and POST sign-out options in desktop and mobile navigation. Match megamenu spacing and subtleReveal transitions, and standardize submenu links and sign-out with small, un-underlined navigation styling. Provide an authenticated empty-cart page without implying that demo reviews create cart items.
+Use base button styling for Sign in and Shop, and move Contact into the primary navigation alongside the other links on desktop while preserving mobile and footer access.
 
-Update ownership, route, and navigation coverage, remove unused market-card artwork, document the current demo boundaries, and reconcile the committed authentication refactor in the changelog.
+Cover invitation validation and mocked email delivery, update navigation expectations and beta documentation, and reconcile the committed reorder workspace in the changelog.
 ```
 
 ## 2026-10-19
+
+- **refactor: make the shop a focused reorder workspace** (`3313531`)
+  Open /shop directly to company-scoped reorder search, remove the market chooser and new-product sections, and redirect the legacy market shop URL. Add a shared Shop dropdown with cart and sign-out, align submenu typography, transitions, and spacing, and provide an authenticated empty cart with navigation coverage.
 
 - **refactor: centralize shop authentication with remote sign-in** (`5c4bccd`)
   Move shop routes into the authenticated group, enforce sessions in the root server hook, and replace the page-action login with a remote form at /sign-in. Add 30-day secret-backed demo sessions, private password fields, legacy URL redirects, and native/enhanced authentication coverage.

@@ -51,8 +51,7 @@
 {#snippet trigger(attributes: ComponentProps<typeof Button>)}
 	<Button
 		{...attributes}
-		variants={['ghost']}
-		class="gap-1 px-3 text-sm"
+		class="gap-2"
 		aria-label="Shop menu"
 		onclick={(event) => {
 			event.preventDefault();

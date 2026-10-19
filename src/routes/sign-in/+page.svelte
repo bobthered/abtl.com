@@ -2,6 +2,7 @@
 	// Imports
 	import {
 		A,
+		ActionLabel,
 		Br,
 		Button,
 		Container,
@@ -13,32 +14,16 @@
 		Label,
 		Main,
 		P,
-		Section
+		Section,
+		Select
 	} from '#lib/components';
-	import { ArrowRight, Building2, Mail, ShieldCheck } from '#lib/icons';
+	import { ArrowRight, ShieldCheck } from '#lib/icons';
+	import { betaMarkets } from './_lib/invitations';
+	import { contactDetails } from '#lib/data/contact.js';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
+	import { requestInvitation } from './invitation.remote';
 	import { signIn } from './sign-in.remote';
-
-	// consts
-	const steps = [
-		{
-			icon: Mail,
-			title: 'Start with your invitation',
-			description: 'Use the invitation sent to your work email to activate your account.'
-		},
-		{
-			icon: Building2,
-			title: 'Your company. Your catalog.',
-			description:
-				'Your invitation connects you with your company and the markets available to your team.'
-		},
-		{
-			icon: ShieldCheck,
-			title: 'A focused beta',
-			description: "We're starting with fire suppression. Additional markets will follow."
-		}
-	];
 
 	// $props()
 	let { data }: PageProps = $props();
@@ -74,6 +59,11 @@
 					>
 						Explore fire suppression<ArrowRight class="size-4" aria-hidden="true" />
 					</A>
+					<Div class="mt-8">
+						<A href="#request-beta" variants={['button.base']}>
+							<ActionLabel>Request a beta invitation</ActionLabel>
+						</A>
+					</Div>
 				</Div>
 				<Div
 					class="rounded-sm bg-white p-8 shadow-sm inset-ring-1 inset-ring-gray-200 sm:p-12 dark:bg-gray-900 dark:inset-ring-gray-800"
@@ -135,13 +125,102 @@
 			</Div>
 		</Container>
 	</Section>
-	<Section variants={['surfaceAlternate']}>
-		<Container class="grid gap-4 py-12 sm:py-16 md:grid-cols-3">
-			{#each steps as step (step.title)}<Div class="py-4">
-					<step.icon class="mb-4 size-6 text-primary-500" aria-hidden="true" /><H2 class="text-xl">
-						{step.title}
-					</H2><P class="mt-3 text-gray-600 dark:text-gray-300">{step.description}</P>
-				</Div>{/each}
+	<Section id="request-beta" variants={['surfaceAlternate']} aria-labelledby="request-beta-heading">
+		<Container class="grid items-start gap-4 py-12 sm:py-16 lg:grid-cols-2">
+			<Div class="lg:pr-12">
+				<P variants={['eyebrow']}>Not invited yet?</P><H2
+					id="request-beta-heading"
+					class="text-3xl sm:text-4xl"
+				>
+					Request access to the beta.
+				</H2><P class="mt-6 max-w-xl text-lg text-gray-600 dark:text-gray-300">
+					Tell us a little about your business and the products you order. Our team will review your
+					request and follow up about availability.
+				</P><P class="mt-6 text-gray-600 dark:text-gray-300">
+					We're starting with fire suppression. You can also register interest in another market.
+					Requesting an invitation does not create an account or grant shop access.
+				</P>
+			</Div>
+			<Div
+				class="rounded-sm bg-gray-50 p-6 inset-ring-1 inset-ring-gray-200 sm:p-8 dark:bg-gray-950 dark:inset-ring-gray-800"
+			>
+				{#if requestInvitation.result?.isSent}<P role="status">
+						Your request has been sent to our team. We'll review it and contact you about the beta.
+					</P>{/if}
+				{#each requestInvitation.fields.allIssues() ?? [] as issue, index (index)}<P
+						role="alert"
+						class="mb-4 text-red-600 dark:text-red-300"
+					>
+						{issue.message}
+					</P>{/each}
+				<Form {...requestInvitation} aria-label="Request beta invitation" class="grid gap-4">
+					<Div>
+						<Label for="beta-name">Your name</Label><Input
+							id="beta-name"
+							{...requestInvitation.fields.name.as('text')}
+							autocomplete="name"
+							required
+							maxlength={120}
+							class="mt-2 w-full"
+						/>
+					</Div>
+					<Div>
+						<Label for="beta-company">Company</Label><Input
+							id="beta-company"
+							{...requestInvitation.fields.company.as('text')}
+							autocomplete="organization"
+							required
+							maxlength={160}
+							class="mt-2 w-full"
+						/>
+					</Div>
+					<Div>
+						<Label for="beta-email">Business email</Label><Input
+							id="beta-email"
+							{...requestInvitation.fields.email.as('email')}
+							autocomplete="email"
+							required
+							maxlength={254}
+							class="mt-2 w-full"
+						/>
+					</Div>
+					<Div>
+						<Label for="beta-market">Market of interest</Label><Select
+							id="beta-market"
+							{...requestInvitation.fields.market.as('select')}
+							options={[{ label: 'Choose a market', value: '' }, ...betaMarkets]}
+							required
+							class="mt-2 w-full"
+						/>
+					</Div>
+					<Div class="hidden" aria-hidden="true">
+						<Label for="beta-website">Leave this field empty</Label><Input
+							id="beta-website"
+							{...requestInvitation.fields.website.as('text')}
+							tabindex={-1}
+							autocomplete="off"
+						/>
+					</Div>
+					<Button
+						type="submit"
+						disabled={!data.isInvitationDeliveryConfigured || requestInvitation.pending > 0}
+					>
+						Request invitation
+					</Button>
+				</Form>
+				{#if !data.isInvitationDeliveryConfigured}<P
+						class="mt-4 text-sm text-gray-600 dark:text-gray-300"
+					>
+						Online requests are currently unavailable. Email our team to request an invitation.
+					</P>{/if}
+				<A
+					href={`mailto:${contactDetails.email}?subject=Shop%20beta%20invitation%20request`}
+					variants={['button.base', 'button.variant.neutral-outline']}
+					class="mt-4"
+				>
+					<ActionLabel>Email our team</ActionLabel>
+				</A>
+			</Div>
 		</Container>
 	</Section>
 </Main>

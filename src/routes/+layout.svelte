@@ -19,7 +19,7 @@
 	import { browser } from '$app/env';
 	import { ChevronDown, Menu, X } from '#lib/icons';
 	import type { ComponentProps } from 'svelte';
-	import { allNavigation, contactNavigation, mobileNavigation } from '#lib/data/navigation.js';
+	import { allNavigation, mobileNavigation } from '#lib/data/navigation.js';
 	import { createPageTitle } from '#lib/pageTitle.js';
 	import { fade, slide } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
@@ -173,12 +173,9 @@
 			</A>
 			<SiteNavigation {isReducedMotion} />
 			<Div class="hidden items-center gap-2 xl:flex">
-				<A href={contactNavigation.href} variants={['ghost', 'navigation']} class="px-0 sm:px-3">
-					Contact
-				</A>
 				{#if data.isShopSignedIn}<ShopNavigation {isReducedMotion} />{:else}<A
 						href="/sign-in"
-						variants={['ghost', 'navigation']}
+						variants={['button.base']}
 					>
 						Sign in
 					</A>{/if}
@@ -275,7 +272,7 @@
 									}}
 								/>{:else}<A
 									href="/sign-in"
-									variants={['ghost', 'navigation']}
+									variants={['button.base']}
 									class="mt-4 w-fit"
 									onclick={() => (isMenuVisible = false)}
 								>

@@ -141,8 +141,8 @@ test('navigation pages render with real links and a sign-in placeholder', async 
 			page.locator('header').getByRole('link', { name: 'Contact', exact: true })
 		).toBeVisible();
 		await expect(
-			page.getByRole('button', { name: 'Sign In (coming soon)', exact: true })
-		).toBeDisabled();
+			page.locator('header').getByRole('link', { name: 'Sign in', exact: true })
+		).toHaveAttribute('href', '/sign-in');
 		expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
 			true
 		);
@@ -352,7 +352,7 @@ test('mobile utilities live in the menu and submenus slide with matching link si
 	await expect(menu.getByRole('link', { name: 'Contact', exact: true })).toBeVisible();
 	await expect(
 		menu.getByRole('button', { name: 'Sign In (coming soon)', exact: true })
-	).toBeDisabled();
+	).toHaveAttribute('href', '/sign-in');
 	const resources = menu.getByRole('button', { name: 'Resources', exact: true });
 	const sizing = (node: HTMLElement | SVGElement) => {
 		const style = getComputedStyle(node);

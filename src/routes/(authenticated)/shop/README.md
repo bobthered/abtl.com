@@ -19,3 +19,7 @@ Public entry: `/sign-in`; `/account/sign-in` redirects old bookmarks. Sign-in us
 Shop routes live under `src/routes/(authenticated)/shop`. The root server hook checks exact `(authenticated)` route-group segments, verifies sessions, and redirects signed-out requests to `/sign-in` before loaders, actions, and endpoints. Order loaders and POSTs independently enforce data ownership. Password fields use the remote form's private-field convention.
 
 Before production, connect durable customer identity, invitation lifecycle, per-session revocation, real order history, carts, pricing, shipping/tax, and payments. The temporary stateless demo token cannot be individually revoked after copying it; sign-out deletes the browser cookie and secret rotation invalidates all tokens. Internal invitation management belongs in the separate company administration project.
+
+## Beta access requests
+
+The public sign-in page includes a separate remote invitation-request form for name, company, work email, and market interest. It validates bounded fields, rejects a honeypot, and delivers a plain-text review request to sales through the same server-only email transport as Contact. It does not issue an invitation, create an account, or change permissions. Delivery requires RESEND_API_KEY and a verified CONTACT_FROM_EMAIL; the UI provides an email fallback and never reports success without provider acceptance. Internal review and invitation issuance remain in the administration project.

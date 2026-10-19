@@ -158,7 +158,7 @@ export const navigation: NavigationSection[] = [
 
 export const contactNavigation = { href: '/contact', label: 'Contact' };
 
-// Contact stays separate on desktop and joins the direct links on mobile and in the footer.
+// Contact joins the main links on desktop, mobile, and in the footer.
 export const allNavigation = [
 	...navigation,
 	{ ...contactNavigation, description: '', children: [] }
@@ -169,5 +169,5 @@ export const allNavigation = [
 );
 
 // Products remains available in the footer; primary navigation focuses on capabilities and markets.
-export const mainNavigation = navigation.filter((section) => section.href !== '/products');
+export const mainNavigation = allNavigation.filter((section) => section.href !== '/products');
 export const mobileNavigation = allNavigation.filter((section) => section.href !== '/products');
