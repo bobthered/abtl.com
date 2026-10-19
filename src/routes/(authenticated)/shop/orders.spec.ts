@@ -8,12 +8,12 @@ const event = (values: Record<string, string>, member: ShopMember = demoMember) 
 	for (const [key, value] of Object.entries(values)) body.set(key, value);
 	return {
 		locals: { shopMember: member },
-		request: new Request('http://localhost/shop/fire-suppression', { method: 'POST', body }),
-		url: new URL('http://localhost/shop/fire-suppression?q=DEMO-ART-102'),
+		request: new Request('http://localhost/shop', { method: 'POST', body }),
+		url: new URL('http://localhost/shop?q=DEMO-ART-102'),
 		setHeaders: vi.fn()
 	} as unknown as Parameters<NonNullable<typeof actions.reorder>>[0];
 };
-describe('company-scoped fire suppression order review', () => {
+describe('company-scoped reorder review', () => {
 	it('searches only the current company history by artwork', async () => {
 		const result = await load(event({}) as unknown as Parameters<typeof load>[0]);
 		expect(result?.orders.map((order: { artwork: string }) => order.artwork)).toEqual([
@@ -37,22 +37,6 @@ describe('company-scoped fire suppression order review', () => {
 		).toMatchObject({ draft: { product: 'Inspection tags', quantity: 500 } });
 		expect(
 			await actions.reorder!(event({ orderId: 'demo-inspection', quantity: '1.5' }))
-		).toMatchObject({ status: 400 });
-	});
-	it('prepares new products and rejects unknown catalog entries', async () => {
-		expect(
-			await actions.newProduct!(
-				event({
-					productId: 'collars',
-					quantity: '250',
-					details: 'Small collars with our company information.'
-				})
-			)
-		).toMatchObject({ draft: { type: 'New product', quantity: 250 } });
-		expect(
-			await actions.newProduct!(
-				event({ productId: 'shellfish', quantity: '250', details: 'Example' })
-			)
 		).toMatchObject({ status: 400 });
 	});
 });

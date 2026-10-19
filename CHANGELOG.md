@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: b940c707ad55b3c7b61eb8c0094356974d7f8839 -->
+<!-- pending-base: 5c4bccd0bb3104759d3e85362976a0e7f879e1a0 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: centralize shop authentication with remote sign-in
+refactor: make the shop a focused reorder workspace
 
-Move shop routes into the authenticated layout group and enforce signed session access in the root server hook. Use /sign-in as the canonical entry, preserve the old sign-in URL as a redirect, and retain company and market authorization inside shop loaders and actions.
+Replace the market chooser with direct company-scoped order search and reorder reviews. Remove the welcome and new-product sections, preserve filters and pagination at /shop, and redirect the former fire suppression shop URL.
 
-Replace the page-action login with a SvelteKit remote form and a 30-day HttpOnly session signed with a stable server-only secret. Keep demo login development-only, exclude passwords from form repopulation, and update navigation, sign-out, tests, and environment documentation.
+Add a shared Shop dropdown with reorder, cart, and POST sign-out options in desktop and mobile navigation. Match megamenu spacing and subtleReveal transitions, and standardize submenu links and sign-out with small, un-underlined navigation styling. Provide an authenticated empty-cart page without implying that demo reviews create cart items.
 
-Document production identity and revocation limitations, preserve shop artwork imports after the route move, and reconcile the committed order-history lookup in the changelog.
+Update ownership, route, and navigation coverage, remove unused market-card artwork, document the current demo boundaries, and reconcile the committed authentication refactor in the changelog.
 ```
+
+## 2026-10-19
+
+- **refactor: centralize shop authentication with remote sign-in** (`5c4bccd`)
+  Move shop routes into the authenticated group, enforce sessions in the root server hook, and replace the page-action login with a remote form at /sign-in. Add 30-day secret-backed demo sessions, private password fields, legacy URL redirects, and native/enhanced authentication coverage.
 
 ## 2026-10-18
 

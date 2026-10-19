@@ -1,6 +1,9 @@
 import { theme } from 'sveltewind/theme';
 import { classic } from 'sveltewind/themes';
 
+const navigationItemClass =
+	'group flex min-h-11 w-full items-center justify-start rounded-sm bg-transparent px-4 py-3 text-left text-sm leading-5 font-medium text-gray-950 no-underline shadow-none hover:bg-gray-100 hover:text-primary-600 hover:no-underline focus:bg-gray-100 focus:text-primary-600 dark:bg-transparent dark:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-primary-300 dark:focus:bg-gray-800 dark:focus:text-primary-300';
+
 // Keep inherited rectangular surfaces consistent; preserve intentional circles and flush edges.
 const normalizeCornerRadius = (classes: string) =>
 	classes.replace(
@@ -17,6 +20,8 @@ export const initializeTheme = () => {
 			component.variants![name] = normalizeCornerRadius(component.variants![name]);
 	}
 	theme.set.theme(siteTheme);
+	for (const component of ['a', 'button'])
+		theme.set.variant(component, 'navigationItem', navigationItemClass);
 	theme.set.variant(
 		'button',
 		'selected',

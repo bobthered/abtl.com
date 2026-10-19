@@ -18,6 +18,7 @@ export { default as Marquee } from './Marquee/Marquee.svelte';
 export { default as ProcessArtwork } from './ProcessPrinting/ProcessArtwork.svelte';
 export { default as RadioChoice } from './RadioChoice/RadioChoice.svelte';
 export { default as ShippingGlobe } from './ShippingGlobe/ShippingGlobe.svelte';
+export { default as ShopNavigation } from './ShopNavigation/ShopNavigation.svelte';
 export { default as SiteNavigation } from './SiteNavigation/SiteNavigation.svelte';
 export { default as StockTag } from './StockTag/StockTag.svelte';
 export { default as StockTagColumns } from './BentoPreview/StockTagColumns.svelte';

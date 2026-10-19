@@ -65,7 +65,7 @@ export const searchFireOrders = (member: ShopMember, params: URLSearchParams) =>
 		const search = new URLSearchParams();
 		for (const [key, value] of Object.entries(filters)) if (value) search.set(key, value);
 		search.set('page', String(target));
-		return `/shop/fire-suppression?${search}#previous-orders`;
+		return `/shop?${search}#previous-orders`;
 	};
 	return {
 		filterError,

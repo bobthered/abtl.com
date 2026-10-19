@@ -1,45 +1,21 @@
-# Invitation-only shop foundation
+# Authenticated shop
 
-Public entry: `/sign-in`. `/shop` sends anonymous visitors there and shows signed-in buyers their company-assigned markets. The first protected market is `/shop/fire-suppression`.
+`/shop` opens directly to reorder search. There is one content section containing filters, paginated SKU-level results, and transient reorder reviews. The market chooser, large welcome section, and new-product section have been removed. `/shop/fire-suppression` redirects to `/shop` and retains query parameters for old links.
 
-## Current behavior
+## Search and ownership
 
-- Desktop and mobile header links reach a SvelteKit remote sign-in form. In development, the form displays temporary credentials (`beta@example.com` / `FireBeta2026!`). Signed-in visitors see a Shop link. No public registration or live invitations are available.
-- A server-only company membership contract separates user identity, company, customer type, and assigned markets. Direct and distributor buyers can each have multiple markets.
-- Fire suppression checks membership before returning any catalog data and disables response caching. Anonymous users redirect; members without market access receive 403.
-- `/shop` lists only recognized assigned markets, without duplicates. Fire suppression opens its catalog; assigned markets without a published shop show a coming-soon status. Sign-in always lands at `/shop`, including for single-market accounts. The demo company has Fire Suppression and Shellfish to illustrate this.
-- The protected fire suppression landing page groups existing product offerings into tags, labels, and collars. Prices, variants, purchasing, saved artwork, and orders are not yet implemented.
-- Development sign-in runs in `src/routes/sign-in/sign-in.remote.ts` and sets a 30-day HttpOnly SameSite cookie signed with the stable server-only `SHOP_SESSION_SECRET` (at least 32 random characters). The hook verifies expiry and signature before populating the fixed demo company membership. Sessions survive restarts when the secret is unchanged; secret rotation invalidates them and signing out deletes the browser cookie. Forged browser values cannot grant access.
-- Demo authentication is hard-disabled outside SvelteKit development mode, including preview and production builds. Production never exposes demo credentials or accepts demo sessions. This is a local review account, not a customer identity system. Do not put real customer data in this workspace.
+The current order repository has eighteen fictional fire suppression order lines for the demo company. Other companies receive no fixture history, and a member without fire suppression access receives no fire orders or product-type options. Search matches order, PO, SKU, description, reference, artwork, and ISO date; filters combine product type and inclusive dates with deterministic sorting and ten-line pagination. Real history must be queried by verified company AND assigned market in an indexed order-system/database query before pagination. Browser values never grant ownership.
 
-## Next integration
+Reorder POSTs validate company membership, line ownership, and integer quantity. Reviews are transient: no draft is saved, no order is placed, no payment is taken, and no cart item is created. Product previews are illustrative, not approved proofs. Quantity bounds are technical input limits, not minimum-order or pricing rules.
 
-Choose the identity, durable storage, and commerce providers before enabling production sign-in. Replace the temporary demo hook and form action with verified provider sessions. The server hook must verify the provider session on every request, load current company membership from trusted storage, and then populate `locals.shopMember`. Never populate it from unsigned browser data. Future product, cart, checkout, artwork, and order endpoints must repeat authorization; page protection alone is not sufficient.
+## Navigation and cart
 
-Invitations should store a hashed random token, normalized recipient email, company, assigned markets, issuer, expiry, and acceptance state in durable storage. Acceptance must verify the recipient and atomically consume the invitation once. Revocation and company membership changes must take effect on subsequent requests. Keep raw tokens out of logs and analytics; do not issue live invitations until this lifecycle is implemented.
+The shared header Shop dropdown uses Sveltewind Popover for orders, cart, and a POST sign-out form. It supports desktop hover, click, keyboard access, outside dismissal, and the mobile navigation. Shop and megamenu items share the navigationItem theme variant (14px, medium weight, no underline); sign-out retains a native POST form with matching presentation. Shop uses subtleReveal and the same pt-6 hover bridge as the megamenu. `/shop/cart` is an authenticated empty state until durable cart storage is connected. Do not imply that a review has added items to the cart.
 
-Company management and invitation issuance belong in the separate internal administration project. This site should own invitation acceptance and customer purchasing. Do not add an unauthenticated invitation-creation endpoint here.
+## Authentication
 
-Resolve whether new designs require artwork and price approval before payment, plus catalog availability, quantity rules, tax/shipping/payment integration, and distributor pricing before enabling checkout. Product categories here are navigation scaffolding, not purchasable SKUs.
+Public entry: `/sign-in`; `/account/sign-in` redirects old bookmarks. Sign-in uses the remote form in `src/routes/sign-in/sign-in.remote.ts`. Local credentials remain `beta@example.com` / `FireBeta2026!`. A 30-day HttpOnly SameSite session uses the server-only `SHOP_SESSION_SECRET`; it survives restarts while the secret is unchanged. Demo login is disabled outside development.
 
-## Market artwork
+Shop routes live under `src/routes/(authenticated)/shop`. The root server hook checks exact `(authenticated)` route-group segments, verifies sessions, and redirects signed-out requests to `/sign-in` before loaders, actions, and endpoints. Order loaders and POSTs independently enforce data ownership. Password fields use the remote form's private-field convention.
 
-The private shop `MarketArtwork` composition reuses the route-owned market illustrations for all six assigned-market cards. Product artwork remains owned by each market rather than duplicating shapes or importing full market pages. Each preview uses the same 3:2 stage with a fixed square illustration viewport and theme-aware primary/secondary background. Preview artwork is decorative; the market heading and catalog link supply accessible labels.
-
-## Fire suppression ordering demo
-
-The market page offers server-side search by order, product, customer reference, and artwork, plus per-item quantity and reorder review. A separate new-product form covers the existing fire suppression range. Both POST actions recheck company/market access and validate products and quantities. Review summaries are transient action responses: no draft is stored, no request is sent, and no order or charge is created.
-
-Eighteen fictional order lines with distinct SKUs, PO numbers, and descriptions are available only to the demo company. Other authorized companies receive an empty history. Replace the fixture repository with a company-and-market-scoped order query before importing real records. Never trust a posted order ID without verifying ownership. Historical artwork references are shown for continuity; previews are illustrative product artwork, not actual approved customer proofs. Quantity limits are technical input bounds, not product minimums or pricing rules. Real reorders must confirm artwork revision, current pricing, availability, delivery address, and payment before submission.
-
-### Larger order histories
-
-A GET-based keyword search matches order number, PO number, SKU, description, customer reference, artwork, and ISO order date. Multiple words must all match the line. Product-type selection and inclusive date bounds combine with the query. Sorting supports newest, oldest, and SKU; deterministic tie-breaking and ten-line pages preserve filters in navigation URLs. Invalid or reversed dates show an error rather than silently broadening results. Result rows distinguish individual SKUs on orders with multiple lines.
-
-The current repository filters synthetic records in memory. Replace it with an indexed database/order-system query that applies company and market ownership, filters, sorting, and pagination before returning rows. Do not load an entire real customer history into the browser. Product types are catalog categories; a SKU identifies the individual customer product/configuration.
-
-## Route protection
-
-Shop routes live under `src/routes/(authenticated)/shop`; the group does not change their public URLs. The root `src/hooks.server.ts` checks exact `(authenticated)` segments of `event.route.id` for every request, including POSTs and endpoints, and redirects anonymous or invalid-session requests to `/sign-in` before loaders and actions execute. Market loaders and POST actions retain separate company/market ownership checks. `/account/sign-in` redirects old bookmarks to `/sign-in`.
-
-The remote form validates credentials server-side and uses `_password` so sensitive values are excluded from remote form repopulation. It supports enhanced submissions and native POST without JavaScript. Runtime code requires the stable signing secret and fails closed when missing. The demo remains development-only; durable identity storage, per-session revocation, password management, and real invitation acceptance are not yet implemented. A deleted cookie does not revoke a previously copied stateless demo token; production authentication must provide revocation.
+Before production, connect durable customer identity, invitation lifecycle, per-session revocation, real order history, carts, pricing, shipping/tax, and payments. The temporary stateless demo token cannot be individually revoked after copying it; sign-out deletes the browser cookie and secret rotation invalidates all tokens. Internal invitation management belongs in the separate company administration project.

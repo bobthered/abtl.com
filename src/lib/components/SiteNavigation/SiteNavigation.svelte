@@ -275,13 +275,8 @@
 									aria-labelledby={`nav-trigger-${panel.index}`}
 								>
 									{#each panel.section.children as child (child.href)}
-										<A
-											href={child.href}
-											variants={['ghost']}
-											class="group block rounded-sm p-4 text-gray-950 hover:bg-gray-100 dark:text-gray-50 dark:hover:bg-gray-800"
-											onclick={close}
-										>
-											<ActionLabel class="w-full justify-between font-semibold">
+										<A href={child.href} variants={['ghost', 'navigationItem']} onclick={close}>
+											<ActionLabel class="w-full justify-between">
 												{child.label}
 											</ActionLabel>
 										</A>

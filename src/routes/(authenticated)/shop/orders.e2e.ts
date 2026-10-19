@@ -1,9 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('finds prior products and reviews reorder and new-product details', async ({
-	browser,
-	baseURL
-}) => {
+test('finds prior products with filters and reviews a reorder', async ({ browser, baseURL }) => {
 	const context = await browser.newContext({
 		baseURL,
 		javaScriptEnabled: false,
@@ -16,7 +13,6 @@ test('finds prior products and reviews reorder and new-product details', async (
 		await page.getByLabel('Work email').fill('beta@example.com');
 		await page.getByLabel('Password').fill('FireBeta2026!');
 		await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-		await page.getByRole('link', { name: 'Shop Fire Suppression' }).click();
 		await expect(
 			page.getByText('18 matching products / Showing 1-10', { exact: true })
 		).toBeVisible();
@@ -38,17 +34,6 @@ test('finds prior products and reviews reorder and new-product details', async (
 		await reorder.getByRole('button', { name: 'Review reorder' }).click();
 		await expect(page.getByText('Quantity: 750', { exact: true })).toBeVisible();
 		await expect(page.getByText('DEMO-1042 / DEMO-ART-101', { exact: true })).toBeVisible();
-		const newProduct = page.getByRole('form', { name: 'New fire suppression product' });
-		await newProduct.getByLabel('Product', { exact: true }).selectOption('collars');
-		await newProduct.getByLabel('Quantity needed').fill('300');
-		await newProduct
-			.getByLabel('What do you need?')
-			.fill('Small green collars with our company details.');
-		await newProduct.getByRole('button', { name: 'Review new product' }).click();
-		await expect(
-			page.getByText('New product: Extinguisher collars', { exact: true })
-		).toBeVisible();
-		await expect(page.getByText('Quantity: 300', { exact: true })).toBeVisible();
 		expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
 			true
 		);

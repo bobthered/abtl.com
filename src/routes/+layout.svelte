@@ -13,6 +13,7 @@
 		Nav,
 		P,
 		Popover,
+		ShopNavigation,
 		SiteNavigation
 	} from '#lib/components';
 	import { browser } from '$app/env';
@@ -175,9 +176,12 @@
 				<A href={contactNavigation.href} variants={['ghost', 'navigation']} class="px-0 sm:px-3">
 					Contact
 				</A>
-				<A href={data.isShopSignedIn ? '/shop' : '/sign-in'} variants={['ghost', 'navigation']}>
-					{data.isShopSignedIn ? 'Shop' : 'Sign in'}
-				</A>
+				{#if data.isShopSignedIn}<ShopNavigation {isReducedMotion} />{:else}<A
+						href="/sign-in"
+						variants={['ghost', 'navigation']}
+					>
+						Sign in
+					</A>{/if}
 			</Div>
 			<Div class="xl:hidden">
 				<Popover
@@ -264,14 +268,19 @@
 									</A>
 								{/if}
 							{/each}
-							<A
-								href={data.isShopSignedIn ? '/shop' : '/sign-in'}
-								variants={['ghost', 'navigation']}
-								class="mt-4 w-fit"
-								onclick={() => (isMenuVisible = false)}
-							>
-								{data.isShopSignedIn ? 'Shop' : 'Sign in'}
-							</A>
+							{#if data.isShopSignedIn}<ShopNavigation
+									{isReducedMotion}
+									onSelect={() => {
+										isMenuVisible = false;
+									}}
+								/>{:else}<A
+									href="/sign-in"
+									variants={['ghost', 'navigation']}
+									class="mt-4 w-fit"
+									onclick={() => (isMenuVisible = false)}
+								>
+									Sign in
+								</A>{/if}
 						</Nav>
 					</Container>
 				</Popover>
