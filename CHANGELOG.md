@@ -6,21 +6,22 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 33135319d7a35ef745b63fbb6812fb2840573b4b -->
+<!-- pending-base: 69349d0a11546879c612e6f2f677c31de273b5ad -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add beta invitation requests and highlight shop access
+refactor: replace the contact map with the plant photo
 
-Add a remote invitation-request form to sign-in with validated contact and market fields, sales-team review messaging, and an email fallback when delivery is unavailable. Share the server-only sales email transport with Contact and never grant access or report delivery success automatically.
+Reuse the first About plant image in the contact address section with the shared lightbox interaction and existing responsive panel dimensions. Retain the external directions link.
 
-Use base button styling for Sign in and Shop, and move Contact into the primary navigation alongside the other links on desktop while preserving mobile and footer access.
-
-Cover invitation validation and mocked email delivery, update navigation expectations and beta documentation, and reconcile the committed reorder workspace in the changelog.
+Remove the unused map implementation, SDK dependencies, browser-key exposure, and setup instructions. Update contact coverage and reconcile the committed beta invitation work in the changelog.
 ```
 
 ## 2026-10-19
+
+- **feat: add beta invitation requests and highlight shop access** (`69349d0`)
+  Add a validated remote beta-request form with sales-team review and an email fallback, sharing Contact's email transport. Highlight Sign in and Shop with base button styling, move Contact into primary navigation, and cover validation and mocked delivery.
 
 - **refactor: make the shop a focused reorder workspace** (`3313531`)
   Open /shop directly to company-scoped reorder search, remove the market chooser and new-product sections, and redirect the legacy market shop URL. Add a shared Shop dropdown with cart and sign-out, align submenu typography, transitions, and spacing, and provide an authenticated empty cart with navigation coverage.

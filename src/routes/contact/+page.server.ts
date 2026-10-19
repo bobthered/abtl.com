@@ -1,4 +1,4 @@
-import { CONTACT_FROM_EMAIL, GOOGLE_MAPS_API_KEY, RESEND_API_KEY } from '$app/env/private';
+import { CONTACT_FROM_EMAIL, RESEND_API_KEY } from '$app/env/private';
 import { fail } from '@sveltejs/kit';
 import { deliverInquiry, isDeliveryConfigured } from './_lib/delivery.server';
 import { validateInquiry } from './_lib/inquiry';
@@ -6,8 +6,7 @@ import type { Actions, PageServerLoad } from './$types';
 
 const settings = () => ({ apiKey: RESEND_API_KEY, from: CONTACT_FROM_EMAIL });
 export const load: PageServerLoad = () => ({
-	isDeliveryConfigured: isDeliveryConfigured(settings()),
-	googleMapsApiKey: GOOGLE_MAPS_API_KEY
+	isDeliveryConfigured: isDeliveryConfigured(settings())
 });
 export const actions: Actions = {
 	default: async ({ request }) => {

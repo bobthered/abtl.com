@@ -1,15 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-// Map UI is tested separately; keep external iframe loading deterministic in form checks.
-test.beforeEach(async ({ page }) => {
-	await page.route('https://maps.google.com/**', (route) =>
-		route.fulfill({
-			contentType: 'text/html',
-			body: '<!doctype html><title>Google Maps test frame</title>'
-		})
-	);
-});
-
 for (const colorScheme of ['light', 'dark'] as const) {
 	for (const width of [390, 1440]) {
 		test(`contact form and address render at ${width}px in ${colorScheme}`, async ({ page }) => {
@@ -38,9 +28,11 @@ for (const colorScheme of ['light', 'dark'] as const) {
 				'href',
 				'tel:+18005418868'
 			);
-			await expect(
-				page.getByTitle('Google map showing Allen-Bailey Tag & Label in Caledonia')
-			).toHaveAttribute('src', /maps.google.com/);
+			await expect(page.locator('#contact-location img')).toHaveAttribute(
+				'src',
+				'/images/about/golden-hour-industrial-complex-aerial.webp'
+			);
+			await expect(page.locator('#contact-location iframe')).toHaveCount(0);
 			await expect(page.locator('#contact-location address')).toContainText('3177 Lehigh St.');
 			await expect(page.locator('#contact-location address')).toContainText('Caledonia, NY 14423');
 			await expect(page.getByRole('link', { name: /Open directions/ })).toHaveAttribute(
@@ -77,12 +69,7 @@ test('contact action validates and preserves an undelivered inquiry without Java
 		javaScriptEnabled: false,
 		viewport: { width: 390, height: 1000 }
 	});
-	await context.route('https://maps.google.com/**', (route) =>
-		route.fulfill({
-			contentType: 'text/html',
-			body: '<!doctype html><title>Google Maps test frame</title>'
-		})
-	);
+
 	const page = await context.newPage();
 	await page.goto('/contact');
 	await expect(page.getByRole('heading', { level: 1 })).toBeVisible();

@@ -1,6 +1,6 @@
 # Contact
 
-Dedicated contact route replacing the old LandingPage placeholder and malformed contact mailto strings. ContentLayout renders the title, two alternating body sections, and a contrasting centered phone CTA. The form uses Sveltewind primitives, labeled inputs, server-rendered feedback, and SvelteKit progressive enhancement through fromAction. The location section embeds Google Maps. A browser key activates the Maps JavaScript API and Geocoding API; without it, or when SDK loading/geocoding fails, a standard Google map iframe is shown after hydration. Directions also open an external Maps search.
+Dedicated contact route replacing the old LandingPage placeholder and malformed contact mailto strings. ContentLayout renders the title, two alternating body sections, and a contrasting centered phone CTA. The form uses Sveltewind primitives, labeled inputs, server-rendered feedback, and SvelteKit progressive enhancement through fromAction. The location section uses the same golden-hour aerial plant photo as the first image on About, with the shared LightboxImage interaction. Directions open an external Maps search. The body includes inquiry, address, and phone sections.
 
 ## Public details
 
@@ -16,10 +16,6 @@ Validation trims fields, requires name/email/message, bounds field lengths, reje
 
 Coverage tests validation, header-injection rejection, payload routing, reply-to, missing configuration, provider/network failures, responsive themes, native controls, and preserved no-JavaScript POST failures. Successful provider acceptance is tested with an injected fake fetch, not a live email.
 
-## Google map
+## Plant photo
 
-Set GOOGLE_MAPS_API_KEY to a browser key with Maps JavaScript API and Geocoding API enabled and billing configured. Restrict it to the deployed site's HTTP referrers and those APIs. This key is intentionally returned by the contact loader and is visible in the browser; email API credentials remain server-only. Maps loads on the contact route only and does not load its JavaScript SDK without a key. The iframe fallback uses Google's public map export URL and mounts after hydration. Without JavaScript, the address and a Google Maps directions link remain available. Sveltewind Iframe currently renders a conditional child block inside the raw-text iframe element, which produces an SSR hydration mismatch; client mounting avoids it without replacing the primitive. Fix the upstream Iframe SSR implementation before moving it into the server-rendered tree. See Google's [loader documentation](https://developers.google.com/maps/documentation/javascript/load-maps-js-api) and [style reference](https://developers.google.com/maps/documentation/javascript/style-reference).
-
-The interactive map geocodes the verified street address rather than using guessed coordinates. Raster styles use actual computed Tailwind gray, primary, and secondary tokens, converted to Google's required hex colors. Land, roads, labels, parks, and water update when the site's data-theme/class changes. A primary location circle with a secondary ring marks the geocoded position. Google attribution and controls remain intact. Standard iframe contents cannot be restyled across origins; full map-palette styling requires the browser API key. Component tests mock Google APIs to verify theme updates without billing or live geocoding; verify the actual map once a restricted key is supplied.
-
-The project-type field has been removed from UI, validation, and delivery payloads. Email now uses a fixed Website inquiry subject. Email CTAs beside the form and address use button.base styling. Browser checks assert that no project-type radios remain and that the shared layout includes the closing phone CTA.
+The location image reuses `/images/about/golden-hour-industrial-complex-aerial.webp` with its 1200 by 533 intrinsic dimensions in the existing responsive image panel. LightboxImage provides the shared expansion, outline, and full-image dialog. The map SDK, iframe fallback, browser API key exposure, and map-only configuration and dependencies have been removed. The existing external directions link is retained.

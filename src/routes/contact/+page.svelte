@@ -9,17 +9,16 @@
 		Div,
 		H1,
 		H2,
-		H3,
+		LightboxImage,
 		Main,
 		P,
 		Section,
 		Span
 	} from '#lib/components';
 	import { contactDetails } from '#lib/data/contact.js';
-	import ContactMap from './_components/ContactMap.svelte';
 	import { ContentLayout } from '#lib/layouts';
 	import InquiryForm from './_components/InquiryForm.svelte';
-	import { Mail, Phone } from '#lib/icons';
+	import { Phone } from '#lib/icons';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 
@@ -97,7 +96,13 @@
 		>
 			<Container class="py-12 sm:py-16">
 				<Div class="grid items-center gap-4 lg:grid-cols-2">
-					<ContactMap apiKey={data.googleMapsApiKey} />
+					<LightboxImage
+						src="/images/about/golden-hour-industrial-complex-aerial.webp"
+						alt="Golden-hour aerial view of industrial buildings surrounded by fields and trees"
+						width={1200}
+						height={533}
+						class="h-112 sm:h-128"
+					/>
 					<Div class="py-6 lg:pl-12">
 						<H2 id="contact-location-heading" class="text-4xl font-light sm:text-5xl">
 							A real place.<Br />Real people behind the print.
@@ -123,10 +128,6 @@
 								Open directions<Span class="sr-only">(opens a new tab)</Span>
 							</ActionLabel>
 						</A>
-						<P class="mt-8 text-sm text-gray-500 dark:text-gray-400">
-							Sending a sample? Include your name, contact details, and a note about the project so
-							we can connect it with your inquiry.
-						</P>
 					</Div>
 				</Div>
 			</Container>
