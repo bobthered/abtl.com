@@ -47,7 +47,7 @@
 	<H1 variants={['h2.variant.section']}>A small tag.<Br />Part of the presentation.</H1>
 	<P class="mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-300">
 		Merchandise tags. Marking tags. Jewelry tags. Whatever you call them, our scalloped tags pair a
-		distinctive shape with knotted string, in all 21 stock colors and sizes #1 through #8.
+		distinctive shape with knotted string, in all 21 stock colors and sizes #1 through #9.
 	</P>
 {/snippet}
 
@@ -147,26 +147,28 @@
 							<MerchandiseTag
 								colorClass={selectedColor.className}
 								colorId={selectedColor.id}
-								scale={selectedSize.scale}
+								size={selectedSize}
+								isSizeComparison
 							/>
 						</Div>
-						<P class="mt-4 shrink-0 text-center text-sm text-gray-600 dark:text-gray-300">
-							Size #{selectedSize.number} / {selectedColor.name}<Br />Relative size illustration
+						<P class="mt-4 min-h-16 shrink-0 text-center text-sm text-gray-600 dark:text-gray-300">
+							Size #{selectedSize.number} / {selectedColor.name}<Br />{selectedSize.dimensions} (length
+							x width)
 						</P>
 					</Div>
 					<Div class="py-6 lg:pl-12">
-						<P variants={['eyebrow']}>02 / Sizes #1 through #8</P>
+						<P variants={['eyebrow']}>02 / Sizes #1 through #9</P>
 						<H2 id="merchandise-sizes-heading" class="text-4xl font-light sm:text-5xl">
 							Find the right presence.<Br />Keep the same character.
 						</H2>
 						<P class="mt-6 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
-							From a discreet marking tag to a more prominent merchandise detail, choose from eight
+							From a discreet marking tag to a more prominent merchandise detail, choose from nine
 							numbered sizes. The scalloped shape and knotted string carry through the range.
 						</P>
 						<Div
 							role="radiogroup"
 							aria-label="Merchandise tag size"
-							class="mt-8 grid grid-cols-4 gap-4"
+							class="mt-8 grid grid-cols-3 gap-4"
 						>
 							{#each merchandiseSizes as size (size.number)}<RadioChoice
 									name={`${controlId}-size`}
@@ -179,13 +181,20 @@
 						<P class="mt-6 text-lg font-medium" data-merchandise-size-name>
 							Size #{selectedSize.number}
 						</P>
+						<P
+							class="mt-2 text-lg text-primary-600 dark:text-primary-300"
+							data-merchandise-dimensions
+						>
+							{selectedSize.dimensions}
+						</P>
+						<P class="mt-2 text-sm text-gray-600 dark:text-gray-300">Length x width, in inches</P>
 						<P class="mt-3 text-gray-600 dark:text-gray-300">
 							Your chosen stock color stays with the preview as you compare sizes.
 						</P>
 						<P class="mt-6 text-sm text-gray-500 dark:text-gray-400">
-							The progression is illustrative, not a dimensioned size chart. Ask us for the
-							dimensions of your numbered size, or send a sample to match. Screen colors are
-							representations; compare physical stock when color matching matters.
+							The preview preserves the relative tag dimensions; it is not actual size on screen.
+							String length is illustrative. Screen colors are representations; compare physical
+							stock when color matching matters.
 						</P>
 					</Div>
 				</Div>

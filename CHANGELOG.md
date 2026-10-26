@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: b54369733905f24533102c4e2ef337af67c97e36 -->
+<!-- pending-base: 7b5808598c16a64ca2bd3820008dea146d7595cf -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-feat: add background image loading and streamline site content
+feat: match merchandise tags to supplied artwork and sizes
 
-Load off-screen lazy images during idle periods through a root-layout attachment, with two concurrent promotions, viewport ordering, and low fetch priority. Preserve responsive sources, handle dynamic content and navigation, and pause for hidden tabs, data-saving preferences, and slow connections.
+Replace the merchandise tag silhouette with the supplied scalloped SVG and align the shared knotted string to its open hole. Preserve all 21 stock colors in both previews.
 
-Hide Resources and Careers from shared navigation while retaining their routes. Hide the About page's process and application sections, and give its shipping call to action primary button styling.
+Add the nine confirmed fractional-inch sizes, expose size #9 and selected dimensions, and scale each tag by its actual length and width within a fixed preview panel. Update responsive, color, sizing, and no-JavaScript coverage and documentation.
 
-Document image-loading limits and fallback behavior, add browser coverage for queue and connection policies, and reconcile the committed contact-photo replacement in the changelog.
+Include removal of the root reference photos and original variable-data example SVG, and reconcile the committed image-loading and site-content updates in the changelog.
 ```
+
+## 2026-10-26
+
+- **feat: add background image loading and streamline site content** (`7b58085`)
+  Add idle background loading for off-screen images with connection and visibility policies, responsive-source preservation, and browser coverage. Hide Resources and Careers from navigation, hide About process/application sections, and highlight the shipping call to action.
 
 ## 2026-10-19
 

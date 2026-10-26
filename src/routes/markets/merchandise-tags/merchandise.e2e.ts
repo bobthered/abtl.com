@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { merchandiseSizes } from './_components/sizes';
 import { stockColors } from '../../../lib/data/stockColors';
 
 for (const colorScheme of ['light', 'dark'] as const) {
@@ -32,16 +33,24 @@ for (const colorScheme of ['light', 'dark'] as const) {
 			await colors.getByRole('radio').first().press('ArrowRight');
 			await expect(colors.getByRole('radio').nth(1)).toBeChecked();
 			const sizes = page.getByRole('radiogroup', { name: 'Merchandise tag size' });
-			await expect(sizes.getByRole('radio')).toHaveCount(8);
+			await expect(sizes.getByRole('radio')).toHaveCount(9);
 			const panel = page.locator('[data-merchandise-size-preview]');
 			const height = (await panel.boundingBox())!.height;
 			let previousWidth = 0;
-			for (let number = 1; number <= 8; number++) {
+			for (let number = 1; number <= 9; number++) {
 				await sizes.getByRole('radio', { name: `#${number}`, exact: true }).check();
 				await expect(page.locator('[data-merchandise-size-name]')).toHaveText(`Size #${number}`);
 				const box = (await panel.locator('[data-merchandise-outline]').boundingBox())!;
 				expect(box.width).toBeGreaterThan(previousWidth);
 				previousWidth = box.width;
+				const size = merchandiseSizes[number - 1];
+				await expect(page.locator('[data-merchandise-dimensions]')).toHaveText(size.dimensions);
+				// Playwright's SVG bounding box includes the decorative stroke; compare paper geometry.
+				const ratio = await panel.locator('[data-merchandise-outline]').evaluate((node) => {
+					const bounds = node.getBoundingClientRect();
+					return bounds.width / bounds.height;
+				});
+				expect(ratio).toBeCloseTo(size.width / size.length, 2);
 				expect((await panel.boundingBox())!.height).toBe(height);
 			}
 			await expect(page.locator('[data-attachment-fastening="knotted"]')).toHaveCount(2);
