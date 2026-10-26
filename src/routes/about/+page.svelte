@@ -146,11 +146,7 @@
 						Whether your business is close to home or far beyond it, the starting point is the same:
 						what do you need your tag or label to do?
 					</P>
-					<A
-						href="/capabilities/shipping"
-						variants={['button.base', 'button.variant.neutral-outline']}
-						class="mt-8"
-					>
+					<A href="/capabilities/shipping" variants={['button.base']} class="mt-8">
 						<ActionLabel>See how far we go</ActionLabel>
 					</A>
 				</Div>
@@ -158,7 +154,7 @@
 		</Container>
 	</Section>
 
-	<Section variants={['surface']}>
+	<!-- <Section variants={['surface']}>
 		<Container variants={['section']}>
 			<Div class="grid items-center gap-4 lg:grid-cols-2">
 				<Div class="py-8 lg:pr-16">
@@ -207,9 +203,9 @@
 				{/each}
 			</Div>
 		</Container>
-	</Section>
+	</Section> -->
 
-	<Section variants={['surfaceAlternate']}>
+	<!-- <Section variants={['surfaceAlternate']}>
 		<Container variants={['section']}>
 			<Div class="max-w-3xl">
 				<P variants={['eyebrow']} class="text-primary-600 dark:text-primary-300">
@@ -241,7 +237,7 @@
 				{/each}
 			</Div>
 		</Container>
-	</Section>
+	</Section> -->
 
 	<Section variants={['sampleInvitation']}>
 		<Container class="flex flex-col items-center gap-4 text-center">

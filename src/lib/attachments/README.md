@@ -36,3 +36,13 @@ The bootstrap releases on keyboard focus, a switch to reduced motion, or an 1800
 Keep this handoff global. Do not add route-specific reveal attributes, duplicate observers, or permanently hidden SSR markup. Cleanup still exposes pending targets, stops active animations, and restores final count values. The trigger remains the element top reaching 80% of viewport height, with the inset computed from viewport height in pixels.
 
 `src/reveal-startup.e2e.ts` delays client scripts and records frame opacity to cover the initial handoff, fail-open paths, and late hydration in both development and generated production bundles. Existing reveal regressions cover no-JavaScript content, viewport thresholds, focus, dynamic content, dialogs, staggering, and navigation.
+
+## Background images
+
+The root layout mounts `backgroundImages` alongside scrollReveal. Native lazy loading stays intact during startup. After window load, the attachment uses idle callbacks (or a short timer fallback) to promote at most two off-screen lazy images at a time, ordered by distance from the viewport. Promotion operates on the existing image element with low fetch priority, preserving picture/source selection, srcset, and sizes. Near-viewport/visible content remains under native loading; promoted images recover their original priority as they approach the viewport and recover original attributes after completion or cleanup.
+
+The document observer discovers new images across route content and portals. Root onNavigate pauses new promotions until navigation completes; visibility and connection changes pause/resume scheduling. Save-Data and reported slow-2g, 2g, and 3g connections skip background promotions. Missing connection hints do not prevent loading. Idle time is a CPU scheduling signal, not a measure of free network bandwidth; browser priority is a hint and native requests can run independently of the two-promotion limit.
+
+Hidden/inert content, explicitly high-priority images, and ancestors marked `data-background-images="off"` are excluded. New pages do not need opt-in attributes. CSS background images and unopened full-resolution lightbox assets are not discovered or fetched separately. Started browser image requests cannot be reliably canceled by this attachment; navigation stops queuing and removed elements release their queue slots. No image sources or responsive candidates are rewritten, and no-JavaScript visitors retain native lazy loading.
+
+Cleanup disconnects observers, clears scheduled work, removes listeners, and restores in-flight element attributes. Browser coverage holds image responses to verify concurrency, responsive source selection, dynamic/portalled discovery, subsequent route loading, data-saving policy, and the timer fallback.

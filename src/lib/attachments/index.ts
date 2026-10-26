@@ -1,3 +1,4 @@
+export { backgroundImages, setBackgroundImagesNavigation } from './backgroundImages';
 export { dismissOutside } from './dismissOutside';
 export { dragScroll, type DragScrollOptions } from './dragScroll';
 export { floatIllustration } from './floatIllustration';

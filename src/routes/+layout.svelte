@@ -16,10 +16,16 @@
 		ShopNavigation,
 		SiteNavigation
 	} from '#lib/components';
+	import { allNavigation, mobileNavigation } from '#lib/data/navigation.js';
+	import {
+		backgroundImages,
+		scrollReveal,
+		setBackgroundImagesNavigation,
+		setScrollRevealNavigation
+	} from '#lib/attachments';
 	import { browser } from '$app/env';
 	import { ChevronDown, Menu, X } from '#lib/icons';
 	import type { ComponentProps } from 'svelte';
-	import { allNavigation, mobileNavigation } from '#lib/data/navigation.js';
 	import { createPageTitle } from '#lib/pageTitle.js';
 	import { fade, slide } from 'svelte/transition';
 	import favicon from '#lib/assets/favicon.svg';
@@ -29,7 +35,6 @@
 	import { onMount } from 'svelte';
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/state';
-	import { scrollReveal, setScrollRevealNavigation } from '#lib/attachments';
 	import { subtleReveal } from 'sveltewind/transitions';
 	import { twMerge } from 'tailwind-merge';
 
@@ -82,7 +87,11 @@
 
 	onNavigate(() => {
 		setScrollRevealNavigation(true);
-		return () => setScrollRevealNavigation(false);
+		setBackgroundImagesNavigation(true);
+		return () => {
+			setScrollRevealNavigation(false);
+			setBackgroundImagesNavigation(false);
+		};
 	});
 
 	initializeTheme();
@@ -152,6 +161,7 @@
 	Skip to content
 </A>
 <Div
+	{@attach backgroundImages}
 	{@attach scrollReveal}
 	class={twMerge(
 		siteFrameClass,

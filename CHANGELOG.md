@@ -6,19 +6,24 @@ The initial backfill covers all 93 commits reachable from repository refs throug
 
 ## Unreleased
 
-<!-- pending-base: 69349d0a11546879c612e6f2f677c31de273b5ad -->
+<!-- pending-base: b54369733905f24533102c4e2ef337af67c97e36 -->
 
 Pending commit message (updated across tasks until committed):
 
 ```text
-refactor: replace the contact map with the plant photo
+feat: add background image loading and streamline site content
 
-Reuse the first About plant image in the contact address section with the shared lightbox interaction and existing responsive panel dimensions. Retain the external directions link.
+Load off-screen lazy images during idle periods through a root-layout attachment, with two concurrent promotions, viewport ordering, and low fetch priority. Preserve responsive sources, handle dynamic content and navigation, and pause for hidden tabs, data-saving preferences, and slow connections.
 
-Remove the unused map implementation, SDK dependencies, browser-key exposure, and setup instructions. Update contact coverage and reconcile the committed beta invitation work in the changelog.
+Hide Resources and Careers from shared navigation while retaining their routes. Hide the About page's process and application sections, and give its shipping call to action primary button styling.
+
+Document image-loading limits and fallback behavior, add browser coverage for queue and connection policies, and reconcile the committed contact-photo replacement in the changelog.
 ```
 
 ## 2026-10-19
+
+- **refactor: replace the contact map with the plant photo** (`b543697`)
+  Reuse About's first aerial plant photo with the shared contact lightbox, retain directions, and remove the map implementation, dependencies, browser-key exposure, and obsolete coverage and setup instructions.
 
 - **feat: add beta invitation requests and highlight shop access** (`69349d0`)
   Add a validated remote beta-request form with sales-team review and an email fallback, sharing Contact's email transport. Highlight Sign in and Shop with base button styling, move Contact into primary navigation, and cover validation and mocked delivery.

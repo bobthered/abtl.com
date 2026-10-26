@@ -103,40 +103,40 @@ export const navigation: NavigationSection[] = [
 			}
 		]
 	},
-	{
-		href: '/resources',
-		label: 'Resources',
-		description: 'Make your next project easier to plan.',
-		children: [
-			{
-				href: '/resources/artwork',
-				label: 'Artwork planning',
-				description: 'Prepare a useful brief for your printed piece.'
-			},
-			{
-				href: '/resources/material-guide',
-				label: 'Material guide',
-				description: 'Consider stock, exposure, handling, and attachments.'
-			},
-			{
-				href: '/resources/ordering',
-				label: 'Ordering guide',
-				description: 'Plan quantities, changing data, and deliveries.'
-			}
-		]
-	},
+	// {
+	// 	href: '/resources',
+	// 	label: 'Resources',
+	// 	description: 'Make your next project easier to plan.',
+	// 	children: [
+	// 		{
+	// 			href: '/resources/artwork',
+	// 			label: 'Artwork planning',
+	// 			description: 'Prepare a useful brief for your printed piece.'
+	// 		},
+	// 		{
+	// 			href: '/resources/material-guide',
+	// 			label: 'Material guide',
+	// 			description: 'Consider stock, exposure, handling, and attachments.'
+	// 		},
+	// 		{
+	// 			href: '/resources/ordering',
+	// 			label: 'Ordering guide',
+	// 			description: 'Plan quantities, changing data, and deliveries.'
+	// 		}
+	// 	]
+	// },
 	{
 		href: '/about',
 		label: 'About',
 		description: 'Our Caledonia roots and more than a century of manufacturing.',
 		children: []
 	},
-	{
-		href: '/careers',
-		label: 'Careers',
-		description: '',
-		children: []
-	},
+	// {
+	// 	href: '/careers',
+	// 	label: 'Careers',
+	// 	description: '',
+	// 	children: []
+	// },
 	{
 		href: '/news',
 		label: 'News',
